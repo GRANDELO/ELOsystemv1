@@ -1,0 +1,4 @@
+#!/bin/bash
+git add .
+git commit -m"elo updates from Tim"
+git push origin
