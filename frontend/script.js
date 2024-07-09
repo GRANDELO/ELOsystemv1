@@ -1,6 +1,6 @@
 async function fetchData() {
     try {
-      const response = await fetch('https://elosystemv1.onrender.com/');
+      const response = await fetch('https://elosystemv1.onrender.com/name');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
