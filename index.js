@@ -12,6 +12,10 @@ app.get('/', (req, res) => {
   res.send('Welcome to Grandelo');
 });
 
+app.get('/name', (req, res) => {
+  res.send('Our name is Grandelo');
+});
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
