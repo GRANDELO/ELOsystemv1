@@ -9,7 +9,7 @@ app.use(express.json());
 const port = process.env.PORT || 5000;
 
 app.get('/', (req, res) => {
-  res.send('Welcome to Grandelo API');
+  res.send('Welcome to Grandelo');
 });
 
 app.listen(port, () => {
