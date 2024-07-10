@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+const sayhi = require('testdata');
 
 const app = express();
 app.use(cors());
@@ -13,7 +14,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/name', (req, res) => {
-  res.send('Our name is Grandelo');
+  res.send(sayhi);
 });
 
 app.listen(port, () => {
