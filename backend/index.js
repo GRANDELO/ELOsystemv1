@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/name', (req, res) => {
-  res.send(sayhi);
+  res.send(sayhi());
 });
 
 app.listen(port, () => {
