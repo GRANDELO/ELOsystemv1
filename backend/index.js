@@ -14,7 +14,16 @@ app.get('/', (req, res) => {
 });
 
 app.get('/name', (req, res) => {
-  res.send(sayhi());
+  res.send(sayhi(x));
+});
+
+app.post('/thankyou', (req, res) => {
+  const { name } = req.body;
+  if (name) {
+    res.json({ message: `Thank you, ${name}` });
+  } else {
+    res.status(400).json({ message: 'Name is required' });
+  }
 });
 
 app.listen(port, () => {
