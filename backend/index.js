@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const sayhi = require('testdata');
+const sayhi = require('./testdata');
 
 const app = express();
 app.use(cors());
