@@ -1,15 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const path = require('path');
 const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 const port = process.env.PORT || 3000;
+const mongoURI = process.env.MONGODB_URI;
 
 app.use(bodyParser.json());
 app.use('/api/auth', authRoutes);
 
-mongoose.connect('mongodb+srv://dtransfer:GHOa1ONwlnAEJRB3@cluster0.zs3xlvj.mongodb.net/yourDatabaseName?retryWrites=true&w=majority&appName=Cluster0', {
+// Serve static files from the public folder
+app.use(express.static(path.join(__dirname, 'public')));
+
+mongoose.connect(mongoURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   tls: true,
