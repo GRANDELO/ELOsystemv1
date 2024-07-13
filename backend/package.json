@@ -2,7 +2,7 @@
     "name": "backend",
     "version": "1.0.0",
     "description": "connection side server and database",
-    "main": "server.js",
+    "main": "index.js",
     "scripts": {
         "start": "nodemon server.js"
     },
