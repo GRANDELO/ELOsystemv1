@@ -5,14 +5,17 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [messageColor, setMessageColor] = useState('');
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/auth/login', { email, password });
-      setMessage(response.data.message);
+      const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      setMessage(response.data.message || "login successfull");
+      setMessageColor('green');
     } catch (error) {
-      setMessage('Error logging in');
+      setMessage('wrong password');
+      setMessageColor('red');
     }
   };
 
@@ -38,7 +41,7 @@ const Login = () => {
         />
         <button type="submit">Login</button>
       </form>
-      <div>{message}</div>
+      <div style={{ color: messageColor }}>{message}</div>
     </div>
   );
 };

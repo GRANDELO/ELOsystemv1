@@ -41,7 +41,7 @@ Getting Started
 Prerequisites
 
 Before you begin, ensure you have the following installed:
-
+- commonjs module
 - Node.js (v14.x or later)
 - npm (v6.x or later)
 - MongoDB (v4.x or later)

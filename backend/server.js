@@ -1,40 +1,36 @@
+require('dotenv').config();
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
-
 const path = require('path');
+
 const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 app.use(cors());
-
-const mongoURI = process.env.MONGODB_URI;
-
 app.use(bodyParser.json());
+
 app.use('/api/auth', authRoutes);
 
-// Serve static files from the public folder
-app.use(express.static(path.join(__dirname, 'public')));
+const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/business';
 
 mongoose.connect(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  tls: true,
-  tlsAllowInvalidCertificates: false,
-  tlsAllowInvalidHostnames: false,
 }).then(() => {
   console.log('Connected to MongoDB');
-}).catch((err) => {
-  console.error('Failed to connect to MongoDB', err);
+}).catch((error) => {
+  console.error('Error connecting to MongoDB:', error);
 });
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: ["http://localhost:3001", "http://localhost:3000"],//if one port is in use already use the other one
         methods: ["GET", "POST"],
         allowedHeaders: ["Content-Type"],
     },
@@ -47,9 +43,9 @@ io.on('connection', (socket) => {
     });
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
 

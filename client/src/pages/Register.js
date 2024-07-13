@@ -6,14 +6,21 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [messageColor, setMessageColor] = useState('');
+
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/auth/register', { username, email, password });
-      setMessage(response.data.message);
+      const response = await axios.post('http://localhost:5000/api/auth/register', { username, email, password});
+      setUsername('');
+      setEmail('');
+      setPassword('');
+      setMessage(response.data.message || 'User registered successfully');
+      setMessageColor('green');
     } catch (error) {
       setMessage('Error registering');
+      setMessageColor('red');
     }
   };
 
@@ -45,9 +52,9 @@ const Register = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit">Register</button>
+        <button type="submit" onClick={handleRegister}>Register</button>
       </form>
-      <div>{message}</div>
+      <div style={{ color: messageColor }}>{message}</div>
     </div>
   );
 };
