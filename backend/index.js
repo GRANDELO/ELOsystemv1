@@ -3,10 +3,10 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const homeRoutes = require('./routes/homeRoutes');
-const nameRoutes = require('./routes/nameRoutes');
-const thankyouRoutes = require('./routes/thankyouRoutes');
-const moreThankyouRoutes = require('./routes/moreThankyouRoutes');
+const homeRoutes = require('../zote/testing/homeRoutes');
+const nameRoutes = require('../zote/testing/nameRoutes');
+const thankyouRoutes = require('../zote/testing/thankyouRoutes');
+const moreThankyouRoutes = require('../zote/testing/moreThankyouRoutes');
 const authRoutes = require('./routes/authRoutes');
 
 const app = express();
