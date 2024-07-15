@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './styles.css';
 
 const Login = () => {
@@ -36,6 +37,7 @@ const Login = () => {
         <button type="submit">Login</button>
       </form>
       {message && <p className="message">{message}</p>}
+      <p>If you don't have an account <Link to="/register">REGISTER</Link></p>
     </div>
   );
 };
