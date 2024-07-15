@@ -10,12 +10,16 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
-    
+
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/register', { username, password });
+      const response = await axios.post('https://elosystemv1.onrender.com/api/auth/register', { username, password });
       setMessage(response.data.message);
     } catch (error) {
-      setMessage(error.response.data.message);
+      if (error.response && error.response.data) {
+        setMessage(error.response.data.message);
+      } else {
+        setMessage('An error occurred while processing your request.');
+      }
     }
   };
 
@@ -25,10 +29,10 @@ const Register = () => {
       <form onSubmit={handleSubmit}>
         <label>Username:</label>
         <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-        
+
         <label>Password:</label>
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        
+
         <button type="submit">Register</button>
       </form>
       {message && <p className="message">{message}</p>}

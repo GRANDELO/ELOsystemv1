@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import './styles.css';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -9,12 +10,16 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
-    
+
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', { username, password });
+      const response = await axios.post('https://elosystemv1.onrender.com/api/auth/login', { username, password });
       setMessage(response.data.message);
     } catch (error) {
-      setMessage(error.response.data.message);
+      if (error.response && error.response.data) {
+        setMessage(error.response.data.message);
+      } else {
+        setMessage('An error occurred while processing your request.');
+      }
     }
   };
 
@@ -22,14 +27,12 @@ const Login = () => {
     <div className="container">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Username:</label>
-          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        </div>
+        <label>Username:</label>
+        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+
+        <label>Password:</label>
+        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+
         <button type="submit">Login</button>
       </form>
       {message && <p className="message">{message}</p>}
