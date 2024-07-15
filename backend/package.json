@@ -1,0 +1,23 @@
+{
+  "name":"ELOsystemv1",
+  "version": "1.0.0",
+  "description": "Ecommerce platform",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.8.0",
+    "mongoose": "^6.0.0",
+    "socket.io": "^4.7.5"
+  },
+  "scripts": {
+    "start": "concurrently \"npm run backend\" \"npm run client\"",
+    "backend": "nodemon backend/server.js",
+    "client": "npm start"
+  }
+}
