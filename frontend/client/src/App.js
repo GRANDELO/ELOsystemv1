@@ -1,13 +1,20 @@
+import React from 'react';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import Login from './components/Login';
+import Register from './components/Register';
 
-import './App.css';
-import Thankyou from "./components/thankyou";
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <Thankyou />
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Routes>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
