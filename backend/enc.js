@@ -12,7 +12,7 @@ const run = async () => {
 
     // Simulate retrieving the hashed password from the database and validating it
     const newpass = password;
-    const isPasswordValid = await bcrypt.compare(newpass, hashedPassword);
+    const isPasswordValid = await bcrypt.compare("@Kinyijr1", "$2a$10$YNOaWFuBhUUU7ALgUAN7hOyUxsmc5TFyaMjy5ApFNmgBSF6Qs99hy");
 
     if (isPasswordValid) {
       console.log('Password is valid');
