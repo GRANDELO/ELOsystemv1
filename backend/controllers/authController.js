@@ -1,6 +1,6 @@
 // controllers/authController.js
 const User = require('../models/User');
-const argon2 = require('argon2');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const {
   generateVerificationCode,
@@ -26,7 +26,7 @@ const registerUser = async (req, res) => {
     // Generate verification code
     const alphanumericCode = generateAlphanumericVerificationCode(6);
     const subject = "Verification - " + alphanumericCode;
-    const vermessage = `Dear User,
+    const vermessage = `Dear ${username},
 
     Thank you for registering with Grandelo. Please use the following verification code to complete your registration:
 
@@ -47,7 +47,7 @@ const registerUser = async (req, res) => {
     }
 
     // Hash the password
-    const hashedPassword = await argon2.hash(password);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create new user
     user = new User({ fullName, email, password: hashedPassword, phoneNumber, username, dateOfBirth, gender, category, verificationCode: alphanumericCode, isVerified: false });
@@ -58,19 +58,13 @@ const registerUser = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-
 const login = async (req, res) => {
   const { username, password } = req.body;
 
   try {
     const user = await User.findOne({ username });
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid username' });
-    }
-
-    const isPasswordValid = await argon2.verify(user.password, password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid password' });
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ message: 'Invalid username or password' });
     }
 
     const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, {
@@ -79,10 +73,10 @@ const login = async (req, res) => {
 
     res.json({ message: 'Login successful', token });
   } catch (error) {
-    console.error('Error logging in:', error);
     res.status(500).json({ message: 'Error logging in', error });
   }
 };
+
 
 const verifyUser = async (req, res) => {
   const { email, verificationCode } = req.body;
