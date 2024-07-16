@@ -2,6 +2,11 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const {
+  generateVerificationCode,
+  generateAlphanumericVerificationCode,
+} = require('../services/verificationcode');
+const sendEmail = require('../services/emailService');
 require('dotenv').config();
 
 const registerUser = async (req, res) => {
@@ -18,8 +23,34 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
+    // Generate verification code
+    const alphanumericCode = generateAlphanumericVerificationCode(6);
+    const subject = "Verification - " + alphanumericCode;
+    const vermessage = `Dear User,
+
+    Thank you for registering with Grandelo. Please use the following verification code to complete your registration:
+
+    Verification Code: ${alphanumericCode}
+
+    If you did not request this code, please ignore this email.
+
+    Best regards,
+    Grandelo`;
+
+    // Send verification email
+    try {
+      await sendEmail(email, subject, vermessage);
+      console.log('Email sent successfully');
+    } catch (error) {
+      console.error('Error sending email:', error);
+      return res.status(500).json({ message: 'Error sending verification email' });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // Create new user
-    user = new User({ fullName, email, password, phoneNumber, username, dateOfBirth, gender, category });
+    user = new User({ fullName, email, password: hashedPassword, phoneNumber, username, dateOfBirth, gender, category, verificationCode: alphanumericCode, isVerified: false });
     await user.save();
 
     res.status(201).json({ message: 'User registered successfully' });
@@ -47,7 +78,35 @@ const login = async (req, res) => {
   }
 };
 
+
+const verifyUser = async (req, res) => {
+  const { email, verificationCode } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.isVerified) {
+      return res.status(400).json({ message: 'User already verified' });
+    }
+
+    if (user.verificationCode !== verificationCode) {
+      return res.status(400).json({ message: 'Invalid verification code' });
+    }
+
+    user.isVerified = true;
+    await user.save();
+
+    res.status(200).json({ message: 'Account verified successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
 module.exports = {
   registerUser,
   login,
+  verifyUser,
 };

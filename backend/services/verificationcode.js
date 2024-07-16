@@ -1,5 +1,3 @@
-// verificationCode.js
-
 /**
  * Function to generate a random numeric verification code
  * @param {number} length - Length of the verification code

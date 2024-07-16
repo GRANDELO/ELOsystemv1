@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './styles.css';
 
 const Register = () => {
@@ -15,7 +15,7 @@ const Register = () => {
     gender: '',
     category: ''
   });
-
+  const navigate = useNavigate();
   const [message, setMessage] = useState('');
 
   const handleChange = (e) => {
@@ -29,6 +29,7 @@ const Register = () => {
     try {
       const response = await axios.post('https://elosystemv1.onrender.com/api/auth/register', formData);
       setMessage(response.data.message);
+      navigate('/verifyication');
     } catch (error) {
       if (error.response && error.response.data) {
         setMessage(error.response.data.message);
