@@ -3,10 +3,6 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const homeRoutes = require('../zote/testing/homeRoutes');
-const nameRoutes = require('../zote/testing/nameRoutes');
-const thankyouRoutes = require('../zote/testing/thankyouRoutes');
-const moreThankyouRoutes = require('../zote/testing/moreThankyouRoutes');
 const authRoutes = require('./routes/authRoutes');
 
 const app = express();
@@ -21,10 +17,6 @@ mongoose
   .catch((err) => console.error('Could not connect to MongoDB', err));
 
 //routes
-app.use('/', homeRoutes);
-app.use('/', nameRoutes);
-app.use('/', thankyouRoutes);
-app.use('/', moreThankyouRoutes);
 app.use('/api/auth', authRoutes);
 
 app.listen(port, () => {

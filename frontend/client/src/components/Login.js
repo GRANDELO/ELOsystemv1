@@ -29,10 +29,10 @@ const Login = () => {
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <label>Username:</label>
-        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <input type="text" value={username} placeholder="Enter your usernamme" onChange={(e) => setUsername(e.target.value)} required/>
 
         <label>Password:</label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <input type="password" placeholder=" Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
 
         <button type="submit">Login</button>
       </form>
