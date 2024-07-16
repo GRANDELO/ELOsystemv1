@@ -1,23 +1,38 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
-const run = async () => {
-  try {
-    const plaintextPassword = 'user-input-password'; // Plain text password provided by the user
+// Function to hash a password
+const hashPassword = async (password) => {
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  return hashedPassword;
+};
 
-    // Simulate retrieving the hashed password from the database
-    const hashedPassword = '$2b$10$123456789012345678901eJvU2Gz6s7ZDg.QSVMDS7E6oFZ83nDg2';
+// Function to compare passwords
+const comparePasswords = async (plainPassword, hashedPassword) => {
+  const isMatch = await bcrypt.compare(plainPassword, hashedPassword);
+  return isMatch;
+};
 
-    // Compare plaintext password with hashed password
-    const isPasswordValid = await bcrypt.compare(plaintextPassword, hashedPassword);
+// Register user (hashing password)
+const registerUser = async (password) => {
+  const hashedPassword = await hashPassword(password);
+  // Save hashedPassword to the database
+  console.log('Hashed Password:', hashedPassword);
+  return hashedPassword;  // Return hashed password to use it in login example
+};
 
-    if (isPasswordValid) {
-      console.log('Password is valid');
-    } else {
-      console.log('Invalid password');
-    }
-  } catch (error) {
-    console.error('Error:', error);
+// Login user (comparing password)
+const loginUser = async (enteredPassword, storedHashedPassword) => {
+  const isMatch = await comparePasswords(enteredPassword, storedHashedPassword);
+  if (isMatch) {
+    console.log('Login successful');
+  } else {
+    console.log('Invalid password');
   }
 };
 
-run();
+// Example usage
+const plainPassword = 'mysecretpassword';
+registerUser(plainPassword).then((hashedPassword) => {
+  loginUser(plainPassword, hashedPassword);
+});
