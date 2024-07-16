@@ -49,7 +49,7 @@ const Register = () => {
               <input type="text" name="fullName" placeholder="Enter your name" value={formData.fullName} onChange={handleChange} required />
 
               <label>Email:</label>
-              <input type="email" name="email" placeholder="yourname@gmail.com" pattern="[a-zA-Z]{4,}@gmail\.com" title="Please enter a valid gmail address in formart grandelo@gmail.com" value={formData.email} onChange={handleChange} required />
+              <input type="email" name="email" placeholder="yourname@gmail.com" pattern="[a-zA-Z0-9_]{4,}@gmail\.com" title="Please enter a valid gmail address in formart grandelo@gmail.com" value={formData.email} onChange={handleChange} required />
 
               <label>Password:</label>
               <input type="password" name="password" placeholder="Enter your Password" value={formData.password} onChange={handleChange} required />
