@@ -15,10 +15,11 @@ mongoose
   .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => {
-    console.error('Cod not connect to MongoDB:', err);
     const mongoURI = process.env.MONGO_URI;
     const mongoIP = mongoURI.substring(mongoURI.indexOf('@') + 1, mongoURI.lastIndexOf('/'));
     console.error('MongoDB IP:', mongoIP);
+    console.error(mongoIP,'Cod not connect to MongoDB:', err);
+
   });
 
 // Routes
