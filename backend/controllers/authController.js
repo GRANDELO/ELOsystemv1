@@ -81,7 +81,12 @@ const login = async (req, res) => {
     if (!user.isVerified) {
       return res.status(401).json({ message: 'Please verify your account first' });
     }
-    const isMatch = await bcrypt.compare(password, user.password);
+    const hashedPassword = user.password;
+    const comparePasswords = async ( enteredPassword , storedHashedPassword ) => {
+      const iisMatch = await bcrypt.compare(enteredPassword, storedHashedPassword);
+      return iisMatch;
+    };
+    const isMatch = await comparePasswords(password, hashedPassword);
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid password' });
     }
