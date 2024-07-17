@@ -1,18 +1,14 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './styles.css';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-<<<<<<< HEAD
   const [showPassword, setShowPassword] = useState(false);
 
-=======
-  const navigate = useNavigate();
->>>>>>> be5d6847552984e6e211955b9aad92436f7e9c66
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
@@ -20,7 +16,6 @@ const Login = () => {
     try {
       const response = await axios.post('https://elosystemv1.onrender.com/api/auth/login', { username, password });
       setMessage(response.data.message);
-      navigate('/home');
     } catch (error) {
       if (error.response && error.response.data) {
         setMessage(error.response.data.message);
@@ -59,7 +54,6 @@ const Login = () => {
       </form>
       {message && <p className="message">{message}</p>}
       <p>If you don't have an account <Link to="/register">REGISTER</Link></p>
-      <p><Link to="/verifyication">Verify Account</Link></p>
     </div>
   );
 };
