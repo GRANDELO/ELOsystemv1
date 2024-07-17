@@ -78,15 +78,15 @@ const login = async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: 'Invalid username' });
     }
-
+    if (!user.isVerified) {
+      return res.status(401).json({ message: 'Please verify your account first' });
+    }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid password' });
     }
 
-    if (!user.isVerified) {
-      return res.status(401).json({ message: 'Please verify your account first' });
-    }
+
 
     const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, {
       expiresIn: '1h',

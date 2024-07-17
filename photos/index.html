@@ -1,0 +1,82 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Gallery</title>
+  <style>
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 10px;
+    }
+    .image-item {
+      text-align: center;
+    }
+    .image-item img {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Image Gallery</h1>
+
+  <form id="imageForm" enctype="multipart/form-data">
+    <input type="file" name="image" id="imageInput" accept=".jpg, .jpeg, .png" required>
+    <button type="submit">Upload Image</button>
+  </form>
+
+  <div class="gallery" id="imageGallery"></div>
+
+  <script>
+    const imageForm = document.getElementById('imageForm');
+    const imageInput = document.getElementById('imageInput');
+    const imageGallery = document.getElementById('imageGallery');
+
+    // Function to display images from server
+    const displayImages = async () => {
+      try {
+        const response = await fetch('/api/images');
+        const images = await response.json();
+
+        imageGallery.innerHTML = '';
+        images.forEach(image => {
+          const imageItem = document.createElement('div');
+          imageItem.className = 'image-item';
+          const img = document.createElement('img');
+          img.src = image.path;
+          img.alt = image.filename;
+          imageItem.appendChild(img);
+          imageGallery.appendChild(imageItem);
+        });
+      } catch (error) {
+        console.error('Error fetching images:', error);
+      }
+    };
+
+    // Event listener for form submission
+    imageForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const formData = new FormData();
+      formData.append('image', imageInput.files[0]);
+
+      try {
+        const response = await fetch('/api/images/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        const data = await response.json();
+        console.log('Image uploaded:', data.image);
+        displayImages(); // Refresh gallery after upload
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+    });
+
+    // Initial display of images
+    displayImages();
+  </script>
+</body>
+</html>
