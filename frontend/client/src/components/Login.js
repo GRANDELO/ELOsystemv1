@@ -9,7 +9,6 @@ const Login = () => {
   const [message, setMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
@@ -26,24 +25,17 @@ const Login = () => {
       }
     }
   };
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
-  };
+  };  
 
   return (
     <div className="container">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <label>Username:</label>
-        <input
-          type="text"
-          value={username}
-          placeholder="Enter your username"
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
-
+        <input type="text" value={username} placeholder="Enter your usernamme" onChange={(e) => setUsername(e.target.value)} required/>
+      
         <label>Password:</label>
         <div className="input-container">
           <input
@@ -66,7 +58,7 @@ const Login = () => {
       </form>
       {message && <p className="message">{message}</p>}
       <p>If you don't have an account <Link to="/register">REGISTER</Link></p>
-      <p><Link to="/verifyication">Verify Account</Link></p>
+      <p><Link to="/verifyication">verify account</Link></p>
     </div>
   );
 };
