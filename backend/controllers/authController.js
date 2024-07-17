@@ -7,10 +7,51 @@ require('dotenv').config();
 
 const registerUser = async (req, res) => {
   const { fullName, email, password, confirmPassword, phoneNumber, username, dateOfBirth, gender, category } = req.body;
+  
+  const isDateValid = (date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const enteredDate = new Date(date);
+    return enteredDate <= today;
+  };
+  const isDate12Valid = (date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const enteredDate = new Date(date);
+    const minAgeDate = new Date(today.setFullYear(today.getFullYear() - 12));
+    return enteredDate <= minAgeDate;
+  };
+  const isDate85Valid = (date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const enteredDate = new Date(date);
+    const minAgeDate = new Date(today.setFullYear(today.getFullYear() - 85));
+    return enteredDate <= minAgeDate;
+  };
+  if (!isDateValid(dateOfBirth)) {
+    return res.status(400).json({ message: 'Date cannot be past today.' });
+  }else if(!isDate12Valid(dateOfBirth))
+  {
+    return res.status(400).json({ message: 'You have to be at least 12 years old to join this site.' });
+  }else if(!isDate85Valid(dateOfBirth))
+  {
+    return res.status(400).json({ message: 'You have to be less than 85 years old to join this site.' });
+  };
+    
 
   if (password !== confirmPassword) {
     return res.status(400).json({ message: 'Passwords do not match' });
-  }
+  }else if (password.length < 8){
+    return res.status(400).json({ message: 'Password must be at least 8 characters long.' });
+  }else if (/[A-Z]/.test(password)){
+    return res.status(400).json({ message: 'Password must contain at least one uppercase letter.' });
+  }else if (/[a-z]/.test(password)){
+    return res.status(400).json({ message: 'Password must contain at least one lowercase letter.' });
+  }else if (/\d/.test(password)){
+    return res.status(400).json({ message: 'Password must contain at least one number.' });
+  }else if (/[!@#$%^&*(),.?":{}|<>]/.test(password)){
+    return res.status(400).json({ message: 'Password must contain at least one special character.' });
+  };
 
   try {
     // Check if user already exists
@@ -28,7 +69,7 @@ Thank you for registering with Grandelo. Please use the following verification c
 
 Verification Code: ${alphanumericCode}
 
-Follow this link https://grandelo.web.app/register to verify your account
+Follow this link https://grandelo.web.app/verifyication to verify your account
 
 Best regards,
 Grandelo`;
