@@ -48,16 +48,8 @@ form {
   flex-direction: column;
 }
 
-.formsep
-{
-  display: flex;
-  min-width: max-content;
-}
-.formsep span
-{
-  margin: 10px;
 
-}
+
 @media (max-width: 480px) {
   .formsep
     {
@@ -149,22 +141,14 @@ a {
 a:hover {
   text-decoration: underline;
 }
-.formsep{
-  display: flex;
 
-}
-.formsep span{
-
-  margin: 10px;
-  font-size: smaller;
-}
 .password-container {
   display: flex;
   align-items: center;
 }
 
 .toggle-password {
-  margin-left: 8px;
+  margin: 10px;
   background: none;
   border: none;
   color: #007bff;
