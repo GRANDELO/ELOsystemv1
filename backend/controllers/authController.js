@@ -83,7 +83,7 @@ const login = async (req, res) => {
     }
     const isMatch = await bcrypt.compareSync(inpassword, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid password ' +  +" "+ user.password});
+      return res.status(401).json({ message: 'Invalid password ' + inpassword +" "+ user.password});
     }
 
 
