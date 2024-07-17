@@ -59,7 +59,7 @@ const Login = () => {
       
       
       <p><Link to="/verification">Verify Account</Link></p>
-      <p>If you don't have an account <Link to="/register">REGISTER</Link></p>
+      <p>If you don't have an account <Link to="/register">Register</Link></p>
     </div>
   );
 };

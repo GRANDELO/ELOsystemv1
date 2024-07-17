@@ -159,19 +159,25 @@ a:hover {
 
 .toggle-password {
   position: absolute;
-  right: 1px;
-  bottom: 5px;
   background: none;
   border: none;
   cursor: pointer;
   font-size: 18px;
   outline: none;
+  width: 0px;
+  height: 0px;
 }
 .toggle-password:hover
 {
   background: none;
   width: 0px;
   height: 0px;
+  position: absolute;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  outline: none;
 }
 
 .toggle-password:focus {
