@@ -30,7 +30,6 @@ body {
   background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
   width: 100%;
   margin: auto;
 }
@@ -46,7 +45,27 @@ h2 {
 form {
   width: 100%;
 }
+.formsep
+{
+  display: flex;
+  min-width: max-content;
+}
+.formsep span
+{
+  margin: 10px;
 
+}
+@media (max-width: 480px) {
+  .formsep
+    {
+      display: flex;
+      flex-direction: column;
+      max-width: 80%;
+    }
+    .container {
+      max-width: calc(100% -20px);
+    }
+  }
 label {
   display: block;
   margin: 10px 0 5px;
@@ -101,12 +120,13 @@ a {
 a:hover {
   text-decoration: underline;
 }
-.formsep{
-  display: flex;
 
+.input-container {
+  position: relative;
+  width: 100%;
 }
-.formsep span{
 
+<<<<<<< HEAD
   margin: 10px;
   font-size: smaller;
 }
@@ -126,3 +146,19 @@ a:hover {
 .toggle-password:focus {
   outline: none;
 }
+=======
+.input-container input {
+  padding-right: 40px; /* Add padding to make space for the toggle button */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 1rem;
+}
+>>>>>>> be5d6847552984e6e211955b9aad92436f7e9c66

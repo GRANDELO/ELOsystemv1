@@ -29,7 +29,7 @@ const Register = () => {
     try {
       const response = await axios.post('https://elosystemv1.onrender.com/api/auth/register', formData);
       setMessage(response.data.message);
-      navigate('/verifyication');
+      navigate('/verification');
     } catch (error) {
       if (error.response && error.response.data) {
         setMessage(error.response.data.message);
@@ -50,6 +50,15 @@ const Register = () => {
 
               <label>Email:</label>
               <input type="email" name="email" placeholder="yourname@gmail.com" pattern="[a-zA-Z0-9_]{4,}@gmail\.com" title="Please enter a valid gmail address in formart grandelo@gmail.com" value={formData.email} onChange={handleChange} required />
+
+              <label>Username:</label>
+              <input type="text" name="username" placeholder="Enter your username." pattern="[a-zA-Z0-9_]{4,}" value={formData.username} onChange={handleChange} required />
+
+          </span>
+          <span>
+            
+              <label>Phone Number:</label>
+              <input type="text" name="phoneNumber" placeholder="07XXXXXXXX or 01XXXXXXXX" pattern="(07|01)\d{8}" title="Please enter a valid 10-digit phone number starting with 07 or 01" value={formData.phoneNumber} onChange={handleChange} required />
 
               <label>Password:</label>
               <input type="password" name="password" placeholder="Enter your Password" value={formData.password} onChange={handleChange} required />
@@ -75,11 +84,6 @@ const Register = () => {
               )}
           </span>
           <span>
-              <label>Phone Number:</label>
-              <input type="text" name="phoneNumber" placeholder="07XXXXXXXX or 01XXXXXXXX" pattern="(07|01)\d{8}" title="Please enter a valid 10-digit phone number starting with 07 or 01" value={formData.phoneNumber} onChange={handleChange} required />
-
-              <label>Username:</label>
-              <input type="text" name="username" placeholder="Enter your username." pattern="[a-zA-Z0-9_]{4,}" value={formData.username} onChange={handleChange} required />
 
               <label>Date of Birth:</label>
               <input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required />

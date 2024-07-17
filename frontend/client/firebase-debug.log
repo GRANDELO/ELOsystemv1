@@ -1,0 +1,25 @@
+[debug] [2024-07-17T17:48:42.971Z] ----------------------------------------------------------------------
+[debug] [2024-07-17T17:48:42.979Z] Command:       /usr/bin/node /usr/local/bin/firebase deploy
+[debug] [2024-07-17T17:48:42.981Z] CLI Version:   13.4.1
+[debug] [2024-07-17T17:48:42.983Z] Platform:      linux
+[debug] [2024-07-17T17:48:42.984Z] Node Version:  v18.19.1
+[debug] [2024-07-17T17:48:42.985Z] Time:          Wed Jul 17 2024 20:48:42 GMT+0300 (East Africa Time)
+[debug] [2024-07-17T17:48:42.986Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-07-17T17:48:43.268Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-07-17T17:48:43.269Z] > authorizing via signed-in user (grandeloltd1@gmail.com)
+[debug] [2024-07-17T17:48:43.270Z] [iam] checking project grandelo for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2024-07-17T17:48:43.280Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/grandelo:testIamPermissions [none]
+[debug] [2024-07-17T17:48:43.280Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/grandelo:testIamPermissions x-goog-quota-user=projects/grandelo
+[debug] [2024-07-17T17:48:43.282Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/grandelo:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2024-07-17T17:48:45.534Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/grandelo:testIamPermissions 200
+[debug] [2024-07-17T17:48:45.536Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/grandelo:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2024-07-17T17:48:45.544Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/grandelo [none]
+[debug] [2024-07-17T17:48:46.471Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/grandelo 200
+[debug] [2024-07-17T17:48:46.471Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/grandelo {"projectId":"grandelo","projectNumber":"875203478437","displayName":"grandelo","name":"projects/grandelo","resources":{"hostingSite":"grandelo"},"state":"ACTIVE","etag":"1_02971811-f9b9-4d2e-a433-09e31a9bcaab"}
+[info] 
+[info] === Deploying to 'grandelo'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2024-07-17T17:48:46.501Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/grandelo/versions [none]
+[debug] [2024-07-17T17:48:46.501Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/grandelo/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}

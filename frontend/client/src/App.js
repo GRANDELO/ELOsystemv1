@@ -1,10 +1,10 @@
-import React from 'react';
-import { io } from 'socket.io-client';
+import React, { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import Login from './components/Login';
 import Register from './components/Register';
 import Success from './components/Success';
-import Verifyication from './components/Verification';
+import Verification from './components/Verification';
 import Home from './components/home';
 import './components/styles.css';
 
@@ -31,9 +31,9 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/Success" element={<Success />} />
-          <Route path="/verifyication" element={<Verifyication />} />
-          <Route path="/home" element={<Home/>}/>
+          <Route path="/success" element={<Success />} />
+          <Route path="/verification" element={<Verification />} />
+          <Route path="/home" element={<Home />} />
         </Routes>
       </div>
     </Router>
