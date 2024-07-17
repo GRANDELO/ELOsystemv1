@@ -55,6 +55,14 @@ form {
   margin: 10px;
 
 }
+@media (max-width: 480px) {
+  .formsep
+    {
+      display: flex;
+      flex-direction: column;
+      max-width: 80%;
+    }
+  }
 label {
   display: block;
   margin: 10px 0 5px;
