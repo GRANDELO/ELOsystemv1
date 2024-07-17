@@ -80,7 +80,7 @@ const Register = () => {
       <form onSubmit={handleSubmit}>
       {currentStep === 1 && (
         <div className="formsep">
-          <label>Full Name:</label>
+          <label>Enter Your First Name:</label>
           <input
             type="text"
             name="fullName"
@@ -89,7 +89,7 @@ const Register = () => {
             onChange={handleChange}
             required
           />
-          {formData.fullName && !/^[a-zA-Z]{4,}$/.test(formData.fullName) && (
+          {formData.fullName && !/^[a-zA-Z]{4,} $/.test(formData.fullName) && (
             <p style={{ color: 'red', fontSize: 'smaller' }}>Full Name must be at least 4 characters long and contain only letters.</p>
           )}
 

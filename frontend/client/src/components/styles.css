@@ -154,11 +154,13 @@ a:hover {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
+  padding-right: 40px;
 }
 
 .toggle-password {
   position: absolute;
-  right: 10px;
+  right: 1px;
+  bottom: 5px;
   background: none;
   border: none;
   cursor: pointer;
@@ -168,6 +170,8 @@ a:hover {
 .toggle-password:hover
 {
   background: none;
+  width: 0px;
+  height: 0px;
 }
 
 .toggle-password:focus {
