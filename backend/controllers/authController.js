@@ -82,7 +82,7 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Please verify your account first' });
     }
     const salt = user.password.slice(0, 29); // Extract the salt from the stored hash
-    const hashedInputPassword = await bcrypt.hash(password, salt);
+    const hashedInputPassword = await bcrypt.hash(password, 10);
     
     if (hashedInputPassword !== user.password) {
       return res.status(401).json({ message: 'Invalid password' + hashedInputPassword +" "+ user.password});
