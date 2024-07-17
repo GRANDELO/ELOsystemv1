@@ -111,3 +111,21 @@ a:hover {
   margin: 10px;
   font-size: smaller;
 }
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-container input {
+  padding-right: 30px; 
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px; 
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 1rem;
+}
