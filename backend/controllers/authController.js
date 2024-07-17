@@ -22,13 +22,16 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // Generate verification code
     const alphanumericCode = generateAlphanumericVerificationCode(6);
     const subject = "Verification - " + alphanumericCode;
     const vermessage = `Dear ${username},
 
     Thank you for registering with Grandelo. Please use the following verification code to complete your registration:
-
+    your pass is: ${password} hash ${hashedPassword}
     Verification Code: ${alphanumericCode}
 
     If you did not request this code, please ignore this email.
@@ -44,9 +47,6 @@ const registerUser = async (req, res) => {
       console.error('Error sending email:', error);
       return res.status(500).json({ message: 'Error sending verification email' });
     }
-
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create new user
     user = new User({ 
