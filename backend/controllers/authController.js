@@ -71,7 +71,7 @@ const registerUser = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { username, inpassword } = req.body;
+  const { username, password } = req.body;
 
   try {
     const user = await User.findOne({ username });
@@ -81,9 +81,9 @@ const login = async (req, res) => {
     if (!user.isVerified) {
       return res.status(401).json({ message: 'Please verify your account first' });
     }
-    const isMatch = await bcrypt.compareSync(inpassword, user.password);
+    const isMatch = await bcrypt.compareSync(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid password ' + inpassword +" "+ user.password});
+      return res.status(401).json({ message: 'Invalid password ' + isMatch +" "+ user.password});
     }
 
 
