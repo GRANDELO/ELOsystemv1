@@ -1,5 +1,3 @@
-/* styles.css */
-/* General Styles */
 body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
@@ -11,7 +9,7 @@ body {
   height: 100vh;
 }
 
-/* App container */
+
 .App {
   display: flex;
   flex-direction: column;
@@ -21,7 +19,7 @@ body {
   width: 100%;
 }
 
-/* Container for the form */
+
 .container {
   display: flex;
   flex-direction: column;
@@ -37,19 +35,18 @@ body {
   max-width: 800px;
 }
 
-/* Form heading */
+
 h2 {
   margin-bottom: 20px;
   font-size: 24px;
   color: #333;
 }
 
-/* Form styles */
+
 form {
   display: flex;
   flex-direction: column;
 }
-<<<<<<< HEAD
 
 .formsep
 {
@@ -95,9 +92,7 @@ form {
       
     }
   }
-=======
 
->>>>>>> refs/remotes/origin/main
 label {
   display: block;
   margin: 10px 0 5px;
@@ -114,7 +109,7 @@ input, select {
   border-radius: 5px;
 }
 
-/* Submit button styles */
+
 button {
   padding: 10px 20px;
   background-color: #007BFF;
@@ -131,7 +126,7 @@ button:hover {
   background-color: #0056b3;
 }
 
-/* Message styles */
+
 .message{
   margin-top: 20px;
   font-size: 18px;
@@ -144,7 +139,7 @@ button:hover {
   color: red;
 }
 
-/* Link styles */
+
 a {
   color: #007BFF;
   text-decoration: none;
