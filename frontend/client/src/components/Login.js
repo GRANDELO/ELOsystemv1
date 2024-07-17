@@ -38,6 +38,7 @@ const Login = () => {
       </form>
       {message && <p className="message">{message}</p>}
       <p>If you don't have an account <Link to="/register">REGISTER</Link></p>
+      <p><Link to="/verifyication">verify account</Link></p>
     </div>
   );
 };

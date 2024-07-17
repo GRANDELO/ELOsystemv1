@@ -17,7 +17,12 @@ function Verification() {
         navigate('/success'); // Redirect to success page
       }
     } catch (error) {
-      setError('Verification failed. Please try again.');
+      if (error.response && error.response.data) {
+        setError(error.response.data.message);
+      } else {
+        setError('Verification failed. Please try again.');
+      }
+      
     }
   };
 
