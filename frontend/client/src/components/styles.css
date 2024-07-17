@@ -1,3 +1,4 @@
+/* styles.css */
 /* General Styles */
 body {
   font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -120,22 +121,8 @@ a:hover {
 
 .toggle-password {
   position: absolute;
-  height: 0px;
-  width: 0px;
   right: 10px;
-  top: 20%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  background: none;
-  border: none;
-  font-size: 1rem;
-}
-.toggle-password:hover {
-  position: absolute;
-  height: 0px;
-  width: 0px;
-  right: 10px;
-  top: 20%;
+  top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
   background: none;
