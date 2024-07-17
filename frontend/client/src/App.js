@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import Login from './components/Login';
+import ProductForm from './components/ProductForm';
 import Register from './components/Register';
 import Success from './components/Success';
 import Verification from './components/Verification';
 import Home from './components/home';
-
 
 const socket = io('https://elosystemv1.onrender.com');
 
@@ -34,6 +34,7 @@ const App = () => {
           <Route path="/success" element={<Success />} />
           <Route path="/verification" element={<Verification />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/productForm" element={<ProductForm />} />
         </Routes>
       </div>
     </Router>
