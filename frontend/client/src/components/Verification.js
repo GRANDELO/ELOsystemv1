@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './ThankYou.css'; // Import the CSS file
+import './ThankYou.css';
 
 function Verification() {
   const [email, setEmail] = useState('');
@@ -14,7 +14,7 @@ function Verification() {
     try {
       const response = await axios.post('https://elosystemv1.onrender.com/api/auth/verify', { email, verificationCode });
       if (response.status === 200) {
-        navigate('/success'); // Redirect to success page
+        navigate('/success');
       }
     } catch (error) {
       if (error.response && error.response.data) {

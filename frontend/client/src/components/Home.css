@@ -1,0 +1,21 @@
+.home {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .home-header {
+    background-color: #282c34;
+    padding: 20px;
+    color: white;
+  }
+  
+  .home-intro, .home-features {
+    margin: 20px 0;
+  }
+  
+  .home-footer {
+    margin-top: 20px;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+  }
+  

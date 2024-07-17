@@ -4,6 +4,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Success from './components/Success';
 import Verifyication from './components/Verification';
+import Home from './components/home';
 import './components/styles.css';
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/Success" element={<Success />} />
           <Route path="/verifyication" element={<Verifyication />} />
+          <Route path="/home" element={<Home/>}/>
         </Routes>
       </div>
     </Router>
