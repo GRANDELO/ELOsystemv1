@@ -1,13 +1,14 @@
 /* styles.css */
 /* General Styles */
 body {
-  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  margin: 0;
-  background-color: #f9f9f9;
 }
 
 /* App container */
@@ -31,7 +32,8 @@ body {
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   width: 100%;
-  margin: auto;
+  margin: 20px;
+  max-width: 800px;
 }
 
 /* Form heading */
@@ -43,8 +45,10 @@ h2 {
 
 /* Form styles */
 form {
-  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
+
 .formsep
 {
   display: flex;
@@ -60,10 +64,33 @@ form {
     {
       display: flex;
       flex-direction: column;
-      max-width: 80%;
     }
     .container {
-      max-width: calc(100% -20px);
+      padding: 15px;
+      margin: 10px;
+      max-width: 350px;
+
+    }
+  
+    h2 {
+      font-size: 20px;
+    }
+  
+    .label {
+      font-size: 12px;
+    }
+  
+    input, select {
+      font-size: 14px;
+    }
+  
+    button {
+      font-size: 14px;
+    }
+  
+    .message {
+      font-size: 12px;
+      
     }
   }
 label {
@@ -100,13 +127,15 @@ button:hover {
 }
 
 /* Message styles */
-.message, .error {
+.message{
   margin-top: 20px;
   font-size: 18px;
   color: green;
 }
 
 .error {
+  margin-top: 20px;
+  font-size: 18px;
   color: red;
 }
 

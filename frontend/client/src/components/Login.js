@@ -38,8 +38,8 @@ const Login = () => {
         <button type="submit">Login</button>
       </form>
       {message && <p className="message">{message}</p>}
-      <p>If you don't have an account <Link to="/register">REGISTER</Link></p>
-      <p><Link to="/verifyication">Verify Account</Link></p>
+      <p>If you don't have an account <Link to="/register">Register</Link></p>
+      <p><Link to="/verification">Verify Account</Link></p>
     </div>
   );
 };
