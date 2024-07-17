@@ -1,0 +1,14 @@
+[debug] [2024-07-17T21:27:29.491Z] ----------------------------------------------------------------------
+[debug] [2024-07-17T21:27:29.500Z] Command:       /usr/bin/node /usr/local/bin/firebase deploy
+[debug] [2024-07-17T21:27:29.502Z] CLI Version:   13.4.1
+[debug] [2024-07-17T21:27:29.504Z] Platform:      linux
+[debug] [2024-07-17T21:27:29.505Z] Node Version:  v18.19.1
+[debug] [2024-07-17T21:27:29.506Z] Time:          Thu Jul 18 2024 00:27:29 GMT+0300 (East Africa Time)
+[debug] [2024-07-17T21:27:29.506Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-07-17T21:27:29.783Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-07-17T21:27:29.785Z] > authorizing via signed-in user (grandeloltd1@gmail.com)
+[debug] [2024-07-17T21:27:29.786Z] [iam] checking project grandelo for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2024-07-17T21:27:29.796Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/grandelo:testIamPermissions [none]
+[debug] [2024-07-17T21:27:29.796Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/grandelo:testIamPermissions x-goog-quota-user=projects/grandelo
+[debug] [2024-07-17T21:27:29.798Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/grandelo:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}

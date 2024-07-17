@@ -145,16 +145,29 @@ a:hover {
 .password-container {
   display: flex;
   align-items: center;
+  position: relative;
+}
+
+.password-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
 }
 
 .toggle-password {
-  margin: 10px;
+  position: absolute;
+  right: 10px;
   background: none;
   border: none;
-  color: #007bff;
   cursor: pointer;
-  width: 0px;
-  height: 0px;
+  font-size: 18px;
+  outline: none;
+}
+.toggle-password:hover
+{
+  background: none;
 }
 
 .toggle-password:focus {

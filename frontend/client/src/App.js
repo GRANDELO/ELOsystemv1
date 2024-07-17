@@ -6,7 +6,7 @@ import Register from './components/Register';
 import Success from './components/Success';
 import Verification from './components/Verification';
 import Home from './components/home';
-import './components/styles.css';
+
 
 const socket = io('https://elosystemv1.onrender.com');
 
