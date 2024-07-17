@@ -41,15 +41,15 @@ const registerUser = async (req, res) => {
 
   if (password !== confirmPassword) {
     return res.status(400).json({ message: 'Passwords do not match' });
-  }else if (password.length < 8){
+  }else if (!(password.length < 8)){
     return res.status(400).json({ message: 'Password must be at least 8 characters long.' });
-  }else if (/[A-Z]/.test(password)){
+  }else if (!(/[A-Z]/.test(password))){
     return res.status(400).json({ message: 'Password must contain at least one uppercase letter.' });
-  }else if (/[a-z]/.test(password)){
+  }else if (!(/[a-z]/.test(password))){
     return res.status(400).json({ message: 'Password must contain at least one lowercase letter.' });
-  }else if (/\d/.test(password)){
+  }else if (!(/\d/.test(password))){
     return res.status(400).json({ message: 'Password must contain at least one number.' });
-  }else if (/[!@#$%^&*(),.?":{}|<>]/.test(password)){
+  }else if (!(/[!@#$%^&*(),.?":{}|<>]/.test(password))){
     return res.status(400).json({ message: 'Password must contain at least one special character.' });
   };
 
