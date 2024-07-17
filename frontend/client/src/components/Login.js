@@ -25,6 +25,9 @@ const Login = () => {
       }
     }
   };
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };  
 
   return (
     <div className="container">
@@ -35,13 +38,9 @@ const Login = () => {
 
         <label>Password:</label>
         <input type={showPassword ? 'text' : 'password'} placeholder=" Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
-        <button
-            type="button"
-            className="toggle-password"
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {showPassword ? 'Hide' : 'Show'}
-          </button>
+        <button type="button" onClick={togglePasswordVisibility}>
+            {showPassword ? 'Hide' : 'Show'} Password
+        </button>
 
         <button type="submit">Login</button>
       </form>
