@@ -53,12 +53,9 @@ const Login = () => {
         <button type="submit">Login</button>
       </form>
       {message && <p className="message">{message}</p>}
-<<<<<<< HEAD
-      <p>If you don't have an account <Link to="/register">Register</Link></p>
+      
       <p><Link to="/verification">Verify Account</Link></p>
-=======
       <p>If you don't have an account <Link to="/register">REGISTER</Link></p>
->>>>>>> refs/remotes/origin/main
     </div>
   );
 };
