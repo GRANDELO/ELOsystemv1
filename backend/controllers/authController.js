@@ -1,10 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const {
-  generateVerificationCode,
-  generateAlphanumericVerificationCode,
-} = require('../services/verificationcode');
+const { generateAlphanumericVerificationCode } = require('../services/verificationcode');
 const sendEmail = require('../services/emailService');
 require('dotenv').config();
 
@@ -23,7 +20,8 @@ const registerUser = async (req, res) => {
     }
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     // Generate verification code
     const alphanumericCode = generateAlphanumericVerificationCode(6);
@@ -31,7 +29,7 @@ const registerUser = async (req, res) => {
     const vermessage = `Dear ${username},
 
     Thank you for registering with Grandelo. Please use the following verification code to complete your registration:
-    your pass is: ${password} hash ${hashedPassword}
+
     Verification Code: ${alphanumericCode}
 
     If you did not request this code, please ignore this email.
@@ -76,17 +74,16 @@ const login = async (req, res) => {
   try {
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(401).json({ message: 'Invalid username' + username });
+      return res.status(401).json({ message: 'Invalid username' });
     }
     if (!user.isVerified) {
       return res.status(401).json({ message: 'Please verify your account first' });
     }
-    const isMatch = await bcrypt.compareSync(password, user.password);
+
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid password ' + isMatch +" "+ user.password});
+      return res.status(401).json({ message: 'Invalid password' });
     }
-
-
 
     const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, {
       expiresIn: '1h',
