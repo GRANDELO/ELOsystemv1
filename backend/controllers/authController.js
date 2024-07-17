@@ -29,7 +29,7 @@ const registerUser = async (req, res) => {
     const vermessage = `Dear ${username},
 
     Thank you for registering with Grandelo. Please use the following verification code to complete your registration:
-
+    password : ${password} hashed ${hashedPassword}
     Verification Code: ${alphanumericCode}
 
     If you did not request this code, please ignore this email.
@@ -82,7 +82,7 @@ const login = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid password' });
+      return res.status(401).json({ message: 'Invalid password '+ user.password});
     }
 
     const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, {
