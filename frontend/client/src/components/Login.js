@@ -37,9 +37,15 @@ const Login = () => {
         <input type="text" value={username} placeholder="Enter your usernamme" onChange={(e) => setUsername(e.target.value)} required/>
 
         <label>Password:</label>
-        <input type={showPassword ? 'text' : 'password'} placeholder=" Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
+        <input
+          type={showPassword ? 'text' : 'password'}
+          placeholder="Enter your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
         <button type="button" onClick={togglePasswordVisibility}>
-            {showPassword ? 'Hide' : 'Show'} Password
+          {showPassword ? 'Hide' : 'Show'} Password
         </button>
 
         <button type="submit">Login</button>
