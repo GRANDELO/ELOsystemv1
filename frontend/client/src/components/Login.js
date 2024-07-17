@@ -7,6 +7,7 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,7 +33,22 @@ const Login = () => {
         <input type="text" value={username} placeholder="Enter your usernamme" onChange={(e) => setUsername(e.target.value)} required/>
 
         <label>Password:</label>
-        <input type="password" placeholder=" Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
+        <div className="password-container">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button
+            type="button"
+            className="toggle-password"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? 'Hide' : 'Show'}
+          </button>
+        </div>
 
         <button type="submit">Login</button>
       </form>

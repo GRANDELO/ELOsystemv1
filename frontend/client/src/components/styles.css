@@ -110,3 +110,19 @@ a:hover {
   margin: 10px;
   font-size: smaller;
 }
+.password-container {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-password {
+  margin-left: 8px;
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+}
+
+.toggle-password:focus {
+  outline: none;
+}
