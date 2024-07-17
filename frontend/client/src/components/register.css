@@ -1,3 +1,6 @@
+/* styles.css */
+
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -95,7 +98,7 @@ body {
     max-width: 350px;
   }
   
-
+  /* Responsive Styles */
   @media (max-width: 768px) {
     .container {
       padding: 15px;
@@ -120,6 +123,10 @@ body {
   
     button {
       margin-bottom: 10px;
+    }
+    .divmess
+    {
+      max-width: 100px;
     }
   }
   

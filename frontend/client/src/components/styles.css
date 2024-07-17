@@ -169,6 +169,8 @@ a:hover {
   border: none;
   color: #007bff;
   cursor: pointer;
+  width: 0px;
+  height: 0px;
 }
 
 .toggle-password:focus {

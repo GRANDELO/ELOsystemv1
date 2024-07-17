@@ -46,13 +46,16 @@ const Login = () => {
             className="toggle-password"
             onClick={() => setShowPassword(!showPassword)}
           >
-            {showPassword ? 'Hide' : 'Show'}
+            {showPassword ? '🙈' : '👁️'}
           </button>
         </div>
 
         <button type="submit">Login</button>
       </form>
-      {message && <p className="message">{message}</p>}
+      <div className="divmess">
+          {message && <p className="message">{message}</p>}
+      </div>
+      
       
       <p><Link to="/verification">Verify Account</Link></p>
       <p>If you don't have an account <Link to="/register">REGISTER</Link></p>

@@ -34,7 +34,7 @@ const Register = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    validateField(name, value);
+    validateField(name, value); // Validate field after updating form data
   };
 
   const validateField = (name, value) => {
@@ -217,7 +217,9 @@ const Register = () => {
           </div>
         )}
       </form>
-      {message && <p className="message">{message}</p>}
+      <div className="divmess">
+          {message && <p className="message">{message}</p>}
+      </div>
       <p>If you have an account <Link to="/">Login</Link></p>
     </div>
   );
