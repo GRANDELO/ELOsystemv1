@@ -85,7 +85,7 @@ const login = async (req, res) => {
     const hashedInputPassword = await bcrypt.hash(password, salt);
     
     if (hashedInputPassword !== user.password) {
-      return res.status(401).json({ message: 'Invalid password' });
+      return res.status(401).json({ message: 'Invalid password' + hashedInputPassword +" "+ user.password});
     }
 
 
