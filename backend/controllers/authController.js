@@ -76,7 +76,7 @@ const login = async (req, res) => {
   try {
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(401).json({ message: 'Invalid username' });
+      return res.status(401).json({ message: 'Invalid username' + username });
     }
     if (!user.isVerified) {
       return res.status(401).json({ message: 'Please verify your account first' });
