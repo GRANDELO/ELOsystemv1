@@ -19,14 +19,14 @@ const registerUser = async (req, res) => {
     today.setHours(0, 0, 0, 0);
     const enteredDate = new Date(date);
     const minAgeDate = new Date(today.setFullYear(today.getFullYear() - 12));
-    return enteredDate <= minAgeDate;
+    return enteredDate < minAgeDate;
   };
   const isDate85Valid = (date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const enteredDate = new Date(date);
-    const minAgeDate = new Date(today.setFullYear(today.getFullYear() - 85));
-    return enteredDate <= minAgeDate;
+    const maxAgeDate = new Date(today.setFullYear(today.getFullYear() - 85));
+    return enteredDate > maxAgeDate;
   };
   if (!isDateValid(dateOfBirth)) {
     return res.status(400).json({ message: 'Date cannot be past today.' });
