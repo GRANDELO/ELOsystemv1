@@ -7,7 +7,9 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
@@ -25,21 +27,46 @@ const Login = () => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="container">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <label>Username:</label>
-        <input type="text" value={username} placeholder="Enter your usernamme" onChange={(e) => setUsername(e.target.value)} required/>
+        <input
+          type="text"
+          value={username}
+          placeholder="Enter your username"
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
 
         <label>Password:</label>
-        <input type="password" placeholder=" Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
+        <div className="input-container">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button
+            type="button"
+            className="toggle-password"
+            onClick={togglePasswordVisibility}
+          >
+            {showPassword ? '🙈' : '👁️'}
+          </button>
+        </div>
 
         <button type="submit">Login</button>
       </form>
       {message && <p className="message">{message}</p>}
       <p>If you don't have an account <Link to="/register">REGISTER</Link></p>
-      <p><Link to="/verifyication">verify account</Link></p>
+      <p><Link to="/verifyication">Verify Account</Link></p>
     </div>
   );
 };

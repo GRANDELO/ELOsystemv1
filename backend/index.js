@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const http = require('http');
+const socketIo = require('socket.io');
 require('dotenv').config();
 
 const authRoutes = require('./routes/authRoutes');
@@ -19,6 +21,21 @@ mongoose
 //routes
 app.use('/api/auth', authRoutes);
 
-app.listen(port, () => {
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
+
+io.on('connection', (socket)=> {
+  console.log("New client connected");
+  socket.on("diconnected", () =>{
+    console.log("Client disconnected");
+  });
+});
+
+server.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
