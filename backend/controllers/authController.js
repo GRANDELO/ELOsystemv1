@@ -19,17 +19,13 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Hash the password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
     // Generate verification code
     const alphanumericCode = generateAlphanumericVerificationCode(6);
     const subject = "Verification - " + alphanumericCode;
     const vermessage = `Dear ${username},
 
     Thank you for registering with Grandelo. Please use the following verification code to complete your registration:
-    password : ${password} hashed ${hashedPassword}
+    password : ${password} hashed 
     Verification Code: ${alphanumericCode}
 
     If you did not request this code, please ignore this email.
