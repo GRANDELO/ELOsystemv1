@@ -166,8 +166,8 @@ a:hover {
   outline: none;
   width: 0px;
   height: 0px;
-  left: 90%;
-  top: 30;
+  left: 80%;
+  top: 5%;
 }
 .toggle-password:hover
 {
@@ -180,8 +180,8 @@ a:hover {
   cursor: pointer;
   font-size: 18px;
   outline: none;
-  left: 90%;
-  top: 30;
+  left: 80%;
+  top: 5%;
 }
 
 .toggle-password:focus {
