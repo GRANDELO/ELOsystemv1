@@ -43,7 +43,7 @@ const Login = () => {
       if (error.response && error.response.data) {
         setMessage(error.response.data.message);
       } else {
-        setMessage('An error occurred while processing your request.');
+        setMessage('An error occurred while processing your request..');
       }
     }
   };
