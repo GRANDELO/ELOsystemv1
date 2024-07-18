@@ -5,16 +5,18 @@ import './ThankYou.css';
 
 function Verification() {
   const [email, setEmail] = useState('');
+  const [newEmail, setNewEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [error, setError] = useState(null);
+  const [emailPresent, setEmailPresent] = useState(false);
+  const [editingEmail, setEditingEmail] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const storedEmail = sessionStorage.getItem('email');
     if (storedEmail) {
       setEmail(storedEmail);
-    } else {
-      setError('No email found for verification. Please register first.');
+      setEmailPresent(true);
     }
   }, []);
 
@@ -34,19 +36,68 @@ function Verification() {
     }
   };
 
+  const handleEditEmail = () => {
+    setEditingEmail(true);
+    setEmailPresent(false);
+  };
+
+  const handleSaveEmail = async () => {
+    try {
+      const response = await axios.post('https://elosystemv1.onrender.com/api/auth/update-email', { oldEmail: email, newEmail });
+      if (response.status === 200) {
+        setEmail(newEmail);
+        sessionStorage.setItem('email', newEmail);
+        setEditingEmail(false);
+        setEmailPresent(true);
+        setError(null);
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setError(error.response.data.message);
+      } else {
+        setError('An error occurred while updating the email.');
+      }
+    }
+  };
+
+  const handleresendEmail = async () => {
+    try {
+      const response = await axios.post('https://elosystemv1.onrender.com/api/auth/resendemail', { email });
+      if (response.status === 200) {
+        setError('Verification code has been resent.');
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setError(error.response.data.message);
+      } else {
+        setError('An error occurred while resending the verification code try again later.');
+      }
+    }
+  };
   return (
     <div className="container">
       <h2>Verify Your Account</h2>
+      <h4>Check your email to get the verification code.</h4>
       <form onSubmit={handleVerify}>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            readOnly
-            required
-          />
-        </div>
+        {emailPresent && !editingEmail ? (
+          <div>
+            <label>Email:</label>
+            <p>{email}</p>
+            <button type="button" onClick={handleEditEmail}>Change Email</button>
+          </div>
+        ) : (
+          <div>
+            <label>Email:</label>
+            <input
+              type="email"
+              value={newEmail}
+              pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$"
+              onChange={(e) => setNewEmail(e.target.value)}
+              required
+            />
+            <button type="button" onClick={handleSaveEmail}>Save Email</button>
+          </div>
+        )}
         <div>
           <label>Verification Code:</label>
           <input
@@ -58,6 +109,7 @@ function Verification() {
         </div>
         <button type="submit">Verify</button>
       </form>
+      <button type="button" onClick={handleresendEmail}>Resend verification code</button>
       {error && <p className="error">{error}</p>}
     </div>
   );

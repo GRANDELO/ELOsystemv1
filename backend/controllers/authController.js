@@ -160,8 +160,80 @@ const verifyUser = async (req, res) => {
   }
 };
 
+const updateEmail = async (req, res) => {
+  const { oldEmail, newEmail } = req.body;
+
+  try {
+    const user = await User.findOne({ email: oldEmail });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.email = newEmail;
+    await user.save();
+    const subject = "Verification - " + user.verificationCode;
+    const vermessage = `Dear ${user.username},
+
+Thank you for registering with Grandelo. Please use the following verification code to complete your registration:
+
+Verification Code: ${user.verificationCode}
+
+Follow this link https://grandelo.web.app/verification to verify your account
+
+Best regards,
+Grandelo`;
+    try {
+      await sendEmail(email, subject, vermessage);
+      console.log('Email sent successfully');
+    } catch (error) {
+      console.error('Error sending email:', error);
+      return res.status(500).json({ message: 'Error sending verification email' });
+    }
+
+    res.status(200).json({ message: 'Email updated successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'An error occurred while updating email' });
+  }
+};
+
+const resendVerificationCode = async (req, res) => {
+  const { Email } = req.body;
+
+  try {
+    const user = await User.findOne({ email: Email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found register first and try again.' });
+    }
+
+
+    const subject = "Verification - " + user.verificationCode;
+    const vermessage = `Dear ${user.username},
+
+Thank you for registering with Grandelo. Please use the following verification code to complete your registration:
+
+Verification Code: ${user.verificationCode}
+
+Follow this link https://grandelo.web.app/verification to verify your account
+
+Best regards,
+Grandelo`;
+    try {
+      await sendEmail(user.email, subject, vermessage);
+      console.log('Email sent successfully');
+    } catch (error) {
+      console.error('Error sending email:', error);
+      return res.status(500).json({ message: 'Error sending verification email' });
+    }
+
+    res.status(200).json({ message: 'Verification code sent successfully.' });
+  } catch (error) {
+    res.status(500).json({ message: 'An error occurred while sending verification code.' });
+  }
+};
 module.exports = {
   registerUser,
   login,
   verifyUser,
+  updateEmail,
+  resendVerificationCode,
 };
