@@ -1,6 +1,6 @@
 import axios from 'axios';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './styles.css';
 
 const ResetPassword = () => {
@@ -26,7 +26,7 @@ const ResetPassword = () => {
     try {
       const response = await axios.post('https://elosystemv1.onrender.com/api/auth/reset-password', formData);
       setMessage(response.data.message);
-      navigate('/login');
+      navigate('/');
     } catch (error) {
       if (error.response && error.response.data) {
         setMessage(error.response.data.message);
