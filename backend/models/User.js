@@ -11,7 +11,9 @@ const UserSchema = new mongoose.Schema({
   gender: { type: String, required: true },
   category: { type: String, required: true },
   verificationCode: { type: String },
-  isVerified: { type: Boolean, default: false }
+  isVerified: { type: Boolean, default: false },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
 });
 
 UserSchema.pre('save', async function(next) {

@@ -230,10 +230,75 @@ Grandelo`;
     res.status(500).json({ message: 'An error occurred while sending verification code.' });
   }
 };
+
+
+
+const newrecoverPassword = async (req, res) => {
+  const { username } = req.body;
+  const user = await User.findOne({ username });
+
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+
+  const verificationCode = crypto.randomBytes(3).toString('hex');
+  user.resetPasswordToken = verificationCode;
+  user.resetPasswordExpires = Date.now() + 3600000;
+
+  await user.save();
+  const subject ='Grandelo Password Reset';
+  const recoveryMessage = `Dear ${username},
+
+We have received a request to reset your password for your Grandelo account. Please use the following verification code to proceed with the password reset:
+
+Verification Code: ${verificationCode}
+
+Follow this link https://grandelo.web.app/reset-password to reset your password.
+
+If you did not request a password reset, please ignore this email or contact our support team.
+
+Best regards,
+Grandelo`;
+
+try {
+  await sendEmail(user.email, subject, recoveryMessage);
+  console.log('Check your email for the recovery code and process.');
+} catch (error) {
+  console.error('Error sending email:', error);
+  return res.status(500).json({ message: 'Error sending recovery code' });
+}
+
+};
+
+const resetPassword = async (req, res) => {
+  const { email, verificationCode, newPassword } = req.body;
+  const user = await User.findOne({
+    email,
+    resetPasswordToken: verificationCode,
+    resetPasswordExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return res.status(400).json({ message: 'Invalid or expired verification code' });
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(newPassword, salt);
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
+
+  await user.save();
+
+  res.status(200).json({ message: 'Password has been reset' });
+};
+
+
 module.exports = {
   registerUser,
   login,
   verifyUser,
   updateEmail,
   resendVerificationCode,
+  newrecoverPassword,
+  resetPassword,
 };
