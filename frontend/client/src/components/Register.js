@@ -54,7 +54,7 @@ const Register = () => {
     const validateStep = () => {
       switch (currentStep) {
         case 1:
-          const fullNameValid = /^[a-zA-Z]{4,}$/.test(formData.fullName);
+          const fullNameValid = /^[a-zA-Z]{3,}$/.test(formData.fullName);
           const emailValid = /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(formData.email);
           const usernameValid = /^[a-zA-Z0-9_]{4,}$/.test(formData.username);
           return fullNameValid && emailValid && usernameValid;
@@ -90,8 +90,8 @@ const Register = () => {
             onChange={handleChange}
             required
           />
-          {formData.fullName && !/^[a-zA-Z]{4,} $/.test(formData.fullName) && (
-            <p style={{ color: 'red', fontSize: 'smaller' }}>Full Name must be at least 4 characters long and contain only letters.</p>
+          {formData.fullName && !/^[a-zA-Z]{3,} $/.test(formData.fullName) && (
+            <p style={{ color: 'red', fontSize: 'smaller' }}>Full Name must be at least 3 characters long and contain only letters.</p>
           )}
 
           <label>Email:</label>
