@@ -197,10 +197,10 @@ Grandelo`;
 };
 
 const resendVerificationCode = async (req, res) => {
-  const { Email } = req.body;
+  const { email } = req.body;
 
   try {
-    const user = await User.findOne({ email: Email });
+    const user = await User.findOne({ email});
     if (!user) {
       return res.status(404).json({ message: 'User not found register first and try again.' });
     }

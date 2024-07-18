@@ -23,7 +23,8 @@ function Verification() {
   const handleVerify = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/auth/verify', { email, verificationCode });
+      const emailToUse = email || newEmail;
+      const response = await axios.post('https://elosystemv1.onrender.com/api/auth/verify', { email: emailToUse, verificationCode });
       if (response.status === 200) {
         navigate('/success');
       }
@@ -62,18 +63,24 @@ function Verification() {
 
   const handleresendEmail = async () => {
     try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/auth/resendemail', { email });
-      if (response.status === 200) {
-        setError('Verification code has been resent.');
+      const emailToUse = email || newEmail;
+      if (!emailToUse) {
+        setError('Enter your email.');
+      } else {
+        const response = await axios.post('https://elosystemv1.onrender.com/api/auth/resendemail', { email: emailToUse });
+        if (response.status === 200) {
+          setError('Verification code has been resent.');
+        }
       }
     } catch (error) {
       if (error.response && error.response.data) {
         setError(error.response.data.message);
       } else {
-        setError('An error occurred while resending the verification code try again later.');
+        setError('An error occurred while resending the verification code. Try again later.');
       }
     }
   };
+
   return (
     <div className="container">
       <h2>Verify Your Account</h2>
@@ -85,7 +92,7 @@ function Verification() {
             <p>{email}</p>
             <button type="button" onClick={handleEditEmail}>Change Email</button>
           </div>
-        ) : (
+        ) : editingEmail ? (
           <div>
             <label>Email:</label>
             <input
@@ -97,8 +104,19 @@ function Verification() {
             />
             <button type="button" onClick={handleSaveEmail}>Save Email</button>
           </div>
-        )}
+        ) : null }
         <div>
+        <div>
+            <label>Email:</label>
+            <input
+              type="email"
+              value={newEmail}
+              pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$"
+              onChange={(e) => setNewEmail(e.target.value)}
+              required
+            />
+            
+          </div>
           <label>Verification Code:</label>
           <input
             type="text"
