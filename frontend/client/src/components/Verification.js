@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ThankYou.css';
 
@@ -8,6 +8,15 @@ function Verification() {
   const [verificationCode, setVerificationCode] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedEmail = sessionStorage.getItem('email');
+    if (storedEmail) {
+      setEmail(storedEmail);
+    } else {
+      setError('No email found for verification. Please register first.');
+    }
+  }, []);
 
   const handleVerify = async (e) => {
     e.preventDefault();
@@ -22,7 +31,6 @@ function Verification() {
       } else {
         setError('Verification failed. Please try again.');
       }
-      
     }
   };
 
@@ -35,7 +43,7 @@ function Verification() {
           <input
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            readOnly
             required
           />
         </div>

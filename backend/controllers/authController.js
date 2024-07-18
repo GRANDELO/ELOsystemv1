@@ -69,7 +69,7 @@ Thank you for registering with Grandelo. Please use the following verification c
 
 Verification Code: ${alphanumericCode}
 
-Follow this link https://grandelo.web.app/verifyication to verify your account
+Follow this link https://grandelo.web.app/verification to verify your account
 
 Best regards,
 Grandelo`;

@@ -1,3 +1,4 @@
+// src/components/ProductForm.js
 import axios from 'axios';
 import React, { useState } from 'react';
 
@@ -7,7 +8,7 @@ const ProductForm = () => {
     description: '',
     price: '',
     category: '',
-    imageUrl: ''
+    image: null
   });
   const [message, setMessage] = useState('');
 
@@ -15,12 +16,27 @@ const ProductForm = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleFileChange = (e) => {
+    setFormData({ ...formData, image: e.target.files[0] });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
 
+    const data = new FormData();
+    data.append('name', formData.name);
+    data.append('description', formData.description);
+    data.append('price', formData.price);
+    data.append('category', formData.category);
+    data.append('image', formData.image);
+
     try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/products', formData);
+      const response = await axios.post('https://elosystemv1.onrender.com/api/products', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       setMessage('Product successfully added!');
     } catch (error) {
       setMessage('Error adding product');
@@ -70,13 +86,11 @@ const ProductForm = () => {
           required
         />
 
-        <label>Image URL:</label>
+        <label>Image:</label>
         <input
-          type="text"
-          name="imageUrl"
-          placeholder="Enter image URL"
-          value={formData.imageUrl}
-          onChange={handleChange}
+          type="file"
+          name="image"
+          onChange={handleFileChange}
           required
         />
 
