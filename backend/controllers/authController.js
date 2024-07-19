@@ -249,85 +249,64 @@ const newrecoverPassword = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const verificationCode = crypto.randomBytes(3).toString('hex');
-    user.resetPasswordToken = verificationCode;
-    user.resetPasswordExpires = moment().add(1, 'hour').format('YYYY-MM-DD HH:mm:ss');
-
+    const token = crypto.randomBytes(20).toString('hex');
+    user.passwordRecoveryToken = token;
+    user.tokenExpiry = moment().add(1, 'hour').toDate();
     await user.save();
 
-    const subject = 'Grandelo Password Reset';
-    const recoveryMessage = `Dear ${username},
+    // Send the recovery email
+    const subject = 'Password Reset Request';
+    const message = `Dear ${user.username},
 
-We have received a request to reset your password for your Grandelo account. Please use the following verification code to proceed with the password reset:
+You have requested to reset your password. Please use the following token to reset your password:
 
-Verification Code: ${verificationCode}
+Password Reset Token: ${token}
 
-Follow this link https://grandelo.web.app/reset-password to reset your password.
-
-If you did not request a password reset, please ignore this email or contact our support team.
+This token is valid for 1 hour. 
 
 Best regards,
 Grandelo`;
 
     try {
-      await sendEmail(user.email, subject, recoveryMessage);
-      console.log('Check your email for the recovery code and process.');
-      return res.status(200).json({ message: 'Check your email for the recovery code and process.' });
+      await sendEmail(user.email, subject, message);
+      res.status(200).json({ message: 'Password recovery email sent successfully.' });
     } catch (error) {
-      console.error('Error sending email:', error);
-      return res.status(500).json({ message: 'Error sending recovery code' });
+      res.status(500).json({ message: 'Error sending password recovery email' });
     }
   } catch (error) {
-    console.error('Error processing password recovery:', error);
-    return res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: 'An error occurred during password recovery.' });
   }
 };
 
 const resetPassword = async (req, res) => {
+  const { username, token, newPassword } = req.body;
+
   try {
-    const newFields = {
-      passwordRecoveryToken: "undefined",
-      tokenExpiry: "undefined",
-    };
+    const user = await User.findOne({ username });
 
-    const updateFields = {};
-    for (const [key, value] of Object.entries(newFields)) {
-      updateFields[key] = { $ifNull: [`$${key}`, value] };
-    }
-
-    await User.updateMany(
-      {
-        $or: Object.keys(newFields).map((key) => ({ [key]: { $exists: false } })),
-      },
-      { $set: newFields }
-    );
-
-    console.log('New fields added to users that were missing them');
-  } catch (error) {
-    console.error('Error updating users:', error);
-  }
-  try {
-    const { email, verificationCode, newPassword } = req.body;
-    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(500).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found' });
     }
-    if (user.verificationCode !== verificationCode) {
-      return res.status(500).json({ message: 'Invalid recovery code' });
-    }
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(newPassword, salt);
-    user.resetPasswordToken = "undefined";
-    user.resetPasswordExpires = "undefined";
 
+    if (user.passwordRecoveryToken !== token) {
+      return res.status(400).json({ message: 'Invalid token' });
+    }
+
+    if (moment().isAfter(user.tokenExpiry)) {
+      return res.status(400).json({ message: 'Token has expired' });
+    }
+
+    user.password = newPassword;
+    user.passwordRecoveryToken = undefined;
+    user.tokenExpiry = undefined;
     await user.save();
 
-    res.status(200).json({ message: 'Password has been reset' });
+    res.status(200).json({ message: 'Password has been reset successfully.' });
   } catch (error) {
-    console.error('Error resetting password:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: 'An error occurred during password reset.' });
   }
 };
+
 
 
 module.exports = {
