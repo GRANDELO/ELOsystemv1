@@ -292,7 +292,7 @@ const resetPassword = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(400).json({ message: "User doesn't exist check your email and try again." });
+      return res.status(400).json({ message: "Invalid recovery code." });
     }
 
     const salt = await bcrypt.genSalt(10);
