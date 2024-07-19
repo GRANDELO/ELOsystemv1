@@ -238,57 +238,44 @@ Grandelo`;
 
 const newrecoverPassword = async (req, res) => {
   try {
-    const verificationCode = crypto.randomBytes(3).toString('hex');
-
-    // Add new fields to users if they are missing
-    const newFields = {
-      passwordRecoveryToken: null,
-      tokenExpiry: null,
-    };
-
-    await User.updateMany(
-      {
-        $or: Object.keys(newFields).map((key) => ({ [key]: { $exists: false } })),
-      },
-      { $setOnInsert: newFields },
-      { upsert: true }
-    );
-
-    console.log('New fields added to users that were missing them');
-  } catch (error) {
-    console.error('Error updating users:', error);
-    return res.status(500).json({ message: 'Error updating users' });
-  }
-
-  const { email, newPassword } = req.body;
-
-  // Validate input
-  if (!email || !newPassword) {
-    return res.status(400).json({ message: 'All fields are required' });
-  }
-
-  try {
-    const user = await User.findOne({
-      email,
-      passwordRecoveryToken: verificationCode,
-      tokenExpiry: { $gt: Date.now() },
-    });
+    const { username } = req.body;
+    const user = await User.findOne({ username });
 
     if (!user) {
-      return res.status(400).json({ message: 'Invalid or expired verification code' });
+      return res.status(404).json({ message: 'User not found' });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(newPassword, salt);
-    user.passwordRecoveryToken = undefined;
-    user.tokenExpiry = undefined;
+    const verificationCode = crypto.randomBytes(3).toString('hex');
+    user.resetPasswordToken = verificationCode;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
 
     await user.save();
 
-    res.status(200).json({ message: 'Password has been reset' });
+    const subject = 'Grandelo Password Reset';
+    const recoveryMessage = `Dear ${username},
+
+We have received a request to reset your password for your Grandelo account. Please use the following verification code to proceed with the password reset:
+
+Verification Code: ${verificationCode}
+
+Follow this link https://grandelo.web.app/reset-password to reset your password.
+
+If you did not request a password reset, please ignore this email or contact our support team.
+
+Best regards,
+Grandelo`;
+
+    try {
+      await sendEmail(user.email, subject, recoveryMessage);
+      console.log('Check your email for the recovery code and process.');
+      return res.status(200).json({ message: 'Recovery code sent to your email' });
+    } catch (error) {
+      console.error('Error sending email:', error);
+      return res.status(500).json({ message: 'Error sending recovery code' });
+    }
   } catch (error) {
-    console.error('Error resetting password:', error);
-    res.status(500).json({ message: 'Error resetting password' });
+    console.error('Error processing password recovery:', error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -299,51 +286,41 @@ const resetPassword = async (req, res) => {
       tokenExpiry: null,
     };
 
-    // Add new fields to users if they are missing
+    const updateFields = {};
+    for (const [key, value] of Object.entries(newFields)) {
+      updateFields[key] = { $ifNull: [`$${key}`, value] };
+    }
+
     await User.updateMany(
       {
         $or: Object.keys(newFields).map((key) => ({ [key]: { $exists: false } })),
       },
-      { $setOnInsert: newFields },
-      { upsert: true }
+      { $set: newFields }
     );
 
     console.log('New fields added to users that were missing them');
   } catch (error) {
     console.error('Error updating users:', error);
-    return res.status(500).json({ message: 'Error updating users' });
   }
-
   const { email, verificationCode, newPassword } = req.body;
+  const user = await User.findOne({
+    email,
+    resetPasswordToken: verificationCode,
+    resetPasswordExpires: { $gt: Date.now() },
+  });
 
-  // Validate input
-  if (!email || !verificationCode || !newPassword) {
-    return res.status(400).json({ message: 'All fields are required' });
+  if (!user) {
+    return res.status(400).json({ message: 'Invalid or expired verification code' });
   }
 
-  try {
-    const user = await User.findOne({
-      email,
-      resetPasswordToken: verificationCode,
-      resetPasswordExpires: { $gt: Date.now() },
-    });
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(newPassword, salt);
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
 
-    if (!user) {
-      return res.status(400).json({ message: 'Invalid or expired verification code' });
-    }
+  await user.save();
 
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(newPassword, salt);
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
-
-    await user.save();
-
-    res.status(200).json({ message: 'Password has been reset' });
-  } catch (error) {
-    console.error('Error resetting password:', error);
-    res.status(500).json({ message: 'Error resetting password' });
-  }
+  res.status(200).json({ message: 'Password has been reset' });
 };
 
 
