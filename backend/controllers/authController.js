@@ -260,7 +260,7 @@ const newrecoverPassword = async (req, res) => {
 
 You have requested to reset your password. Please use the following token to reset your password:
 
-Password Reset Token: ${token}
+Password Reset Token: ${user.passwordRecoveryToken}
 
 This token is valid for 1 hour. 
 
