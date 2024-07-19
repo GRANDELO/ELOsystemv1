@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { generateAlphanumericVerificationCode } = require('../services/verificationcode');
 const sendEmail = require('../services/emailService');
 require('dotenv').config();
@@ -236,40 +237,59 @@ Grandelo`;
 
 
 const newrecoverPassword = async (req, res) => {
-  const { username } = req.body;
-  const user = await User.findOne({ username });
+  try {
+    const verificationCode = crypto.randomBytes(3).toString('hex');
 
-  if (!user) {
-    return res.status(404).json({ message: 'User not found' });
+    // Add new fields to users if they are missing
+    const newFields = {
+      passwordRecoveryToken: null,
+      tokenExpiry: null,
+    };
+
+    await User.updateMany(
+      {
+        $or: Object.keys(newFields).map((key) => ({ [key]: { $exists: false } })),
+      },
+      { $setOnInsert: newFields },
+      { upsert: true }
+    );
+
+    console.log('New fields added to users that were missing them');
+  } catch (error) {
+    console.error('Error updating users:', error);
+    return res.status(500).json({ message: 'Error updating users' });
   }
 
-  const verificationCode = crypto.randomBytes(3).toString('hex');
-  user.resetPasswordToken = verificationCode;
-  user.resetPasswordExpires = Date.now() + 3600000;
+  const { email, newPassword } = req.body;
 
-  await user.save();
-  const subject ='Grandelo Password Reset';
-  const recoveryMessage = `Dear ${username},
+  // Validate input
+  if (!email || !newPassword) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
 
-We have received a request to reset your password for your Grandelo account. Please use the following verification code to proceed with the password reset:
+  try {
+    const user = await User.findOne({
+      email,
+      passwordRecoveryToken: verificationCode,
+      tokenExpiry: { $gt: Date.now() },
+    });
 
-Verification Code: ${verificationCode}
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired verification code' });
+    }
 
-Follow this link https://grandelo.web.app/reset-password to reset your password.
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    user.passwordRecoveryToken = undefined;
+    user.tokenExpiry = undefined;
 
-If you did not request a password reset, please ignore this email or contact our support team.
+    await user.save();
 
-Best regards,
-Grandelo`;
-
-try {
-  await sendEmail(user.email, subject, recoveryMessage);
-  console.log('Check your email for the recovery code and process.');
-} catch (error) {
-  console.error('Error sending email:', error);
-  return res.status(500).json({ message: 'Error sending recovery code' });
-}
-
+    res.status(200).json({ message: 'Password has been reset' });
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    res.status(500).json({ message: 'Error resetting password' });
+  }
 };
 
 const resetPassword = async (req, res) => {
