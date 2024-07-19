@@ -100,8 +100,8 @@ Grandelo`;
       category,
       verificationCode: alphanumericCode,
       isVerified: false,
-      resetPasswordToken: undefined,
-      resetPasswordExpires: undefined,
+      resetPasswordToken: "undefined",
+      resetPasswordExpires: "undefined",
     });
     await user.save();
 
