@@ -279,16 +279,16 @@ Grandelo`;
 };
 
 const resetPassword = async (req, res) => {
-  const { username, token, newPassword } = req.body;
+  const { email, verificationCode, newPassword } = req.body;
 
   try {
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    if (user.passwordRecoveryToken !== token) {
+    if (user.passwordRecoveryToken !== verificationCode) {
       return res.status(400).json({ message: 'Invalid token' });
     }
 
