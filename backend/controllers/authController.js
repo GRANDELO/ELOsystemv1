@@ -272,7 +272,7 @@ Grandelo`;
     try {
       await sendEmail(user.email, subject, recoveryMessage);
       console.log('Check your email for the recovery code and process.');
-      return res.status(200).json({ message: 'Recovery code sent to your email' });
+      return res.status(200).json({ message: 'Check your email for the recovery code and process.' });
     } catch (error) {
       console.error('Error sending email:', error);
       return res.status(500).json({ message: 'Error sending recovery code' });
@@ -289,7 +289,6 @@ const resetPassword = async (req, res) => {
     const user = await User.findOne({
       email,
       resetPasswordToken: verificationCode,
-      resetPasswordExpires: { $gt: Date.now() },
     });
 
     if (!user) {
