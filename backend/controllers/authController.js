@@ -94,7 +94,9 @@ Grandelo`;
       gender, 
       category, 
       verificationCode: alphanumericCode, 
-      isVerified: false 
+      isVerified: false ,
+      resetPasswordToken: undefined,
+      resetPasswordExpires: undefined,
     });
     await user.save();
 
