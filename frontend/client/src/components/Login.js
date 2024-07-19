@@ -50,10 +50,11 @@ const Login = () => {
 
   return (
     <div className="container">
-      <h2>Login</h2>
+      
       <form onSubmit={recoverpassword ? sendRecovEmail : handleSubmit}>
         {!recoverpassword ? (
           <div>
+            <h2>Login</h2>
             <label>Username:</label>
             <input type="text" value={username} placeholder="Enter your username" onChange={(e) => setUsername(e.target.value)} required/>
 
@@ -81,6 +82,7 @@ const Login = () => {
           </div>
         ) : (
           <div>
+            <h2>Recover password</h2>
             <label>Enter your username:</label>
             <input type="text" value={username} placeholder="Enter your username" onChange={(e) => setUsername(e.target.value)} required/>
             <button type="submit">Recover password</button>

@@ -1,43 +1,52 @@
-const Product = require('../models/Product');
-const { uploadFile } = require('../utils/googleDrive');
+// controllers/uploadController.js
+const multer = require('multer');
+const path = require('path');
 const fs = require('fs');
+const { uploadFile } = require('../utils/googleDriveService');
+const Product = require('../models/Product'); // Adjust the path as necessary
 
-exports.createProduct = async (req, res) => {
-  const { name, description, price, category } = req.body;
-  const image = req.file;
+const storage = multer.memoryStorage(); // Use memory storage to handle files in-memory
+const upload = multer({ storage });
 
-  if (!image) {
-    return res.status(400).json({ message: 'Image file is required.' });
-  }
+const uploadProductImage = upload.single('image'); // Handle single image upload
 
+const postProduct = async (req, res) => {
   try {
-    const driveResponse = await uploadFile(image.path, image.filename);
-    const imageUrl = driveResponse.webViewLink;
+    uploadProductImage(req, res, async (err) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error uploading file' });
+      }
 
-    const newProduct = new Product({
-      name,
-      description,
-      price,
-      category,
-      imageUrl
+      const file = req.file;
+      if (!file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+      }
+
+      const tempFilePath = path.join(__dirname, file.originalname);
+      fs.writeFileSync(tempFilePath, file.buffer); // Save file temporarily
+
+      const fileLink = await uploadFile(tempFilePath, file.mimetype);
+      fs.unlinkSync(tempFilePath); // Delete the file after upload
+
+      const { name, description, price, category } = req.body;
+      const product = new Product({
+        name,
+        description,
+        price,
+        category,
+        imageUrl: fileLink, // Store Google Drive link
+      });
+
+      await product.save();
+
+      res.status(201).json({ message: 'Product created successfully', product });
     });
-
-    const savedProduct = await newProduct.save();
-
-    // Remove the uploaded file from the server
-    fs.unlinkSync(image.path);
-
-    res.status(201).json(savedProduct);
   } catch (error) {
-    res.status(500).json({ message: 'Error saving product', error });
+    console.error('Error posting product:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
-exports.getAllProducts = async (req, res) => {
-  try {
-    const products = await Product.find();
-    res.status(200).json(products);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching products', error });
-  }
+module.exports = {
+  postProduct,
 };

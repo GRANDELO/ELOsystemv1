@@ -26,7 +26,7 @@ const ResetPassword = () => {
     try {
       const response = await axios.post('https://elosystemv1.onrender.com/api/auth/reset-password', formData);
       setMessage(response.data.message);
-      navigate('/');
+      
     } catch (error) {
       if (error.response && error.response.data) {
         setMessage(error.response.data.message);
