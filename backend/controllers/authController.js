@@ -285,20 +285,40 @@ Grandelo`;
 
 const resetPassword = async (req, res) => {
   try {
-    const { email, verificationCode, newPassword } = req.body;
-    const user = await User.findOne({
-      email,
-      resetPasswordToken: verificationCode,
-    });
+    const newFields = {
+      passwordRecoveryToken: "undefined",
+      tokenExpiry: "undefined",
+    };
 
-    if (!user) {
-      return res.status(400).json({ message: "Invalid recovery code." });
+    const updateFields = {};
+    for (const [key, value] of Object.entries(newFields)) {
+      updateFields[key] = { $ifNull: [`$${key}`, value] };
     }
 
+    await User.updateMany(
+      {
+        $or: Object.keys(newFields).map((key) => ({ [key]: { $exists: false } })),
+      },
+      { $set: newFields }
+    );
+
+    console.log('New fields added to users that were missing them');
+  } catch (error) {
+    console.error('Error updating users:', error);
+  }
+  try {
+    const { email, verificationCode, newPassword } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(500).json({ message: 'User not found' });
+    }
+    if (user.verificationCode !== verificationCode) {
+      return res.status(500).json({ message: 'Invalid recovery code' });
+    }
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(newPassword, salt);
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
+    user.resetPasswordToken = "undefined";
+    user.resetPasswordExpires = "undefined";
 
     await user.save();
 
