@@ -12,9 +12,9 @@ const UserSchema = new mongoose.Schema({
   category: { type: String, required: true },
   verificationCode: { type: String },
   isVerified: { type: Boolean, default: false },
-  resetPasswordToken: String,
-  resetPasswordExpires: Date,
-});
+  passwordRecoveryToken: { type: String, default: null,},
+  tokenExpiry: { type: Date, default: null, },
+}, { timestamps: true });
 
 UserSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();

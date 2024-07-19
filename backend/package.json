@@ -24,5 +24,7 @@
     "start": "concurrently \"npm run backend\" \"npm run client\"",
     "backend": "nodemon backend/server.js",
     "client": "npm start"
+    
   }
 }
+

@@ -273,6 +273,28 @@ try {
 };
 
 const resetPassword = async (req, res) => {
+  try {
+    const newFields = {
+      passwordRecoveryToken: null,
+      tokenExpiry: null,
+    };
+
+    const updateFields = {};
+    for (const [key, value] of Object.entries(newFields)) {
+      updateFields[key] = { $ifNull: [`$${key}`, value] };
+    }
+
+    await User.updateMany(
+      {
+        $or: Object.keys(newFields).map((key) => ({ [key]: { $exists: false } })),
+      },
+      { $set: newFields }
+    );
+
+    console.log('New fields added to users that were missing them');
+  } catch (error) {
+    console.error('Error updating users:', error);
+  }
   const { email, verificationCode, newPassword } = req.body;
   const user = await User.findOne({
     email,
