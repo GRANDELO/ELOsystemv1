@@ -279,41 +279,51 @@ const resetPassword = async (req, res) => {
       tokenExpiry: null,
     };
 
-    const updateFields = {};
-    for (const [key, value] of Object.entries(newFields)) {
-      updateFields[key] = { $ifNull: [`$${key}`, value] };
-    }
-
+    // Add new fields to users if they are missing
     await User.updateMany(
       {
         $or: Object.keys(newFields).map((key) => ({ [key]: { $exists: false } })),
       },
-      { $set: newFields }
+      { $setOnInsert: newFields },
+      { upsert: true }
     );
 
     console.log('New fields added to users that were missing them');
   } catch (error) {
     console.error('Error updating users:', error);
+    return res.status(500).json({ message: 'Error updating users' });
   }
+
   const { email, verificationCode, newPassword } = req.body;
-  const user = await User.findOne({
-    email,
-    resetPasswordToken: verificationCode,
-    resetPasswordExpires: { $gt: Date.now() },
-  });
 
-  if (!user) {
-    return res.status(400).json({ message: 'Invalid or expired verification code' });
+  // Validate input
+  if (!email || !verificationCode || !newPassword) {
+    return res.status(400).json({ message: 'All fields are required' });
   }
 
-  const salt = await bcrypt.genSalt(10);
-  user.password = await bcrypt.hash(newPassword, salt);
-  user.resetPasswordToken = undefined;
-  user.resetPasswordExpires = undefined;
+  try {
+    const user = await User.findOne({
+      email,
+      resetPasswordToken: verificationCode,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
 
-  await user.save();
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired verification code' });
+    }
 
-  res.status(200).json({ message: 'Password has been reset' });
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
+
+    res.status(200).json({ message: 'Password has been reset' });
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    res.status(500).json({ message: 'Error resetting password' });
+  }
 };
 
 
