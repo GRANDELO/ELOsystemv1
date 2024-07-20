@@ -18,11 +18,7 @@ const Login = () => {
     try {
       const response = await axios.post('https://elosystemv1.onrender.com/api/auth/login', { username, password });
       setMessage(response.data.message);
-      if (formData.role === 'seller') {
-        navigate('/seller');
-      } else {
-        navigate('/home');
-      }
+      navigate('/home');
     } catch (error) {
       if (error.response && error.response.data) {
         setMessage(error.response.data.message);
