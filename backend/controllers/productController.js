@@ -134,5 +134,4 @@ module.exports = {
   getProduct,
   getProducts,
   updateProduct,
-  getImage,
 };

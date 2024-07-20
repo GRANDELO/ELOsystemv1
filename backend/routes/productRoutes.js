@@ -7,6 +7,5 @@ router.post('/products', postProduct);
 router.get('/products', getProducts);
 router.get('/:id', getProduct);
 router.put('/:id', updateProduct);
-router.get('/files/:filename', getImage);
 
 module.exports = router;
