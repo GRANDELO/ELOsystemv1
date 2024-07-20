@@ -4,13 +4,13 @@ const path = require('path');
 const fs = require('fs');
 
 // Load client secrets from a local file.
-const credentials = JSON.parse(fs.readFileSync('../config/client_secret_1046055573406-gdb206a2e0dn6spnhmv1593g4gvp28il.apps.googleusercontent.com.json'));
+////const credentials = JSON.parse(fs.readFileSync('../config/client_secret_1046055573406-gdb206a2e0dn6spnhmv1593g4gvp28il.apps.googleusercontent.com.json'));
 
-const oAuth2Client = new google.auth.OAuth2(
-  credentials.installed.client_id,
-  credentials.installed.client_secret,
-  credentials.installed.redirect_uris[0]
-);
+//const oAuth2Client = new google.auth.OAuth2(
+ // credentials.installed.client_id,
+ // credentials.installed.client_secret,
+  //credentials.installed.redirect_uris[0]
+//);
 
 oAuth2Client.setCredentials({ refresh_token: credentials.refresh_token });
 
