@@ -1,6 +1,6 @@
 import React from 'react';
 import './Home.css';
-import ProductList from './ProductsList';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   return (
@@ -24,7 +24,16 @@ const Home = () => {
           <li>Feature 3: Description of feature 3.</li>
         </ul>
         <section>
-          <ProductList />
+        <nav>
+        <ul>
+          <li>
+            <Link to="/productForm">Add Product</Link>
+          </li>
+          <li>
+            <Link to="/products">View Products</Link>
+          </li>
+        </ul>
+      </nav> 
         </section>
       </section>
       <footer className="home-footer">

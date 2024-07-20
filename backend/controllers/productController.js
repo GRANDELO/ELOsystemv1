@@ -117,7 +117,7 @@ const updateProduct = async (req, res) => {
   });
 };
 
-// Route to serve images from GridFS
+/* Route to serve images from GridFS
 const getImage = (req, res) => {
   gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
     if (!file || file.length === 0) {
@@ -127,7 +127,7 @@ const getImage = (req, res) => {
     const readstream = gfs.createReadStream({ filename: file.filename });
     readstream.pipe(res);
   });
-};
+};*/
 
 module.exports = {
   postProduct,

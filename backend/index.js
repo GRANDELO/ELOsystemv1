@@ -21,7 +21,7 @@ mongoose
 
 //routes
 app.use('/api/auth', authRoutes);
-app.use('/api/products', productRoutes);
+app.use('/api', productRoutes);
 
 const server = http.createServer(app);
 const io = socketIo(server, {
