@@ -1,9 +1,16 @@
-// controllers/uploadController.js
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
-const { uploadFile } = require('../utils/googleDriveService');
+const mongoose = require('mongoose');
+const Grid = require('gridfs-stream');
 const Product = require('../models/Product'); // Adjust the path as necessary
+
+// Initialize GridFS
+const conn = mongoose.connection;
+let gfs;
+conn.once('open', () => {
+  gfs = Grid(conn.db, mongoose.mongo);
+  gfs.collection('uploads');
+});
 
 const storage = multer.memoryStorage(); // Use memory storage to handle files in-memory
 const upload = multer({ storage });
@@ -22,24 +29,30 @@ const postProduct = async (req, res) => {
         return res.status(400).json({ message: 'No file uploaded' });
       }
 
-      const tempFilePath = path.join(__dirname, file.originalname);
-      fs.writeFileSync(tempFilePath, file.buffer); // Save file temporarily
-
-      const fileLink = await uploadFile(tempFilePath, file.mimetype);
-      fs.unlinkSync(tempFilePath); // Delete the file after upload
-
-      const { name, description, price, category } = req.body;
-      const product = new Product({
-        name,
-        description,
-        price,
-        category,
-        imageUrl: fileLink, // Store Google Drive link
+      // Store file in GridFS
+      const writeStream = gfs.createWriteStream({
+        filename: file.originalname,
+        contentType: file.mimetype,
       });
+      writeStream.write(file.buffer);
+      writeStream.end();
 
-      await product.save();
+      writeStream.on('close', async (uploadedFile) => {
+        const fileLink = `/files/${uploadedFile.filename}`;
 
-      res.status(201).json({ message: 'Product created successfully', product });
+        const { name, description, price, category } = req.body;
+        const product = new Product({
+          name,
+          description,
+          price,
+          category,
+          imageUrl: fileLink, // Store GridFS link
+        });
+
+        await product.save();
+
+        res.status(201).json({ message: 'Product created successfully', product });
+      });
     });
   } catch (error) {
     console.error('Error posting product:', error);
@@ -76,21 +89,43 @@ const updateProduct = async (req, res) => {
     let updatedProduct = { name, description, price, category };
 
     if (file) {
-      const tempFilePath = path.join(__dirname, file.originalname);
-      fs.writeFileSync(tempFilePath, file.buffer);
+      // Store file in GridFS
+      const writeStream = gfs.createWriteStream({
+        filename: file.originalname,
+        contentType: file.mimetype,
+      });
+      writeStream.write(file.buffer);
+      writeStream.end();
 
-      const fileLink = await uploadFile(tempFilePath, file.mimetype);
-      fs.unlinkSync(tempFilePath);
+      writeStream.on('close', async (uploadedFile) => {
+        updatedProduct.imageUrl = `/files/${uploadedFile.filename}`;
+        try {
+          const product = await Product.findByIdAndUpdate(req.params.id, updatedProduct, { new: true });
+          res.status(200).json({ message: 'Product updated successfully', product });
+        } catch (error) {
+          res.status(500).json({ message: 'Error updating product' });
+        }
+      });
+    } else {
+      try {
+        const product = await Product.findByIdAndUpdate(req.params.id, updatedProduct, { new: true });
+        res.status(200).json({ message: 'Product updated successfully', product });
+      } catch (error) {
+        res.status(500).json({ message: 'Error updating product' });
+      }
+    }
+  });
+};
 
-      updatedProduct.imageUrl = fileLink;
+// Route to serve images from GridFS
+const getImage = (req, res) => {
+  gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
+    if (!file || file.length === 0) {
+      return res.status(404).json({ message: 'No file found' });
     }
 
-    try {
-      const product = await Product.findByIdAndUpdate(req.params.id, updatedProduct, { new: true });
-      res.status(200).json({ message: 'Product updated successfully', product });
-    } catch (error) {
-      res.status500().json({ message: 'Error updating product' });
-    }
+    const readstream = gfs.createReadStream({ filename: file.filename });
+    readstream.pipe(res);
   });
 };
 
@@ -99,4 +134,5 @@ module.exports = {
   getProduct,
   getProducts,
   updateProduct,
+  getImage,
 };

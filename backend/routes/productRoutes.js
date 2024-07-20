@@ -4,8 +4,9 @@ const { getProduct, getProducts, postProduct, updateProduct } = require('../cont
 const router = express.Router();
 
 router.post('/products', postProduct);
-router.get('/', getProducts);
+router.get('/products', getProducts);
 router.get('/:id', getProduct);
 router.put('/:id', updateProduct);
+router.get('/files/:filename', getImage);
 
 module.exports = router;
