@@ -8,7 +8,7 @@ import Success from './components/Success';
 import Verification from './components/Verification';
 import Home from './components/home';
 import Passwordrecovery from './components/passwordreset';
-import ProductDetails from './components/ProductDetails';
+import ProductDetails from './components/ProductDetail';
 import ProductList from './components/ProductList';
 
 const socket = io('https://elosystemv1.onrender.com');
