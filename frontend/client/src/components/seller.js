@@ -1,6 +1,6 @@
 import React from 'react';
 import ProductForm from './ProductForm';
-import ProductList from './ProducstList';
+import ProductList from './ProductsList';
 
 const SellerHome = () => {
   return (
