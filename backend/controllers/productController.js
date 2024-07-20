@@ -47,6 +47,56 @@ const postProduct = async (req, res) => {
   }
 };
 
+const getProducts = async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.status(200).json({ products });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching products' });
+  }
+};
+
+const getProduct = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+    res.status(200).json({ product });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching product' });
+  }
+};
+
+const updateProduct = async (req, res) => {
+  upload.single('image')(req, res, async (err) => {
+    if (err) return res.status(500).json({ message: 'Error uploading file' });
+
+    const { name, description, price, category } = req.body;
+    const file = req.file;
+
+    let updatedProduct = { name, description, price, category };
+
+    if (file) {
+      const tempFilePath = path.join(__dirname, file.originalname);
+      fs.writeFileSync(tempFilePath, file.buffer);
+
+      const fileLink = await uploadFile(tempFilePath, file.mimetype);
+      fs.unlinkSync(tempFilePath);
+
+      updatedProduct.imageUrl = fileLink;
+    }
+
+    try {
+      const product = await Product.findByIdAndUpdate(req.params.id, updatedProduct, { new: true });
+      res.status(200).json({ message: 'Product updated successfully', product });
+    } catch (error) {
+      res.status500().json({ message: 'Error updating product' });
+    }
+  });
+};
+
 module.exports = {
   postProduct,
+  getProduct,
+  getProducts,
+  updateProduct,
 };

@@ -2,11 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const http = require('http');
-const productRoutes = require('./routes/productRoutes');
 const socketIo = require('socket.io');
 require('dotenv').config();
 
 const authRoutes = require('./routes/authRoutes');
+const productRoutes = require('./routes/productRoutes');
 
 const app = express();
 app.use(cors());
@@ -21,7 +21,7 @@ mongoose
 
 //routes
 app.use('/api/auth', authRoutes);
-app.use('/api', productRoutes);
+app.use('/api/products', productRoutes);
 
 const server = http.createServer(app);
 const io = socketIo(server, {

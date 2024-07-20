@@ -1,9 +1,12 @@
-
 // src/components/ProductForm.js
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+
 
 const ProductForm = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -11,6 +14,20 @@ const ProductForm = () => {
     category: '',
     image: null,
   });
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(`https://elosystemv1.onrender.com/api/products/${id}`);
+        setFormData(response.data.product); // Populates the form with current product data
+      } catch (error) {
+        console.error('Error fetching product:', error);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
+
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -29,13 +46,20 @@ const ProductForm = () => {
     formDataToSend.append('description', formData.description);
     formDataToSend.append('price', formData.price);
     formDataToSend.append('category', formData.category);
-    formDataToSend.append('image', formData.image);
+    if (formData.image) {
+      formDataToSend.append('image', formData.image);
+    }
 
     try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/products', formDataToSend, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const response = id
+      ? await axios.put(`https://elosystemv1.onrender.com/api/products/${id}`, formDataToSend, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }) // Update existing product
+      : await axios.post('https://elosystemv1.onrender.com/api/products', formDataToSend, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }); // Create new product
       alert('Product uploaded successfully');
+      navigate('/home');
     } catch (error) {
       console.error('Error uploading product:', error);
       alert('Error uploading product');

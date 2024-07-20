@@ -1,5 +1,6 @@
 import React from 'react';
 import './Home.css';
+import ProductList from './ProductsList';
 
 const Home = () => {
   return (
@@ -22,6 +23,9 @@ const Home = () => {
           <li>Feature 2: Description of feature 2.</li>
           <li>Feature 3: Description of feature 3.</li>
         </ul>
+        <section>
+          <ProductList />
+        </section>
       </section>
       <footer className="home-footer">
         <p>Contact us: grandeloltd1@gmail.com</p>
