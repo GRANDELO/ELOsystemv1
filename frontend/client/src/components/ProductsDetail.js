@@ -15,19 +15,18 @@ const ProductDetails = () => {
         console.error('Error fetching product:', error);
       }
     };
-
     fetchProduct();
   }, [id]);
 
-  if (!product) return <div>Loading...</div>;
+  if (!product) return <p>Loading...</p>;
 
   return (
-    <div className="product-details">
-      <img src={product.imageUrl} alt={product.name} />
-      <h2>{product.name}</h2>
+    <div>
+      <h1>{product.name}</h1>
       <p>{product.description}</p>
-      <h3>${product.price}</h3>
-      <p>Category: {product.category}</p>
+      <p>{product.price}</p>
+      <p>{product.category}</p>
+      {product.imageUrl && <img src={`https://elosystemv1.onrender.com${product.imageUrl}`} alt={product.name} />}
     </div>
   );
 };
