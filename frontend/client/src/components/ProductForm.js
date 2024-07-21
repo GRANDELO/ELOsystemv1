@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const ProductForm = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const { id } = useParams(); // Get the product ID from the URL
+  const navigate = useNavigate(); // For navigation after submission
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -15,6 +15,7 @@ const ProductForm = () => {
 
   useEffect(() => {
     if (id) {
+      // Fetch existing product details if an ID is provided
       const fetchProduct = async () => {
         try {
           const response = await axios.get(`https://elosystemv1.onrender.com/api/products/${id}`);
@@ -23,7 +24,6 @@ const ProductForm = () => {
           console.error('Error fetching product:', error);
         }
       };
-
       fetchProduct();
     }
   }, [id]);

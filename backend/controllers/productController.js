@@ -2,7 +2,7 @@ const multer = require('multer');
 const path = require('path');
 const mongoose = require('mongoose');
 const Grid = require('gridfs-stream');
-const Product = require('../models/Product'); // Adjust the path as necessary
+const Product = require('../models/Product');
 
 // Initialize GridFS
 const conn = mongoose.connection;
@@ -21,8 +21,7 @@ const postProduct = async (req, res) => {
   try {
     uploadProductImage(req, res, async (err) => {
       if (err) {
-        console.error('Error uploading file:', err.message);
-        return res.status(500).json({ message: 'Error uploading file', details: err.message });
+        return res.status(500).json({ message: 'Error uploading file' });
       }
 
       const file = req.file;
@@ -31,14 +30,13 @@ const postProduct = async (req, res) => {
       }
 
       // Store file in GridFS
-      const writeStream = gfs.createWriteStream({
+      const fileUploadStream = gfs.createWriteStream({
         filename: file.originalname,
         contentType: file.mimetype,
       });
-      writeStream.write(file.buffer);
-      writeStream.end();
+      fileUploadStream.end(file.buffer);
 
-      writeStream.on('close', async (uploadedFile) => {
+      fileUploadStream.on('close', async (uploadedFile) => {
         const fileLink = `/files/${uploadedFile.filename}`;
 
         const { name, description, price, category } = req.body;
@@ -47,24 +45,19 @@ const postProduct = async (req, res) => {
           description,
           price,
           category,
-          imageUrl: fileLink,
+          imageUrl: fileLink, // Store GridFS link
         });
 
-        try {
-          await product.save();
-          res.status(201).json({ message: 'Product created successfully', product });
-        } catch (error) {
-          console.error('Error saving product to database:', error.message);
-          res.status(500).json({ message: 'Error saving product to database', details: error.message });
-        }
+        await product.save();
+
+        res.status(201).json({ message: 'Product created successfully', product });
       });
     });
   } catch (error) {
-    console.error('Error posting product:', error.message);
-    res.status(500).json({ message: 'Server error', details: error.message });
+    console.error('Error posting product:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
-
 
 const getProducts = async (req, res) => {
   try {
@@ -87,10 +80,7 @@ const getProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   upload.single('image')(req, res, async (err) => {
-    if (err) {
-      console.error('Error uploading file:', err.message);
-      return res.status(500).json({ message: 'Error uploading file', details: err.message });
-    }
+    if (err) return res.status(500).json({ message: 'Error uploading file' });
 
     const { name, description, price, category } = req.body;
     const file = req.file;
@@ -98,21 +88,20 @@ const updateProduct = async (req, res) => {
     let updatedProduct = { name, description, price, category };
 
     if (file) {
-      const writeStream = gfs.createWriteStream({
+      // Store file in GridFS
+      const fileUploadStream = gfs.createWriteStream({
         filename: file.originalname,
         contentType: file.mimetype,
       });
-      writeStream.write(file.buffer);
-      writeStream.end();
+      fileUploadStream.end(file.buffer);
 
-      writeStream.on('close', async (uploadedFile) => {
+      fileUploadStream.on('close', async (uploadedFile) => {
         updatedProduct.imageUrl = `/files/${uploadedFile.filename}`;
         try {
           const product = await Product.findByIdAndUpdate(req.params.id, updatedProduct, { new: true });
           res.status(200).json({ message: 'Product updated successfully', product });
         } catch (error) {
-          console.error('Error updating product in database:', error.message);
-          res.status(500).json({ message: 'Error updating product in database', details: error.message });
+          res.status(500).json({ message: 'Error updating product' });
         }
       });
     } else {
@@ -120,8 +109,7 @@ const updateProduct = async (req, res) => {
         const product = await Product.findByIdAndUpdate(req.params.id, updatedProduct, { new: true });
         res.status(200).json({ message: 'Product updated successfully', product });
       } catch (error) {
-        console.error('Error updating product:', error.message);
-        res.status(500).json({ message: 'Error updating product', details: error.message });
+        res.status(500).json({ message: 'Error updating product' });
       }
     }
   });
@@ -144,5 +132,5 @@ module.exports = {
   getProduct,
   getProducts,
   updateProduct,
-  getImage,
+  getImage, 
 };
