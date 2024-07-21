@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const ProductForm = () => {
-  const { id } = useParams(); // Get the product ID from the URL
-  const navigate = useNavigate(); // For navigation after submission
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -15,7 +15,6 @@ const ProductForm = () => {
 
   useEffect(() => {
     if (id) {
-      // Fetch existing product details if an ID is provided
       const fetchProduct = async () => {
         try {
           const response = await axios.get(`https://elosystemv1.onrender.com/api/products/${id}`);
@@ -39,7 +38,6 @@ const ProductForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const formDataToSend = new FormData();
     formDataToSend.append('name', formData.name);
     formDataToSend.append('description', formData.description);
@@ -65,8 +63,19 @@ const ProductForm = () => {
       }
       navigate('/home');
     } catch (error) {
-      console.error('Error uploading product:', error.message); // Log detailed error
+      console.error('Error uploading product:', error.message);
       alert(`Error uploading product: ${error.message}`);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`https://elosystemv1.onrender.com/api/products/${id}`);
+      alert('Product deleted successfully');
+      navigate('/home');
+    } catch (error) {
+      console.error('Error deleting product:', error.message);
+      alert(`Error deleting product: ${error.message}`);
     }
   };
 
@@ -93,6 +102,7 @@ const ProductForm = () => {
         <input type="file" name="image" onChange={handleChange} />
       </label>
       <button type="submit">{id ? 'Update' : 'Create'} Product</button>
+      {id && <button type="button" onClick={handleDelete}>Delete Product</button>}
     </form>
   );
 };
