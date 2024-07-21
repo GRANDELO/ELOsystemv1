@@ -65,8 +65,8 @@ const ProductForm = () => {
       }
       navigate('/home');
     } catch (error) {
-      console.error('Error uploading product:', error.response ? error.response.data.message : error.message);
-      alert(`Error uploading product: ${error.response ? error.response.data.message : error.message}`);
+      console.error('Error uploading product:', error.message); // Log detailed error
+      alert(`Error uploading product: ${error.message}`);
     }
   };
 
