@@ -19,7 +19,14 @@ const ProductForm = () => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(`https://elosystemv1.onrender.com/api/products/${id}`);
-        setFormData(response.data.product); // Populates the form with current product data
+        const product = response.data.product;
+        setFormData({
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          category: product.category,
+          imageUrl: product.imageUrl,
+        }); // Populates the form with current product data
       } catch (error) {
         console.error('Error fetching product:', error);
       }
@@ -55,14 +62,14 @@ const ProductForm = () => {
       ? await axios.put(`https://elosystemv1.onrender.com/api/products/${id}`, formDataToSend, {
           headers: { 'Content-Type': 'multipart/form-data' },
         }) // Update existing product
-      : await axios.post('https://elosystemv1.onrender.com/api/products', formDataToSend, {
+      : await axios.post(`https://elosystemv1.onrender.com/api/products/${id}`, formDataToSend, {
           headers: { 'Content-Type': 'multipart/form-data' },
         }); // Create new product
       alert('Product uploaded successfully');
       navigate('/home');
     } catch (error) {
       console.error('Error uploading product:', error);
-      alert('Error uploading product');
+      alert('Error uploading product:' + error.response?.data.message || 'Unknown error');
     }
   };
 
@@ -88,6 +95,11 @@ const ProductForm = () => {
         Image:
         <input type="file" name="image" onChange={handleChange} required />
       </label>
+      {formData.imageUrl && (
+        <div>
+          <img src={`https://elosystemv1.onrender.com${formData.imageUrl}`} alt="Product" style={{ width: '200px' }} />
+        </div>
+      )}
       <button type="submit">Submit</button>
     </form>
   );
