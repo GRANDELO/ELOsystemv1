@@ -21,7 +21,8 @@ const postProduct = async (req, res) => {
   try {
     uploadProductImage(req, res, async (err) => {
       if (err) {
-        return res.status(500).json({ message: 'Error uploading file' });
+        console.error('Error uploading file:', err.message);
+        return res.status(500).json({ message: 'Error uploading file', details: err.message });
       }
 
       const file = req.file;
@@ -46,19 +47,24 @@ const postProduct = async (req, res) => {
           description,
           price,
           category,
-          imageUrl: fileLink, // Store GridFS link
+          imageUrl: fileLink,
         });
 
-        await product.save();
-
-        res.status(201).json({ message: 'Product created successfully', product });
+        try {
+          await product.save();
+          res.status(201).json({ message: 'Product created successfully', product });
+        } catch (error) {
+          console.error('Error saving product to database:', error.message);
+          res.status(500).json({ message: 'Error saving product to database', details: error.message });
+        }
       });
     });
   } catch (error) {
-    console.error('Error posting product:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error posting product:', error.message);
+    res.status(500).json({ message: 'Server error', details: error.message });
   }
 };
+
 
 const getProducts = async (req, res) => {
   try {
@@ -81,7 +87,10 @@ const getProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   upload.single('image')(req, res, async (err) => {
-    if (err) return res.status(500).json({ message: 'Error uploading file' });
+    if (err) {
+      console.error('Error uploading file:', err.message);
+      return res.status(500).json({ message: 'Error uploading file', details: err.message });
+    }
 
     const { name, description, price, category } = req.body;
     const file = req.file;
@@ -89,7 +98,6 @@ const updateProduct = async (req, res) => {
     let updatedProduct = { name, description, price, category };
 
     if (file) {
-      // Store file in GridFS
       const writeStream = gfs.createWriteStream({
         filename: file.originalname,
         contentType: file.mimetype,
@@ -103,7 +111,8 @@ const updateProduct = async (req, res) => {
           const product = await Product.findByIdAndUpdate(req.params.id, updatedProduct, { new: true });
           res.status(200).json({ message: 'Product updated successfully', product });
         } catch (error) {
-          res.status(500).json({ message: 'Error updating product' });
+          console.error('Error updating product in database:', error.message);
+          res.status(500).json({ message: 'Error updating product in database', details: error.message });
         }
       });
     } else {
@@ -111,7 +120,8 @@ const updateProduct = async (req, res) => {
         const product = await Product.findByIdAndUpdate(req.params.id, updatedProduct, { new: true });
         res.status(200).json({ message: 'Product updated successfully', product });
       } catch (error) {
-        res.status(500).json({ message: 'Error updating product' });
+        console.error('Error updating product:', error.message);
+        res.status(500).json({ message: 'Error updating product', details: error.message });
       }
     }
   });

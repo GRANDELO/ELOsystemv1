@@ -26,7 +26,7 @@ app.use('/api', productRoutes);
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "*",
+    origin: "https://grandelo.web.app",
     methods: ["GET", "POST"]
   }
 });

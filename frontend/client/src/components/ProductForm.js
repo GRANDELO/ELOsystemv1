@@ -68,8 +68,8 @@ const ProductForm = () => {
       alert('Product uploaded successfully');
       navigate('/home');
     } catch (error) {
-      console.error('Error uploading product:', error);
-      alert('Error uploading product:' + error.response?.data.message || 'Unknown error');
+      console.error('Error uploading product:', error.response ? error.response.data.message : error.message);
+      alert(`Error uploading product: ${error.response ? error.response.data.message : error.message}`);
     }
   };
 
