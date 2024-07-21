@@ -14,18 +14,18 @@ const ProductForm = () => {
   });
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      if (id) {
+    if (id) {
+      const fetchProduct = async () => {
         try {
           const response = await axios.get(`https://elosystemv1.onrender.com/api/products/${id}`);
           setFormData(response.data.product);
         } catch (error) {
           console.error('Error fetching product:', error);
         }
-      }
-    };
+      };
 
-    fetchProduct();
+      fetchProduct();
+    }
   }, [id]);
 
   const handleChange = (e) => {
@@ -50,15 +50,19 @@ const ProductForm = () => {
     }
 
     try {
-      const response = id
-        ? await axios.put(`https://elosystemv1.onrender.com/api/products/${id}`, formDataToSend, {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          })
-        : await axios.post(`https://elosystemv1.onrender.com/api/products`, formDataToSend, {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          });
-
-      alert('Product uploaded successfully');
+      if (id) {
+        // Update existing product
+        await axios.put(`https://elosystemv1.onrender.com/api/products/${id}`, formDataToSend, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        alert('Product updated successfully');
+      } else {
+        // Create new product
+        await axios.post(`https://elosystemv1.onrender.com/api/products`, formDataToSend, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        alert('Product created successfully');
+      }
       navigate('/home');
     } catch (error) {
       console.error('Error uploading product:', error.response ? error.response.data.message : error.message);
@@ -88,7 +92,7 @@ const ProductForm = () => {
         Image:
         <input type="file" name="image" onChange={handleChange} />
       </label>
-      <button type="submit">Submit</button>
+      <button type="submit">{id ? 'Update' : 'Create'} Product</button>
     </form>
   );
 };
