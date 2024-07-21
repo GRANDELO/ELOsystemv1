@@ -15,50 +15,57 @@ conn.once('open', () => {
 const storage = multer.memoryStorage(); // Use memory storage to handle files in-memory
 const upload = multer({ storage });
 
-const uploadProductImage = upload.single('image'); // Handle single image upload
+//const uploadProductImage = upload.single('image');  Handle single image upload
 
 const postProduct = async (req, res) => {
   try {
-    uploadProductImage(req, res, async (err) => {
+    upload.single('image')(req, res, async (err) => {
       if (err) {
         return res.status(500).json({ message: 'Error uploading file' });
       }
 
       const file = req.file;
-      if (!file) {
+      if (!file && !req.body.imageUrl) {
         return res.status(400).json({ message: 'No file uploaded' });
       }
 
-      // Store file in GridFS
-      const fileUploadStream = gfs.createWriteStream({
-        filename: file.originalname,
-        contentType: file.mimetype,
-      });
-      fileUploadStream.end(file.buffer);
+      let imageUrl = req.body.imageUrl; // If image is not uploaded, use existing imageUrl
+      if (file) {
+        // Store file in GridFS
+        const fileUploadStream = gfs.createWriteStream({
+          filename: file.originalname,
+          contentType: file.mimetype,
+        });
+        fileUploadStream.end(file.buffer);
 
-      fileUploadStream.on('close', async (uploadedFile) => {
-        const fileLink = `/files/${uploadedFile.filename}`;
+        fileUploadStream.on('close', (uploadedFile) => {
+          imageUrl = `/files/${uploadedFile.filename}`;
+          createProduct();
+        });
+      } else {
+        createProduct();
+      }
 
+      function createProduct() {
         const { name, description, price, category } = req.body;
         const product = new Product({
           name,
           description,
           price,
           category,
-          imageUrl: fileLink, // Store GridFS link
+          imageUrl, 
         });
 
-        await product.save();
-
-        res.status(201).json({ message: 'Product created successfully', product });
-      });
+        product.save()
+          .then((product) => res.status(201).json({ message: 'Product created successfully', product }))
+          .catch((error) => res.status(500).json({ message: 'Error creating product', error }));
+      }
     });
   } catch (error) {
     console.error('Error posting product:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
-
 const getProducts = async (req, res) => {
   try {
     const products = await Product.find();

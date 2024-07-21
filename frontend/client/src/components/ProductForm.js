@@ -102,7 +102,9 @@ const ProductForm = () => {
         <input type="file" name="image" onChange={handleChange} />
       </label>
       <button type="submit">{id ? 'Update' : 'Create'} Product</button>
-      {id && <button type="button" onClick={handleDelete}>Delete Product</button>}
+      {id && (
+        <button type="button" onClick={handleDelete}>Delete Product</button>
+      )}
     </form>
   );
 };
