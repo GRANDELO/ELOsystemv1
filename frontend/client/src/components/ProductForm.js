@@ -1,8 +1,6 @@
-// src/components/ProductForm.js
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-
 
 const ProductForm = () => {
   const { id } = useParams();
@@ -17,24 +15,18 @@ const ProductForm = () => {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      try {
-        const response = await axios.get(`https://elosystemv1.onrender.com/api/products/${id}`);
-        const product = response.data.product;
-        setFormData({
-          name: product.name,
-          description: product.description,
-          price: product.price,
-          category: product.category,
-          imageUrl: product.imageUrl,
-        }); // Populates the form with current product data
-      } catch (error) {
-        console.error('Error fetching product:', error);
+      if (id) {
+        try {
+          const response = await axios.get(`https://elosystemv1.onrender.com/api/products/${id}`);
+          setFormData(response.data.product);
+        } catch (error) {
+          console.error('Error fetching product:', error);
+        }
       }
     };
 
     fetchProduct();
   }, [id]);
-
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -59,12 +51,13 @@ const ProductForm = () => {
 
     try {
       const response = id
-      ? await axios.put(`https://elosystemv1.onrender.com/api/products/${id}`, formDataToSend, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        }) // Update existing product
-      : await axios.post(`https://elosystemv1.onrender.com/api/products/${id}`, formDataToSend, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        }); // Create new product
+        ? await axios.put(`https://elosystemv1.onrender.com/api/products/${id}`, formDataToSend, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          })
+        : await axios.post(`https://elosystemv1.onrender.com/api/products`, formDataToSend, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          });
+
       alert('Product uploaded successfully');
       navigate('/home');
     } catch (error) {
@@ -77,29 +70,24 @@ const ProductForm = () => {
     <form onSubmit={handleSubmit}>
       <label>
         Name:
-        <input type="text" name="name" onChange={handleChange} required />
+        <input type="text" name="name" value={formData.name} onChange={handleChange} required />
       </label>
       <label>
         Description:
-        <input type="text" name="description" onChange={handleChange} required />
+        <input type="text" name="description" value={formData.description} onChange={handleChange} required />
       </label>
       <label>
         Price:
-        <input type="number" name="price" onChange={handleChange} required />
+        <input type="number" name="price" value={formData.price} onChange={handleChange} required />
       </label>
       <label>
-      category:
-        <input type="text" name="category" onChange={handleChange} required />
+        Category:
+        <input type="text" name="category" value={formData.category} onChange={handleChange} required />
       </label>
       <label>
         Image:
-        <input type="file" name="image" onChange={handleChange} required />
+        <input type="file" name="image" onChange={handleChange} />
       </label>
-      {formData.imageUrl && (
-        <div>
-          <img src={`https://elosystemv1.onrender.com${formData.imageUrl}`} alt="Product" style={{ width: '200px' }} />
-        </div>
-      )}
       <button type="submit">Submit</button>
     </form>
   );
