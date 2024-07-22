@@ -20,6 +20,9 @@ const Login = () => {
       setMessage(response.data.message);
       if (response.data.category.trim().toLowerCase() === 'seller'){
         navigate('/home');
+      }else if (response.data.category.trim().toLowerCase() === 'admin')
+      {
+        
       }else{
         navigate('/salespersonhome');
       }
