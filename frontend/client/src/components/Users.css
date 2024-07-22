@@ -1,0 +1,51 @@
+/* Container for the Users component */
+.users-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.users-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Styling for the users table */
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 1em;
+    font-family: 'Arial', sans-serif;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.users-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+}
+
+.users-table th,
+.users-table td {
+    padding: 12px 15px;
+}
+
+.users-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.users-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.users-table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+
+.loading {
+    text-align: center;
+    font-size: 1.5em;
+    color: #009879;
+}
