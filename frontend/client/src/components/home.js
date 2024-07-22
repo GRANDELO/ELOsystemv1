@@ -1,7 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Home.css';
 import ProductList from './ProductsList';
-import axiosInstance from './axiosInstance.js';
 
 const Home = () => {
   return (
@@ -27,7 +27,9 @@ const Home = () => {
         <section>
           <ProductList />
         </section>
+       
       </section>
+      <p>If you want to upload data <Link to="/productForm">upload data</Link></p>
       <footer className="home-footer">
         <p>Contact us: grandeloltd1@gmail.com</p>
         <p>&copy; 2024 Grandelo. All rights reserved.</p>

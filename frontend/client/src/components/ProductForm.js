@@ -98,8 +98,8 @@ const ProductForm = () => {
       }
       navigate('/home');
     } catch (error) {
-      console.error('Error uploading product:', error.message);
-      setMessage(`Error uploading product: ${error.message}`);
+      console.error('Error creating product:', error.message);
+      setMessage(`Error creating product: ${error.message}`);
     }
   };
 
