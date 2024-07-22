@@ -1,6 +1,7 @@
 import React from 'react';
 import './Home.css';
 import ProductList from './ProductsList';
+import axiosInstance from './axiosInstance.js';
 
 const Home = () => {
   return (

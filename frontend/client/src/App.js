@@ -43,6 +43,7 @@ const App = () => {
           <Route path="/reset-password" element={<Passwordrecovery />} />
           <Route path="/products" element={<ProductList />} />
           <Route path="/seller" element={<Seller />} />
+          <Route path="/protected" element={<ProtectedComponent />} />
         </Routes>
       </div>
     </Router>
