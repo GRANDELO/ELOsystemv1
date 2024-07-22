@@ -74,11 +74,12 @@ const ProductForm = () => {
     formDataToSend.append('category', formData.category);
     if (formData.image) {
       formDataToSend.append('image', formData.image);
+    } else {
+      formDataToSend.append('imageUrl', formData.imageUrl);
     }
-
+  
     try {
       if (id) {
-        // Update existing product
         await axiosInstance.put(`/products/${id}`, formDataToSend, {
           headers: { 
             'Content-Type': 'multipart/form-data',
@@ -87,7 +88,6 @@ const ProductForm = () => {
         });
         setMessage('Product updated successfully');
       } else {
-        // Create new product
         await axiosInstance.post(`/products`, formDataToSend, {
           headers: { 
             'Content-Type': 'multipart/form-data',
@@ -98,10 +98,11 @@ const ProductForm = () => {
       }
       navigate('/home');
     } catch (error) {
-      console.error('Error creating product:', error.message);
-      setMessage(`Error creating product: ${error.message}`);
+      console.error('Error uploading product:', error.message);
+      setMessage(`Error uploading product: ${error.message}`);
     }
   };
+  
 
   const handleDelete = async () => {
     const token = localStorage.getItem('token');
