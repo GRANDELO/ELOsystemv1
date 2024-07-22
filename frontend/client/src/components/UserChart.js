@@ -1,11 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { Line } from 'react-chartjs-2';
-import Chart from 'chart.js/auto';
-import Select from 'react-select';
 import axios from 'axios';
+import { CategoryScale, Chart, Legend, LineElement, LinearScale, PointElement, Title, Tooltip } from 'chart.js'; // Import necessary components
+import React, { useEffect, useState } from 'react';
+import { Line } from 'react-chartjs-2';
+import Select from 'react-select'; // Import react-select
+import './UserChart.css'; // Import the CSS file for styling
+
+// Register required components
+Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const UserChart = () => {
-    const [chartData, setChartData] = useState({});
+    const [chartData, setChartData] = useState({
+        labels: [],
+        datasets: [{
+            label: 'No Data',
+            data: [],
+            fill: false,
+            backgroundColor: '#009879',
+            borderColor: '#009879',
+        }]
+    });
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [years, setYears] = useState([]);
 
@@ -23,11 +36,12 @@ const UserChart = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const res = await axios.get(`/api/users/users-per-month?year=${selectedYear}`);
+                const res = await axios.get(`https://elosystemv1.onrender.com/api/users/users-per-month?year=${selectedYear}`);
+                console.log('Fetched data:', res.data); // Log the data
                 const data = res.data;
                 const months = Array.from({ length: 12 }, (_, i) => i + 1);
                 const counts = months.map(month => {
-                    const monthData = data.find(d => d._id === month);
+                    const monthData = (data || []).find(d => d._id === month);
                     return monthData ? monthData.count : 0;
                 });
 
