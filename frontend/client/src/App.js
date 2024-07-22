@@ -10,6 +10,7 @@ import Success from './components/Success';
 import Verification from './components/Verification';
 import Home from './components/home';
 import Passwordrecovery from './components/passwordreset';
+import Salespersonhome from './components/salespersonhome';
 import Seller from './components/sellerHome';
 import Upload from './components/upload';
 const socket = io('https://elosystemv1.onrender.com');
@@ -44,6 +45,7 @@ const App = () => {
           <Route path="/products" element={<ProductList />} />
           <Route path="/seller" element={<Seller />} />
           <Route path="/upload" element={<Upload />} />
+          <Route path="/salespersonhome" element={<Salespersonhome />} />
         </Routes>
       </div>
     </Router>

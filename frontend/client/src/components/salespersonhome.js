@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './Home.css';
+import ProductList from './ProductsList';
 
 const Home = () => {
   return (
@@ -16,9 +17,18 @@ const Home = () => {
           Our team of experts is dedicated to ensuring you have the best experience.
         </p>
       </section>
-      <p>
-        <strong>This is the seller home page </strong>
-        </p>
+      <section className="home-features">
+        <h2>Features</h2>
+        <ul>
+          <li>Feature 1: Description of feature 1.</li>
+          <li>Feature 2: Description of feature 2.</li>
+          <li>Feature 3: Description of feature 3.</li>
+        </ul>
+        <section>
+          <ProductList />
+        </section>
+       
+      </section>
       <p>If you want to upload data <Link to="/productForm">upload data</Link></p>
       <footer className="home-footer">
         <p>Contact us: grandeloltd1@gmail.com</p>
