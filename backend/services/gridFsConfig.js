@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const Grid = require('gridfs-stream');
 const crypto = require('crypto');
 const path = require('path');
-const { GridFsStorage } = require('multer-gridfs-storage');
 const multer = require('multer');
 require('dotenv').config();
 
@@ -18,25 +17,7 @@ conn.once('open', () => {
   gfs.collection('uploads');
 });
 
-const storage = new GridFsStorage({
-  url: process.env.MONGO_URI,
-  file: (req, file) => {
-    return new Promise((resolve, reject) => {
-      crypto.randomBytes(16, (err, buf) => {
-        if (err) {
-          return reject(err);
-        }
-        const filename = buf.toString('hex') + path.extname(file.originalname);
-        const fileInfo = {
-          filename: filename,
-          bucketName: 'uploads',
-        };
-        resolve(fileInfo);
-      });
-    });
-  },
-});
-
+const storage = multer.memoryStorage(); // Use memory storage to handle files in-memory
 const upload = multer({ storage });
 
-module.exports = { upload, gfs };
+module.exports = { upload, gfs, conn };
