@@ -7,8 +7,6 @@ require('dotenv').config();
 
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
-const imageRoutes = require('./routes/imageRoutes');
-const { upload, gfs, conn } = require('./services/gridFsConfig');
 
 const app = express();
 app.use(cors());
@@ -23,23 +21,15 @@ mongoose
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Could not connect to MongoDB', err));
 
-// Middleware to add upload and gfs to req
-app.use((req, res, next) => {
-  req.upload = upload;
-  req.gfs = gfs;
-  next();
-});
-
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api', productRoutes);
-app.use('/api/images', imageRoutes);
+app.use('/api/products', productRoutes);
 
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
     origin: "*",
-    methods: 'GET, POST, PUT, DELETE',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
   }
 });
 

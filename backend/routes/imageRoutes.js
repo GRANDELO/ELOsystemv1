@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { upload } = require('../services/gridFsConfig');
+const { upload } = require('../services/mgridFsConfig');
 
 // Upload an image
 router.post('/upload', upload.single('file'), (req, res) => {
