@@ -3,15 +3,14 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import Login from './components/Login';
 import ProductForm from './components/ProductForm';
+import ProductDetails from './components/ProductsDetail';
+import ProductList from './components/ProductsList';
 import Register from './components/Register';
 import Success from './components/Success';
 import Verification from './components/Verification';
 import Home from './components/home';
 import Passwordrecovery from './components/passwordreset';
-import ProductDetails from './components/ProductsDetail';
-import ProductList from './components/ProductsList';
 import Seller from './components/sellerHome';
-
 const socket = io('https://elosystemv1.onrender.com');
 
 const App = () => {
@@ -43,7 +42,6 @@ const App = () => {
           <Route path="/reset-password" element={<Passwordrecovery />} />
           <Route path="/products" element={<ProductList />} />
           <Route path="/seller" element={<Seller />} />
-          <Route path="/protected" element={<ProtectedComponent />} />
         </Routes>
       </div>
     </Router>

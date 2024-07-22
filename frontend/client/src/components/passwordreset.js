@@ -1,6 +1,6 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axiosInstance from '../axiosInstance';
 import './styles.css';
 
 const ResetPassword = () => {
@@ -24,7 +24,7 @@ const ResetPassword = () => {
     setMessage('');
 
     try {
-      const response = await axiosInstance.post('https://elosystemv1.onrender.com/api/auth/reset-password', formData);
+      const response = await axios.post('https://elosystemv1.onrender.com/api/auth/reset-password', formData);
       setMessage(response.data.message);
       
     } catch (error) {
