@@ -1,18 +1,33 @@
 const express = require('express');
-const router = express.Router();
 const {
-  postProduct,
   getProduct,
   getProducts,
+  postProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getImage,
 } = require('../controllers/productController');
+const authenticateToken = require('../middleware/authenticateToken');
+const router = express.Router();
 
-// Define routes
-router.post('/products', postProduct);
-router.get('/products/:id', getProduct);
+router.post('/products', (req, res, next) => {
+  req.upload.single('image')(req, res, (err) => {
+    if (err) return res.status(500).json({ message: 'Error uploading file' });
+    next();
+  });
+}, postProduct);
+
 router.get('/products', getProducts);
-router.put('/products/:id', updateProduct);
+router.get('/products/:id', getProduct);
+
+router.put('/products/:id', (req, res, next) => {
+  req.upload.single('image')(req, res, (err) => {
+    if (err) return res.status(500).json({ message: 'Error uploading file' });
+    next();
+  });
+}, updateProduct);
+
 router.delete('/products/:id', deleteProduct);
+router.get('/files/:filename', getImage);
 
 module.exports = router;
