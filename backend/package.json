@@ -25,6 +25,6 @@
   "scripts": {
     "start": "concurrently \"npm run backend\" \"npm run client\"",
     "backend": "nodemon backend/index.js",
-    "client": "npm start"
+    "client": "npm start --prefix client"
   }
 }
