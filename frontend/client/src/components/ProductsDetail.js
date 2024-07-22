@@ -5,20 +5,25 @@ import axios from 'axios';
 const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(`https://elosystemv1.onrender.com/api/products/${id}`);
+        console.log('Product data:', response.data.product);
         setProduct(response.data.product);
       } catch (error) {
         console.error('Error fetching product:', error);
+        setLoading(false);
       }
     };
     fetchProduct();
   }, [id]);
 
   if (!product) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div>
