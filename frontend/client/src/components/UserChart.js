@@ -1,11 +1,10 @@
 import axios from 'axios';
-import { CategoryScale, Chart, Legend, LineElement, LinearScale, PointElement, Title, Tooltip } from 'chart.js'; // Import necessary components
+import { CategoryScale, Chart, Legend, LineElement, LinearScale, PointElement, Title, Tooltip } from 'chart.js';
 import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import Select from 'react-select'; // Import react-select
-import './UserChart.css'; // Import the CSS file for styling
+import Select from 'react-select';
+import './UserChart.css';
 
-// Register required components
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const UserChart = () => {
@@ -24,7 +23,6 @@ const UserChart = () => {
 
     useEffect(() => {
         const fetchYears = async () => {
-            // Fetch distinct years or generate them based on the current year
             const currentYear = new Date().getFullYear();
             const yearsArray = Array.from({ length: 5 }, (_, i) => currentYear - i);
             setYears(yearsArray.map(year => ({ value: year, label: year })));
@@ -36,9 +34,9 @@ const UserChart = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const res = await axios.get(`https://elosystemv1.onrender.com/api/users/users-per-month?year=${selectedYear}`);
-                console.log('Fetched data:', res.data); // Log the data
+                const res = await axios.get(`/api/users/users-per-month?year=${selectedYear}`);
                 const data = res.data;
+
                 const months = Array.from({ length: 12 }, (_, i) => i + 1);
                 const counts = months.map(month => {
                     const monthData = (data || []).find(d => d._id === month);
@@ -49,7 +47,7 @@ const UserChart = () => {
                     labels: months.map(month => new Date(0, month - 1).toLocaleString('en', { month: 'short' })),
                     datasets: [
                         {
-                            label: `Users per Month (${selectedYear})`,
+                            label: `New Users per Month (${selectedYear})`,
                             data: counts,
                             fill: false,
                             backgroundColor: '#009879',
@@ -67,7 +65,7 @@ const UserChart = () => {
 
     return (
         <div>
-            <h1>Users per Month</h1>
+            <h1>New Users per Month</h1>
             <Select
                 options={years}
                 value={years.find(year => year.value === selectedYear)}
