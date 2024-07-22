@@ -39,7 +39,7 @@ const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
     origin: "*",
-    methods: 'GET,POST,PUT,DELETE',
+    methods: 'GET, POST, PUT, DELETE',
   }
 });
 

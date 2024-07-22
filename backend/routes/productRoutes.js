@@ -20,10 +20,10 @@ const handleUpload = (req, res, next) => {
   });
 };
 
-router.post('/products', handleUpload, postProduct);
+router.post('/products', handleUpload, upload.single('image'), postProduct);
 router.get('/products', getProducts);
 router.get('/products/:id', getProduct);
-router.put('/products/:id', handleUpload, updateProduct);
+router.put('/products/:id', handleUpload, upload.single('image'), updateProduct);
 router.delete('/products/:id', deleteProduct);
 router.get('/files/:filename', getImage);
 
