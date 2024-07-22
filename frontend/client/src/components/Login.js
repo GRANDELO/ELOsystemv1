@@ -22,7 +22,7 @@ const Login = () => {
         navigate('/home');
       }else if (response.data.category.trim().toLowerCase() === 'admin')
       {
-        navigate('/users');
+        navigate('/dashboard');
       }else{
         navigate('/salespersonhome');
       }
