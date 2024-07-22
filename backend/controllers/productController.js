@@ -2,7 +2,7 @@ const multer = require('multer');
 const mongoose = require('mongoose');
 const Grid = require('gridfs-stream');
 const Product = require('../models/Product');
-const { conn } = require('../gridFsConfig');
+const { conn } = require('./services/gridFsConfig');
 
 // Initialize GridFS
 let gfs;

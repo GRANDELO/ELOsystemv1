@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import './ProductForm.css';
 import axiosInstance from './axiosInstance';
 
 const ProductForm = () => {
@@ -45,6 +46,7 @@ const ProductForm = () => {
   const handleDrop = (e) => {
     e.preventDefault();
     setDragging(false);
+    console.log('File dropped:', e.dataTransfer.files);
     const files = e.dataTransfer.files;
     if (files.length > 0) {
       setFormData({ ...formData, image: files[0] });
@@ -54,10 +56,12 @@ const ProductForm = () => {
   const handleDragOver = (e) => {
     e.preventDefault();
     setDragging(true);
+    console.log('Dragging over');
   };
 
   const handleDragLeave = () => {
     setDragging(false);
+    console.log('Drag left');
   };
 
   const handleSubmit = async (e) => {

@@ -7,7 +7,7 @@ require('dotenv').config();
 
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
-const { upload, gfs, conn } = require('./gridFsConfig');
+const { upload, gfs, conn } = require('./services/gridFsConfig');
 
 const app = express();
 app.use(cors());
