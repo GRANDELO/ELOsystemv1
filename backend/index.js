@@ -41,10 +41,10 @@ const storage = new GridFsStorage({
     });
   }
 });
-const upload = multer({ storage });
+const uploadz = multer({ storage });
 
 // Routes
-app.post('/upload', upload.single('file'), (req, res) => {
+app.post('/upload', uploadz.single('file'), (req, res) => {
   res.json({ file: req.file });
 });
 
