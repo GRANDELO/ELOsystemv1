@@ -16,13 +16,14 @@ const ProductDetails = () => {
         setProduct(response.data.product);
       } catch (error) {
         console.error('Error fetching product:', error);
+        setError('Error fetching product');
         setLoading(false);
       }
     };
     fetchProduct();
   }, [id]);
 
-  if (!product) return <p>Loading...</p>;
+  if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
   return (
