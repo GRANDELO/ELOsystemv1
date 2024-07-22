@@ -27,7 +27,6 @@ const Home = () => {
         <section>
           <ProductList />
         </section>
-       
       </section>
       <p>If you want to upload data <Link to="/productForm">upload data</Link></p>
       <footer className="home-footer">

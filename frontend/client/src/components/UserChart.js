@@ -2,6 +2,8 @@ import axios from 'axios';
 import { CategoryScale, Chart, Legend, LineElement, LinearScale, PointElement, Title, Tooltip } from 'chart.js';
 import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import Select from 'react-select';
 import './UserChart.css';
 
@@ -20,6 +22,8 @@ const UserChart = () => {
     });
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [years, setYears] = useState([]);
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
 
     useEffect(() => {
         const fetchYears = async () => {
@@ -34,7 +38,7 @@ const UserChart = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const res = await axios.get(`/api/users/users-per-month?year=${selectedYear}`);
+                const res = await axios.get(`https://elosystemv1.onrender.com/api/users/users-per-month?year=${selectedYear}`);
                 const data = res.data;
 
                 const months = Array.from({ length: 12 }, (_, i) => i + 1);
@@ -64,15 +68,29 @@ const UserChart = () => {
     }, [selectedYear]);
 
     return (
-        <div>
+        <div className="chart-container">
             <h1>New Users per Month</h1>
-            <Select
-                options={years}
-                value={years.find(year => year.value === selectedYear)}
-                onChange={option => setSelectedYear(option.value)}
-                placeholder="Select Year"
-            />
-            <div style={{ width: '80%', margin: '0 auto' }}>
+            <div className="filters">
+                <Select
+                    options={years}
+                    value={years.find(year => year.value === selectedYear)}
+                    onChange={option => setSelectedYear(option.value)}
+                    placeholder="Select Year"
+                />
+                <DatePicker
+                    selected={startDate}
+                    onChange={(date) => setStartDate(date)}
+                    dateFormat="MMMM d, yyyy"
+                    placeholderText="Start Date"
+                />
+                <DatePicker
+                    selected={endDate}
+                    onChange={(date) => setEndDate(date)}
+                    dateFormat="MMMM d, yyyy"
+                    placeholderText="End Date"
+                />
+            </div>
+            <div className="chart-wrapper">
                 <Line data={chartData} />
             </div>
         </div>

@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { io } from 'socket.io-client';
+import Dashboard from './components/Dashboard';
 import Login from './components/Login';
 import ProductForm from './components/ProductForm';
 import ProductDetails from './components/ProductsDetail';
 import ProductList from './components/ProductsList';
 import Register from './components/Register';
+import Reports from './components/Reports';
+import Sales from './components/Sales';
 import Success from './components/Success';
 import Users from './components/User';
 import UserChart from './components/UserChart';
@@ -50,6 +53,9 @@ const App = () => {
           <Route path="/salespersonhome" element={<Salespersonhome />} />
           <Route path="/userChart" element={<UserChart />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/sales" element={<Sales />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>
     </Router>
