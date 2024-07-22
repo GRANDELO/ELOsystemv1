@@ -14,6 +14,7 @@ const UserSchema = new mongoose.Schema({
   isVerified: { type: Boolean, default: false },
   passwordRecoveryToken: { type: String, default: undefined },
   tokenExpiry: { type: Date, default: undefined },
+  createdAt: { type: Date, default: Date.now },
 }, { timestamps: true });
 
 UserSchema.pre('save', async function(next) {

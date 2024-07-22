@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import './Users.css';
 
 const Users = () => {
     const [users, setUsers] = useState([]);
@@ -8,15 +9,13 @@ const Users = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const res = await axios.get('/api/users', {
-                    headers: {
-                        'x-auth-token': localStorage.getItem('token') // Assuming you save the token in localStorage after login
-                    }
-                });
+                console.log('Fetching users...');
+                const res = await axios.get('https://elosystemv1.onrender.com/api/users');  // Removed the token part
+                console.log('Users fetched:', res.data);
                 setUsers(res.data);
                 setLoading(false);
             } catch (err) {
-                console.error(err);
+                console.error('Error fetching users:', err);
                 setLoading(false);
             }
         };
@@ -29,9 +28,9 @@ const Users = () => {
     }
 
     return (
-        <div>
+        <div className="users-container">
             <h1>Users</h1>
-            <table>
+            <table className="users-table">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -42,9 +41,9 @@ const Users = () => {
                 <tbody>
                     {users.map(user => (
                         <tr key={user._id}>
-                            <td>{user.name}</td>
+                            <td>{user.username}</td>
                             <td>{user.email}</td>
-                            <td>{user.role}</td>
+                            <td>{user.category}</td>
                         </tr>
                     ))}
                 </tbody>

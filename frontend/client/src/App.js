@@ -8,6 +8,7 @@ import ProductList from './components/ProductsList';
 import Register from './components/Register';
 import Success from './components/Success';
 import Users from './components/User';
+import UserChart from './components/UserChart';
 import Verification from './components/Verification';
 import Home from './components/home';
 import Passwordrecovery from './components/passwordreset';
@@ -47,7 +48,8 @@ const App = () => {
           <Route path="/seller" element={<Seller />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/salespersonhome" element={<Salespersonhome />} />
-          <Route path="/users" component={<Users />} />
+          <Route path="/userChart" element={<UserChart />} />
+          <Route path="/users" element={<Users />} />
         </Routes>
       </div>
     </Router>
