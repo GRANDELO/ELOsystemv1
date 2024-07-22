@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 const port = process.env.PORT || 5000;
-mongoose.set('strictQuery', false);
+mongoose.set('strictQuery', true);
 
 // Connect to MongoDB
 mongoose
