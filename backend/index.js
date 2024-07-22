@@ -23,6 +23,32 @@ mongoose
   .catch((err) => console.error('Could not connect to MongoDB', err));
 
 // Middleware to add upload and gfs to req
+const storage = new GridFsStorage({
+  url: mongoURI,
+  file: (req, file) => {
+    return new Promise((resolve, reject) => {
+      crypto.randomBytes(16, (err, buf) => {
+        if (err) {
+          return reject(err);
+        }
+        const filename = buf.toString('hex') + path.extname(file.originalname);
+        const fileInfo = {
+          filename: filename,
+          bucketName: 'uploads'
+        };
+        resolve(fileInfo);
+      });
+    });
+  }
+});
+const upload = multer({ storage });
+
+// Routes
+app.post('/upload', upload.single('file'), (req, res) => {
+  res.json({ file: req.file });
+});
+
+
 app.use((req, res, next) => {
   req.upload = upload;
   req.gfs = gfs;

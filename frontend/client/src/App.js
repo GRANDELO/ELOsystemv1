@@ -11,6 +11,7 @@ import Verification from './components/Verification';
 import Home from './components/home';
 import Passwordrecovery from './components/passwordreset';
 import Seller from './components/sellerHome';
+import Upload from './components/upload';
 const socket = io('https://elosystemv1.onrender.com');
 
 const App = () => {
@@ -42,6 +43,7 @@ const App = () => {
           <Route path="/reset-password" element={<Passwordrecovery />} />
           <Route path="/products" element={<ProductList />} />
           <Route path="/seller" element={<Seller />} />
+          <Route path="/upload" element={<Upload />} />
         </Routes>
       </div>
     </Router>

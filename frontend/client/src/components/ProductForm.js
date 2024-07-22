@@ -74,14 +74,12 @@ const ProductForm = () => {
     formDataToSend.append('category', formData.category);
     if (formData.image) {
       formDataToSend.append('image', formData.image);
-    } else {
-      formDataToSend.append('imageUrl', formData.imageUrl);
     }
   
     try {
       if (id) {
         await axiosInstance.put(`/products/${id}`, formDataToSend, {
-          headers: { 
+          headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${token}`,
           },
@@ -89,7 +87,7 @@ const ProductForm = () => {
         setMessage('Product updated successfully');
       } else {
         await axiosInstance.post(`/products`, formDataToSend, {
-          headers: { 
+          headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${token}`,
           },
@@ -102,6 +100,7 @@ const ProductForm = () => {
       setMessage(`Error uploading product: ${error.message}`);
     }
   };
+  
   
 
   const handleDelete = async () => {
