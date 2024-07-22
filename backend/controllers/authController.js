@@ -133,7 +133,7 @@ const login = async (req, res) => {
       expiresIn: '1h',
     });
 
-    res.json({ message: 'Login successful', token });
+    res.json({ message: 'Login successful', token , category: user.category});
   } catch (error) {
     console.error('Error logging in:', error);
     res.status(500).json({ message: 'Error logging in', error });
@@ -252,7 +252,7 @@ const newrecoverPassword = async (req, res) => {
     const token = crypto.randomBytes(20).toString('hex');
     user.passwordRecoveryToken = token;
     user.tokenExpiry = moment().add(1, 'hour').toDate();
-    await user.save();
+    
 
     // Send the recovery email
     const subject = 'Password Reset Request';
@@ -269,6 +269,7 @@ Grandelo`;
 
     try {
       await sendEmail(user.email, subject, message);
+      await user.save();
       res.status(200).json({ message: 'Password recovery email sent successfully.' });
     } catch (error) {
       res.status(500).json({ message: 'Error sending password recovery email' });
