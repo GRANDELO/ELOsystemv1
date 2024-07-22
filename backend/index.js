@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
+const imageRoutes = require('./routes/imageRoutes');
 const { upload, gfs, conn } = require('./services/gridFsConfig');
 
 const app = express();
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api', productRoutes);
+app.use('/api/images', imageRoutes);
 
 const server = http.createServer(app);
 const io = socketIo(server, {
