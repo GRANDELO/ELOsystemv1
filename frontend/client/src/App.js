@@ -19,6 +19,7 @@ import Passwordrecovery from './components/passwordreset';
 import Salespersonhome from './components/salespersonhome';
 import Seller from './components/sellerHome';
 import Upload from './components/upload';
+import './main.css';
 const socket = io('https://elosystemv1.onrender.com');
 
 const App = () => {
