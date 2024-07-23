@@ -15,6 +15,7 @@ const UserSchema = new mongoose.Schema({
   passwordRecoveryToken: { type: String, default: undefined },
   tokenExpiry: { type: Date, default: undefined },
   createdAt: { type: Date, default: Date.now },
+  active: Boolean,
 }, { timestamps: true });
 
 UserSchema.pre('save', async function(next) {

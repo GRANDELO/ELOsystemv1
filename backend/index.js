@@ -8,6 +8,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const userRoutes = require('./routes/userRoutes');
+const dashboardRoutes = require('./routes/dashboard');
 
 const app = express();
 app.use(cors());
@@ -26,6 +27,7 @@ mongoose
 app.use('/api/auth', authRoutes);
 app.use('/api', productRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/dash', dashboardRoutes);
 
 const server = http.createServer(app);
 const io = socketIo(server, {
