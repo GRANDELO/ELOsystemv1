@@ -100,6 +100,7 @@ Grandelo`;
       category,
       verificationCode: alphanumericCode,
       isVerified: false,
+      active: false,
       resetPasswordToken: "undefined",
       resetPasswordExpires: "undefined",
     });
@@ -113,8 +114,31 @@ Grandelo`;
 };
 
 const login = async (req, res) => {
-  const { username, password } = req.body;
 
+  try {
+    const newFields = {
+      active: false,
+    };
+
+    const updateFields = {};
+    for (const [key, value] of Object.entries(newFields)) {
+        updateFields[key] = { $ifNull: [`$${key}`, value] };
+    }
+    
+
+    await User.updateMany(
+      {
+        $or: Object.keys(newFields).map((key) => ({ [key]: { $exists: false } })),
+      },
+      { $set: newFields }
+    );
+
+    console.log('New fields added to users that were missing them');
+  } catch (error) {
+    console.error('Error updating users:', error);
+  }
+
+  const { username, password } = req.body;
   try {
     const user = await User.findOne({ username });
     if (!user) {
@@ -128,7 +152,8 @@ const login = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid password '});
     }
-
+    user.active = true;
+    await user.save();
     const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
