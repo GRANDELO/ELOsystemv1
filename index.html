@@ -33,7 +33,7 @@
       formData.append('image', document.getElementById('image').files[0]);
       formData.append('caption', document.getElementById('caption').value);
       
-      const response = await fetch('/api/upload', {
+      const response = await fetch('https://elosystemv1.onrender.com/api/img/upload', {
         method: 'POST',
         body: formData
       });

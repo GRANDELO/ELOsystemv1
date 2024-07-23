@@ -6,6 +6,8 @@ exports.uploadImage = async (req, res) => {
   const { username, password, caption } = req.body;
   const imagePath = req.file.path;
 
+  console.log('Uploaded file details:', req.file); // Log file details
+
   try {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
@@ -28,8 +30,8 @@ exports.uploadImage = async (req, res) => {
       page.click('input[type="file"]')
     ]);
 
-    // Select the file
-    await fileChooser.accept([imagePath]);
+    // Select the file with the absolute path
+    await fileChooser.accept([path.resolve(imagePath)]);
 
     // Add a caption
     await page.waitForSelector('textarea');
@@ -48,6 +50,7 @@ exports.uploadImage = async (req, res) => {
 
     res.json({ message: 'Image uploaded successfully!' });
   } catch (error) {
+    console.error('Error uploading image:', error); // Log detailed error
     res.status(500).json({ message: 'Error uploading image', error: error.message });
   }
 };
