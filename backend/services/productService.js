@@ -1,19 +1,37 @@
 const Product = require('../models/Product');
 const { getBucket } = require('../config/gridFsConfig');
 const fs = require('fs');
+const path = require('path');
 
 const createProduct = async (data, file) => {
   const newProduct = new Product(data);
+
   if (file) {
     const bucket = getBucket();
     const uploadStream = bucket.openUploadStream(file.originalname, {
       contentType: file.mimetype,
     });
-    fs.createReadStream(file.path).pipe(uploadStream);
-    uploadStream.on('finish', () => {
-      newProduct.imageId = uploadStream.id;
-      newProduct.save();
-    });
+
+    try {
+      // Pipe the file to GridFS
+      await new Promise((resolve, reject) => {
+        const fileStream = fs.createReadStream(file.path);
+        fileStream.pipe(uploadStream);
+
+        fileStream.on('end', () => resolve());
+        fileStream.on('error', (error) => reject(error));
+        uploadStream.on('error', (error) => reject(error));
+        uploadStream.on('finish', () => {
+          newProduct.imageId = uploadStream.id;
+          resolve();
+        });
+      });
+
+      await newProduct.save();
+    } catch (error) {
+      console.error('Error creating product:', error);
+      throw new Error('Error uploading file');
+    }
   } else {
     await newProduct.save();
   }
@@ -25,16 +43,33 @@ const updateProduct = async (id, data, file) => {
   if (!product) throw new Error('Product not found');
 
   Object.assign(product, data);
+
   if (file) {
     const bucket = getBucket();
     const uploadStream = bucket.openUploadStream(file.originalname, {
       contentType: file.mimetype,
     });
-    fs.createReadStream(file.path).pipe(uploadStream);
-    uploadStream.on('finish', () => {
-      product.imageId = uploadStream.id;
-      product.save();
-    });
+
+    try {
+      // Pipe the file to GridFS
+      await new Promise((resolve, reject) => {
+        const fileStream = fs.createReadStream(file.path);
+        fileStream.pipe(uploadStream);
+
+        fileStream.on('end', () => resolve());
+        fileStream.on('error', (error) => reject(error));
+        uploadStream.on('error', (error) => reject(error));
+        uploadStream.on('finish', () => {
+          product.imageId = uploadStream.id;
+          resolve();
+        });
+      });
+
+      await product.save();
+    } catch (error) {
+      console.error('Error updating product:', error);
+      throw new Error('Error uploading file');
+    }
   } else {
     await product.save();
   }
