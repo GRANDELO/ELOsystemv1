@@ -31,7 +31,7 @@ const postProduct = async (req, res) => {
         const filename = `${Date.now()}_${file.originalname}`;
         const writeStream = gfs.createWriteStream({ filename });
         writeStream.end(file.buffer);
-        riteStream.on('error', (uploadError) => {
+        writeStream.on('error', (uploadError) => {
           console.error('Error storing file in GridFS:', uploadError);
           return res.status(500).json({ message: 'Error storing file in GridFS', uploadError });
         });

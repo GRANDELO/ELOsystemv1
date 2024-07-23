@@ -5,17 +5,13 @@ const path = require('path');
 const multer = require('multer');
 require('dotenv').config();
 
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 let gfs;
-const conn = mongoose.createConnection(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+const conn = mongoose.createConnection(process.env.MONGO_URI);
 conn.once('open', () => {
   console.log('Connected to MongoDB for GridFS');
   gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection('uploads');
+  gfs.collection('Product');
 });
 
 const storage = multer.memoryStorage(); // Use memory storage to handle files in-memory
