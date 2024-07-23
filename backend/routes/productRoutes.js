@@ -1,13 +1,14 @@
-const express = require('express');
-const upload = require('../middleware/upload'); // Import the multer configuration
-const { getProduct, getProducts, postProduct, updateProduct, deleteProduct, getImage } = require('../controllers/productController');
-const router = express.Router();
+// ProductsRoutes.js
 
-router.post('/products', upload.single('image'), postProduct);
-router.get('/products', getProducts);
-router.get('/products/:id', getProduct);
-router.put('/products/:id', upload.single('image'), updateProduct);
-router.delete('/products/:id', deleteProduct);
-router.get('/files/:filename', getImage);
+const express = require('express');
+const router = express.Router();
+const productController = require('../controllers/productController');
+const upload = require('../middleware/upload');
+
+router.post('/', upload.single('image'), productController.createProduct);
+router.put('/:id', upload.single('image'), productController.updateProduct);
+router.delete('/:id', productController.deleteProduct);
+router.get('/:id', productController.getProductById);
+router.get('/', productController.getAllProducts);
 
 module.exports = router;
