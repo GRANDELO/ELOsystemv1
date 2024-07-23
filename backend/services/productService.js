@@ -6,7 +6,7 @@ const createProduct = async (data, file) => {
     const newProduct = new Product(data);
   
     if (file) {
-      const filePath = path.join(__dirname, 'uploads', file.filename); // Path to the file
+      const filePath = path.join(__dirname, '../uploads', file.filename); // Path to the file
       if (!fs.existsSync(filePath)) {
         throw new Error('File not found');
       }
@@ -34,7 +34,7 @@ const createProduct = async (data, file) => {
   
     Object.assign(product, data);
     if (file) {
-      const filePath = path.join(__dirname, 'uploads', file.filename);
+      const filePath = path.join(__dirname, '../uploads', file.filename);
       if (!fs.existsSync(filePath)) {
         throw new Error('File not found');
       }
