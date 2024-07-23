@@ -1,32 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Upload</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        input[type="file"] {
-            margin: 10px 0;
-        }
-        img {
-            max-width: 200px;
-            margin: 10px 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instagram Image Upload</title>
 </head>
 <body>
-    <h1>Upload Image</h1>
-    <form id="uploadForm">
-        <input type="file" id="fileInput" name="file" required />
-        <button type="submit">Upload</button>
-    </form>
-    <h2>Uploaded Images</h2>
-    <div id="imageList"></div>
-
-    <script src="script.js"></script>
+  <h1>Upload Image to Instagram</h1>
+  <form id="uploadForm" enctype="multipart/form-data">
+    <label for="username">Instagram Username:</label>
+    <input type="text" id="username" name="username" required><br><br>
+    
+    <label for="password">Instagram Password:</label>
+    <input type="password" id="password" name="password" required><br><br>
+    
+    <label for="image">Choose Image:</label>
+    <input type="file" id="image" name="image" accept="image/*" required><br><br>
+    
+    <label for="caption">Caption:</label>
+    <textarea id="caption" name="caption" required></textarea><br><br>
+    
+    <button type="submit">Upload</button>
+  </form>
+  
+  <script>
+    document.getElementById('uploadForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      
+      const formData = new FormData();
+      formData.append('username', document.getElementById('username').value);
+      formData.append('password', document.getElementById('password').value);
+      formData.append('image', document.getElementById('image').files[0]);
+      formData.append('caption', document.getElementById('caption').value);
+      
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+      
+      const result = await response.json();
+      alert(result.message);
+    });
+  </script>
 </body>
 </html>
