@@ -18,6 +18,7 @@ const Login = () => {
     try {
       const response = await axios.post('https://elosystemv1.onrender.com/api/auth/login', { username, password });
       setMessage(response.data.message);
+      sessionStorage.setItem('userToken', response.data.token);
       if (response.data.category.trim().toLowerCase() === 'seller'){
         navigate('/home');
       }else if (response.data.category.trim().toLowerCase() === 'admin')

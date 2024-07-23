@@ -1,14 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { getUsernameFromToken, logout } from '../utils/auth';
 import './Home.css';
 import ProductList from './ProductsList';
 
 const Home = () => {
+  const username = getUsernameFromToken();
   return (
     <div className="home">
       <header className="home-header">
-        <h1>Welcome to Grandelo</h1>
+        <h1>Welcome to Grandelo, {username}</h1>
         <p>Your go-to platform to buy anything</p>
+        <button onClick={logout} className="logout-button">Logout</button>
       </header>
       <section className="home-intro">
         <h2>About Us</h2>
@@ -19,11 +22,6 @@ const Home = () => {
       </section>
       <section className="home-features">
         <h2>Features</h2>
-        <ul>
-          <li>Feature 1: Description of feature 1.</li>
-          <li>Feature 2: Description of feature 2.</li>
-          <li>Feature 3: Description of feature 3.</li>
-        </ul>
         <section>
           <ProductList />
         </section>

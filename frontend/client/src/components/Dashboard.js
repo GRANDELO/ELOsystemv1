@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { logout } from '../utils/auth';
 import './Dashboard.css';
 import Reports from './Reports';
 import Sales from './Sales';
@@ -38,6 +39,7 @@ const Dashboard = () => {
     return (
         <div className="dashboard-container">
             <nav>
+            <button onClick={logout} className="logout-button">Logout</button>
                 <button
                     className={`nav-button ${view === 'summary' ? 'active' : ''}`}
                     onClick={() => setView('summary')}
