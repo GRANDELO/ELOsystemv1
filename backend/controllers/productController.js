@@ -1,22 +1,10 @@
-const multer = require('multer');
-const mongoose = require('mongoose');
-const Grid = require('gridfs-stream');
 const Product = require('../models/Product');
-const { conn } = require('../services/gridFsConfig');
-
-// Initialize GridFS
-let gfs;
-conn.once('open', () => {
-  gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection('uploads');
-});
-
-const storage = multer.memoryStorage(); // Use memory storage to handle files in-memory
-const upload = multer({ storage });
+const { gfs } = require('../services/gridFsConfig');
+const upload = require('../services/multerConfig'); // Adjust the path as needed
 
 const postProduct = async (req, res) => {
   try {
-    req.upload.single('image')(req, res, async (err) => {
+    upload.single('image')(req, res, async (err) => {
       if (err) {
         console.error('Error uploading file:', err);
         return res.status(500).json({ message: 'Error uploading file' });
@@ -67,7 +55,7 @@ const postProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   try {
-    req.upload.single('image')(req, res, async (err) => {
+    upload.single('image')(req, res, async (err) => {
       if (err) {
         console.error('Error uploading file:', err);
         return res.status(500).json({ message: 'Error uploading file' });
@@ -116,6 +104,7 @@ const updateProduct = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 const getProducts = async (req, res) => {
   try {
     const products = await Product.find();
@@ -145,7 +134,6 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-// Route to serve images from GridFS
 const getImage = (req, res) => {
   gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
     if (!file || file.length === 0) {
