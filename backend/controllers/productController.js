@@ -4,6 +4,12 @@ const Grid = require('gridfs-stream');
 const Product = require('../models/Product');
 const { conn } = require('../services/gridFsConfig');
 
+// Initialize GridFS
+let gfs;
+conn.once('open', () => {
+  gfs = Grid(conn.db, mongoose.mongo);
+  gfs.collection('uploads');
+});
 
 const storage = multer.memoryStorage(); // Use memory storage to handle files in-memory
 const upload = multer({ storage });
