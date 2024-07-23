@@ -14,7 +14,6 @@ const uploadRoutes = require('./routes/uploadRoutes');
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 const port = process.env.PORT || 5000;
 mongoose.set('strictQuery', true);
@@ -30,7 +29,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/dash', dashboardRoutes);
-app.use('/api/img', uploadRoutes);
 
 const server = http.createServer(app);
 const io = socketIo(server, {
