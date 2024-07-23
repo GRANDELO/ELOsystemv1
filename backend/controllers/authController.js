@@ -342,16 +342,6 @@ const logout = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-
-    const token = req.headers['authorization'];
-
-    if (!token) {
-      return res.status(400).json({ message: 'No token provided.' });
-    }
-
-    tokens = tokens.filter(t => t !== token);
-
-
     user.active = false;
     await user.save();
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { logout } from '../utils/auth';
+import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 import Reports from './Reports';
 import Sales from './Sales';
@@ -13,7 +13,11 @@ const Dashboard = () => {
     const [activeUsers, setActiveUsers] = useState(0);
     const [sales, setSales] = useState(0);
     const [recentActivities, setRecentActivities] = useState([]);
+    const navigate = useNavigate();
 
+    const handleLogout = () => {
+      navigate('/logout');
+    };
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
@@ -39,7 +43,7 @@ const Dashboard = () => {
     return (
         <div className="dashboard-container">
             <nav>
-            <button onClick={logout} className="logout-button">Logout</button>
+            <button onClick={handleLogout}>Logout</button>
                 <button
                     className={`nav-button ${view === 'summary' ? 'active' : ''}`}
                     onClick={() => setView('summary')}
