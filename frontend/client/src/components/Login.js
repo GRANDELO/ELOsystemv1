@@ -86,7 +86,7 @@ const Login = () => {
             </div>
             <button type="submit">Login</button>
             <button type="button" onClick={handleRecoverPassword}>Forgot Password</button>
-            <p><Link to="/verification">Verify Account</Link></p>
+            <p>Verify your account <Link to="/verification">Verify Account</Link></p>
             <p>If you don't have an account <Link to="/register">Register</Link></p>
           </div>
         ) : (
