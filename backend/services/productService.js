@@ -3,77 +3,57 @@ const { getBucket } = require('../config/gridFsConfig');
 const fs = require('fs');
 
 const createProduct = async (data, file) => {
-  const newProduct = new Product(data);
-
-  if (file) {
-    const bucket = getBucket();
-    const uploadStream = bucket.openUploadStream(file.originalname, {
-      contentType: file.mimetype,
-    });
-
-    try {
-      // Pipe the file to GridFS
-      await new Promise((resolve, reject) => {
-        const fileStream = fs.createReadStream(file.path);
-        fileStream.pipe(uploadStream);
-
-        fileStream.on('end', () => resolve());
-        fileStream.on('error', (error) => reject(error));
-        uploadStream.on('error', (error) => reject(error));
-        uploadStream.on('finish', () => {
-          newProduct.imageId = uploadStream.id;
-          resolve();
-        });
+    const newProduct = new Product(data);
+  
+    if (file) {
+      const filePath = path.join(__dirname, 'uploads', file.filename); // Path to the file
+      if (!fs.existsSync(filePath)) {
+        throw new Error('File not found');
+      }
+  
+      const bucket = getBucket();
+      const uploadStream = bucket.openUploadStream(file.originalname, {
+        contentType: file.mimetype,
       });
-
+  
+      fs.createReadStream(filePath).pipe(uploadStream);
+      uploadStream.on('finish', () => {
+        newProduct.imageId = uploadStream.id;
+        newProduct.save();
+      });
+    } else {
       await newProduct.save();
-    } catch (error) {
-      console.error('Error creating product:', error);
-      throw new Error('Error uploading file');
     }
-  } else {
-    await newProduct.save();
-  }
-  return newProduct;
-};
-
-const updateProduct = async (id, data, file) => {
-  const product = await Product.findById(id);
-  if (!product) throw new Error('Product not found');
-
-  Object.assign(product, data);
-
-  if (file) {
-    const bucket = getBucket();
-    const uploadStream = bucket.openUploadStream(file.originalname, {
-      contentType: file.mimetype,
-    });
-
-    try {
-      // Pipe the file to GridFS
-      await new Promise((resolve, reject) => {
-        const fileStream = fs.createReadStream(file.path);
-        fileStream.pipe(uploadStream);
-
-        fileStream.on('end', () => resolve());
-        fileStream.on('error', (error) => reject(error));
-        uploadStream.on('error', (error) => reject(error));
-        uploadStream.on('finish', () => {
-          product.imageId = uploadStream.id;
-          resolve();
-        });
+  
+    return newProduct;
+  };
+  
+  const updateProduct = async (id, data, file) => {
+    const product = await Product.findById(id);
+    if (!product) throw new Error('Product not found');
+  
+    Object.assign(product, data);
+    if (file) {
+      const filePath = path.join(__dirname, 'uploads', file.filename);
+      if (!fs.existsSync(filePath)) {
+        throw new Error('File not found');
+      }
+  
+      const bucket = getBucket();
+      const uploadStream = bucket.openUploadStream(file.originalname, {
+        contentType: file.mimetype,
       });
-
+  
+      fs.createReadStream(filePath).pipe(uploadStream);
+      uploadStream.on('finish', () => {
+        product.imageId = uploadStream.id;
+        product.save();
+      });
+    } else {
       await product.save();
-    } catch (error) {
-      console.error('Error updating product:', error);
-      throw new Error('Error uploading file');
     }
-  } else {
-    await product.save();
-  }
-  return product;
-};
+    return product;
+  };
 
 const deleteProduct = async (id) => {
   const product = await Product.findByIdAndDelete(id);
