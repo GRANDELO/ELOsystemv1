@@ -11,6 +11,7 @@
     color: white;
     font-size: 1rem;
     border-radius: 5px;
+    max-width: fit-content;
 }
 
 .nav-button.active {
@@ -42,7 +43,7 @@
 
 .metric p {
     font-size: 2rem;
-    color: #009879;
+    color: hsl(204, 100%, 30%);
 }
 
 .recent-activities {
@@ -98,6 +99,6 @@
 
 .quick-links a {
     text-decoration: none;
-    color: #009879;
+    color: hsl(204, 100%, 30%);
     font-weight: bold;
 }

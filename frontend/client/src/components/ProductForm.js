@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import './ProductForm.css';
 import axiosInstance from './axiosInstance';
+import './styles/ProductForm.css';
 
 const ProductForm = () => {
   const { id } = useParams();

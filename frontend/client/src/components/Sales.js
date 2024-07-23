@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import './Sales.css';
+import './styles/Sales.css';
 
 const Sales = () => {
     const [salesData, setSalesData] = useState({

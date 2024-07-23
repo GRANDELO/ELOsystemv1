@@ -2,7 +2,7 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Logout.css'; // Add some styling if needed
+import './styles/Logout.css'; // Add some styling if needed
 
 const Logout = () => {
   const navigate = useNavigate();
