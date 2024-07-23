@@ -33,7 +33,7 @@ mongoose
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api', productRoutes);
+app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/dash', dashboardRoutes);
 app.use('/uploads', express.static('uploads'));//remove later just for experiment
