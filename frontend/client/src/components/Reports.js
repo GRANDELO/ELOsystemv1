@@ -11,7 +11,7 @@ const Reports = () => {
     const generateReport = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(`/api/reports?reportType=${reportType}`);
+            const res = await axios.get(`https://elosystemv1.onrender.com/api/dash/reports?reportType=${reportType}`);
             setReportData(res.data);
         } catch (err) {
             console.error('Error generating report:', err);

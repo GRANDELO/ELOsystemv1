@@ -19,7 +19,7 @@ const Sales = () => {
     useEffect(() => {
         const fetchSalesData = async () => {
             try {
-                const res = await axios.get('/api/sales/monthly');
+                const res = await axios.get('https://elosystemv1.onrender.com/api/dash/sales/monthly');
                 const data = res.data;
 
                 setSalesData({
@@ -39,7 +39,7 @@ const Sales = () => {
 
         const fetchRecentSales = async () => {
             try {
-                const res = await axios.get('/api/sales/recent');
+                const res = await axios.get('https://elosystemv1.onrender.com/api/dash/sales/recent');
                 setRecentSales(res.data);
             } catch (err) {
                 console.error('Error fetching recent sales:', err);

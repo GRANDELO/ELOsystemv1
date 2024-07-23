@@ -16,16 +16,16 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                const totalUsersRes = await axios.get('/api/users/count');
+                const totalUsersRes = await axios.get('https://elosystemv1.onrender.com/api/dash/users/count');
                 setTotalUsers(totalUsersRes.data.count);
 
-                const activeUsersRes = await axios.get('/api/users/active-count');
+                const activeUsersRes = await axios.get('https://elosystemv1.onrender.com/api/dash/users/active-count');
                 setActiveUsers(activeUsersRes.data.count);
 
-                const salesRes = await axios.get('/api/sales/total');
+                const salesRes = await axios.get('https://elosystemv1.onrender.com/api/dash/sales/total');
                 setSales(salesRes.data.total);
 
-                const activitiesRes = await axios.get('/api/activities/recent');
+                const activitiesRes = await axios.get('https://elosystemv1.onrender.com/api/dash/activities/recent');
                 setRecentActivities(activitiesRes.data);
             } catch (err) {
                 console.error('Error fetching dashboard data:', err);
