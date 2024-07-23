@@ -1,7 +1,6 @@
 const Product = require('../models/Product');
 const { getBucket } = require('../config/gridFsConfig');
 const fs = require('fs');
-const path = require('path');
 
 const createProduct = async (data, file) => {
   const newProduct = new Product(data);
