@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './styles.css';
+import './styles/styles.css';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -18,6 +18,7 @@ const Login = () => {
     try {
       const response = await axios.post('https://elosystemv1.onrender.com/api/auth/login', { username, password });
       setMessage(response.data.message);
+      localStorage.setItem('userToken', response.data.token);
       if (response.data.category.trim().toLowerCase() === 'seller'){
         navigate('/home');
       }else if (response.data.category.trim().toLowerCase() === 'admin')

@@ -1,7 +1,7 @@
 // src/components/Reports.js
 import axios from 'axios';
 import React, { useState } from 'react';
-import './Reports.css';
+import './styles/Reports.css';
 
 const Reports = () => {
     const [reportType, setReportType] = useState('summary');

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './ThankYou.css';
+import './styles/ThankYou.css';
 
 function Verification() {
   const [email, setEmail] = useState('');

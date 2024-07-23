@@ -1,10 +1,11 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import './Dashboard.css';
+import { useNavigate } from 'react-router-dom';
 import Reports from './Reports';
 import Sales from './Sales';
 import Users from './User';
 import UserChart from './UserChart';
+import './styles/Dashboard.css';
 
 const Dashboard = () => {
     const [view, setView] = useState('summary');
@@ -12,7 +13,11 @@ const Dashboard = () => {
     const [activeUsers, setActiveUsers] = useState(0);
     const [sales, setSales] = useState(0);
     const [recentActivities, setRecentActivities] = useState([]);
+    const navigate = useNavigate();
 
+    const handleLogout = () => {
+      navigate('/logout');
+    };
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
@@ -38,6 +43,7 @@ const Dashboard = () => {
     return (
         <div className="dashboard-container">
             <nav>
+            <button onClick={handleLogout}>Logout</button>
                 <button
                     className={`nav-button ${view === 'summary' ? 'active' : ''}`}
                     onClick={() => setView('summary')}

@@ -333,6 +333,26 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const logout = async (req, res) => {
+  const { username } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    user.active = false;
+    await user.save();
+
+    res.status(200).json({ message: 'User logged out successfully.' });
+  } catch (error) {
+    console.error('Logout failed:', error);
+    res.status(500).json({ message: 'Logout failed.' });
+  }
+};
+
+module.exports = logout;
 
 
 module.exports = {
@@ -343,4 +363,5 @@ module.exports = {
   resendVerificationCode,
   newrecoverPassword,
   resetPassword,
+  logout,
 };

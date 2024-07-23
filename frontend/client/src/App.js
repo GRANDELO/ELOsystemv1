@@ -3,6 +3,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
+import Logout from './components/Logout';
 import ProductForm from './components/ProductForm';
 import ProductDetails from './components/ProductsDetail';
 import ProductList from './components/ProductsList';
@@ -18,6 +19,7 @@ import Passwordrecovery from './components/passwordreset';
 import Salespersonhome from './components/salespersonhome';
 import Seller from './components/sellerHome';
 import Upload from './components/upload';
+import './main.css';
 const socket = io('https://elosystemv1.onrender.com');
 
 const App = () => {
@@ -56,7 +58,7 @@ const App = () => {
           <Route path="/users" element={<Users />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/sales" element={<Sales />} />
-          
+          <Route path="/logout" element={<Logout />} />
         </Routes>
       </div>
     </Router>
