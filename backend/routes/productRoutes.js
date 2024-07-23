@@ -1,5 +1,5 @@
 const express = require('express');
-const upload = require('../services/multerConfig'); // Import the multer configuration
+const upload = require('../middleware/upload'); // Import the multer configuration
 const { getProduct, getProducts, postProduct, updateProduct, deleteProduct, getImage } = require('../controllers/productController');
 const router = express.Router();
 
