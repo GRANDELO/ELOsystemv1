@@ -13,6 +13,7 @@ const conn = mongoose.createConnection(process.env.MONGO_URI, {
   useUnifiedTopology: true,
 });
 conn.once('open', () => {
+  console.log('Connected to MongoDB for GridFS');
   gfs = Grid(conn.db, mongoose.mongo);
   gfs.collection('uploads');
 });

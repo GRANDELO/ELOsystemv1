@@ -7,6 +7,7 @@ const { conn } = require('../services/gridFsConfig');
 // Initialize GridFS
 let gfs;
 conn.once('open', () => {
+  console.log('Connected to MongoDB for GridFS');
   gfs = Grid(conn.db, mongoose.mongo);
   gfs.collection('uploads');
 });
