@@ -9,7 +9,10 @@ exports.uploadImage = async (req, res) => {
   console.log('Uploaded file details:', req.file); // Log file details
 
   try {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
     const page = await browser.newPage();
     await page.goto('https://www.instagram.com/accounts/login/');
 
@@ -18,7 +21,7 @@ exports.uploadImage = async (req, res) => {
     await page.type('input[name="username"]', username);
     await page.type('input[name="password"]', password);
     await page.click('button[type="submit"]');
-    
+
     await page.waitForNavigation();
 
     // Navigate to upload page
