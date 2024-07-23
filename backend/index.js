@@ -27,7 +27,7 @@ mongoose.set('strictQuery', true);
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGO_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Could not connect to MongoDB', err));
 
@@ -36,6 +36,23 @@ app.use('/api/auth', authRoutes);
 app.use('/api', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/dash', dashboardRoutes);
+app.use('/uploads', express.static('uploads'));//remove later just for experiment
+
+app.use((req, res, next) => {
+  const error = new Error(`Not Found - ${req.originalUrl}`);
+  res.status(404);
+  next(error);
+});
+
+//even this just experiment
+app.use((err, req, res, next) => {
+  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  res.status(statusCode);
+  res.json({
+    message: err.message,
+    stack: process.env.NODE_ENV === 'production' ? null : err.stack,
+  });
+});
 
 const server = http.createServer(app);
 const io = socketIo(server, {

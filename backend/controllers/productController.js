@@ -1,57 +1,79 @@
-// productController.js
+const Product = require('../models/Product');
+const asyncHandler = require('express-async-handler');
+const multer = require('multer');
+const path = require('path');
 
-const productService = require('../services/productService');
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
+  },
+});
 
-const createProduct = async (req, res) => {
-  try {
-    const product = await productService.createProduct(req.body, req.file);
-    res.status(201).json({ product });
-  } catch (error) {
-    console.error('Error creating product:', error);
-    res.status(500).json({ message: error.message });
+const upload = multer({ storage });
+
+const addProduct = asyncHandler(async (req, res) => {
+  const { name, description, price, category } = req.body;
+  const image = req.file ? req.file.filename : null;
+
+  const product = new Product({
+    name,
+    description,
+    price,
+    category,
+    image,
+  });
+
+  const createdProduct = await product.save();
+  res.status(201).json(createdProduct);
+});
+
+const getProduct = asyncHandler(async (req, res) => {
+  const product = await Product.findById(req.params.id);
+  if (product) {
+    res.json(product);
+  } else {
+    res.status(404);
+    throw new Error('Product not found');
   }
-};
+});
 
-const updateProduct = async (req, res) => {
-  try {
-    const product = await productService.updateProduct(req.params.id, req.body, req.file);
-    res.status(200).json({ product });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+const updateProduct = asyncHandler(async (req, res) => {
+  const { name, description, price, category } = req.body;
+  const product = await Product.findById(req.params.id);
 
-const deleteProduct = async (req, res) => {
-  try {
-    const product = await productService.deleteProduct(req.params.id);
-    res.status(200).json({ message: 'Product deleted', product });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+  if (product) {
+    product.name = name || product.name;
+    product.description = description || product.description;
+    product.price = price || product.price;
+    product.category = category || product.category;
+    if (req.file) product.image = req.file.filename;
 
-const getProductById = async (req, res) => {
-  try {
-    const product = await productService.getProductById(req.params.id);
-    res.status(200).json({ product });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    const updatedProduct = await product.save();
+    res.json(updatedProduct);
+  } else {
+    res.status(404);
+    throw new Error('Product not found');
   }
-};
+});
 
-const getAllProducts = async (req, res) => {
-  try {
-    const products = await productService.getAllProducts();
-    res.status(200).json({ products });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+const deleteProduct = asyncHandler(async (req, res) => {
+  const product = await Product.findById(req.params.id);
+  if (product) {
+    await product.remove();
+    res.json({ message: 'Product removed' });
+  } else {
+    res.status(404);
+    throw new Error('Product not found');
   }
-};
+});
 
 module.exports = {
-  createProduct,
+  addProduct,
+  getProduct,
   updateProduct,
   deleteProduct,
-  getProductById,
-  getAllProducts,
+  upload,
 };
