@@ -31,8 +31,13 @@ const postProduct = async (req, res) => {
         const filename = `${Date.now()}_${file.originalname}`;
         const writeStream = gfs.createWriteStream({ filename });
         writeStream.end(file.buffer);
+        riteStream.on('error', (uploadError) => {
+          console.error('Error storing file in GridFS:', uploadError);
+          return res.status(500).json({ message: 'Error storing file in GridFS', uploadError });
+        });
 
         writeStream.on('close', async (file) => {
+          console.log('File written to GridFS:', file.filename);
           imageUrl = `/files/${file.filename}`;
           const product = new Product({ name, description, price, category, imageUrl });
 
@@ -83,11 +88,18 @@ const updateProduct = async (req, res) => {
         const writeStream = gfs.createWriteStream({ filename });
         writeStream.end(file.buffer);
 
+        writeStream.on('error', (uploadError) => {
+          console.error('Error storing file in GridFS:', uploadError);
+          return res.status(500).json({ message: 'Error storing file in GridFS', uploadError });
+        });
+
         writeStream.on('close', async (file) => {
+          
           imageUrl = `/files/${file.filename}`;
           const productUpdates = { name, description, price, category, imageUrl };
 
           try {
+            await productUpdates.save();
             const updatedProduct = await Product.findByIdAndUpdate(req.params.id, productUpdates, { new: true });
             res.status(200).json({ message: 'Product updated successfully', product: updatedProduct });
           } catch (updateError) {
@@ -104,6 +116,7 @@ const updateProduct = async (req, res) => {
         const productUpdates = { name, description, price, category };
 
         try {
+          await productUpdates.save();
           const updatedProduct = await Product.findByIdAndUpdate(req.params.id, productUpdates, { new: true });
           res.status(200).json({ message: 'Product updated successfully', product: updatedProduct });
         } catch (updateError) {
