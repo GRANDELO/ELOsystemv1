@@ -58,6 +58,7 @@ const ProductList = () => {
         </div>
       ))}
     </div>
+    
   );
 };
 

@@ -1,34 +1,25 @@
-const mongoose = require('mongoose');
-const { GridFSBucket } = require('mongodb');
+const { MongoClient, GridFSBucket } = require('mongodb');
 require('dotenv').config();
 
 let bucket;
 
-const initializeGridFSBucket = async () => {
+const connectDB = async () => {
+  const uri = process.env.MONGO_URI;
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
   try {
-    const connection = await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-
-    const db = connection.connection.db;
+    await client.connect();
+    const db = client.db();
     bucket = new GridFSBucket(db, {
-      bucketName: 'images',
+      bucketName: 'uploads'
     });
-
-    console.log('GridFSBucket initialized');
+    console.log('Connected to MongoDB and GridFS');
   } catch (error) {
-    console.error('MongoDB connection error:', error);
+    console.error('Error connecting to MongoDB and GridFS', error);
+    process.exit(1);
   }
 };
 
-initializeGridFSBucket();
+const getBucket = () => bucket;
 
-const getBucket = () => {
-  if (!bucket) {
-    throw new Error('GridFSBucket is not initialized');
-  }
-  return bucket;
-};
-
-module.exports = { getBucket };
+module.exports = { connectDB, getBucket };
