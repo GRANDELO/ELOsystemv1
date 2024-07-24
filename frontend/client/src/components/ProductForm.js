@@ -21,8 +21,8 @@ const ProductForm = () => {
     if (id) {
       const fetchProduct = async () => {
         try {
-          const token = localStorage.getItem('token');
-          const response = await axiosInstance.get(`/products/${id}`, {
+          const token = sessionStorage.getItem('userToken');
+          const response = await axiosInstance.get(`/products/products/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setFormData(response.data.product);
@@ -66,7 +66,7 @@ const ProductForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('userToken');
     const formDataToSend = new FormData();
     formDataToSend.append('name', formData.name);
     formDataToSend.append('description', formData.description);
@@ -78,7 +78,7 @@ const ProductForm = () => {
   
     try {
       if (id) {
-        await axiosInstance.put(`/products/${id}`, formDataToSend, {
+        await axiosInstance.put(`products/products/${id}`, formDataToSend, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${token}`,
@@ -86,7 +86,7 @@ const ProductForm = () => {
         });
         setMessage('Product updated successfully');
       } else {
-        await axiosInstance.post(`/products`, formDataToSend, {
+        await axiosInstance.post(`/products/products`, formDataToSend, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${token}`,
@@ -104,9 +104,9 @@ const ProductForm = () => {
   
 
   const handleDelete = async () => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('userToken');
     try {
-      await axiosInstance.delete(`/products/${id}`, {
+      await axiosInstance.delete(`/products/products/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMessage('Product deleted successfully');

@@ -11,7 +11,7 @@ const ProductList = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axiosInstance.get('/products');
+        const response = await axiosInstance.get('/products/products');
         setProducts(response.data.products);
         setLoading(false);
       } catch (err) {

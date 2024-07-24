@@ -2,8 +2,8 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './styles/Logout.css'; // Add some styling if needed
-
+import loader from './images/loader2.gif';
+import './styles/Logout.css';
 const Logout = () => {
   const navigate = useNavigate();
   const [logoutMessage, setLogoutMessage] = useState('');
@@ -11,7 +11,7 @@ const Logout = () => {
   useEffect(() => {
     const performLogout = async () => {
       try {
-        const token = localStorage.getItem('userToken');
+        const token = sessionStorage.getItem('userToken');
         const decodedToken = jwtDecode(token);
         const username = decodedToken?.username;
 
@@ -26,7 +26,7 @@ const Logout = () => {
         });
 
         // Clear the user token or session
-        localStorage.removeItem('userToken'); // or your token key
+        sessionStorage.removeItem('userToken'); // or your token key
 
         // Set the message from the backend
         setLogoutMessage(response.data.message);
@@ -46,8 +46,8 @@ const Logout = () => {
 
   return (
     <div className="logout-container">
-      <h1>Logging Out...</h1>
-      <p>{logoutMessage || 'You have been logged out successfully. You will be redirected to the login page shortly.'}</p>
+
+    <img src={loader}/><p>{logoutMessage}</p> 
     </div>
   );
 };

@@ -1,6 +1,6 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -11,7 +11,7 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`https://elosystemv1.onrender.com/api/products/${id}`);
+        const response = await axios.get(`https://elosystemv1.onrender.com/api/products/products/${id}`);
         console.log('Product data:', response.data.product);
         setProduct(response.data.product);
       } catch (error) {

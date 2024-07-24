@@ -1,6 +1,5 @@
 .home {
     text-align: center;
-    padding: 20px;
   }
   
   main{
@@ -15,12 +14,6 @@
     margin: 10px;
   }
 
-  .home-header {
-    background-color: #282c34;
-    padding: 20px;
-    color: white;
-  }
-  
   .home-intro, .home-features {
     margin: 20px 0;
   }

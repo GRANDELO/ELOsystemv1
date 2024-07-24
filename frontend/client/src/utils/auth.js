@@ -2,7 +2,7 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
 export const getUsernameFromToken = () => {
-  const token = localStorage.getItem('userToken');
+  const token = sessionStorage.getItem('userToken');
   if (!token) return null;
   
   try {
@@ -14,7 +14,7 @@ export const getUsernameFromToken = () => {
   }
 };
 export const getemailFromToken = () => {
-  const token = localStorage.getItem('userToken');
+  const token = sessionStorage.getItem('userToken');
   if (!token) return null;
   
   try {
@@ -26,7 +26,7 @@ export const getemailFromToken = () => {
   }
 };
 export const getcategoryFromToken = () => {
-  const token = localStorage.getItem('userToken');
+  const token = sessionStorage.getItem('userToken');
   if (!token) return null;
   
   try {
@@ -40,7 +40,7 @@ export const getcategoryFromToken = () => {
 
 export const logout = async () => {
   try {
-    const token = localStorage.getItem('userToken');
+    const token = sessionStorage.getItem('userToken');
     const username = getUsernameFromToken();
 
     if (!token || !username) {
@@ -55,7 +55,7 @@ export const logout = async () => {
     });
 
     // Clear the user token or session
-    localStorage.removeItem('userToken'); // or your token key
+    sessionStorage.removeItem('userToken'); // or your token key
 
     // Redirect to login page or perform other logout actions
     window.location.href = '/';

@@ -1,6 +1,7 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import { getUsernameFromToken, getcategoryFromToken, getemailFromToken } from '../utils/auth';
-import Logo from './images/logo.png';
+import Prof from './images/prof.jpeg';
 import './styles/setting.css';
 
 const Settings = () => {
@@ -26,6 +27,18 @@ const Settings = () => {
         if (!/^[a-zA-Z0-9_]{4,}$/.test(newUsername)) {
             setError('Username must be at least 4 characters long and contain only letters, numbers, or underscores.');
             return;
+        }else
+        {
+          try {
+            const response = await axios.post('https://elosystemv1.onrender.com/api/auth/changeusername', { username });
+            setMessage(response.data.message);
+          } catch (error) {
+            if (error.response && error.response.data) {
+              setMessage(error.response.data.message);
+            } else {
+              setMessage('An error occurred while processing your request..');
+            }
+          }
         }
         // Perform the save operation and handle success/failure
     };
@@ -34,10 +47,21 @@ const Settings = () => {
         if (newPassword.length < 8 || !/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword) || !/[0-9]/.test(newPassword) || !/[!@#$%^&*(),.?":{}|<>]/.test(newPassword)) {
             setError('Password must be at least 8 characters long and contain an uppercase letter, a lowercase letter, a number, and a special character.');
             return;
-        }
-        if (newPassword !== confirmPassword) {
+        }else if (newPassword !== confirmPassword) {
             setError('The passwords do not match!');
             return;
+        }else
+        {
+          try {
+            const response = await axios.post('https://elosystemv1.onrender.com/api/auth/changepassword', { username });
+            setMessage(response.data.message);
+          } catch (error) {
+            if (error.response && error.response.data) {
+              setMessage(error.response.data.message);
+            } else {
+              setMessage('An error occurred while processing your request..');
+            }
+          }
         }
         // Perform the save operation and handle success/failure
     };
@@ -46,6 +70,21 @@ const Settings = () => {
         if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(newEmail)) {
             setError('Please enter a valid gmail address (e.g., yourname@gmail.com).');
             return;
+        }else{
+          try {
+            const response = await axios.post('https://elosystemv1.onrender.com/api/auth/update-email', { oldEmail: email, newEmail });
+            if (response.status === 200) {
+              setEmail(newEmail);
+              sessionStorage.setItem('email', newEmail);
+              setError(null);
+            }
+          } catch (error) {
+            if (error.response && error.response.data) {
+              setError(error.response.data.message);
+            } else {
+              setError('An error occurred while updating the email.');
+            }
+          }
         }
         // Perform the save operation and handle success/failure
     };
@@ -54,6 +93,18 @@ const Settings = () => {
         if (!/^(07|01)\d{8}$/.test(newPhoneNumber)) {
             setError('Please enter a valid 10-digit phone number starting with 07 or 01.');
             return;
+        }else{
+
+          try {
+            const response = await axios.post('https://elosystemv1.onrender.com/api/auth/changephonenumber', { username });
+            setMessage(response.data.message);
+          } catch (error) {
+            if (error.response && error.response.data) {
+              setMessage(error.response.data.message);
+            } else {
+              setMessage('An error occurred while processing your request..');
+            }
+          }
         }
         // Perform the save operation and handle success/failure
     };
@@ -61,7 +112,7 @@ const Settings = () => {
     return (
         <div className="container">
             <div className="userinfo">
-              <img width="70px" src={Logo} alt="User Avatar"/>
+              <img width="70px" src={Prof} alt="User Avatar"/>
               <p><b>Username:</b> <i>{lusername}</i></p>
               <p><b>Email:</b> <i>{lemail}</i></p>
               <p><b>Specialty:</b> <i>{lcategory}</i></p>

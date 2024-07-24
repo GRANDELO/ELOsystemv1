@@ -1,26 +1,17 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getUsernameFromToken } from '../utils/auth';
+import Header from './header';
 import Settings from './settings';
 import './styles/Home.css';
 const Home = () => {
-  const username = getUsernameFromToken();
   const navigate = useNavigate();
-  const handleLogout = () => {
-    navigate('/logout');
-  };
   const showprofile =() =>
     {
 
     }
   return (
     <div className="home">
-      <header className="home-header">
-        <h1>Welcome to Grandelo, {username}</h1>
-        <p>Your go-to platform to buy anything</p>
-        <button onClick={handleLogout}>Logout</button>
-
-      </header>
+      <Header/>
       <main>
           <section className="user-section">
             <Settings />

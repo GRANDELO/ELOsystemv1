@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 
-const token = localStorage.getItem('token');
+const token = sessionStorage.getItem('userToken');
 
 const axiosInstance = axios.create({
   baseURL: 'https://elosystemv1.onrender.com/api',
