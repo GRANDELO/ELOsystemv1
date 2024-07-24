@@ -13,6 +13,30 @@ export const getUsernameFromToken = () => {
     return null;
   }
 };
+export const getemailFromToken = () => {
+  const token = localStorage.getItem('userToken');
+  if (!token) return null;
+  
+  try {
+    const decoded = jwtDecode(token);
+    return decoded.email;
+  } catch (error) {
+    console.error('Invalid token:', error);
+    return null;
+  }
+};
+export const getcategoryFromToken = () => {
+  const token = localStorage.getItem('userToken');
+  if (!token) return null;
+  
+  try {
+    const decoded = jwtDecode(token);
+    return decoded.category;
+  } catch (error) {
+    console.error('Invalid token:', error);
+    return null;
+  }
+};
 
 export const logout = async () => {
   try {

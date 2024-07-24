@@ -37,8 +37,6 @@ const getUsersPerMonth = async (req, res) => {
                 $sort: { _id: 1 }
             }
         ]);
-
-        // Ensure that all months are represented in the response
         const months = Array.from({ length: 12 }, (_, i) => ({
             _id: i + 1,
             count: 0
