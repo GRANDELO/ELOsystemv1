@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import NewProductForm from './NewProductForm';
 import Header from './header';
 import Settings from './settings';
 import './styles/Home.css';
@@ -25,7 +26,7 @@ const Home = () => {
           <p>
             <strong>This is the seller home page </strong>
           </p>
-          <p>If you want to upload data <Link to="/productForm">upload data</Link></p>
+          <NewProductForm/>
         </section>
       </main>
 

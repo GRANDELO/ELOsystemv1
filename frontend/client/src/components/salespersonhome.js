@@ -1,11 +1,10 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getUsernameFromToken } from '../utils/auth';
-import ProductList from './ProductsList';
+import NewProductList from './NewProductList';
 import Header from './header';
 import Settings from './settings';
 import './styles/Home.css';
-
 const Home = () => {
   const username = getUsernameFromToken();
   const navigate = useNavigate();
@@ -30,10 +29,9 @@ const Home = () => {
       <section className="home-features">
         <h2>Features</h2>
         <section>
-          <ProductList />
+          <NewProductList/>
         </section>
       </section>
-          <p>If you want to upload data <Link to="/productForm">upload data</Link></p>
       </section>
     </main>
     <footer className="home-footer">

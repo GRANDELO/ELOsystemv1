@@ -1,37 +1,41 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-const NewProductDetail = () => {
+const NewProductDetails = () => {
   const { id } = useParams();
-  const [newProduct, setNewProduct] = useState(null);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchNewProduct = async () => {
+    const fetchProduct = async () => {
       try {
-        const res = await axios.get(`https://elosystemv1.onrender.com/api/newproducts/${id}`);
-        setNewProduct(res.data);
-      } catch (err) {
-        console.error(err);
+        const response = await axios.get(`https://elosystemv1.onrender.com/api/newproducts/${id}`);
+        console.log('Product data:', response.data);
+        setProduct(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching product:', error);
+        setError('Error fetching product');
+        setLoading(false);
       }
     };
-
-    fetchNewProduct();
+    fetchProduct();
   }, [id]);
 
-  if (!newProduct) return <div>Loading...</div>;
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div>
-      <h1>{newProduct.name}</h1>
-      <p>{newProduct.category} - {newProduct.subCategory}</p>
-      <p>{newProduct.price}</p>
-      <p>{newProduct.description}</p>
-      <p>Created by: {newProduct.username}</p>
-      <p>Quantity: {newProduct.quantity}</p>
-      <Link to={`/newproducts/${id}/edit`}>Edit</Link>
+      <h1>{product.name}</h1>
+      <p>{product.description}</p>
+      <p>{product.price}</p>
+      <p>{product.category}</p>
+      {product.imageUrl && <img src={product.imageUrl} alt={product.name} />}
     </div>
   );
 };
 
-export default NewProductDetail;
+export default NewProductDetails;
