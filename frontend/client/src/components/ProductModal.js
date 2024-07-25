@@ -14,7 +14,7 @@ const ProductModal = ({ product, show, handleClose }) => {
     try {
       setMessage('');
       setError('');
-      const addResponse = await axios.post('https://elosystemv1.onrender.com/api/cart/add', 
+      const addResponse = await axios.post('https://elosystemv1.onrender.com/api/cart/cart/add', 
         { username, productId: product._id, quantity: 1 }
       );
       setMessage(addResponse.data.message);

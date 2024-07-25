@@ -16,7 +16,7 @@ const Cart = () => {
       try {
         setMessage('');
         setError('');
-        const response = await axios.post('https://elosystemv1.onrender.com/api/cart', { username });
+        const response = await axios.post('https://elosystemv1.onrender.com/api/cart/cart', { username });
         dispatch({ type: 'SET_CART', payload: response.data.items });
       } catch (err) {
         console.error('Failed to fetch cart:', err);
@@ -31,12 +31,12 @@ const Cart = () => {
     try {
       setMessage('');
       setError('');
-      const removeResponse = await axios.post('https://elosystemv1.onrender.com/api/cart/remove', 
+      const removeResponse = await axios.post('https://elosystemv1.onrender.com/api/cart/cart/remove', 
         { username, productId: product._id }
       );
       setMessage(removeResponse.data.message);
 
-      const response = await axios.post('https://elosystemv1.onrender.com/api/cart', { username });
+      const response = await axios.post('https://elosystemv1.onrender.com/api/cart/cart', { username });
       dispatch({ type: 'SET_CART', payload: response.data.items });
     } catch (err) {
       console.error('Failed to remove from cart:', err);
@@ -48,7 +48,7 @@ const Cart = () => {
     try {
       setMessage('');
       setError('');
-      const clearResponse = await axios.post('https://elosystemv1.onrender.com/api/cart/clear', 
+      const clearResponse = await axios.post('https://elosystemv1.onrender.com/api/cart/cart/clear', 
         { username }
       );
       setMessage(clearResponse.data.message);

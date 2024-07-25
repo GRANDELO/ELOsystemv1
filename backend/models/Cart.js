@@ -16,7 +16,7 @@ const CartItemSchema = new Schema({
 
 const CartSchema = new Schema({
   user: {
-    type: String, // Changed from ObjectId to String to store the username
+    type: String,
     required: true,
   },
   items: [CartItemSchema],

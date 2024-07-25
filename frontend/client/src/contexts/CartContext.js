@@ -14,7 +14,7 @@ const cartReducer = (state, action) => {
 
 const fetchCart = async (dispatch) => {
   try {
-    const response = await axios.get('https://elosystemv1.onrender.com/api/cart');
+    const response = await axios.get('https://elosystemv1.onrender.com/api/cart/cart');
     dispatch({ type: 'SET_CART', payload: response.data.items });
   } catch (error) {
     console.error('Failed to fetch cart:', error);
