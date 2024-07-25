@@ -1,7 +1,5 @@
 const Cart = require('../models/Cart');
 
-const Cart = require('../models/Cart');
-
 exports.getCart = async (req, res) => {
   try {
     const { username } = req.body; // Ensure username is in the request body
