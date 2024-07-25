@@ -6,11 +6,15 @@ exports.getCart = async (req, res) => {
     const { username } = req.body; // Get username from request params
 
     if (!username) {
-      return res.status(400).json({ message: username });
+      return res.status(400).json({ message: "username required" });
     }
 
     // Find the cart by username
-    const cart = await Cart.findOne({ user: username }).populate('items.product');
+    try {
+      const cart = await Cart.findOne({ user: username }).populate('items.product');
+    } catch (error) {
+      return res.status(400).json({ message: "failed to populate." });
+    }
 
     if (!cart) {
       return res.status(404).json({ message: 'Cart not found' });
