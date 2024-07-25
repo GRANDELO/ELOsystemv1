@@ -1,14 +1,20 @@
 const Cart = require('../models/Cart');
 
+const Cart = require('../models/Cart');
+
 exports.getCart = async (req, res) => {
   try {
-    const { username } = req.body;
-    const cart = await Cart.findOne({ username }).populate('items.product');
+    const { username } = req.body; // Ensure username is in the request body
+    if (!username) {
+      return res.status(400).json({ message: 'Username is required' });
+    }
+    const cart = await Cart.findOne({ user: username }).populate('items.product');
     if (!cart) {
       return res.status(404).json({ message: 'Cart not found' });
     }
     res.json(cart);
   } catch (error) {
+    console.error('Error fetching cart:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
