@@ -441,7 +441,7 @@ Follow this link https://grandelo.web.app/verification to verify your account
 Best regards,
 Grandelo`;
     try {
-      await sendEmail(email, subject, vermessage);
+      await sendEmail(lemail, subject, vermessage);
       console.log('Email sent successfully');
     } catch (error) {
       console.error('Error sending email:', error);
