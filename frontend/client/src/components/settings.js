@@ -105,15 +105,15 @@ const Settings = () => {
         <div className="container">
             <div className="userinfo">
               <img width="70px" src={Prof} alt="User Avatar"/>
-              <p><b>Username:</b> <i>{lusername}</i></p>
-              <p><b>Email:</b> <i>{lemail}</i></p>
-              <p><b>Specialty:</b> <i>{lcategory}</i></p>
+              <spam className='userinfospan'>
+                <p><b>Username:</b> <i>{lusername}</i></p>
+                <p><b>Email:</b> <i>{lemail}</i></p>
+                <p><b>Specialty:</b> <i>{lcategory}</i></p>
+              </spam>
+
             </div>
             <h2>Settings</h2>
             <div>
-                <p><strong>Username:</strong> {username}</p>
-                <p><strong>Email:</strong> {email}</p>
-                <p><strong>Specialty:</strong> {specialty}</p>
                 <button className="settings-button" onClick={() => setChangeUsername(!changeUsername)}>Change Username</button>
                 <button className="settings-button" onClick={() => setChangePassword(!changePassword)}>Change Password</button>
                 <button className="settings-button" onClick={() => setChangeEmail(!changeEmail)}>Change Email</button>
