@@ -1,32 +1,7 @@
 const Cart = require('../models/Cart');
 const NewProduct = require('../models/newproductModel'); 
 
-exports.addToCart = async (req, res) => {
-  try {
-    const { username, productId, quantity } = req.body;
-    let cart = await Cart.findOne({ user: username });
-
-    if (cart) {
-      const itemIndex = cart.items.findIndex(item => item.product.toString() === productId);
-      if (itemIndex > -1) {
-        cart.items[itemIndex].quantity += quantity;
-      } else {
-        cart.items.push({ product: productId, quantity });
-      }
-    } else {
-      cart = new Cart({
-        user: username,
-        items: [{ product: productId, quantity }],
-      });
-    }
-    await cart.save();
-    res.status(201).json({ message: 'Product added to cart successfully', cart });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-exports.getCartByUsername = async (req, res) => {
+exports.getCart = async (req, res) => {
   try {
     const { username } = req.body;
     if (!username) {
@@ -59,6 +34,32 @@ exports.getCartByUsername = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+exports.addToCart = async (req, res) => {
+  try {
+    const { username, productId, quantity } = req.body; // Get username from the request body
+    let cart = await Cart.findOne({ user: username });
+
+    if (cart) {
+      const itemIndex = cart.items.findIndex(item => item.product.toString() === productId);
+      if (itemIndex > -1) {
+        cart.items[itemIndex].quantity += quantity;
+      } else {
+        cart.items.push({ product: productId, quantity });
+      }
+    } else {
+      cart = new Cart({
+        user: username,
+        items: [{ product: productId, quantity }],
+      });
+    }
+    await cart.save();
+    res.status(201).json({ message: 'Product added to cart successfully', cart });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 exports.removeFromCart = async (req, res) => {
   try {
     const { username, productId } = req.body; // Get username from the request body
