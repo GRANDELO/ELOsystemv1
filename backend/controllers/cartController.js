@@ -1,28 +1,40 @@
 const Cart = require('../models/Cart');
 const NewProduct = require('../models/newproductModel'); 
 
-exports.getCart = async (req, res) => {
+exports.getCartByUsername = async (req, res) => {
   try {
-    const { username } = req.body; // Get username from request params
+    const { username } = req.body; // Ensure username is in the request body
 
     if (!username) {
-      return res.status(400).json({ message: "username required" });
+      return res.status(400).json({ message: 'Username is required' });
     }
 
-    // Find the cart by username
-    try {
-      const cart = await Cart.findOne({ user: username }).populate('items.Cart');
-    } catch (error) {
-      console.log(error);
-      return res.status(400).json({ message: "failed to populate." });
-    }
+    // Find the cart by username without populating the product field in items
+    const cart = await Cart.findOne({ user: username });
 
     if (!cart) {
       return res.status(404).json({ message: 'Cart not found' });
     }
 
+    // Manually fetch product details for each item
+    const itemsWithProductDetails = await Promise.all(
+      cart.items.map(async (item) => {
+        const product = await NewProduct.findById(item.product);
+        return {
+          product,
+          quantity: item.quantity,
+        };
+      })
+    );
+
+    // Merge the product details into the cart object
+    const cartWithProductDetails = {
+      ...cart.toObject(),
+      items: itemsWithProductDetails,
+    };
+
     // Return the cart data
-    res.status(200).json(cart);
+    res.status(200).json(cartWithProductDetails);
   } catch (error) {
     console.error('Error fetching cart:', error);
     res.status(500).json({ message: 'Server error' });
