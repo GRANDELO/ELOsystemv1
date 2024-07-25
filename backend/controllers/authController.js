@@ -450,9 +450,9 @@ Grandelo`;
     const token = jwt.sign({ id: user._id, username: user.username, email: user.email, category: user.category }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
-    res.status(200).json({ message: 'Password updated successfully', token});
+    res.status(200).json({ message: 'Email updated successfully', token});
   } catch (error) {
-    res.status(500).json({ message: 'An error occurred while updating password' });
+    res.status(500).json({ message: 'An error occurred while updating Email' });
   }
 };
 module.exports = {
