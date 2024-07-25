@@ -6,7 +6,7 @@ exports.getCart = async (req, res) => {
     const { username } = req.params; // Get username from request params
 
     if (!username) {
-      return res.status(400).json({ message: 'Username is required' });
+      return res.status(400).json({ message: username });
     }
 
     // Find the cart by username
