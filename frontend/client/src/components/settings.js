@@ -5,12 +5,9 @@ import Prof from './images/prof.jpeg';
 import './styles/setting.css';
 
 const Settings = () => {
-  const lusername = getUsernameFromToken();
-  const lemail = getemailFromToken();
-  const lcategory = getcategoryFromToken();
-    const [username, setUsername] = useState('kinyijr');
-    const [email, setEmail] = useState('Kinyijr@gmail.com');
-    const [specialty, setSpecialty] = useState('seller');
+    const lusername = getUsernameFromToken();
+    const lemail = getemailFromToken();
+    const lcategory = getcategoryFromToken();
     const [newUsername, setNewUsername] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -30,7 +27,7 @@ const Settings = () => {
         }else
         {
           try {
-            const response = await axios.post('https://elosystemv1.onrender.com/api/auth/changeusername', { username });
+            const response = await axios.post('https://elosystemv1.onrender.com/api/auth/changeusername', {lemail, newUsername });
             setMessage(response.data.message);
           } catch (error) {
             if (error.response && error.response.data) {
@@ -53,7 +50,7 @@ const Settings = () => {
         }else
         {
           try {
-            const response = await axios.post('https://elosystemv1.onrender.com/api/auth/changepassword', { username });
+            const response = await axios.post('https://elosystemv1.onrender.com/api/auth/changepassword', {lemail, newPassword });
             setMessage(response.data.message);
           } catch (error) {
             if (error.response && error.response.data) {
@@ -63,7 +60,6 @@ const Settings = () => {
             }
           }
         }
-        // Perform the save operation and handle success/failure
     };
 
     const handleSaveEmail = async () => {
@@ -72,10 +68,8 @@ const Settings = () => {
             return;
         }else{
           try {
-            const response = await axios.post('https://elosystemv1.onrender.com/api/auth/update-email', { oldEmail: email, newEmail });
+            const response = await axios.post('https://elosystemv1.onrender.com/api/auth/update-email', { oldEmail: lemail, newEmail });
             if (response.status === 200) {
-              setEmail(newEmail);
-              sessionStorage.setItem('email', newEmail);
               setError(null);
             }
           } catch (error) {
@@ -86,7 +80,6 @@ const Settings = () => {
             }
           }
         }
-        // Perform the save operation and handle success/failure
     };
 
     const handleSavePhoneNumber = async () => {
@@ -96,7 +89,7 @@ const Settings = () => {
         }else{
 
           try {
-            const response = await axios.post('https://elosystemv1.onrender.com/api/auth/changephonenumber', { username });
+            const response = await axios.post('https://elosystemv1.onrender.com/api/auth/changephonenumber', {lemail, newPhoneNumber });
             setMessage(response.data.message);
           } catch (error) {
             if (error.response && error.response.data) {
@@ -106,7 +99,6 @@ const Settings = () => {
             }
           }
         }
-        // Perform the save operation and handle success/failure
     };
 
     return (

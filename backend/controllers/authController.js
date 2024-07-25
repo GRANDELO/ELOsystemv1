@@ -263,8 +263,6 @@ Grandelo`;
   }
 };
 
-
-
 const newrecoverPassword = async (req, res) => {
   try {
     const { username } = req.body;
@@ -352,8 +350,59 @@ const logout = async (req, res) => {
   }
 };
 
-module.exports = logout;
+const changeusername = async (req, res) => {
+  const { lemail, newUsername } = req.body;
 
+  try {
+    const user = await User.findOne({ email: lemail });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.username = newUsername;
+    await user.save();
+
+    res.status(200).json({ message: 'Username updated successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'An error occurred while updating Username' });
+  }
+};
+
+const changepassword = async (req, res) => {
+  const { lemail, newPassword } = req.body;
+
+  try {
+    const user = await User.findOne({ email: lemail });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json({ message: 'Password updated successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'An error occurred while updating password' });
+  }
+};
+
+const changephonenumber = async (req, res) => {
+  const { lemail, newPhoneNumber } = req.body;
+
+  try {
+    const user = await User.findOne({ email: lemail });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.phoneNumber = newPhoneNumber;
+    await user.save();
+
+    res.status(200).json({ message: 'Phone number updated successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'An error occurred while updating phone number' });
+  }
+};
 
 module.exports = {
   registerUser,
@@ -363,5 +412,8 @@ module.exports = {
   resendVerificationCode,
   newrecoverPassword,
   resetPassword,
+  changeusername,
+  changepassword,
+  changephonenumber,
   logout,
 };
