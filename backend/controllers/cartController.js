@@ -3,7 +3,7 @@ const Product = require('../models/newproductModel'); // Ensure this path is cor
 
 exports.getCart = async (req, res) => {
   try {
-    const { username } = req.params; // Get username from request params
+    const { username } = req.body; // Get username from request params
 
     if (!username) {
       return res.status(400).json({ message: username });
