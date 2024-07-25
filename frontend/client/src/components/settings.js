@@ -77,9 +77,9 @@ const Settings = () => {
             return;
         }else{
           try {
-            const response = await axios.post('https://elosystemv1.onrender.com/api/auth/update-email', { oldEmail: lemail, newEmail });
+            const response = await axios.post('https://elosystemv1.onrender.com/api/auth/changeemail', { lemail, newEmail });
             if (response.status === 200) {
-              setMessage(response.data.message , newEmail);
+              setMessage(response.data.message);
               setError(null);
               sessionStorage.setItem('userToken', response.data.token);
             }

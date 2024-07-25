@@ -418,6 +418,43 @@ const changephonenumber = async (req, res) => {
   }
 };
 
+const changeemail = async (req, res) => {
+  const { lemail, newEmail } = req.body;
+
+  try {
+    const user = await User.findOne({ email: lemail });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.email = newEmail;
+    await user.save();
+    const subject = "Verification - " + user.verificationCode;
+    const vermessage = `Dear ${user.username},
+
+Thank you for registering with Grandelo. Please use the following verification code to complete your registration:
+
+Verification Code: ${user.verificationCode}
+
+Follow this link https://grandelo.web.app/verification to verify your account
+
+Best regards,
+Grandelo`;
+    try {
+      await sendEmail(email, subject, vermessage);
+      console.log('Email sent successfully');
+    } catch (error) {
+      console.error('Error sending email:', error);
+      return res.status(500).json({ message: 'Error sending verification email' });
+    }
+    const token = jwt.sign({ id: user._id, username: user.username, email: user.email, category: user.category }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
+    res.status(200).json({ message: 'Password updated successfully', token});
+  } catch (error) {
+    res.status(500).json({ message: 'An error occurred while updating password' });
+  }
+};
 module.exports = {
   registerUser,
   login,
@@ -429,5 +466,6 @@ module.exports = {
   changeusername,
   changepassword,
   changephonenumber,
+  changeemail,
   logout,
 };
