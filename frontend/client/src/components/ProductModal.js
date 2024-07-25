@@ -4,7 +4,7 @@ import { Alert, Button, Modal } from 'react-bootstrap';
 import { useCart } from '../contexts/CartContext';
 import { getUsernameFromToken } from '../utils/auth';
 
-const ProductModal = ({ product, show, handleClose }) => { // Pass username as a prop
+const ProductModal = ({ product, show, handleClose }) => {
   const { dispatch } = useCart();
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -12,16 +12,16 @@ const ProductModal = ({ product, show, handleClose }) => { // Pass username as a
 
   const handleAddToCart = async () => {
     try {
+      setMessage('');
+      setError('');
       const addResponse = await axios.post('https://elosystemv1.onrender.com/api/cart/add', 
-        { username, productId: product._id, quantity: 1 } // Include username in the request
+        { username, productId: product._id, quantity: 1 }
       );
       setMessage(addResponse.data.message);
 
-      const response = await axios.post('https://elosystemv1.onrender.com/api/cart', { username }); // Include username in the request
-      dispatch({ type: 'SET_CART', payload: response.data.items });
     } catch (err) {
       console.error('Failed to add to cart:', err);
-      setError('Failed to add to cart.');
+      setError(err.response?.data?.message || 'Failed to add to cart');
     }
   };
 
