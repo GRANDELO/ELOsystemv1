@@ -11,6 +11,7 @@ const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const userRoutes = require('./routes/userRoutes');
 const dashboardRoutes = require('./routes/dashboard');
+const newproductRoutes = require('./routes/newproductRoutes');
 
 const uploadDir = path.join(__dirname, 'uploads');
 
@@ -37,6 +38,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/dash', dashboardRoutes);
 app.use('/uploads', express.static('uploads'));//remove later just for experiment
+app.use('/api', newproductRoutes);
 
 app.use((req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);

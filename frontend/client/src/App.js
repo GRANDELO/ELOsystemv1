@@ -4,6 +4,10 @@ import { io } from 'socket.io-client';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
 import Logout from './components/Logout';
+import NewProductDetail from './components/NewProductDetail';
+import NewProductEdit from './components/NewProductEdit';
+import NewProductForm from './components/NewProductForm';
+import NewProductList from './components/NewProductList';
 import ProductForm from './components/ProductForm';
 import ProductDetails from './components/ProductsDetail';
 import ProductList from './components/ProductsList';
@@ -59,6 +63,10 @@ const App = () => {
           <Route path="/reports" element={<Reports />} />
           <Route path="/sales" element={<Sales />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path="/newproductform" element={<NewProductForm />} />
+          <Route path="/newproductlist" element={<NewProductList />} />
+          <Route path="/newproductdetail" element={<NewProductDetail />} />
+          <Route path="/newproductedit" element={<NewProductEdit />} />
           
         </Routes>
       </div>
