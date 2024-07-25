@@ -29,15 +29,16 @@ const Settings = () => {
           try {
             const response = await axios.post('https://elosystemv1.onrender.com/api/auth/changeusername', {lemail, newUsername });
             setMessage(response.data.message);
+            setError(null);
+            sessionStorage.setItem('userToken', response.data.token);
           } catch (error) {
             if (error.response && error.response.data) {
-              setMessage(error.response.data.message);
+              setError(error.response.data.message);
             } else {
-              setMessage('An error occurred while processing your request..');
+              setError('An error occurred while processing your request..');
             }
           }
         }
-        // Perform the save operation and handle success/failure
     };
 
     const handleSavePassword = async () => {
@@ -52,11 +53,13 @@ const Settings = () => {
           try {
             const response = await axios.post('https://elosystemv1.onrender.com/api/auth/changepassword', {lemail, newPassword });
             setMessage(response.data.message);
+            setError(null);
+            sessionStorage.setItem('userToken', response.data.token);
           } catch (error) {
             if (error.response && error.response.data) {
-              setMessage(error.response.data.message);
+              setError(error.response.data.message);
             } else {
-              setMessage('An error occurred while processing your request..');
+              setError('An error occurred while processing your request..');
             }
           }
         }
@@ -70,7 +73,9 @@ const Settings = () => {
           try {
             const response = await axios.post('https://elosystemv1.onrender.com/api/auth/update-email', { oldEmail: lemail, newEmail });
             if (response.status === 200) {
+              setMessage(response.data.message);
               setError(null);
+              sessionStorage.setItem('userToken', response.data.token);
             }
           } catch (error) {
             if (error.response && error.response.data) {
@@ -91,11 +96,13 @@ const Settings = () => {
           try {
             const response = await axios.post('https://elosystemv1.onrender.com/api/auth/changephonenumber', {lemail, newPhoneNumber });
             setMessage(response.data.message);
+            setError(null);
+            sessionStorage.setItem('userToken', response.data.token);
           } catch (error) {
             if (error.response && error.response.data) {
-              setMessage(error.response.data.message);
+              setError(error.response.data.message);
             } else {
-              setMessage('An error occurred while processing your request..');
+              setError('An error occurred while processing your request..');
             }
           }
         }

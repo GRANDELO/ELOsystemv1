@@ -221,8 +221,11 @@ Grandelo`;
       console.error('Error sending email:', error);
       return res.status(500).json({ message: 'Error sending verification email' });
     }
+    const token = jwt.sign({ id: user._id, username: user.username, email: user.email, category: user.category }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
 
-    res.status(200).json({ message: 'Email updated successfully' });
+    res.status(200).json({ message: 'Email updated successfully', token });
   } catch (error) {
     res.status(500).json({ message: 'An error occurred while updating email' });
   }
@@ -361,8 +364,10 @@ const changeusername = async (req, res) => {
 
     user.username = newUsername;
     await user.save();
-
-    res.status(200).json({ message: 'Username updated successfully' });
+    const token = jwt.sign({ id: user._id, username: user.username, email: user.email, category: user.category }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
+    res.status(200).json({ message: 'Username updated successfully', token });
   } catch (error) {
     res.status(500).json({ message: 'An error occurred while updating Username' });
   }
@@ -379,8 +384,10 @@ const changepassword = async (req, res) => {
 
     user.password = newPassword;
     await user.save();
-
-    res.status(200).json({ message: 'Password updated successfully' });
+    const token = jwt.sign({ id: user._id, username: user.username, email: user.email, category: user.category }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
+    res.status(200).json({ message: 'Password updated successfully', token});
   } catch (error) {
     res.status(500).json({ message: 'An error occurred while updating password' });
   }
@@ -397,8 +404,10 @@ const changephonenumber = async (req, res) => {
 
     user.phoneNumber = newPhoneNumber;
     await user.save();
-
-    res.status(200).json({ message: 'Phone number updated successfully' });
+    const token = jwt.sign({ id: user._id, username: user.username, email: user.email, category: user.category }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
+    res.status(200).json({ message: 'Phone number updated successfully', token });
   } catch (error) {
     res.status(500).json({ message: 'An error occurred while updating phone number' });
   }
