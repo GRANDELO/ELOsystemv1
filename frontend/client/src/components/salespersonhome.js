@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUsernameFromToken } from '../utils/auth';
+import Cart from './Cart';
 import NewProductList from './NewProductList';
 import Header from './header';
 import Settings from './settings';
@@ -17,6 +18,7 @@ const Home = () => {
     <main>
       <section className="user-section">
           <Settings />
+          <Cart />
       </section>
       <section>
       <section className="home-intro">
