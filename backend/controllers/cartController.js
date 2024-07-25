@@ -11,7 +11,7 @@ exports.getCart = async (req, res) => {
 
     // Find the cart by username
     try {
-      const cart = await Cart.findOne({ user: username }).populate('items.product');
+      const cart = await Cart.findOne({ user: username }).populate('items');
     } catch (error) {
       console.log(error);
       return res.status(400).json({ message: "failed to populate." });
