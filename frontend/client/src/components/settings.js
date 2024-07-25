@@ -21,6 +21,8 @@ const Settings = () => {
     const [error, setError] = useState('');
 
     const handleSaveUsername = async () => {
+      setError(null);
+      setMessage(null);
         if (!/^[a-zA-Z0-9_]{4,}$/.test(newUsername)) {
             setError('Username must be at least 4 characters long and contain only letters, numbers, or underscores.');
             return;
@@ -42,6 +44,8 @@ const Settings = () => {
     };
 
     const handleSavePassword = async () => {
+      setError(null);
+      setMessage(null);
         if (newPassword.length < 8 || !/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword) || !/[0-9]/.test(newPassword) || !/[!@#$%^&*(),.?":{}|<>]/.test(newPassword)) {
             setError('Password must be at least 8 characters long and contain an uppercase letter, a lowercase letter, a number, and a special character.');
             return;
@@ -66,6 +70,8 @@ const Settings = () => {
     };
 
     const handleSaveEmail = async () => {
+        setError(null);
+        setMessage(null);
         if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(newEmail)) {
             setError('Please enter a valid gmail address (e.g., yourname@gmail.com).');
             return;
@@ -73,7 +79,7 @@ const Settings = () => {
           try {
             const response = await axios.post('https://elosystemv1.onrender.com/api/auth/update-email', { oldEmail: lemail, newEmail });
             if (response.status === 200) {
-              setMessage(response.data.message);
+              setMessage(response.data.message , newEmail);
               setError(null);
               sessionStorage.setItem('userToken', response.data.token);
             }
@@ -88,6 +94,8 @@ const Settings = () => {
     };
 
     const handleSavePhoneNumber = async () => {
+      setError(null);
+      setMessage(null);
         if (!/^(07|01)\d{8}$/.test(newPhoneNumber)) {
             setError('Please enter a valid 10-digit phone number starting with 07 or 01.');
             return;
