@@ -1,31 +1,34 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button } from 'react-bootstrap';
-import { useCart } from '../contexts/CartContext';
 import { getUsernameFromToken } from '../utils/auth';
 
 const Cart = () => {
-  const { cart, dispatch } = useCart();
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [cart, setCart] = useState([]);
+  const [loading, setLoading] = useState(true);
   const username = getUsernameFromToken();
 
-  // Fetch cart data on component mount
   useEffect(() => {
     const fetchCart = async () => {
+      setLoading(true);
+      setError('');
       try {
-        setMessage('');
-        setError('');
         const response = await axios.post('https://elosystemv1.onrender.com/api/cart/cart', { username });
-        dispatch({ type: 'SET_CART', payload: response.data.items });
+        setCart(response.data.items || []); // Ensure cart is set to an empty array if no items
       } catch (err) {
         console.error('Failed to fetch cart:', err);
         setError(err.response?.data?.message || 'Failed to fetch cart');
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchCart();
-  }, [dispatch, username]);
+    if (username) {
+      fetchCart();
+    }
+  }, [username]);
 
   const handleRemoveFromCart = async (product) => {
     try {
@@ -36,8 +39,9 @@ const Cart = () => {
       );
       setMessage(removeResponse.data.message);
 
+      // Refetch the cart after removal
       const response = await axios.post('https://elosystemv1.onrender.com/api/cart/cart', { username });
-      dispatch({ type: 'SET_CART', payload: response.data.items });
+      setCart(response.data.items || []);
     } catch (err) {
       console.error('Failed to remove from cart:', err);
       setError(err.response?.data?.message || 'Failed to remove from cart');
@@ -52,7 +56,7 @@ const Cart = () => {
         { username }
       );
       setMessage(clearResponse.data.message);
-      dispatch({ type: 'SET_CART', payload: [] });
+      setCart([]); // Clear the cart
     } catch (err) {
       console.error('Failed to clear cart:', err);
       setError(err.response?.data?.message || 'Failed to clear cart');
@@ -64,7 +68,9 @@ const Cart = () => {
       <h2>Your Cart</h2>
       {message && <Alert variant="success">{message}</Alert>}
       {error && <Alert variant="danger">{error}</Alert>}
-      {cart.length === 0 ? (
+      {loading ? (
+        <p>Loading...</p>
+      ) : cart.length === 0 ? (
         <p>Your cart is empty</p>
       ) : (
         <ul>

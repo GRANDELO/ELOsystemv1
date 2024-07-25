@@ -3,15 +3,21 @@ const Product = require('../models/newproductModel'); // Ensure this path is cor
 
 exports.getCart = async (req, res) => {
   try {
-    const { username } = req.body; // Ensure username is in the request body
+    const { username } = req.params; // Get username from request params
+
     if (!username) {
       return res.status(400).json({ message: 'Username is required' });
     }
+
+    // Find the cart by username
     const cart = await Cart.findOne({ user: username }).populate('items.product');
+
     if (!cart) {
       return res.status(404).json({ message: 'Cart not found' });
     }
-    res.json(cart);
+
+    // Return the cart data
+    res.status(200).json(cart);
   } catch (error) {
     console.error('Error fetching cart:', error);
     res.status(500).json({ message: 'Server error' });
