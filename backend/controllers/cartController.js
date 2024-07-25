@@ -13,7 +13,7 @@ exports.getCart = async (req, res) => {
     try {
       const cart = await Cart.findOne({ user: username }).populate('items.product');
     } catch (error) {
-      return res.status(400).json({ message: "failed to populate." });
+      return res.status(400).json({ message: error });
     }
 
     if (!cart) {
