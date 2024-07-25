@@ -366,7 +366,10 @@ const changeusername = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-
+    let checkuser = await User.findOne({ newUsername });
+    if (checkuser) {
+      return res.status(400).json({ message: 'Username already exists try a different one.' });
+    }
     user.username = newUsername;
     await user.save();
     const token = jwt.sign({ id: user._id, username: user.username, email: user.email, category: user.category }, process.env.JWT_SECRET, {
@@ -426,7 +429,10 @@ const changeemail = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-
+    let checkuser = await User.findOne({ newEmail });
+    if (checkuser) {
+      return res.status(400).json({ message: 'Email already exists try a different one.' });
+    }
     user.email = newEmail;
     await user.save();
     const subject = "Verification - " + user.verificationCode;
