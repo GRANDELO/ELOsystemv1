@@ -3,20 +3,16 @@ const NewProduct = require('../models/newproductModel');
 
 exports.getCartByUsername = async (req, res) => {
   try {
-    const { username } = req.body; // Ensure username is in the request body
-
+    const { username } = req.body;
     if (!username) {
       return res.status(400).json({ message: 'Username is required' });
     }
 
-    // Find the cart by username without populating the product field in items
     const cart = await Cart.findOne({ user: username });
-
     if (!cart) {
       return res.status(404).json({ message: 'Cart not found' });
     }
 
-    // Manually fetch product details for each item
     const itemsWithProductDetails = await Promise.all(
       cart.items.map(async (item) => {
         const product = await NewProduct.findById(item.product);
@@ -27,13 +23,11 @@ exports.getCartByUsername = async (req, res) => {
       })
     );
 
-    // Merge the product details into the cart object
     const cartWithProductDetails = {
       ...cart.toObject(),
       items: itemsWithProductDetails,
     };
 
-    // Return the cart data
     res.status(200).json(cartWithProductDetails);
   } catch (error) {
     console.error('Error fetching cart:', error);
