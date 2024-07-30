@@ -14,7 +14,6 @@ router.post('/', async (req, res) => {
     // Find an available delivery person
     const deliveryPerson = await DeliveryPerson.findOne({ status: 'available' }).sort({ createdAt: 1 });
 
-    // Create a new order
     const order = new Order({
       items,
       totalPrice,
@@ -29,7 +28,6 @@ router.post('/', async (req, res) => {
 
     await order.save();
 
-    // Update delivery person's status if assigned
     if (deliveryPerson) {
       deliveryPerson.status = 'assigned';
       await deliveryPerson.save();

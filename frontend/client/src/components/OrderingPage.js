@@ -11,7 +11,7 @@ const OrderingPage = () => {
   const [error, setError] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
   const [message, setMessage] = useState('');
-  const [destination, setDestination] = useState(''); // State for delivery destination
+  const [destination, setDestination] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const OrderingPage = () => {
       setError('');
       try {
         const response = await axios.post('https://elosystemv1.onrender.com/api/cart/cart', { username });
-        setCart(response.data.items || []); // Ensure cart is set to an empty array if no items
+        setCart(response.data.items || []);
       } catch (err) {
         console.error('Failed to fetch cart:', err);
         setError(err.response?.data?.message || 'Failed to fetch cart');
@@ -56,18 +56,17 @@ const OrderingPage = () => {
         })),
         totalPrice: cart.reduce((total, item) => total + item.product.price * item.quantity, 0),
         paymentMethod,
-        destination, // Include destination
-        orderDate: new Date().toISOString() // Add order date
+        destination,
+        orderDate: new Date().toISOString(),
+        username
       };
 
-      // Make a request to submit the order
       const response = await axios.post('https://elosystemv1.onrender.com/api/orders', orderDetails);
-      setMessage('Order submitted successfully!');
-      // Redirect or handle successful order submission
-      navigate('/confirmation');
+      setMessage(response.message);
+      
     } catch (err) {
       console.error('Failed to submit order:', err);
-      setError('Failed to submit order.');
+      setError(err.response?.data?.message || 'Failed to submit order.');
     }
   };
 

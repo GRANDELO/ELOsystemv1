@@ -2,7 +2,6 @@ const express = require('express');
 const DeliveryPerson = require('../models/DeliveryPerson');
 const router = express.Router();
 
-// Add a new delivery person
 router.post('/add', async (req, res) => {
   const { name, email, phoneNumber } = req.body;
 
