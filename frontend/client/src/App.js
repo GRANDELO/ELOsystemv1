@@ -9,6 +9,7 @@ import NewProductDetail from './components/NewProductDetail';
 import NewProductEdit from './components/NewProductEdit';
 import NewProductForm from './components/NewProductForm';
 import NewProductList from './components/NewProductList';
+import Order from "./components/OrderingPage";
 import ProductForm from './components/ProductForm';
 import ProductDetails from './components/ProductsDetail';
 import ProductList from './components/ProductsList';
@@ -24,6 +25,7 @@ import Passwordrecovery from './components/passwordreset';
 import Salespersonhome from './components/salespersonhome';
 import Seller from './components/sellerHome';
 import Upload from './components/upload';
+
 import './main.css';
 const socket = io('https://elosystemv1.onrender.com');
 
@@ -64,6 +66,7 @@ const App = () => {
           <Route path="/reports" element={<Reports />} />
           <Route path="/sales" element={<Sales />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path="/order" element={<Order />} />
           <Route path="/newproductform" element={<NewProductForm />} />
           <Route path="/newproductlist" element={<NewProductList />} />
           <Route path="/newproductdetail" element={<NewProductDetail />} />

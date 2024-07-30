@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import { getUsernameFromToken } from '../utils/auth';
 
 const Cart = () => {
@@ -9,6 +10,7 @@ const Cart = () => {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const username = getUsernameFromToken();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -62,6 +64,10 @@ const Cart = () => {
       setError(err.response?.data?.message || 'Failed to clear cart');
     }
   };
+  
+  const handleoder = async () => {
+    navigate('/order');
+  };
 
   return (
     <div className="cart">
@@ -84,9 +90,13 @@ const Cart = () => {
           ))}
         </ul>
       )}
+      <Button variant="danger" onClick={handleoder} disabled={cart.length === 0}>
+        Make Order
+      </Button>
       <Button variant="danger" onClick={handleClearCart} disabled={cart.length === 0}>
         Clear Cart
       </Button>
+
     </div>
   );
 };
