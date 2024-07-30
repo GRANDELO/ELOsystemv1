@@ -10,7 +10,14 @@ dotenv.config();
 const app = express();
 
 // Enable CORS for all routes
-app.use(cors());
+const corsOptions = {
+  origin: 'http://127.0.0.1:5500/backend/z.html', // Add your frontend's origin here
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
