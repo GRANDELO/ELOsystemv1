@@ -1,35 +1,82 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const path = require('path');
 const cors = require('cors');
-const imageRoutes = require('./routes/imageRoutes');
+const mongoose = require('mongoose');
+const http = require('http');
+const socketIo = require('socket.io');
+const fs = require('fs');
+const path = require('path');
+require('dotenv').config();
 
-dotenv.config();
+const authRoutes = require('./routes/authRoutes');
+const productRoutes = require('./routes/productRoutes');
+const userRoutes = require('./routes/userRoutes');
+const dashboardRoutes = require('./routes/dashboard');
+const newproductRoutes = require('./routes/newproductRoutes');
+const cartRoutes = require('./routes/cart');
+const orderRoutes = require('./routes/orders');
+const locations = require('./routes/locations');
+
+const uploadDir = path.join(__dirname, 'uploads');
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 const app = express();
+app.use(cors());
+app.use(express.json());
 
-// Enable CORS for all routes
-const corsOptions = {
-  origin: 'http://127.0.0.1:5500/backend/z.html', // Add your frontend's origin here
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true,
-  optionsSuccessStatus: 204
-};
+const port = process.env.PORT || 5000;
+mongoose.set('strictQuery', true);
 
-app.use(cors(corsOptions));
+// Connect to MongoDB
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((err) => console.error('Could not connect to MongoDB', err));
 
-// MongoDB connection
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.log(err));
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/dash', dashboardRoutes);
+app.use('/uploads', express.static('uploads'));//remove later just for experiment
+app.use('/api', newproductRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
+app.use(locations);
 
-app.use(express.static('public'));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use((req, res, next) => {
+  const error = new Error(`Not Found - ${req.originalUrl}`);
+  res.status(404);
+  next(error);
+});
 
-app.use('/api', imageRoutes);
+//even this just experiment
+app.use((err, req, res, next) => {
+  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  res.status(statusCode);
+  res.json({
+    message: err.message,
+    stack: process.env.NODE_ENV === 'production' ? null : err.stack,
+  });
+});
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: "*",
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  }
+});
+
+io.on('connection', (socket) => {
+  console.log("New client connected");
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});
+
+server.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });

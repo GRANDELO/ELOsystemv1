@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
-const ImageList = () => {
+const ImageList = ({ updateList }) => {
   const [images, setImages] = useState([]);
 
   const fetchImages = async () => {
@@ -15,13 +15,13 @@ const ImageList = () => {
 
   useEffect(() => {
     fetchImages();
-  }, []);
+  }, [updateList]); // Re-fetch images when updateList changes
 
   return (
     <div>
       <h2>Uploaded Images</h2>
       <div>
-        {images.map(image => (
+        {images.map((image) => (
           <img
             key={image._id}
             src={image.url}

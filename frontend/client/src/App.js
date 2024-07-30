@@ -25,6 +25,8 @@ import Passwordrecovery from './components/passwordreset';
 import Salespersonhome from './components/salespersonhome';
 import Seller from './components/sellerHome';
 import Upload from './components/upload';
+import ImageList from './components/ImageList';
+import ImageUpload from './components/ImageUpload';
 
 import Image from './components/image';
 
@@ -74,6 +76,9 @@ const App = () => {
           <Route path="/newproductdetail" element={<NewProductDetail />} />
           <Route path="/newproductedit" element={<NewProductEdit />} />
           <Route path="/image" element={<Image />} />
+
+          <Route path="/imageList" element={<ImageList />} />
+          <Route path="/imageUpload" element={<ImageUpload />} />
           
         </Routes>
       </div>

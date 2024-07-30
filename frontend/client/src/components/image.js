@@ -2,21 +2,20 @@ import React from 'react';
 import ImageList from './ImageList';
 import ImageUpload from './ImageUpload';
 
-const mmm = () => {
-  const handleUpload = () => {
-    // Trigger a refresh of the image list
-    // Assuming ImageList is re-rendered automatically, you might want to use state management
-    // to control this better if necessary.
-   window.location.reload();
+function Img() {
+  const [updateList, setUpdateList] = React.useState(false);
+
+  const handleUploadSuccess = () => {
+    setUpdateList(prevState => !prevState);
   };
 
   return (
     <div>
       <h1>Image Upload and Display</h1>
-      <ImageUpload onUpload={handleUpload} />
-      <ImageList />
+      <ImageUpload onUpload={handleUploadSuccess} />
+      <ImageList updateList={updateList} />
     </div>
   );
-};
+}
 
-export default mmm;
+export default Img;
