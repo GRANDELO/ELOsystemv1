@@ -2,11 +2,15 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
+const cors = require('cors');
 const imageRoutes = require('./routes/imageRoutes');
 
 dotenv.config();
 
 const app = express();
+
+// Enable CORS for all routes
+app.use(cors());
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })

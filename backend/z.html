@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Upload</title>
+</head>
+<body>
+  <h1>Upload Image</h1>
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="image" id="imageInput" required />
+    <button type="submit">Upload</button>
+  </form>
+
+  <h2>Uploaded Images</h2>
+  <div id="imageList"></div>
+
+  <script>
+    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      const fileField = document.querySelector('input[type="file"]');
+      formData.append('image', fileField.files[0]);
+
+      try {
+        const response = await fetch('https://grandelo.web.app/api/upload', {
+          method: 'POST',
+          body: formData
+        });
+        const result = await response.text();
+        alert(result);
+        loadImages();
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+    });
+
+    async function loadImages() {
+      try {
+        const response = await fetch('https://grandelo.web.app/api/images');
+        const images = await response.json();
+        const imageList = document.getElementById('imageList');
+        imageList.innerHTML = '';
+        images.forEach(image => {
+          const imgElement = document.createElement('img');
+          imgElement.src = `https://grandelo.web.app/ploads/${image.filename}`;
+          imgElement.alt = image.filename;
+          imgElement.style.maxWidth = '200px';
+          imgElement.style.margin = '10px';
+          imageList.appendChild(imgElement);
+        });
+      } catch (error) {
+        console.error('Error loading images:', error);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadImages);
+  </script>
+</body>
+</html>
