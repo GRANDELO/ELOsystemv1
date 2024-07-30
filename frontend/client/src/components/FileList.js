@@ -1,4 +1,3 @@
-// src/components/FileList.js
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
@@ -7,7 +6,7 @@ const FileList = () => {
 
   const fetchFiles = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/files');
+      const response = await axios.get('https://elosystemv1.onrender.com/files');
       setFiles(response.data);
     } catch (error) {
       console.error('Error fetching files', error);
@@ -24,7 +23,7 @@ const FileList = () => {
       <ul>
         {files.map(file => (
           <li key={file._id}>
-            {file.filename} - <a href={`http://localhost:5000/image/${file.filename}`} target="_blank" rel="noopener noreferrer">View</a>
+            {file.filename} - <a href={`https://elosystemv1.onrender.com/image/${file.filename}`} target="_blank" rel="noopener noreferrer">View</a>
           </li>
         ))}
       </ul>

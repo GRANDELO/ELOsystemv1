@@ -1,10 +1,8 @@
-// src/App.js
 import React from 'react';
-import './App.css';
-import FileList from './components/FileList';
-import FileUpload from './components/FileUpload';
+import FileList from './FileList';
+import FileUpload from './FileUpload';
 
-function App() {
+function Img() {
   const [updateList, setUpdateList] = React.useState(false);
 
   const handleUploadSuccess = () => {
@@ -12,12 +10,12 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div>
       <h1>File Upload</h1>
       <FileUpload onUploadSuccess={handleUploadSuccess} />
-      <FileList key={updateList} />
+      <FileList updateList={updateList} />
     </div>
   );
 }
 
-export default App;
+export default Img;
