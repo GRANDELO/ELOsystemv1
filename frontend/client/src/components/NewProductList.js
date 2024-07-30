@@ -9,6 +9,7 @@ const NewProductList = () => {
   const [error, setError] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchNewProducts = async () => {
@@ -25,17 +26,6 @@ const NewProductList = () => {
     fetchNewProducts();
   }, []);
 
-  const categorizeProducts = () => {
-    const categories = {};
-    newProducts.forEach(product => {
-      if (!categories[product.category]) {
-        categories[product.category] = [];
-      }
-      categories[product.category].push(product);
-    });
-    return categories;
-  };
-
   const handleProductClick = (product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
@@ -46,29 +36,48 @@ const NewProductList = () => {
     setIsModalOpen(false);
   };
 
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filterAndSortProducts = () => {
+    return newProducts
+      .filter(product =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+      .sort((a, b) => {
+        const aMatch = a.name.toLowerCase().includes(searchTerm.toLowerCase()) || a.category.toLowerCase().includes(searchTerm.toLowerCase());
+        const bMatch = b.name.toLowerCase().includes(searchTerm.toLowerCase()) || b.category.toLowerCase().includes(searchTerm.toLowerCase());
+        return (aMatch === bMatch) ? 0 : aMatch ? -1 : 1;
+      });
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
-  const categorizedProducts = categorizeProducts();
+  const filteredProducts = filterAndSortProducts();
 
   return (
     <div className="product-list">
-      {Object.keys(categorizedProducts).map(category => (
-        <div key={category} className="product-category">
-          <h2>{category}</h2>
-          <div className="product-cards">
-            {categorizedProducts[category].map(product => (
-              <div key={product._id} className="product-card">
-                <img src={product.imageUrl || 'path/to/placeholder.jpg'} alt={product.name} />
-                <h3>{product.name}</h3>
-                <p>{product.description}</p>
-                <h4>Ksh {product.price}</h4>
-                <button onClick={() => handleProductClick(product)}>View Details</button>
-              </div>
-            ))}
+      <input
+        type="text"
+        placeholder="Search for products..."
+        value={searchTerm}
+        onChange={handleSearch}
+        className="product-search"
+      />
+      <div className="product-cards">
+        {filteredProducts.map(product => (
+          <div key={product._id} className="product-card">
+            <img src={product.imageUrl || 'path/to/placeholder.jpg'} alt={product.name} />
+            <h3>{product.name}</h3>
+            <p>{product.description}</p>
+            <h4>Ksh {product.price}</h4>
+            <button onClick={() => handleProductClick(product)}>View Details</button>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
       <ProductModal
         product={selectedProduct}
         show={isModalOpen}

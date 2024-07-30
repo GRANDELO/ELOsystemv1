@@ -121,16 +121,7 @@ const Users = () => {
                         <tr key={user._id}>
                             <td>{user.username}</td>
                             <td>{user.email}</td>
-                            <td>
-                                <select
-                                    value={user.category}
-                                    onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                                >
-                                    <option value="admin">Admin</option>
-                                    <option value="seller">Seller</option>
-                                    <option value="salesperson">Salesperson</option>
-                                </select>
-                            </td>
+                            <td>{user.category}</td>
                             <td>
                                 <button onClick={() => setSelectedUser(user)}>Details</button>
                             </td>

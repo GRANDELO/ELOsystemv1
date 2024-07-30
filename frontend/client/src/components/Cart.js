@@ -4,33 +4,28 @@ import { Alert, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { getUsernameFromToken } from '../utils/auth';
 
-const Cart = () => {
+const Cart = ({ cart, setCart }) => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const [cart, setCart] = useState([]);
-  const [loading, setLoading] = useState(true);
   const username = getUsernameFromToken();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCart = async () => {
-      setLoading(true);
       setError('');
       try {
         const response = await axios.post('https://elosystemv1.onrender.com/api/cart/cart', { username });
-        setCart(response.data.items || []); // Ensure cart is set to an empty array if no items
+        setCart(response.data.items || []);
       } catch (err) {
         console.error('Failed to fetch cart:', err);
         setError(err.response?.data?.message || 'Failed to fetch cart');
-      } finally {
-        setLoading(false);
       }
     };
 
     if (username) {
       fetchCart();
     }
-  }, [username]);
+  }, [username, setCart]);
 
   const handleRemoveFromCart = async (product) => {
     try {
@@ -64,8 +59,8 @@ const Cart = () => {
       setError(err.response?.data?.message || 'Failed to clear cart');
     }
   };
-  
-  const handleoder = async () => {
+
+  const handleOrder = () => {
     navigate('/order');
   };
 
@@ -74,9 +69,7 @@ const Cart = () => {
       <h2>Your Cart</h2>
       {message && <Alert variant="success">{message}</Alert>}
       {error && <Alert variant="danger">{error}</Alert>}
-      {loading ? (
-        <p>Loading...</p>
-      ) : cart.length === 0 ? (
+      {cart.length === 0 ? (
         <p>Your cart is empty</p>
       ) : (
         <ul>
@@ -90,13 +83,12 @@ const Cart = () => {
           ))}
         </ul>
       )}
-      <Button variant="danger" onClick={handleoder} disabled={cart.length === 0}>
+      <Button variant="success" onClick={handleOrder} disabled={cart.length === 0}>
         Make Order
       </Button>
       <Button variant="danger" onClick={handleClearCart} disabled={cart.length === 0}>
         Clear Cart
       </Button>
-
     </div>
   );
 };

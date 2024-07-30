@@ -117,7 +117,7 @@ const Settings = () => {
     };
 
     return (
-        <div className="container">
+        <div className="">
             <div className="userinfo">
               <img width="70px" src={Prof} alt="User Avatar"/>
               <spam className='userinfospan'>

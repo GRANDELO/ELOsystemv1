@@ -46,8 +46,7 @@ const Logout = () => {
 
   return (
     <div className="logout-container">
-
-    <img src={loader}/><p>{logoutMessage}</p> 
+    <img className="loader"src={loader}/><p>{logoutMessage}</p> 
     </div>
   );
 };

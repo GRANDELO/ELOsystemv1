@@ -15,4 +15,6 @@
   .logout-container p {
     font-size: 1.2em;
   }
-  
+  .loader{
+    width: 50px;
+  }

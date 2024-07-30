@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
+const fileRoutes = require('./routes/fileRoutes');
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -25,6 +26,9 @@ if (!fs.existsSync(uploadDir)) {
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+app.use(bodyParser.json());
+app.use(methodOverride('_method'));
 
 const port = process.env.PORT || 5000;
 mongoose.set('strictQuery', true);
@@ -45,6 +49,7 @@ app.use('/api', newproductRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use(locations);
+app.use('/', fileRoutes);
 
 app.use((req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);

@@ -187,6 +187,7 @@ const NewProductForm = () => {
         type="number"
         name="price"
         placeholder="Price"
+        min="1"
         value={newProduct.price}
         onChange={handleChange}
       />
@@ -200,6 +201,7 @@ const NewProductForm = () => {
         type="number"
         name="quantity"
         placeholder="Quantity"
+        min="1"
         value={newProduct.quantity}
         onChange={handleChange}
       />

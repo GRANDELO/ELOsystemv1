@@ -3,6 +3,7 @@
     flex-direction: column;
     gap: 2rem;
     margin: 2rem;
+    max-width: 90%;
   }
   
   .product-category {

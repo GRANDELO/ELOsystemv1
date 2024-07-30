@@ -1,5 +1,6 @@
 .home {
     text-align: center;
+    width: 100vw;
   }
   
   main{
@@ -14,8 +15,14 @@
     margin: 10px;
   }
 
+  .user-section
+  {
+    max-width: 300px;
+  }
   .home-intro, .home-features {
-    margin: 20px 0;
+    margin: 10px ;
+    width: 100%;
+    padding: 10px;
   }
   
   .home-footer {
