@@ -106,7 +106,7 @@ const OrderingPage = () => {
       };
 
       const response = await axios.post('https://elosystemv1.onrender.com/api/orders', orderDetails);
-      setMessage(response.message);
+      setMessage(response.data.message);
     } catch (err) {
       console.error('Failed to submit order:', err);
       setError(err.response?.data?.message || 'Failed to submit order.');

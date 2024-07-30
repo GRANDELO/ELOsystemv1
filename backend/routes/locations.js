@@ -1,12 +1,53 @@
 const express = require('express');
 const router = express.Router();
 
-// Dummy data for towns and areas (you can fetch this from your DB)
 const townsAndAreas = [
-  { town: 'Thika', areas: ['Ngoingwa', 'Makongeni', 'Juja'] },
-  { town: 'Nairobi', areas: ['Westlands', 'Kilimani', 'Kasarani'] },
-  // Add more towns and areas here...
-];
+    { town: 'Thika', areas: ['Ngoingwa', 'Makongeni', 'Juja', 'Ruiru', 'Gatundu', 'Kiganjo', 'Muguga', 'Kenyatta Road', 'Kiboko', 'Kandara'] },
+    { town: 'Nairobi', areas: ['Westlands', 'Kilimani', 'Kasarani', 'Karen', 'Langata', 'Roysambu', 'Eastleigh', 'Embakasi', 'Lavington', 'Ngong Road'] },
+    { town: 'Mombasa', areas: ['Nyali', 'Bamburi', 'Mvita', 'Likoni', 'Changamwe', 'Kisauni', 'Shanzu', 'Mtwapa', 'Tudor', 'Port Reitz'] },
+    { town: 'Kisumu', areas: ['Milimani', 'Nyalenda', 'Manyatta', 'Mamboleo', 'Lolwe', 'Tom Mboya', 'Obunga', 'Dunga', 'Kibos', 'Ojolla'] },
+    { town: 'Nakuru', areas: ['Milimani', 'Langalanga', 'Shabab', 'Kiti', 'Free Area', 'Naka', 'Mwariki', 'Lanet', 'Rhonda', 'Bondeni'] },
+    { town: 'Eldoret', areas: ['Langas', 'Kapsoya', 'Munyaka', 'Elgon View', 'Huruma', 'Kimumu', 'Pioneer', 'Sosiani', 'Kipkaren', 'Racecourse'] },
+    { town: 'Nyeri', areas: ['Ruringu', 'Kamakwa', 'Kangemi', 'King\'ong\'o', 'Gatitu', 'Kiganjo', 'Skuta', 'Ragati', 'Ngangarithi', 'Majengo'] },
+    { town: 'Machakos', areas: ['Mua Hills', 'Katoloni', 'Kangundo', 'Mlolongo', 'Athi River', 'Wamunyu', 'Kyumbi', 'Kaseve', 'Masinga', 'Kithimani'] },
+    { town: 'Meru', areas: ['Makutano', 'Gakoromone', 'Kaaga', 'Kinoru', 'Kithoka', 'Mitunguu', 'Nkubu', 'Timau', 'Chogoria', 'Kionyo'] },
+    { town: 'Kakamega', areas: ['Lurambi', 'Shinyalu', 'Navakholo', 'Butere', 'Mumias', 'Ilesi', 'Khayega', 'Malava', 'Ikolomani', 'Likuyani'] },
+    { town: 'Embu', areas: ['Blue Valley', 'Kirimari', 'Dallas', 'Itabua', 'Njukiri', 'Kianjokoma', 'Kairuri', 'Runyenjes', 'Siakago', 'Karurumo'] },
+    { town: 'Garissa', areas: ['Bura', 'Dadaab', 'Modogashe', 'Hulugho', 'Iftin', 'Korakora', 'Sankuri', 'Mbalambala', 'Burtile', 'Nanighi'] },
+    { town: 'Kericho', areas: ['Kericho Town', 'Kapsoit', 'Litein', 'Chepseon', 'Brooke', 'Roret', 'Kipkelion', 'Sigowet', 'Kabianga', 'Sosiot'] },
+    { town: 'Kitale', areas: ['Milimani', 'Tuwani', 'Matisi', 'Kipsongo', 'Bikeke', 'Makutano', 'Bidii', 'Kwanza', 'Saboti', 'Sikhendu'] },
+    { town: 'Malindi', areas: ['Watamu', 'Ganda', 'Gede', 'Shela', 'Langobaya', 'Marafa', 'Mambrui', 'Sabaki', 'Kakuyuni', 'Kijiwetanga'] },
+    { town: 'Narok', areas: ['Ololulung\'a', 'Kilgoris', 'Emurua Dikirr', 'Ntulele', 'Nairagie Enkare', 'Mulot', 'Ewaso Ngiro', 'Sagamik', 'Maji Moto', 'Olchorro'] },
+    { town: 'Naivasha', areas: ['Kongoni', 'Karagita', 'Mai Mahiu', 'Kayole', 'Karati', 'Kihoto', 'Mirera', 'Maraigushu', 'Kedong', 'Kongoni'] },
+    { town: 'Nanyuki', areas: ['Likii', 'Baraka', 'Riverside', 'Muthaiga', 'Sweetwaters', 'Tigithi', 'Nturukuma', 'Endana', 'Mugambi', 'Ngare Ndare'] },
+    { town: 'Isiolo', areas: ['Kambi Garba', 'Wabera', 'Bulapesa', 'Kiwanjani', 'Ngare Mara', 'Oldonyiro', 'Merti', 'Garbatulla', 'Sericho', 'Burat'] },
+    { town: 'Lamu', areas: ['Shela', 'Mokowe', 'Hindi', 'Faza', 'Matondoni', 'Kizingitini', 'Pate', 'Witu', 'Kipungani', 'Manda'] },
+    { town: 'Lodwar', areas: ['Nakwamekwi', 'Kanamkemer', 'Kerio', 'Kalokol', 'Kakuma', 'Lokichogio', 'Lokori', 'Lokitaung', 'Lowarengak', 'Turkwel'] },
+    { town: 'Migori', areas: ['Awendo', 'Rongo', 'Kuria', 'Isebania', 'Macalder', 'Uriri', 'Masara', 'Suna', 'Nyatike', 'Muhuru Bay'] },
+    { town: 'Molo', areas: ['Elburgon', 'Turi', 'Keringet', 'Mau Summit', 'Kamara', 'Njoro', 'Total', 'Mau Narok', 'Nessuit', 'Mariashoni'] },
+    { town: 'Voi', areas: ['Ikanga', 'Kasigau', 'Mzima Springs', 'Sagala', 'Ndara', 'Mbololo', 'Wundanyi', 'Bura', 'Mwatate', 'Taveta'] },
+    { town: 'Wajir', areas: ['Griftu', 'Eldas', 'Tarbaj', 'Habaswein', 'Bute', 'Buna', 'Khorof Harar', 'Dadajabula', 'Leheley', 'Gurar'] },
+    { town: 'Marsabit', areas: ['Moyale', 'Sololo', 'North Horr', 'Loiyangalani', 'Kargi', 'Laisamis', 'Korr', 'Illeret', 'Maikona', 'Dukana'] },
+    { town: 'Bomet', areas: ['Kaplong', 'Sotik', 'Longisa', 'Ndanai', 'Mulot', 'Sigor', 'Chebunyo', 'Kipreres', 'Kimulot', 'Mogogosiek'] },
+    { town: 'Bungoma', areas: ['Webuye', 'Kimilili', 'Chwele', 'Bokoli', 'Lugulu', 'Naitiri', 'Kanduyi', 'Kibabii', 'Misikhu', 'Khalaba'] },
+    { town: 'Busia', areas: ['Nambale', 'Matayos', 'Funyula', 'Butula', 'Port Victoria', 'Samia', 'Sio Port', 'Amukura', 'Bunyala', 'Malaba'] },
+    { town: 'Chuka', areas: ['Karingani', 'Magumoni', 'Maara', 'Kaanwa', 'Karingani', 'Ithwana', 'Mitheru', 'Igambang\'ombe', 'Kamwimbi', 'Kiamwathi'] },
+    { town: 'Kajiado', areas: ['Ngong', 'Ongata Rongai', 'Kitengela', 'Isinya', 'Namanga', 'Loitokitok', 'Mashuuru', 'Sultan Hamud', 'Kimana', 'Kiserian'] },
+    { town: 'Kapenguria', areas: ['Chepareria', 'Kacheliba', 'Sigor', 'Ortum', 'Kodich', 'Kapsait', 'Lelan', 'Sook', 'Alale', 'Mnagei'] },
+    { town: 'Kisii', areas: ['Suneka', 'Ogembo', 'Kenyenya', 'Nyamarambe', 'Kisii Town', 'Keroka', 'Keumbu', 'Nyatieko', 'Mosocho', 'Nyamache'] },
+    { town: 'Kwale', areas: ['Ukunda', 'Diani', 'Msambweni', 'Kinango', 'Lunga Lunga', 'Shimoni', 'Matuga', 'Vanga', 'Tiwi', 'Mwaluphamba'] },
+    { town: 'Mandera', areas: ['Elwak', 'Rhamu', 'Banissa', 'Takaba', 'Lafey', 'Khalalio', 'Hareri', 'Wargadud', 'Fino', 'Ashabito'] },
+    { town: 'Maralal', areas: ['Baragoi', 'Wamba', 'Suguta Marmar', 'Archers Post', 'Korr', 'Sererit', 'Lodosoit', 'Samburu', 'Loosuk', 'Poro'] },
+    { town: 'Murang\'a', areas: ['Kangema', 'Kiria-ini', 'Makuyu', 'Maragua', 'Kahuro', 'Kenol', 'Sabasaba', 'Murang\'a Town', 'Kambiti', 'Karuri'] },
+    { town: 'Mwingi', areas: ['Kyuso', 'Migwani', 'Mumoni', 'Tseikuru', 'Nguni', 'Nuu', 'Waita', 'Muthwani', 'Kivou', 'Kanzui'] },
+    { town: 'Nandi Hills', areas: ['Kapsabet', 'Nandi Hills', 'Kabiyet', 'Kipkaren', 'Cheptarit', 'Nyang\'ori', 'Kaburwo', 'Lessos', 'Mosoriot', 'Namgoi'] },
+    { town: 'Ngong', areas: ['Matasia', 'Ololua', 'Kerarapon', 'Kiserian', 'Ngong Town', 'Oloolua', 'Embakasi', 'Ololua Ridge', 'Bulbul', 'Ngong Hills'] },
+    { town: 'Siaya', areas: ['Bondo', 'Ugunja', 'Usenge', 'Rarieda', 'Gem', 'Alego Usonga', 'Yala', 'Ndori', 'Madiany', 'Nyadorera'] },
+    { town: 'Taita', areas: ['Wundanyi', 'Mwatate', 'Voi', 'Taveta', 'Bura', 'Ronge', 'Sagalla', 'Mgange', 'Kasigau', 'Wusi'] },
+    { town: 'Tharaka', areas: ['Marimanti', 'Chiakariga', 'Gatunga', 'Mukothima', 'Nkondi', 'Tunyai', 'Karocho', 'Tseikuru', 'Kibunga', 'Nkondi'] },
+    { town: 'Wote', areas: ['Makindu', 'Sultan Hamud', 'Emali', 'Makueni', 'Kikima', 'Nunguni', 'Kikumbulyu', 'Nziu', 'Kambu', 'Kola'] },
+    { town: 'Vihiga', areas: ['Mbale', 'Luanda', 'Majengo', 'Chavakali', 'Gisambai', 'Hamisi', 'Sabatia', 'Tambua', 'Shamakhokho', 'Kaimosi'] }
+  ];
 
 router.get('/api/locations', (req, res) => {
   res.json(townsAndAreas);
