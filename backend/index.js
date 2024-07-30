@@ -6,6 +6,7 @@ const socketIo = require('socket.io');
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
+const methodOverride = require('method-override');
 
 const fileRoutes = require('./routes/fileRoutes');
 const authRoutes = require('./routes/authRoutes');
@@ -26,8 +27,7 @@ if (!fs.existsSync(uploadDir)) {
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
 const port = process.env.PORT || 5000;
@@ -35,7 +35,7 @@ mongoose.set('strictQuery', true);
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Could not connect to MongoDB', err));
 
@@ -44,7 +44,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/dash', dashboardRoutes);
-app.use('/uploads', express.static('uploads'));//remove later just for experiment
+app.use('/uploads', express.static('uploads')); //remove later just for experiment
 app.use('/api', newproductRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
@@ -57,7 +57,7 @@ app.use((req, res, next) => {
   next(error);
 });
 
-//even this just experiment
+// even this just experiment
 app.use((err, req, res, next) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   res.status(statusCode);
