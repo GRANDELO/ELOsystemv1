@@ -1,59 +1,44 @@
 const express = require('express');
+const router = express.Router();
 const Order = require('../models/Order');
 const DeliveryPerson = require('../models/DeliveryPerson');
 
-const router = express.Router();
-
-// POST /api/orders - Create a new order
 router.post('/', async (req, res) => {
-  try {
-    const { items, totalPrice, paymentMethod, destination, orderDate, username } = req.body;
+  const { items, totalPrice, paymentMethod, destination, orderDate, username } = req.body;
 
+  try {
     if (!items || !totalPrice || !paymentMethod || !destination || !orderDate || !username) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    // Optionally, assign a delivery person (for simplicity, assigning a random one)
-    const deliveryPersons = await DeliveryPerson.find();
-    const deliveryPerson = deliveryPersons[Math.floor(Math.random() * deliveryPersons.length)];
+    // Find an available delivery person
+    const deliveryPerson = await DeliveryPerson.findOne({ status: 'available' }).sort({ createdAt: 1 });
 
     // Create a new order
-    const newOrder = new Order({
+    const order = new Order({
       items,
       totalPrice,
       paymentMethod,
       destination,
       orderDate,
-      deliveryPerson: deliveryPerson ? deliveryPerson._id : null, // Assign delivery person
-      username, // Store the username of the person placing the order
+      username,
+      deliveryPerson: deliveryPerson ? deliveryPerson._id : null,
+      isDeliveryInProcess: false,
+      isDelivered: false
     });
 
-    await newOrder.save();
+    await order.save();
 
-    res.status(201).json({ message: 'Order placed successfully', order: newOrder });
+    // Update delivery person's status if assigned
+    if (deliveryPerson) {
+      deliveryPerson.status = 'assigned';
+      await deliveryPerson.save();
+    }
+
+    res.status(201).json({ message: 'Order created successfully', order });
   } catch (err) {
-    console.error('Failed to place order:', err);
-    res.status(500).json({ message: 'Failed to place order' });
-  }
-});
-
-// PUT /api/orders/:id - Update order status
-router.put('/:id', async (req, res) => {
-  try {
-    const { isDeliveryInProcess, isDelivered } = req.body;
-    
-    const updateFields = {};
-    if (isDeliveryInProcess !== undefined) updateFields.isDeliveryInProcess = isDeliveryInProcess;
-    if (isDelivered !== undefined) updateFields.isDelivered = isDelivered;
-
-    const updatedOrder = await Order.findByIdAndUpdate(req.params.id, updateFields, { new: true });
-
-    if (!updatedOrder) return res.status(404).json({ message: 'Order not found' });
-
-    res.json({ message: 'Order updated successfully', order: updatedOrder });
-  } catch (err) {
-    console.error('Failed to update order:', err);
-    res.status(500).json({ message: 'Failed to update order' });
+    console.error('Failed to create order:', err);
+    res.status(400).json({ message: 'Failed to create order', error: err.message });
   }
 });
 
