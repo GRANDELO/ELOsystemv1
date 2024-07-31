@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import axios from 'axios';
+import React, { useState } from 'react';
 
 const ImageUpload = ({ onUpload }) => {
   const [file, setFile] = useState(null);
@@ -12,7 +12,7 @@ const ImageUpload = ({ onUpload }) => {
     e.preventDefault();
 
     if (!file) {
-      alert('Please select an image first.');
+      alert('Please select a file first.');
       return;
     }
 
@@ -27,7 +27,9 @@ const ImageUpload = ({ onUpload }) => {
       });
       alert('Image uploaded successfully!');
       setFile(null);
-      onUpload(); // Refresh the image list
+      if (typeof onUpload === 'function') {
+        onUpload(); // Ensure that onUpload is a function before calling it
+      }
     } catch (error) {
       console.error('Error uploading image:', error);
       alert('Error uploading image');
