@@ -13,6 +13,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-async-handler": "^1.2.0",
+    "firebase-admin": "^12.3.0",
     "googleapis": "^140.0.1",
     "gridfs-stream": "^1.1.1",
     "jsonwebtoken": "^9.0.2",
@@ -26,7 +27,9 @@
     "react-chartjs-2": "^5.2.0",
     "react-select": "^5.8.0",
     "resend": "^3.4.0",
+    "sharp": "^0.33.4",
     "socket.io": "^4.7.5",
+    "stream-mock": "^2.0.5",
     "uuid": "^10.0.0"
   },
   "scripts": {

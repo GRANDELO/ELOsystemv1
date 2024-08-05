@@ -37,13 +37,12 @@ mongoose
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/dash', dashboardRoutes);
-app.use('/uploads', express.static('uploads'));//remove later just for experiment
 app.use('/api', newproductRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api', productRoutes);
 app.use(locations);
 
 app.use((req, res, next) => {
@@ -65,7 +64,7 @@ app.use((err, req, res, next) => {
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "*",
+    origin: "http://localhost:3000",
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   }
 });

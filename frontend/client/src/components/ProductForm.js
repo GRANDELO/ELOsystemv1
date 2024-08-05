@@ -46,7 +46,6 @@ const ProductForm = () => {
   const handleDrop = (e) => {
     e.preventDefault();
     setDragging(false);
-    console.log('File dropped:', e.dataTransfer.files);
     const files = e.dataTransfer.files;
     if (files.length > 0) {
       setFormData({ ...formData, image: files[0] });
@@ -56,12 +55,15 @@ const ProductForm = () => {
   const handleDragOver = (e) => {
     e.preventDefault();
     setDragging(true);
-    console.log('Dragging over');
   };
 
   const handleDragLeave = () => {
     setDragging(false);
-    console.log('Drag left');
+  };
+
+  const handleClick = (e) => {
+    e.stopPropagation(); // Prevents the second click
+    fileInputRef.current.click();
   };
 
   const handleSubmit = async (e) => {
@@ -86,7 +88,7 @@ const ProductForm = () => {
         });
         setMessage('Product updated successfully');
       } else {
-        await axiosInstance.post(`/products/products`, formDataToSend, {
+        await axiosInstance.post(`/products`, formDataToSend, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${token}`,
@@ -100,8 +102,6 @@ const ProductForm = () => {
       setMessage(`Error uploading product: ${error.message}`);
     }
   };
-  
-  
 
   const handleDelete = async () => {
     const token = sessionStorage.getItem('userToken');
@@ -144,6 +144,7 @@ const ProductForm = () => {
         <label>
           Category:
           <select id="category" name="category" value={formData.category} onChange={handleChange} required >
+            {/* Category options */}
             <optgroup label="Electronics">
               <option value="mobile-phones">Mobile Phones</option>
               <option value="computers">Computers</option>
@@ -232,17 +233,15 @@ const ProductForm = () => {
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            onClick={() => fileInputRef.current.click()}
+            onClick={handleClick}
           >
             {formData.image ? formData.image.name : 'Drag and drop an image or click to select'}
           </div>
         </label>
-        <button type="submit">{id ? 'Update' : 'Create'} Product</button>
-        {id && (
-          <button type="button" onClick={handleDelete}>Delete Product</button>
-        )}
+        <button type="submit">{id ? 'Update' : 'Submit'}</button>
+        {id && <button type="button" onClick={handleDelete}>Delete</button>}
+        {message && <p>{message}</p>}
       </form>
-      {message && <p>{message}</p>}
     </div>
   );
 };
