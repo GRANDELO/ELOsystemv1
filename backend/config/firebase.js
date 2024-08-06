@@ -1,4 +1,4 @@
-// firebase.js
+/* firebase.js
 const admin = require('firebase-admin');
 const { cert } = require('firebase-admin/app');
 const { getStorage } = require('firebase-admin/storage');
@@ -12,4 +12,4 @@ admin.initializeApp({
 
 const bucket = getStorage().bucket();
 
-module.exports = { bucket };
+module.exports = { bucket };*/

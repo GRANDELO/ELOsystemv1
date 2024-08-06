@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { getUsernameFromToken } from '../utils/auth';
+import { v4 as uuidv4 } from 'uuid';
+
 
 const OrderingPage = () => {
   const username = getUsernameFromToken();
@@ -91,6 +93,8 @@ const OrderingPage = () => {
       return;
     }
 
+    const orderReference = uuidv4();//generate uniq order ref
+
     try {
       const orderDetails = {
         items: cart.map(item => ({
@@ -102,11 +106,15 @@ const OrderingPage = () => {
         destination: `${selectedTown}, ${selectedArea}`,
         orderDate: new Date().toISOString(),
         username,
-        mpesaPhoneNumber: paymentMethod === 'mpesa' ? mpesaPhoneNumber : undefined
+        mpesaPhoneNumber: paymentMethod === 'mpesa' ? mpesaPhoneNumber : undefined,
+        orderReference //order ref
       };
 
       const response = await axios.post('https://elosystemv1.onrender.com/api/orders', orderDetails);
       setMessage(response.data.message);
+
+      // Send order details to the logistics system
+      await axios.post('https://elosystemv1.onrender.com/api/logistics', orderDetails);
       setTimeout(() => {
         navigate('/salespersonhome');
       }, 3000);

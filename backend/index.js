@@ -14,6 +14,7 @@ const dashboardRoutes = require('./routes/dashboard');
 const newproductRoutes = require('./routes/newproductRoutes');
 const cartRoutes = require('./routes/cart');
 const orderRoutes = require('./routes/orders');
+const logisticRoutes = require('./routes/logisticTest');//this also remove and also in the logisticTest remove
 const locations = require('./routes/locations');
 
 const uploadDir = path.join(__dirname, 'uploads');
@@ -43,6 +44,7 @@ app.use('/api', newproductRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api', productRoutes);
+app.use('/api/orders', logisticRoutes)// remove this
 app.use(locations);
 
 app.use((req, res, next) => {
@@ -64,7 +66,7 @@ app.use((err, req, res, next) => {
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "*",
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   }
 });

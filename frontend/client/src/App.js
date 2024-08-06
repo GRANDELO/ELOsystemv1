@@ -27,7 +27,7 @@ import Seller from './components/sellerHome';
 import Upload from './components/upload';
 import ImageList from './components/ImageList';
 import ImageUpload from './components/ImageUpload';
-
+import LogisticPage from './components/Logistics';
 import Image from './components/image';
 
 import './main.css';
@@ -79,6 +79,7 @@ const App = () => {
 
           <Route path="/imageList" element={<ImageList />} />
           <Route path="/imageUpload" element={<ImageUpload />} />
+          <Route path="/logistics" element={<LogisticPage />} />
           
         </Routes>
       </div>
