@@ -43,7 +43,7 @@ app.use('/api/dash', dashboardRoutes);
 app.use('/api', newproductRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api', productRoutes);
+app.use('/api/products', productRoutes);
 app.use('/api/orders', logisticRoutes)// remove this
 app.use(locations);
 
