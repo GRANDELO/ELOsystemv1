@@ -1,13 +1,13 @@
 const Product = require('../models/oProduct');
-const { bucket } = require('../config/firebase'); // Import bucket from firebase.js
+const { bucket } = require('../config/firebase');
 const path = require('path');
 
-// Upload a file
+// Upload a file to Firebase Storage
 async function uploadFile(file) {
   if (!file) return null;
-  
-  const filePath = path.join('images', file.originalname); // Define your file path
-  const fileUpload = bucket.file(filePath);
+
+  const fileName = Date.now() + path.extname(file.originalname); // Generate a unique file name
+  const fileUpload = bucket.file(fileName);
 
   const stream = fileUpload.createWriteStream({
     metadata: {
@@ -17,32 +17,35 @@ async function uploadFile(file) {
 
   return new Promise((resolve, reject) => {
     stream.on('error', (err) => reject(err));
-    stream.on('finish', () => resolve(filePath));
+    stream.on('finish', async () => {
+      // Get the public URL for the uploaded file
+      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+      resolve(publicUrl);
+    });
     stream.end(file.buffer);
   });
 }
 
-  
+// Create product
 exports.createProduct = async (req, res) => {
   try {
     const { name, description, price, category } = req.body;
     const image = req.file ? await uploadFile(req.file) : null;
-    
+
     const newProduct = new Product({
       name,
       description,
       price,
       category,
-      image
+      image,
     });
-    
+
     await newProduct.save();
     res.status(201).json({ product: newProduct });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
-  
 
 // Get product by ID
 exports.getProductById = async (req, res) => {
@@ -60,9 +63,11 @@ exports.updateProduct = async (req, res) => {
   try {
     const { name, description, price, category } = req.body;
     const updateData = { name, description, price, category };
+
     if (req.file) {
-      updateData.image = req.file.filename;
+      updateData.image = await uploadFile(req.file); // Update image if a new one is provided
     }
+
     const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
     if (!updatedProduct) return res.status(404).json({ message: 'Product not found' });
     res.json({ product: updatedProduct });
@@ -82,17 +87,19 @@ exports.deleteProduct = async (req, res) => {
   }
 };
 
-// Serve image
+// Serve image from Firebase Storage
 exports.getImage = async (req, res) => {
   try {
-    gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
-      if (!file || file.length === 0) {
-        return res.status(404).json({ message: 'No file exists' });
-      }
-      const readstream = gfs.createReadStream(file.filename);
-      readstream.pipe(res);
-    });
+    const file = bucket.file(req.params.filename);
+
+    const [exists] = await file.exists();
+    if (!exists) {
+      return res.status(404).json({ message: 'Image not found' });
+    }
+
+    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${req.params.filename}`;
+    res.redirect(publicUrl);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}; 
+};
