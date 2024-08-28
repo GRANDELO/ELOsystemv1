@@ -1,8 +1,10 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+// src/components/ProductsDetail.js
 
-const ProductDetails = () => {
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import axiosInstance from './axiosInstance';
+
+const ProductsDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -11,30 +13,37 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`https://elosystemv1.onrender.com/api/products/products/${id}`);
-        console.log('Product data:', response.data.product);
+        const response = await axiosInstance.get(`/products/${id}`);
         setProduct(response.data.product);
-      } catch (error) {
-        console.error('Error fetching product:', error);
-        setError('Error fetching product');
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching product:', err);  // Logs detailed error to console
+        setError(err.message);
         setLoading(false);
       }
     };
+
     fetchProduct();
   }, [id]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error fetching product: {error}</div>;
 
   return (
     <div>
-      <h1>{product.name}</h1>
-      <p>{product.description}</p>
-      <p>{product.price}</p>
-      <p>{product.category}</p>
-      {product.imageUrl && <img src={`https://elosystemv1.onrender.com${product.imageUrl}`} alt={product.name} />}
+      {product ? (
+        <>
+          <h1>{product.name}</h1>
+          <img src={product.image} alt={product.name} width="200" />
+          <p>{product.description}</p>
+          <p>Category: {product.category}</p>
+          <p>Price: {product.price}</p>
+        </>
+      ) : (
+        <p>Product not found.</p>
+      )}
     </div>
   );
 };
 
-export default ProductDetails;
+export default ProductsDetail;

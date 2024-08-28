@@ -39,3 +39,4 @@ const NewProductDetails = () => {
 };
 
 export default NewProductDetails;
+

@@ -23,6 +23,7 @@ const ProductList = () => {
     fetchProducts();
   }, []);
 
+  
   const categorizeProducts = () => {
     const categories = {};
     products.forEach(product => {
