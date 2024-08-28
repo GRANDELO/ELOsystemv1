@@ -52,7 +52,6 @@ const ProductList = () => {
                 <h3>{product.name}</h3>
                 <p>{product.description}</p>
                 <h4>${product.price}</h4>
-                <Link to={`/product/${product._id}`}>View Details</Link>
               </div>
             ))}
           </div>
