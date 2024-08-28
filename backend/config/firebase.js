@@ -1,15 +1,15 @@
-/* firebase.js
+require('dotenv').config();
 const admin = require('firebase-admin');
 const { cert } = require('firebase-admin/app');
 const { getStorage } = require('firebase-admin/storage');
 
-const serviceAccount = require('./grandelo-firebase-adminsdk-lxsyl-d7518e4b02.json'); // Update this path
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT); // Update this path accordingly
 
 admin.initializeApp({
   credential: cert(serviceAccount),
-  storageBucket: 'grandelo.appspot.com' // Update with your Firebase project ID
+  storageBucket: 'grandelo.appspot.com' // Your Firebase storage bucket name
 });
 
 const bucket = getStorage().bucket();
 
-module.exports = { bucket };*/
+module.exports = { bucket };

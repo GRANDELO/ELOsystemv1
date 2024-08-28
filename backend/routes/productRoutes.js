@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const upload = require('../middleware/upload'); // Make sure this path is correct
-const productController = require('../controllers/productController'); // Make sure this path is correct
+const upload = require('../middleware/upload'); // Correct middleware path
+const productController = require('../controllers/productController');
 
 // Define routes with proper handlers
 router.post('/products', upload.single('image'), productController.createProduct);
