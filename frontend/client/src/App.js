@@ -11,7 +11,6 @@ import NewProductForm from './components/NewProductForm';
 import NewProductList from './components/NewProductList';
 import Order from "./components/OrderingPage";
 import ProductForm from './components/ProductForm';
-import ProductDetails from './components/ProductsDetail';
 import ProductList from './components/ProductsList';
 import Register from './components/Register';
 import Reports from './components/Reports';
@@ -31,6 +30,7 @@ import LogisticPage from './components/Logistics';
 import Image from './components/image';
 
 import './main.css';
+
 const socket = io('https://elosystemv1.onrender.com');
 
 const App = () => {
@@ -59,7 +59,6 @@ const App = () => {
           <Route path="/verification" element={<Verification />} />
           <Route path="/home" element={<Home />} />
           <Route path="/productForm" element={<ProductForm />} />
-          <Route path="/:id" element={<ProductDetails />} />
           <Route path="/reset-password" element={<Passwordrecovery />} />
           <Route path="/products" element={<ProductList />} />
           <Route path="/seller" element={<Seller />} />
@@ -76,11 +75,9 @@ const App = () => {
           <Route path="/newproductdetail" element={<NewProductDetail />} />
           <Route path="/newproductedit" element={<NewProductEdit />} />
           <Route path="/image" element={<Image />} />
-
           <Route path="/imageList" element={<ImageList />} />
           <Route path="/imageUpload" element={<ImageUpload />} />
           <Route path="/logistics" element={<LogisticPage />} />
-          
         </Routes>
       </div>
     </Router>

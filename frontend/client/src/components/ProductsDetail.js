@@ -17,11 +17,23 @@ const ProductsDetail = () => {
         setProduct(response.data.product);
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching product:', err);  // Logs detailed error to console
+        console.error('Error fetching product:', err);
+      if (err.response) {
+        // Server responded with a status other than 2xx
+        console.error('Error Response:', err.response);
+        setError(`Error ${err.response.status}: ${err.response.data.message || 'An error occurred'}`);
+      } else if (err.request) {
+        // Request was made but no response received
+        console.error('Error Request:', err.request);
+        setError('No response received from the server.');
+      } else {
+        // Something happened in setting up the request
+        console.error('Error Message:', err.message);
         setError(err.message);
-        setLoading(false);
       }
-    };
+      setLoading(false);
+    }
+  };
 
     fetchProduct();
   }, [id]);

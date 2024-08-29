@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from './axiosInstance';
 import './styles/productlist.css';
-import { Link } from 'react-router-dom';  // Ensure you have this for routing
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -48,23 +47,17 @@ const ProductList = () => {
             <div className="product-cards">
               {categorizedProducts[category].map(product => (
                 <div key={product._id} className="product-card">
-                  <Link to={`/products/${product._id}`}> {/* Link to Product Details */}
-                    <img src={product.imageUrl} alt={product.name} />
-                    <h3>{product.name}</h3>
-                    <p>{product.description}</p>
-                    <h4>${product.price}</h4>
-                  </Link>
+                  <img src={product.image} alt={product.name} />
+                  <h3>{product.name}</h3>
+                  <p>{product.description}</p>
+                  <h4>ksh{product.price}</h4>
+                  <a href={`/products/${product._id}`} className="view-details-link">View Details</a>
                 </div>
               ))}
             </div>
           </div>
         ))
-      ) : (
-        <>
-          <p>Product not found.</p>
-          <button onClick={() => window.history.back()}>Go Back</button>
-        </>
-      )}
+      ) : null}
     </div>
   );
 };

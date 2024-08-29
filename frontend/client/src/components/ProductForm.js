@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axiosInstance from './axiosInstance';
 import './styles/ProductForm.css';
-
+import ProductList from './ProductsList';
 const ProductForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -242,6 +242,9 @@ const ProductForm = () => {
         {id && <button type="button" onClick={handleDelete}>Delete</button>}
         {message && <p>{message}</p>}
       </form>
+      <div>
+        < ProductList/>
+      </div>
     </div>
   );
 };

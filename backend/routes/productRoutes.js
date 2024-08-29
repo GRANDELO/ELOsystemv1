@@ -5,7 +5,6 @@ const productController = require('../controllers/productController');
 
 router.post('/products', upload.single('image'), productController.createProduct);
 router.get('/products', productController.getAllProducts);
-router.get('/products/:id', productController.getProductById); // Ensure this route is defined
 router.put('/products/:id', upload.single('image'), productController.updateProduct);
 router.delete('/products/:id', productController.deleteProduct);
 router.get('/images/:filename', productController.getImage);

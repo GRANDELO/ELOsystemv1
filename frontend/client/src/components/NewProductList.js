@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import ProductModal from './ProductModal';
-import Footer from './Footer';
+//import Footer from './Footer';
 import './styles/NewProductList.css';
 
 const NewProductList = () => {
@@ -84,7 +84,7 @@ const NewProductList = () => {
         show={isModalOpen}
         handleClose={closeModal}
       />
-      <Footer />
+
     </div>
   );
 };

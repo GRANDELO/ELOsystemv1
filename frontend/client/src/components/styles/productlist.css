@@ -1,78 +1,209 @@
-.product-list {
+/* .product-list {
+  padding: 20px;
+  background-color: #a49a9a;
+  color: #9cabaf;
+}
+
+.product-category {
+  margin-bottom: 40px;
+}
+
+.product-category h2 {
+  font-size: 24px;
+  font-weight: bolder;
+  color: green;
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+
+.product-cards {
+  display: flex;
+  overflow-x: auto;
+  padding: 10px;
+  scroll-snap-type: x mandatory; /* Ensures smooth snapping when scrolling 
+}
+
+.product-cards::-webkit-scrollbar {
+  display: none; /* Hides scrollbar for a cleaner look 
+}
+
+.product-card {
+  flex: 0 0 auto;
+  width: 200px;
+  margin-right: 10px;
+  background-color: #d7cdcd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+  scroll-snap-align: start; /* Snaps each card to the start when scrolling 
+}
+
+.product-card:hover {
+  transform: scale(1.05);
+}
+
+.product-card img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+.product-card h3 {
+  font-size: 18px;
+  margin: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-card p {
+  font-size: 14px;
+  margin: 10px;
+  color: #a0a0a0;
+}
+
+.product-card h4 {
+  font-size: 16px;
+  margin: 10px;
+  color: #e50914;
+}
+*/
+  .product-card img {
+    width: 100%;  /* Makes the image take up the full width of its container */
+    height: auto; /* Maintains the aspect ratio */
+    max-width: 200px; /* Sets a maximum width */
+    max-height: 100px; /* Sets a maximum height */
+    object-fit: cover; /* Ensures the image covers the area while maintaining aspect ratio */
+    border-radius: 8px; /* Optional: Rounds the corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Adds a slight shadow for better visual effect */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    
+  }
+  .product-card img:hover {
+    transform: rotate(5deg);
+    opacity: 0.9;
+  }
+  .product-list {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
-    margin: 2rem;
-    max-width: 90%;
+    gap: 20px;
+    
   }
   
   .product-category {
-    border: 1px solid #ddd;
-    padding: 1rem;
-    border-radius: 8px;
+    margin-bottom: 60px;
   }
   
   .product-category h2 {
-    margin-bottom: 1rem;
-    color: #333;
+    font-size: 28px;
+    font-weight: bold;
+    color: #2c10dd;
+    margin-bottom: 20px;
+    padding-left: 10px;
+    border-left: 4px solid #e50914;
   }
   
   .product-cards {
     display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
+    overflow-x: auto;
+    padding: 10px 0;
+    scroll-snap-type: x mandatory;
+    gap: 20px;
+  }
+  
+  .product-cards::-webkit-scrollbar {
+    display: none;
   }
   
   .product-card {
-    flex: 1 1 calc(33.333% - 1rem);
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    flex: 1 1 calc(25% - 20px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
     text-align: center;
-    transition: transform 0.3s;
+    cursor: pointer;
   }
   
   .product-card:hover {
-    transform: scale(1.05);
+    transform: translateY(-10px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
   }
   
-  .product-card img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-  }
+  
   
   .product-card h3 {
-    font-size: 1.25rem;
-    margin-bottom: 0.5rem;
+    font-size: 20px;
+    margin: 10px 0;
     color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.3s ease;
   }
-  
+  .product-card:hover h3 {
+    color: #e60000;
+  }
   .product-card p {
     font-size: 1rem;
-    margin-bottom: 0.5rem;
-    color: #777;
+    margin: 0 0 10px;
+    color: #130a0a;
+    line-height: 1.5;
   }
   
   .product-card h4 {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-    color: #333;
+    font-size: 18px;
+    margin: 10px 0;
+    color: #1627a4;
+    font-weight: bold;
   }
-  
-  .product-card a {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    background-color: #007bff;
-    color: #fff;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: background-color 0.3s;
+  /* View Details Link with Animation */
+.view-details-link {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.view-details-link:hover {
+  color: #0056b3;
+  transform: scale(1.1);
+}
+/* Fade-in Animation for Product Cards */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  
-  .product-card a:hover {
-    background-color: #0056b3;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
+}
+
+.product-card {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+  .product-card {
+    flex: 1 1 calc(50% - 20px);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .product-card {
+    flex: 1 1 100%;
+  }
+
+  .product-cards {
+    gap: 10px;
+  }
+}

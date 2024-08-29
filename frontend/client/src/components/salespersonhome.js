@@ -6,6 +6,7 @@ import Cart from './Cart';
 import NewProductList from './NewProductList';
 import Header from './header';
 import Settings from './settings';
+import ProductList from './ProductsList';
 import './styles/Home.css';
 
 const Home = () => {
@@ -50,6 +51,9 @@ const Home = () => {
             
             <section>
               <NewProductList />
+            </section>
+            <section>
+              <ProductList/>
             </section>
           </section>
       </main>
