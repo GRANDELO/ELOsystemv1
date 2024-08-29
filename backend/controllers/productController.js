@@ -6,7 +6,7 @@ const path = require('path');
 async function uploadFile(file) {
   if (!file) return null;
 
-  const fileName = Date.now() + path.extname(file.originalname); // Generate a unique file name
+  const fileName = Date.now() + path.extname(file.originalname);
   const fileUpload = bucket.file(fileName);
 
   const stream = fileUpload.createWriteStream({
@@ -18,7 +18,6 @@ async function uploadFile(file) {
   return new Promise((resolve, reject) => {
     stream.on('error', (err) => reject(err));
     stream.on('finish', async () => {
-      // Get the public URL for the uploaded file
       const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
       resolve(publicUrl);
     });
@@ -49,16 +48,21 @@ exports.createProduct = async (req, res) => {
 
 // Get product by ID
 exports.getProductById = async (req, res) => {
-  console.log(`Fetching product with ID: ${req.params.id}`);
   try {
     const product = await Product.findById(req.params.id);
-    if (!product) {
-      console.log('Product not found');
-      return res.status(404).json({ message: 'Product not found' });
-    }
+    if (!product) return res.status(404).json({ message: 'Product not found' });
     res.json({ product });
   } catch (error) {
-    console.error('Error fetching product:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Get all products
+exports.getAllProducts = async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.json({ products });
+  } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
@@ -70,21 +74,12 @@ exports.updateProduct = async (req, res) => {
     const updateData = { name, description, price, category };
 
     if (req.file) {
-      updateData.image = await uploadFile(req.file); // Update image if a new one is provided
+      updateData.image = await uploadFile(req.file);
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
     if (!updatedProduct) return res.status(404).json({ message: 'Product not found' });
     res.json({ product: updatedProduct });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-//get all items
-exports.getAllProducts = async (req, res) => {
-  try {
-    const products = await Product.find(); // Fetch all products from the database
-    res.json({ products });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
