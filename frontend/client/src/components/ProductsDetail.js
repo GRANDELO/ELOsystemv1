@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axiosInstance from './axiosInstance';
-import './styles/productsdetail.css';  // Make sure you have this CSS file for styling
 
 const ProductsDetail = () => {
   const { id } = useParams();
