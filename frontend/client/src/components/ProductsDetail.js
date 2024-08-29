@@ -1,12 +1,13 @@
-// src/components/ProductsDetail.js
-
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axiosInstance from './axiosInstance';
+import './styles/productsdetail.css';  // Make sure you have this CSS file for styling
 
 const ProductsDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate(); // To navigate back or to other pages
   const [product, setProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -26,21 +27,60 @@ const ProductsDetail = () => {
     fetchProduct();
   }, [id]);
 
+  const handleAddToCart = () => {
+    const cartItem = {
+      productId: product._id,
+      name: product.name,
+      price: product.price,
+      quantity: quantity,
+      image: product.image
+    };
+    
+    // Save to local storage or a global cart state
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart.push(cartItem);
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    alert('Product added to cart!');
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error fetching product: {error}</div>;
 
   return (
-    <div>
+    <div className="product-detail">
       {product ? (
         <>
           <h1>{product.name}</h1>
-          <img src={product.image} alt={product.name} width="200" />
+          <img src={product.image} alt={product.name} width="300" />
           <p>{product.description}</p>
           <p>Category: {product.category}</p>
-          <p>Price: {product.price}</p>
+          <p>Price: ${product.price}</p>
+
+          <div className="quantity-selector">
+            <label htmlFor="quantity">Quantity:</label>
+            <input 
+              type="number" 
+              id="quantity" 
+              value={quantity} 
+              min="1" 
+              onChange={(e) => setQuantity(e.target.value)} 
+            />
+          </div>
+
+          <button onClick={handleAddToCart} className="add-to-cart-button">
+            Add to Cart
+          </button>
+          
+          <button onClick={() => navigate(-1)} className="go-back-button">
+            Go Back
+          </button>
         </>
       ) : (
-        <p>Product not found.</p>
+        <>
+          <p>Product not found.</p>
+          <button onClick={() => navigate(-1)}>Go Back</button>
+        </>
       )}
     </div>
   );

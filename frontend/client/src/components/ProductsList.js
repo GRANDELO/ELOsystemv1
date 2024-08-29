@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import axiosInstance from './axiosInstance';
 import './styles/productlist.css';
+import { Link } from 'react-router-dom';  // Ensure you have this for routing
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -23,7 +23,6 @@ const ProductList = () => {
     fetchProducts();
   }, []);
 
-  
   const categorizeProducts = () => {
     const categories = {};
     products.forEach(product => {
@@ -42,23 +41,31 @@ const ProductList = () => {
 
   return (
     <div className="product-list">
-      {Object.keys(categorizedProducts).map(category => (
-        <div key={category} className="product-category">
-          <h2>{category}</h2>
-          <div className="product-cards">
-            {categorizedProducts[category].map(product => (
-              <div key={product._id} className="product-card">
-                <img src={product.imageUrl} alt={product.name} />
-                <h3>{product.name}</h3>
-                <p>{product.description}</p>
-                <h4>${product.price}</h4>
-              </div>
-            ))}
+      {Object.keys(categorizedProducts).length > 0 ? (
+        Object.keys(categorizedProducts).map(category => (
+          <div key={category} className="product-category">
+            <h2>{category}</h2>
+            <div className="product-cards">
+              {categorizedProducts[category].map(product => (
+                <div key={product._id} className="product-card">
+                  <Link to={`/products/${product._id}`}> {/* Link to Product Details */}
+                    <img src={product.imageUrl} alt={product.name} />
+                    <h3>{product.name}</h3>
+                    <p>{product.description}</p>
+                    <h4>${product.price}</h4>
+                  </Link>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))
+      ) : (
+        <>
+          <p>Product not found.</p>
+          <button onClick={() => window.history.back()}>Go Back</button>
+        </>
+      )}
     </div>
-    
   );
 };
 
