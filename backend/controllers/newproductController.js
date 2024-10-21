@@ -1,22 +1,50 @@
-const NewProduct = require('../models/oProduct');
+const NewProduct = require('../models/newproductModel');
 const { v4: uuidv4 } = require('uuid');
+const { bucket } = require('../config/firebase');
+const path = require('path');
+
+async function uploadFile(file) {
+  if (!file) return null;
+
+  const fileName = Date.now() + path.extname(file.originalname); // Generate a unique file name
+  const fileUpload = bucket.file(fileName);
+
+  const stream = fileUpload.createWriteStream({
+    metadata: {
+      contentType: file.mimetype,
+    },
+  });
+
+  return new Promise((resolve, reject) => {
+    stream.on('error', (err) => reject(err));
+    stream.on('finish', async () => {
+      // Get the public URL for the uploaded file
+      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+      resolve(publicUrl);
+    });
+    stream.end(file.buffer);
+  });
+}
 
 exports.createNewProduct = async (req, res) => {
   try {
-    const { name, category, subCategory, price, description, username, quantity } = req.body;
+    const { name, category, subCategory, description, price, username, quantity } = req.body;
+    const image = req.file ? await uploadFile(req.file) : null;
     const productId = uuidv4();
-    const newNewProduct = new NewProduct({
+    const newProduct = new Product({
       name,
       category,
       subCategory,
-      price,
       description,
+      price,
       username,
       productId,
       quantity,
+      image,
     });
-    await newNewProduct.save();
-    res.status(201).json(newNewProduct);
+
+    await newProduct.save();
+    res.status(201).json({ product: newProduct });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
