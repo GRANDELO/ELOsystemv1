@@ -81,6 +81,19 @@ exports.getAllProducts = async (req, res) => {
   }
 };
 
+exports.getNewProductById = async (req, res) => {
+  try {
+    const newProduct = await NewProduct.findById(req.params.id);
+    if (!newProduct) {
+      return res.status(404).json({ error: 'NewProduct not found' });
+    }
+    res.status(200).json(newProduct);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
 // Delete product
 exports.deleteProduct = async (req, res) => {
   try {
