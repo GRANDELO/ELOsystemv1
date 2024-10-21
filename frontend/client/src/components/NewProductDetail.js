@@ -11,7 +11,7 @@ const NewProductDetails = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`https://elosystemv1.onrender.com/api/newproducts/${id}`);
+        const response = await axios.get(`https://elosystemv1.onrender.com/api/products/${id}`);
         console.log('Product data:', response.data);
         setProduct(response.data);
         setLoading(false);
