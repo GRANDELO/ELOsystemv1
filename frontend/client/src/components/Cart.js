@@ -74,12 +74,17 @@ const Cart = ({ cart, setCart }) => {
       ) : (
         <ul>
           {cart.map((item) => (
-            <li key={item.product._id}>
-              {item.product.name} - Ksh {item.product.price} x {item.quantity}
-              <Button variant="danger" onClick={() => handleRemoveFromCart(item.product)}>
-                Remove
-              </Button>
-            </li>
+            // Add a check to ensure item.product is not null or undefined
+            item.product ? (
+              <li key={item.product._id}>
+                {item.product.name} - Ksh {item.product.price} x {item.quantity}
+                <Button variant="danger" onClick={() => handleRemoveFromCart(item.product)}>
+                  Remove
+                </Button>
+              </li>
+            ) : (
+              <li key={item._id}>Invalid product</li> // Fallback if item.product is null
+            )
           ))}
         </ul>
       )}

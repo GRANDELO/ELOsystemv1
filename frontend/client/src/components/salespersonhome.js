@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { getUsernameFromToken } from '../utils/auth';
 import Cart from './Cart';
 import NewProductList from './NewProductList';
+import ProductList from './ProductsList';
 import Header from './header';
 import Settings from './settings';
-import ProductList from './ProductsList';
 import './styles/Home.css';
 
 const Home = () => {
