@@ -5,6 +5,13 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  category: {
+    type: String,
+    required: true,
+  },
+  subCategory: {
+    type: String,
+  },
   description: {
     type: String,
     required: true,
@@ -13,8 +20,17 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  category: {
+  username: {
     type: String,
+    required: true,
+  },
+  productId: {
+    type: String,
+    unique: true,
+    required: true,
+  },
+  quantity: {
+    type: Number,
     required: true,
   },
   image: {

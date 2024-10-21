@@ -1,6 +1,7 @@
 const Product = require('../models/oProduct');
 const { bucket } = require('../config/firebase');
 const path = require('path');
+const { v4: uuidv4 } = require('uuid');
 
 // Upload a file to Firebase Storage
 async function uploadFile(file) {
@@ -29,14 +30,18 @@ async function uploadFile(file) {
 // Create product
 exports.createProduct = async (req, res) => {
   try {
-    const { name, description, price, category } = req.body;
+    const { name, category, subCategory, description, price, username, quantity } = req.body;
     const image = req.file ? await uploadFile(req.file) : null;
-
+    const productId = uuidv4();
     const newProduct = new Product({
       name,
+      category,
+      subCategory,
       description,
       price,
-      category,
+      username,
+      productId,
+      quantity,
       image,
     });
 
