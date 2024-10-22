@@ -1,10 +1,14 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+
+import { useNavigate } from 'react-router-dom';
 import { getUsernameFromToken, getcategoryFromToken, getemailFromToken } from '../utils/auth';
 import Prof from './images/prof.jpeg';
 import './styles/setting.css';
 
 const Settings = () => {
+
+  const navigate = useNavigate();
     const lusername = getUsernameFromToken();
     const lemail = getemailFromToken();
     const lcategory = getcategoryFromToken();
@@ -91,6 +95,10 @@ const Settings = () => {
             }
           }
         }
+    };
+
+    const handleLogout = () => {
+      navigate('/logout');
     };
 
     const handleSavePhoneNumber = async () => {
@@ -228,6 +236,7 @@ const Settings = () => {
                 {message && <p className="message">{message}</p>}
                 {error && <p className="error">{error}</p>}
             </form>
+            <button className="logoutbutton" onClick={handleLogout}>Logout</button>
         </div>
     );
 };

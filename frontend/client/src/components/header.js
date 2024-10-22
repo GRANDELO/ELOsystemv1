@@ -6,9 +6,7 @@ import './styles/header.css';
 const Header = () => {
     const navigate = useNavigate();
     const username = getUsernameFromToken();
-    const handleLogout = () => {
-      navigate('/logout');
-    };
+
     return (
         <div>
           <header className="video-background">
@@ -18,7 +16,6 @@ const Header = () => {
             <div className="video-overlay">
                 <h1>Welcome to Grandelo, {username}</h1>
                 <p>Your go-to platform to buy anything</p>
-                <button className="logoutbutton" onClick={handleLogout}>Logout</button>
             </div>
           </header>
         </div>

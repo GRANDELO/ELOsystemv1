@@ -21,6 +21,7 @@ const Login = () => {
       sessionStorage.setItem('userToken', response.data.token);
       if (response.data.category.trim().toLowerCase() === 'seller'){
         navigate('/home');
+        sessionStorage.setItem('username', response.data.token);
       }else if (response.data.category.trim().toLowerCase() === 'admin')
       {
         navigate('/dashboard');

@@ -1,0 +1,39 @@
+/* Custom CSS file (e.g., styles.css) */
+
+.custom-modal .modal-content {
+    background-color: #f8f9fa; /* Light background */
+    border-radius: 10px;
+    padding: 20px;
+    min-width: 500px;
+  }
+  
+  .custom-modal .modal-header {
+    background-color: #343a40;
+    color: #fff;
+    border-bottom: none;
+  }
+  
+  .custom-modal .modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .custom-modal .modal-footer {
+    border-top: none;
+  }
+  
+  .custom-modal img {
+    border-radius: 8px;
+    max-width: 200px;
+  }
+  
+  .custom-modal .btn-primary {
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+  
+  .custom-modal .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
+  

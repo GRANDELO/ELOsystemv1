@@ -72,8 +72,8 @@
   .product-card img {
     width: 100%;  /* Makes the image take up the full width of its container */
     height: auto; /* Maintains the aspect ratio */
-    max-width: 200px; /* Sets a maximum width */
-    max-height: 100px; /* Sets a maximum height */
+    max-width: 300px; /* Sets a maximum width */
+    max-height: 200px; /* Sets a maximum height */
     object-fit: cover; /* Ensures the image covers the area while maintaining aspect ratio */
     border-radius: 8px; /* Optional: Rounds the corners */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Adds a slight shadow for better visual effect */
@@ -81,7 +81,7 @@
     
   }
   .product-card img:hover {
-    transform: rotate(5deg);
+    transform:scale(1.2);
     opacity: 0.9;
   }
   .product-list {
@@ -155,6 +155,9 @@
     margin: 0 0 10px;
     color: #130a0a;
     line-height: 1.5;
+    max-height: 100px;
+    overflow-y: scroll;
+    scrollbar-width: none;
   }
   
   .product-card h4 {

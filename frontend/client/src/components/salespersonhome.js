@@ -1,18 +1,21 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { FaCog, FaShoppingCart } from 'react-icons/fa'; // Import icons
+import { IoClose } from 'react-icons/io5'; // Close icon
 import { useNavigate } from 'react-router-dom';
 import { getUsernameFromToken } from '../utils/auth';
 import Cart from './Cart';
 import NewProductList from './NewProductList';
-import ProductList from './ProductsList';
 import Header from './header';
 import Settings from './settings';
-import './styles/Home.css';
+import './styles/salespersonhome.css';
 
 const Home = () => {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isCartVisible, setIsCartVisible] = useState(false);
+  const [isSettingsVisible, setIsSettingsVisible] = useState(true); // Track visibility of settings
   const username = getUsernameFromToken();
   const navigate = useNavigate();
 
@@ -39,25 +42,48 @@ const Home = () => {
     navigate('/logout');
   };
 
+  const toggleCart = () => {
+    setIsCartVisible(!isCartVisible);
+  };
+
+  const toggleSettings = () => {
+    setIsSettingsVisible(!isSettingsVisible);
+    if(isCartVisible)
+      {
+        setIsCartVisible(!isCartVisible);
+      }
+  };
+
   return (
-    <div className="home">
+    <div className="salesp-home">
       <Header />
-      <main>
-        <section className="user-section">
-          {!loading && !error && cart.length > 0 && <Cart cart={cart} setCart={setCart} />}
-          <Settings />
-        </section>
-        <section className="home-intro">
-            
-            <section>
-              <NewProductList />
-            </section>
-            <section>
-              <ProductList/>
-            </section>
+      <main className="salesp-main">
+        <div className="salesp-home-intro">
+          <NewProductList />
+        </div>
+        {isSettingsVisible && (
+          <section className={`salesp-settings-section ${isSettingsVisible ? '' : 'closed'}`}>
+            <Settings />
+            <button className="salesp-toggle-settings" onClick={toggleSettings}>
+              <IoClose /> {/* Close icon without background */}
+            </button>
           </section>
+        )}
       </main>
-      <footer className="home-footer">
+      <div className="salesp-floating-buttons">
+        <button className="salesp-toggle-button" onClick={toggleCart}>
+          <FaShoppingCart />
+        </button>
+        <button className="salesp-toggle-button" onClick={toggleSettings}>
+          <FaCog />
+        </button>
+      </div>
+      {isCartVisible && (
+        <div className={`salesp-floating-cart ${isCartVisible ? 'show' : ''}`}>
+          {!loading && !error && cart.length > 0 && <Cart cart={cart} setCart={setCart} />}
+        </div>
+      )}
+      <footer className="salesp-home-footer">
         <p>Contact us: grandeloltd1@gmail.com</p>
         <p>&copy; 2024 Grandelo. All rights reserved.</p>
       </footer>
