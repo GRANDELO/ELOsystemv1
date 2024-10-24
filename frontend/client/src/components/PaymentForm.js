@@ -1,48 +1,36 @@
+// src/Payment.js
 import axios from 'axios';
 import React, { useState } from 'react';
 
-const PaymentForm = () => {
-  const [phoneNumber, setPhoneNumber] = useState('');
+const Payment = () => {
   const [amount, setAmount] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [phone, setPhone] = useState('');
+  const [orderId, setOrderId] = useState('');
+  const [responseMessage, setResponseMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setMessage('');
 
     try {
-      // Send data to your Node.js backend
-      const response = await axios.post('https://elosystemv1.onrender.com/api/mpesa/stkpush', {
-        phoneNumber,
-        amount
+      const response = await axios.post('http://localhost:your_backend_port/api/stkPush', {
+        amount,
+        phone,
+        Order_ID: orderId,
       });
-      
-      setMessage(response.data.message);
+
+      setResponseMessage(`Payment Initiated: ${JSON.stringify(response.data)}`);
     } catch (error) {
-      setMessage('Error initiating payment');
-    } finally {
-      setLoading(false);
+      console.error(error);
+      setResponseMessage('Error initiating payment.');
     }
   };
 
   return (
     <div>
-      <h2>Pay with MPesa</h2>
+      <h2>M-Pesa STK Push Payment</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Phone Number</label>
-          <input
-            type="text"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            placeholder="2547xxxxxxxx"
-            required
-          />
-        </div>
-        <div>
-          <label>Amount</label>
+          <label>Amount:</label>
           <input
             type="number"
             value={amount}
@@ -50,13 +38,29 @@ const PaymentForm = () => {
             required
           />
         </div>
-        <button type="submit" disabled={loading}>
-          {loading ? 'Processing...' : 'Pay'}
-        </button>
+        <div>
+          <label>Phone Number:</label>
+          <input
+            type="text"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label>Order ID:</label>
+          <input
+            type="text"
+            value={orderId}
+            onChange={(e) => setOrderId(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit">Pay with M-Pesa</button>
       </form>
-      {message && <p>{message}</p>}
+      {responseMessage && <p>{responseMessage}</p>}
     </div>
   );
 };
 
-export default PaymentForm;
+export default Payment;

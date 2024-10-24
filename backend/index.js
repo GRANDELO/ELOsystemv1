@@ -17,6 +17,8 @@ const orderRoutes = require('./routes/orders');
 const logisticRoutes = require('./routes/logisticTest');//this also remove and also in the logisticTest remove
 const locations = require('./routes/locations');
 const mpesaRoutes = require('./routes/mpesaRoutes');
+import lipaNaMpesaRoutes from "./routes/routes.lipanampesa.js";
+app.use('/api/mpesas',lipaNaMpesaRoutes)
 
 const uploadDir = path.join(__dirname, 'uploads');
 

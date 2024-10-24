@@ -13,6 +13,7 @@ const getAccessToken = async () => {
   return response.data.access_token;
 };
 
+
 // Function to generate the password (Base64 encoded)
 const generatePassword = (shortCode, passkey, timestamp) => {
   const dataToEncode = `${shortCode}${passkey}${timestamp}`;
