@@ -36,7 +36,7 @@ exports.initiateSTKPush = async (req, res) => {
                 "PartyB": process.env.BUSINESS_SHORT_CODE,
                 "PhoneNumber": phone,
                 "CallBackURL": `${callback_url}/api/stkPushCallback/${Order_ID}`,
-                "AccountReference": "Wamaitha Online Shop",
+                "AccountReference": "Grandelo Online Shop",
                 "TransactionDesc": "Paid online"
             }
         }, function (e, response, body) {
@@ -59,18 +59,13 @@ exports.initiateSTKPush = async (req, res) => {
     }
 };
 
-
 // @desc callback route Safaricom will post transaction status
 // @method POST
 // @route /stkPushCallback/:Order_ID
 // @access public
-export const stkPushCallback = async(req, res) => {
-    try{
-
-    //    order id
-        const {Order_ID} = req.params
-
-        //callback details
+exports.stkPushCallback = async (req, res) => {
+    try {
+        const { Order_ID } = req.params;
 
         const {
             MerchantRequestID,
@@ -78,17 +73,15 @@ export const stkPushCallback = async(req, res) => {
             ResultCode,
             ResultDesc,
             CallbackMetadata
-                 }   = req.body.Body.stkCallback
+        } = req.body.Body.stkCallback;
 
-    //     get the meta data from the meta
-        const meta = Object.values(await CallbackMetadata.Item)
-        const PhoneNumber = meta.find(o => o.Name === 'PhoneNumber').Value.toString()
-        const Amount = meta.find(o => o.Name === 'Amount').Value.toString()
-        const MpesaReceiptNumber = meta.find(o => o.Name === 'MpesaReceiptNumber').Value.toString()
-        const TransactionDate = meta.find(o => o.Name === 'TransactionDate').Value.toString()
+        const meta = Object.values(await CallbackMetadata.Item);
+        const PhoneNumber = meta.find(o => o.Name === 'PhoneNumber').Value.toString();
+        const Amount = meta.find(o => o.Name === 'Amount').Value.toString();
+        const MpesaReceiptNumber = meta.find(o => o.Name === 'MpesaReceiptNumber').Value.toString();
+        const TransactionDate = meta.find(o => o.Name === 'TransactionDate').Value.toString();
 
-        // do something with the data
-        console.log("-".repeat(20)," OUTPUT IN THE CALLBACK ", "-".repeat(20))
+        console.log("-".repeat(20), " OUTPUT IN THE CALLBACK ", "-".repeat(20));
         console.log(`
             Order_ID : ${Order_ID},
             MerchantRequestID : ${MerchantRequestID},
@@ -99,68 +92,58 @@ export const stkPushCallback = async(req, res) => {
             Amount: ${Amount}, 
             MpesaReceiptNumber: ${MpesaReceiptNumber},
             TransactionDate : ${TransactionDate}
-        `)
+        `);
 
-        res.json(true)
-
-    }catch (e) {
-        console.error("Error while trying to update LipaNaMpesa details from the callback",e)
+        res.json(true);
+    } catch (e) {
+        console.error("Error while trying to update LipaNaMpesa details from the callback", e);
         res.status(503).send({
-            message:"Something went wrong with the callback",
-            error : e.message
-        })
+            message: "Something went wrong with the callback",
+            error: e.message
+        });
     }
-}
+};
 
-
-// @desc Check from safaricom servers the status of a transaction
+// @desc Check from Safaricom servers the status of a transaction
 // @method GET
 // @route /confirmPayment/:CheckoutRequestID
 // @access public
-export const confirmPayment = async(req, res) => {
-    try{
+exports.confirmPayment = async (req, res) => {
+    try {
+        const url = "https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query";
+        const auth = "Bearer " + req.safaricom_access_token;
 
+        const timestamp = getTimestamp();
+        const password = Buffer.from(process.env.BUSINESS_SHORT_CODE + process.env.PASS_KEY + timestamp).toString('base64');
 
-        const url = "https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query"
-        const auth = "Bearer " + req.safaricom_access_token
-
-        const timestamp = getTimestamp()
-        //shortcode + passkey + timestamp
-        const password = new Buffer.from(process.env.BUSINESS_SHORT_CODE + process.env.PASS_KEY + timestamp).toString('base64')
-
-
-        request(
-            {
-                url: url,
-                method: "POST",
-                headers: {
-                    "Authorization": auth
-                },
-                json: {
-                    "BusinessShortCode":process.env.BUSINESS_SHORT_CODE,
-                    "Password": password,
-                    "Timestamp": timestamp,
-                    "CheckoutRequestID": req.params.CheckoutRequestID,
-
-                }
+        request({
+            url: url,
+            method: "POST",
+            headers: {
+                "Authorization": auth
             },
-            function (error, response, body) {
-                if (error) {
-                    console.log(error)
-                    res.status(503).send({
-                        message:"Something went wrong while trying to create LipaNaMpesa details. Contact admin",
-                        error : error
-                    })
-                } else {
-                    res.status(200).json(body)
-                }
+            json: {
+                "BusinessShortCode": process.env.BUSINESS_SHORT_CODE,
+                "Password": password,
+                "Timestamp": timestamp,
+                "CheckoutRequestID": req.params.CheckoutRequestID,
             }
-        )
-    }catch (e) {
-        console.error("Error while trying to create LipaNaMpesa details",e)
+        }, function (error, response, body) {
+            if (error) {
+                console.log(error);
+                res.status(503).send({
+                    message: "Something went wrong while trying to create LipaNaMpesa details. Contact admin",
+                    error: error
+                });
+            } else {
+                res.status(200).json(body);
+            }
+        });
+    } catch (e) {
+        console.error("Error while trying to create LipaNaMpesa details", e);
         res.status(503).send({
-            message:"Something went wrong while trying to create LipaNaMpesa details. Contact admin",
-            error : e
-        })
+            message: "Something went wrong while trying to create LipaNaMpesa details. Contact admin",
+            error: e
+        });
     }
-}
+};
