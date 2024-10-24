@@ -38,7 +38,7 @@ exports.initiateSTKPush = async (req, res) => {
       PartyA: phoneNumber,  // Customer's phone number
       PartyB: shortCode,    // Your shortcode
       PhoneNumber: phoneNumber,
-      CallBackURL: 'https://your-callback-url.com/api/mpesa/mpesa-response',  // Replace with your callback URL
+      CallBackURL: 'https://elosystemv1.onrender.com/api/mpesa/mpesa-response',  // Replace with your callback URL
       AccountReference: 'Test123',
       TransactionDesc: 'Payment for goods'
     };

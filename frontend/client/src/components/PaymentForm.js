@@ -14,7 +14,7 @@ const PaymentForm = () => {
 
     try {
       // Send data to your Node.js backend
-      const response = await axios.post('http://localhost:5000/api/stkpush', {
+      const response = await axios.post('https://elosystemv1.onrender.com/api/mpesa/stkpush', {
         phoneNumber,
         amount
       });

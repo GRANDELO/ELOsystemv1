@@ -1,7 +1,7 @@
 /* General Page Layout */
 .salesp-home {
     display: flex;
-    max-width: 100%;
+    min-width: 100vw;
     flex-direction: column;
     min-height: 100%;
     font-family: 'Poppins', sans-serif; 
