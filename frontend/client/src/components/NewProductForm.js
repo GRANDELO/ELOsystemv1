@@ -186,7 +186,7 @@ const NewProductForm = () => {
     }
 
     try {
-      const res = await axios.post('https://elosystemv1.onrender.com/api/products', formData, {
+      const res = await axios.post('https://elosystemv1.onrender.com/api/newproducts', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       console.log('NewProduct created:', res.data);
