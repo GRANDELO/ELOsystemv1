@@ -20,7 +20,7 @@ async function uploadFile(file) {
     stream.on('finish', async () => {
       // Get the public URL for the uploaded file
       const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
-      resolve(publicUrl);
+      resolve(publicUrl);MIK
     });
     stream.end(file.buffer);
   });
