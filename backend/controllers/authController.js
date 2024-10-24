@@ -291,6 +291,8 @@ const newrecoverPassword = async (req, res) => {
 
 You have requested to reset your password. Please use the following token to reset your password:
 
+Follow this link https://grandelo.web.app/reset-password to verify your account
+
 Password Reset Token: ${user.passwordRecoveryToken}
 
 This token is valid for 1 hour. 
