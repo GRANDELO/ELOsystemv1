@@ -21,10 +21,15 @@ const generatePassword = (shortCode, passkey, timestamp) => {
 };
 
 // Handle STK Push Request
-exports.sendSTKPush = async (token) => {
-  const response = await axios.post(
-    'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
-    {
+exports.initiateSTKPush = async (req, res) => {
+  const { phoneNumber, amount } = req.body;
+  const timestamp = new Date().toISOString().replace(/[-T:.Z]/g, '').slice(0, 14); // Create timestamp
+  const password = generatePassword(shortCode, passkey, timestamp);
+
+  try {
+    const accessToken = await getAccessToken();
+
+    const requestBody ={
       BusinessShortCode: '174379',
       Password: 'Safaricom999!*!',
       Timestamp: timestamp,
@@ -36,23 +41,25 @@ exports.sendSTKPush = async (token) => {
       CallBackURL: 'https://elosystemv1.onrender.com/api/mpesa/mpesa-response',
       AccountReference: 'account_reference',
       TransactionDesc: 'test_payment',
-    },
-    {
+    };
+
+    // Send STK push request
+    const response = await axios.post('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', requestBody, {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
+
+    if (response.data.ResponseCode === '0') {
+      res.json({ message: 'STK Push sent successfully! Please enter your MPesa PIN.' });
+    } else {
+      res.status(400).json({ message: 'Failed to initiate payment' });
     }
-  );
-  console.log(response.data);
+  } catch (error) {
+    console.error('Error initiating STK push:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
-
-const main = async () => {
-  const token = await getToken();
-  await sendSTKPush(token);
-};
-
-main();
-
 
 // Handle MPesa Callback (Optional)
 exports.handleMpesaCallback = (req, res) => {
