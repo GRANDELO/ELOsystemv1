@@ -17,7 +17,6 @@ const orderRoutes = require('./routes/orders');
 const logisticRoutes = require('./routes/logisticTest');//this also remove and also in the logisticTest remove
 const locations = require('./routes/locations');
 const mpesaRoutes = require('./routes/mpesaRoutes');
-const lipaNaMpesaRoutes = require('./routes/routes.lipanampesa');
 
 
 
@@ -51,7 +50,6 @@ app.use('/api', productRoutes);
 app.use('/api/orders', logisticRoutes)// remove this
 app.use(locations);
 app.use('/api/mpesa', mpesaRoutes);
-app.use('/api',lipaNaMpesaRoutes)
 
 app.use((req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);
