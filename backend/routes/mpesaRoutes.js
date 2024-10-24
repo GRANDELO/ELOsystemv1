@@ -4,7 +4,7 @@ const router = express.Router();
 const mpesaController = require('../controllers/mpesaController');
 
 // Route to initiate STK Push
-router.post('/stkpush', mpesaController.initiateSTKPush);
+router.post('/stkpush', mpesaController.sendSTKPush);
 
 // Route to handle MPesa callback (Optional)
 router.post('/mpesa-response', mpesaController.handleMpesaCallback);

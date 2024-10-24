@@ -21,45 +21,38 @@ const generatePassword = (shortCode, passkey, timestamp) => {
 };
 
 // Handle STK Push Request
-exports.initiateSTKPush = async (req, res) => {
-  const { phoneNumber, amount } = req.body;
-  const timestamp = new Date().toISOString().replace(/[-T:.Z]/g, '').slice(0, 14); // Create timestamp
-  const password = generatePassword(shortCode, passkey, timestamp);
-
-  try {
-    const accessToken = await getAccessToken();
-
-    const requestBody = {
-      BusinessShortCode: shortCode,
-      Password: password,
+exports.sendSTKPush = async (token) => {
+  const response = await axios.post(
+    'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
+    {
+      BusinessShortCode: '174379',
+      Password: 'Safaricom999!*!',
       Timestamp: timestamp,
       TransactionType: 'CustomerPayBillOnline',
-      Amount: amount,
-      PartyA: phoneNumber,  // Customer's phone number
-      PartyB: shortCode,    // Your shortcode
-      PhoneNumber: phoneNumber,
-      CallBackURL: 'https://elosystemv1.onrender.com/api/mpesa/mpesa-response',  // Replace with your callback URL
-      AccountReference: 'Test123',
-      TransactionDesc: 'Payment for goods'
-    };
-
-    // Send STK push request
-    const response = await axios.post('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', requestBody, {
+      Amount: 100,
+      PartyA: '254742243421',
+      PartyB: '600000',
+      PhoneNumber: '254742243421',
+      CallBackURL: 'https://elosystemv1.onrender.com/api/mpesa/mpesa-response',
+      AccountReference: 'account_reference',
+      TransactionDesc: 'test_payment',
+    },
+    {
       headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    });
-
-    if (response.data.ResponseCode === '0') {
-      res.json({ message: 'STK Push sent successfully! Please enter your MPesa PIN.' });
-    } else {
-      res.status(400).json({ message: 'Failed to initiate payment' });
+        Authorization: `Bearer ${token}`,
+      },
     }
-  } catch (error) {
-    console.error('Error initiating STK push:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+  );
+  console.log(response.data);
 };
+
+const main = async () => {
+  const token = await getToken();
+  await sendSTKPush(token);
+};
+
+main();
+
 
 // Handle MPesa Callback (Optional)
 exports.handleMpesaCallback = (req, res) => {
