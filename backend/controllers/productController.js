@@ -48,9 +48,11 @@ exports.createProduct = async (req, res) => {
     await newProduct.save();
     res.status(201).json({ product: newProduct });
   } catch (error) {
+    console.error('Error in createProduct:', error);  // Add this log to see the exact error
     res.status(500).json({ error: error.message });
   }
 };
+
 
 // Get product by ID
 
