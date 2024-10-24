@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './styles/styles.css';
+import './styles/Login.css';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -21,7 +21,7 @@ const Login = () => {
       sessionStorage.setItem('userToken', response.data.token);
       if (response.data.category.trim().toLowerCase() === 'seller'){
         navigate('/home');
-        sessionStorage.setItem('username', response.data.token);
+        sessionStorage.setItem('username', response.data.username);
       }else if (response.data.category.trim().toLowerCase() === 'admin')
       {
         navigate('/dashboard');

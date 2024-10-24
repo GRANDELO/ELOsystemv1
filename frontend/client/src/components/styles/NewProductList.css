@@ -110,3 +110,9 @@
     padding-bottom: 10px;
   }
   
+  @media (max-width: 768px) {
+    .product-card{
+      max-width: 350px;
+    }
+  }
+  

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { getUsernameFromToken } from '../utils/auth';
+import './styles/Cart.css'; // Import the custom CSS
 
 const Cart = ({ cart, setCart }) => {
   const [message, setMessage] = useState('');
@@ -77,7 +78,7 @@ const Cart = ({ cart, setCart }) => {
             // Add a check to ensure item.product is not null or undefined
             item.product ? (
               <li key={item.product._id}>
-                {item.product.name} - Ksh {item.product.price} x {item.quantity}
+                <p>{item.product.name} - Ksh {item.product.price} x {item.quantity}</p>
                 <Button variant="danger" onClick={() => handleRemoveFromCart(item.product)}>
                   Remove
                 </Button>
@@ -88,10 +89,18 @@ const Cart = ({ cart, setCart }) => {
           ))}
         </ul>
       )}
-      <Button variant="success" onClick={handleOrder} disabled={cart.length === 0}>
+      <Button 
+        className="btn-success" 
+        onClick={handleOrder} 
+        disabled={cart.length === 0}
+      >
         Make Order
       </Button>
-      <Button variant="danger" onClick={handleClearCart} disabled={cart.length === 0}>
+      <Button 
+        className="btn-clear" 
+        onClick={handleClearCart} 
+        disabled={cart.length === 0}
+      >
         Clear Cart
       </Button>
     </div>

@@ -1,0 +1,122 @@
+
+  
+  /* Container for the form */
+  .container {
+    background-color: rgba(0, 78, 155, 0.374);
+    padding: 2.5rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    max-width: 350px;
+    width: 100%;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
+  }
+  
+  .container:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
+  }
+  
+  /* Headings */
+  h2 {
+    color: #f8f8f8;
+    margin-bottom: 1.8rem;
+    font-size: 1.6rem;
+    font-weight: 600;
+  }
+  
+  /* Labels */
+  label {
+    display: block;
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+    color: white;
+    text-align: left;
+  }
+  
+  /* Inputs */
+  input {
+    width: 100%;
+    padding: 0.85rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-bottom: 1.4rem;
+    font-size: 1rem;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  input:focus {
+    border-color: #6e8efb;
+    outline: none;
+    box-shadow: 0 0 8px rgba(110, 142, 251, 0.4);
+  }
+  
+  .password-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  .password-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    padding-right: 40px;
+  }
+  
+
+
+  /* Message below form */
+  .message {
+    color: #ff4d4d;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+  }
+  
+  /* Text links */
+  p {
+    font-size: 0.85rem;
+  }
+  
+  p a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  p a:hover {
+    text-decoration: underline;
+    color: #0056b3;
+  }
+  
+  .divmess {
+    margin-top: 1rem;
+  }
+  
+  /* Mobile responsive design */
+  @media (max-width: 768px) {
+    .container {
+      padding: 1.5rem;
+      max-width: 95%;
+    }
+  
+    input, button {
+      font-size: 0.9rem;
+      padding: 0.65rem;
+    }
+  }
+  
+  /* Animation for loading state */
+  button:disabled::after {
+    content: ' ';
+    animation: spin 1s infinite linear;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0); }
+    100% { transform: rotate(360deg); }
+  }
+  

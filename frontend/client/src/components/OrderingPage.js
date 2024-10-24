@@ -2,9 +2,9 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { getUsernameFromToken } from '../utils/auth';
 import { v4 as uuidv4 } from 'uuid';
-
+import { getUsernameFromToken } from '../utils/auth';
+import './styles/OrderingPage.css'; // Add the custom CSS
 
 const OrderingPage = () => {
   const username = getUsernameFromToken();
@@ -192,33 +192,30 @@ const OrderingPage = () => {
           />
           <Form.Check
             type="radio"
-            label="Payment on Delivery"
+            label="Cash on Delivery"
             name="paymentMethod"
-            value="delivery"
-            checked={paymentMethod === 'delivery'}
+            value="cod"
+            checked={paymentMethod === 'cod'}
             onChange={handlePaymentMethodChange}
           />
         </Form.Group>
 
+        {/* M-Pesa Phone Number */}
         {paymentMethod === 'mpesa' && (
           <Form.Group>
             <Form.Label>M-Pesa Phone Number</Form.Label>
             <Form.Control
               type="text"
-              placeholder="07XXXXXXXX or 01XXXXXXXX"
-              pattern="(07|01)\d{8}"
-              title="Please enter a valid 10-digit phone number starting with 07 or 01"
               value={mpesaPhoneNumber}
               onChange={handleMpesaPhoneNumberChange}
-              required
+              placeholder="07XXXXXXXX"
             />
-            {mpesaPhoneNumberError && (
-              <p style={{ color: 'red', fontSize: 'smaller' }}>{mpesaPhoneNumberError}</p>
-            )}
+            {mpesaPhoneNumberError && <Alert variant="danger">{mpesaPhoneNumberError}</Alert>}
           </Form.Group>
         )}
 
-        <Button variant="primary" onClick={handleSubmitOrder} disabled={cart.length === 0}>
+        {/* Submit Order Button */}
+        <Button variant="primary" onClick={handleSubmitOrder}>
           Submit Order
         </Button>
       </Form>
