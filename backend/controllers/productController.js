@@ -32,16 +32,19 @@ async function uploadFile(file) {
 exports.createProduct = async (req, res) => {
   try {
     const { name, category, subCategory, description, price, username, quantity } = req.body;
-    
-    try{
-      const image = req.file ? await uploadFile(req.file) : null;
-      console.log("error image", image);
-    }catch (error){
-      console.error('Error in createProduct:', error);  // Add this log to see the exact error
-      res.status(500).json({ error: error.message });
+
+    // Upload file if exists
+    let image = null;
+    if (req.file) {
+      try {
+        image = await uploadFile(req.file);
+      } catch (uploadError) {
+        console.error('Error uploading image:', uploadError.message);
+        return res.status(500).json({ error: 'Image upload failed' });
+      }
     }
-    const image = req.file ? await uploadFile(req.file) : null;
-    console.log("error image", image);
+
+    // Create product with unique ID and image (if uploaded)
     const productId = uuidv4();
     const newProduct = new Product({
       name,
@@ -58,10 +61,11 @@ exports.createProduct = async (req, res) => {
     await newProduct.save();
     res.status(201).json({ product: newProduct });
   } catch (error) {
-    console.error('Error in createProduct:', error);  // Add this log to see the exact error
+    console.error('Error in createProduct:', error);  
     res.status(500).json({ error: error.message });
   }
 };
+
 
 
 // Get product by ID
