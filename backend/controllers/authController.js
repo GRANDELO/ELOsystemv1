@@ -158,7 +158,7 @@ const login = async (req, res) => {
       expiresIn: '1h',
     });
 
-    res.json({ message: 'Login successful', token , category: user.category});
+    res.json({ message: 'Login successful', token , category: user.category, username: user.username });
   } catch (error) {
     console.error('Error logging in:', error);
     res.status(500).json({ message: 'Error logging in', error });
@@ -290,6 +290,8 @@ const newrecoverPassword = async (req, res) => {
     const message = `Dear ${user.username},
 
 You have requested to reset your password. Please use the following token to reset your password:
+
+Follow this link https://grandelo.web.app/reset-password to verify your account
 
 Password Reset Token: ${user.passwordRecoveryToken}
 

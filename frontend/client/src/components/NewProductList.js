@@ -1,11 +1,10 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import ProductModal from './ProductModal';
-//import Footer from './Footer';
+import axiosInstance from './axiosInstance'; // Use axios instance instead of axios
 import './styles/NewProductList.css';
 
 const NewProductList = () => {
-  const [newProducts, setNewProducts] = useState([]);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -13,10 +12,10 @@ const NewProductList = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    const fetchNewProducts = async () => {
+    const fetchProducts = async () => {
       try {
-        const response = await axios.get('https://elosystemv1.onrender.com/api/newproducts');
-        setNewProducts(response.data);
+        const response = await axiosInstance.get('/products');
+        setProducts(response.data.products);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -24,7 +23,7 @@ const NewProductList = () => {
       }
     };
 
-    fetchNewProducts();
+    fetchProducts();
   }, []);
 
   const handleProductClick = (product) => {
@@ -42,49 +41,75 @@ const NewProductList = () => {
   };
 
   const filterAndSortProducts = () => {
-    return newProducts
-      .filter(product =>
+    return products
+      .filter((product) =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.category.toLowerCase().includes(searchTerm.toLowerCase())
       )
       .sort((a, b) => {
-        const aMatch = a.name.toLowerCase().includes(searchTerm.toLowerCase()) || a.category.toLowerCase().includes(searchTerm.toLowerCase());
-        const bMatch = b.name.toLowerCase().includes(searchTerm.toLowerCase()) || b.category.toLowerCase().includes(searchTerm.toLowerCase());
-        return (aMatch === bMatch) ? 0 : aMatch ? -1 : 1;
+        const aMatch =
+          a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          a.category.toLowerCase().includes(searchTerm.toLowerCase());
+        const bMatch =
+          b.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          b.category.toLowerCase().includes(searchTerm.toLowerCase());
+        return aMatch === bMatch ? 0 : aMatch ? -1 : 1;
       });
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+      </div>
+    );
   if (error) return <div>Error: {error}</div>;
 
   const filteredProducts = filterAndSortProducts();
 
   return (
     <div className="product-list">
-      <input
-        type="text"
-        placeholder="Search for products..."
-        value={searchTerm}
-        onChange={handleSearch}
-        className="product-search"
-      />
-      <div className="product-cards">
-        {filteredProducts.map(product => (
-          <div key={product._id} className="product-card">
-            <img src={product.imageUrl || 'path/to/placeholder.jpg'} alt={product.name} />
-            <h3>{product.name}</h3>
-            <p>{product.description}</p>
-            <h4>Ksh {product.price}</h4>
-            <button onClick={() => handleProductClick(product)}>View Details</button>
-          </div>
-        ))}
-      </div>
-      <ProductModal
-        product={selectedProduct}
-        show={isModalOpen}
-        handleClose={closeModal}
-      />
+      <header className="product-list-header">
+        <input
+          type="text"
+          placeholder="Search for products or categories..."
+          value={searchTerm}
+          onChange={handleSearch}
+          className="product-search"
+        />
+      </header>
 
+      {/* Display products in a single grid */}
+      <div className="product-cards">
+        {filteredProducts.length > 0 ? (
+          filteredProducts.map((product) => (
+            <div key={product._id} className="product-card">
+              <div className="product-image-wrapper">
+                <img src={product.image} alt={product.name} className="product-image" />
+                {product.isNew && <span className="product-badge new-badge">New</span>}
+                {product.isOnSale && <span className="product-badge sale-badge">Sale</span>}
+              </div>
+              <h3>{product.name}</h3>
+              <p>{product.description}</p>
+              <h4>Ksh {product.price}</h4>
+              <button className="view-details-btn" onClick={() => handleProductClick(product)}>
+                View Details
+              </button>
+            </div>
+          ))
+        ) : (
+          <p>No products found</p>
+        )}
+      </div>
+
+      {/* Modal for selected product */}
+      {selectedProduct && (
+        <ProductModal
+          product={selectedProduct}
+          show={isModalOpen}
+          handleClose={closeModal}
+        />
+      )}
     </div>
   );
 };

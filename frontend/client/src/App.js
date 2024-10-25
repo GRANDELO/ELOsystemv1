@@ -3,13 +3,17 @@ import React, { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import Dashboard from './components/Dashboard';
+import ImageList from './components/ImageList';
+import ImageUpload from './components/ImageUpload';
 import Login from './components/Login';
+import LogisticPage from './components/Logistics';
 import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
 import NewProductEdit from './components/NewProductEdit';
 import NewProductForm from './components/NewProductForm';
 import NewProductList from './components/NewProductList';
 import Order from "./components/OrderingPage";
+import PaymentForm from './components/PaymentForm';
 import ProductForm from './components/ProductForm';
 import ProductList from './components/ProductsList';
 import Register from './components/Register';
@@ -20,14 +24,11 @@ import Users from './components/User';
 import UserChart from './components/UserChart';
 import Verification from './components/Verification';
 import Home from './components/home';
+import Image from './components/image';
 import Passwordrecovery from './components/passwordreset';
 import Salespersonhome from './components/salespersonhome';
 import Seller from './components/sellerHome';
 import Upload from './components/upload';
-import ImageList from './components/ImageList';
-import ImageUpload from './components/ImageUpload';
-import LogisticPage from './components/Logistics';
-import Image from './components/image';
 
 import './main.css';
 
@@ -75,6 +76,7 @@ const App = () => {
           <Route path="/newproductdetail" element={<NewProductDetail />} />
           <Route path="/newproductedit" element={<NewProductEdit />} />
           <Route path="/image" element={<Image />} />
+          <Route path="/paymentForm" element={<PaymentForm />} />
           <Route path="/imageList" element={<ImageList />} />
           <Route path="/imageUpload" element={<ImageUpload />} />
           <Route path="/logistics" element={<LogisticPage />} />

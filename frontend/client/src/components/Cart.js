@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { getUsernameFromToken } from '../utils/auth';
+import './styles/Cart.css'; // Import the custom CSS
 
 const Cart = ({ cart, setCart }) => {
   const [message, setMessage] = useState('');
@@ -74,19 +75,32 @@ const Cart = ({ cart, setCart }) => {
       ) : (
         <ul>
           {cart.map((item) => (
-            <li key={item.product._id}>
-              {item.product.name} - Ksh {item.product.price} x {item.quantity}
-              <Button variant="danger" onClick={() => handleRemoveFromCart(item.product)}>
-                Remove
-              </Button>
-            </li>
+            // Add a check to ensure item.product is not null or undefined
+            item.product ? (
+              <li key={item.product._id}>
+                <p>{item.product.name} - Ksh {item.product.price} x {item.quantity}</p>
+                <Button variant="danger" onClick={() => handleRemoveFromCart(item.product)}>
+                  Remove
+                </Button>
+              </li>
+            ) : (
+              <li key={item._id}>Invalid product</li> // Fallback if item.product is null
+            )
           ))}
         </ul>
       )}
-      <Button variant="success" onClick={handleOrder} disabled={cart.length === 0}>
+      <Button 
+        className="btn-success" 
+        onClick={handleOrder} 
+        disabled={cart.length === 0}
+      >
         Make Order
       </Button>
-      <Button variant="danger" onClick={handleClearCart} disabled={cart.length === 0}>
+      <Button 
+        className="btn-clear" 
+        onClick={handleClearCart} 
+        disabled={cart.length === 0}
+      >
         Clear Cart
       </Button>
     </div>

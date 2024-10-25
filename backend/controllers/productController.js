@@ -1,6 +1,7 @@
 const Product = require('../models/oProduct');
 const { bucket } = require('../config/firebase');
 const path = require('path');
+const { v4: uuidv4 } = require('uuid');
 
 // Upload a file to Firebase Storage
 async function uploadFile(file) {
@@ -29,23 +30,30 @@ async function uploadFile(file) {
 // Create product
 exports.createProduct = async (req, res) => {
   try {
-    const { name, description, price, category } = req.body;
+    const { name, category, subCategory, description, price, username, quantity } = req.body;
     const image = req.file ? await uploadFile(req.file) : null;
-
+    console.log("error image", image);
+    const productId = uuidv4();
     const newProduct = new Product({
       name,
+      category,
+      subCategory,
       description,
       price,
-      category,
+      username,
+      productId,
+      quantity,
       image,
     });
 
     await newProduct.save();
     res.status(201).json({ product: newProduct });
   } catch (error) {
+    console.error('Error in createProduct:', error);  // Add this log to see the exact error
     res.status(500).json({ error: error.message });
   }
 };
+
 
 // Get product by ID
 
@@ -75,6 +83,19 @@ exports.getAllProducts = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+exports.getNewProductById = async (req, res) => {
+  try {
+    const newProduct = await NewProduct.findById(req.params.id);
+    if (!newProduct) {
+      return res.status(404).json({ error: 'NewProduct not found' });
+    }
+    res.status(200).json(newProduct);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 
 // Delete product
 exports.deleteProduct = async (req, res) => {

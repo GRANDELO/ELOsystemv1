@@ -14,12 +14,7 @@
     text-align: center;
   }
   
-  .product-card img {
-    max-width: 100%;
-    height: auto;
-    border-bottom: 1px solid #ddd;
-    margin-bottom: 15px;
-  }
+
   
   .product-card h3 {
     font-size: 1.2em;
@@ -66,16 +61,13 @@
   }
   
   .product-card img {
-    max-width: 100%;
-    height: auto;
+    max-width: 100px;
+    height: 200px;
   }
   
   .cart {
     border: 1px solid #ccc;
     padding: 20px;
-    position: fixed;
-    right: 20px;
-    top: 20px;
     width: 300px;
     background: #fff;
   }
@@ -116,5 +108,11 @@
     margin-bottom: 20px;
     border-bottom: 1px solid #ddd;
     padding-bottom: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .product-card{
+      max-width: 350px;
+    }
   }
   

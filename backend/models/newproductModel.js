@@ -13,12 +13,13 @@ const newproductSchema = new Schema({
   subCategory: {
     type: String,
   },
+  description: {
+    type: String,
+    required: true,
+  },
   price: {
     type: Number,
     required: true,
-  },
-  description: {
-    type: String,
   },
   username: {
     type: String,
@@ -32,6 +33,9 @@ const newproductSchema = new Schema({
   quantity: {
     type: Number,
     required: true,
+  },
+  image: {
+    type: String, // Store image URL
   },
 }, { timestamps: true });
 
