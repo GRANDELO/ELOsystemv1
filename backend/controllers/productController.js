@@ -39,7 +39,7 @@ exports.createProduct = async (req, res) => {
       try {
         image = await uploadFile(req.file);
       } catch (uploadError) {
-        console.error('Error uploading image:', uploadError.message);
+        console.error('Error image:', uploadError.message);
         return res.status(500).json({ error: 'Image upload failed' });
       }
     }
