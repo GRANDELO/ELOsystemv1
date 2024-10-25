@@ -21,7 +21,8 @@ async function uploadFile(file) {
     stream.on('finish', async () => {
       // Get the public URL for the uploaded file
       const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
-      resolve(publicUrl);
+      console.log("image", publicUrl);
+      resolve(publicUrl);MIK
     });
     stream.end(file.buffer);
   });
@@ -32,6 +33,7 @@ exports.createProduct = async (req, res) => {
   try {
     const { name, category, subCategory, description, price, username, quantity } = req.body;
     const image = req.file ? await uploadFile(req.file) : null;
+    console.log("error image", image);
     const productId = uuidv4();
     const newProduct = new Product({
       name,
