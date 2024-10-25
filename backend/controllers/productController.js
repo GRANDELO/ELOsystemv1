@@ -32,6 +32,14 @@ async function uploadFile(file) {
 exports.createProduct = async (req, res) => {
   try {
     const { name, category, subCategory, description, price, username, quantity } = req.body;
+    
+    try{
+      const image = req.file ? await uploadFile(req.file) : null;
+      console.log("error image", image);
+    }catch (error){
+      console.error('Error in createProduct:', error);  // Add this log to see the exact error
+      res.status(500).json({ error: error.message });
+    }
     const image = req.file ? await uploadFile(req.file) : null;
     console.log("error image", image);
     const productId = uuidv4();
