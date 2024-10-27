@@ -1,6 +1,7 @@
 const admin = require('firebase-admin');
 const { cert } = require('firebase-admin/app');
 const { getStorage } = require('firebase-admin/storage');
+require('dotenv').config();
 
 const serviceAccount = {
   type: process.env.FIREBASE_TYPE,
