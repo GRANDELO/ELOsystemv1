@@ -16,8 +16,6 @@ const cartRoutes = require('./routes/cart');
 const orderRoutes = require('./routes/orders');
 const logisticRoutes = require('./routes/logisticTest');//this also remove and also in the logisticTest remove
 const locations = require('./routes/locations');
-const mpesaRoutes = require('./routes/mpesaRoutes');
-
 
 
 const uploadDir = path.join(__dirname, 'uploads');
@@ -26,16 +24,6 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-const generateTimestamp = () => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  const hours = String(now.getHours()).padStart(2, '0');
-  const minutes = String(now.getMinutes()).padStart(2, '0');
-  const seconds = String(now.getSeconds()).padStart(2, '0');
-  return `${year}${month}${day}${hours}${minutes}${seconds}`;
-};
 
 const app = express();
 app.use(cors());
@@ -60,7 +48,6 @@ app.use('/api/orders', orderRoutes);
 app.use('/api', productRoutes);
 app.use('/api/orders', logisticRoutes)// remove this
 app.use(locations);
-app.use('/api/mpesa', mpesaRoutes);
 
 app.use((req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);
