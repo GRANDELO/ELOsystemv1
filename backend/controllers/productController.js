@@ -22,7 +22,7 @@ async function uploadFile(file) {
       // Get the public URL for the uploaded file
       const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
       console.log("image", publicUrl);
-      resolve(publicUrl);MIK
+      resolve(publicUrl);
     });
     stream.end(file.buffer);
   });
