@@ -116,7 +116,6 @@ const OrderingPage = () => {
       // Send order details to the logistics system
       //await axios.post('https://elosystemv1.onrender.com/api/logistics', orderDetails);
 
-      // If payment method is M-Pesa, initiate payment
       if (paymentMethod === 'mpesa') {
         const payload = {
           phone: mpesaPhoneNumber,

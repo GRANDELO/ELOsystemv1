@@ -1,43 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const Order = require('../models/Order');
-const DeliveryPerson = require('../models/DeliveryPerson');
+const orderController = require('../controllers/orderController');
 
-router.post('/', async (req, res) => {
-  const { items, totalPrice, paymentMethod, destination, orderDate, username } = req.body;
+// Routes for Orders
+router.post('/', orderController.createOrder);
+router.put('/assign', orderController.assignOrder); // Route to assign order
+router.get('/', orderController.getOrders); // Route to fetch all orders
 
-  try {
-    if (!items || !totalPrice || !paymentMethod || !destination || !orderDate || !username) {
-      return res.status(400).json({ message: 'Missing required fields' });
-    }
-
-    // Find an available delivery person
-    const deliveryPerson = await DeliveryPerson.findOne({ status: 'available' }).sort({ createdAt: 1 });
-
-    const order = new Order({
-      items,
-      totalPrice,
-      paymentMethod,
-      destination,
-      orderDate,
-      username,
-      deliveryPerson: deliveryPerson ? deliveryPerson._id : null,
-      isDeliveryInProcess: false,
-      isDelivered: false
-    });
-
-    await order.save();
-
-    if (deliveryPerson) {
-      deliveryPerson.status = 'assigned';
-      await deliveryPerson.save();
-    }
-
-    res.status(201).json({ message: 'Order created successfully', order });
-  } catch (err) {
-    console.error('Failed to create order:', err);
-    res.status(400).json({ message: 'Failed to create order', error: err.message });
-  }
-});
+// You can add more routes here if needed.
 
 module.exports = router;
