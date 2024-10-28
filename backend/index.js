@@ -27,6 +27,7 @@ if (!fs.existsSync(uploadDir)) {
 
 const app = express();
 app.use(cors());
+app.use(cors({ origin: '*' })); 
 app.use(express.json());
 
 const port = process.env.PORT || 5000;
