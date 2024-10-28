@@ -4,7 +4,8 @@ const axios = require('axios');
 require('dotenv').config();
 
 
-
+const consumerKey = process.env.SAFARICOM_CONSUMER_KEY;
+const consumerSecret = process.env.SAFARICOM_CONSUMER_SECRET;
 const businessShortCode = process.env.BUSINESS_SHORT_CODE;
 const passkey = process.env.PASS_KEY; // Safaricom-provided passkey for password generation
 const callbackURL = process.env.CALLBACK_URL;
