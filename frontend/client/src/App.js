@@ -31,6 +31,9 @@ import Salespersonhome from './components/salespersonhome';
 import Seller from './components/sellerHome';
 import Upload from './components/upload';
 
+import Employies from './components/admin/employies';
+
+
 import './main.css';
 
 const socket = io('https://elosystemv1.onrender.com');
@@ -82,6 +85,8 @@ const App = () => {
           <Route path="/imageList" element={<ImageList />} />
           <Route path="/imageUpload" element={<ImageUpload />} />
           <Route path="/logistics" element={<LogisticPage />} />
+
+          <Route path="/employies" element={<Employies />} />
         </Routes>
       </div>
     </Router>
