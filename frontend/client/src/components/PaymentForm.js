@@ -1,60 +1,52 @@
-// PaymentForm.js
 import axios from 'axios';
 import React, { useState } from 'react';
 
-const PaymentForm = () => {
+const MpesaPayment = () => {
     const [phone, setPhone] = useState('');
     const [amount, setAmount] = useState('');
-    const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
 
-    const handlePayment = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setMessage('');
+    const handlePayment = async () => {
+        setMessage(''); // Clear any previous message
+        const payload = {
+            phone: phone,
+            amount: amount
+        };
 
         try {
-            const response = await axios.post('https://elosystemv1.onrender.com/api/mpesa/lipa', { phone, amount });
-            setMessage('Payment initiated successfully. Please check your phone to complete the transaction.');
-            console.log(response.data); // Optional: log response data for debugging
+            const response = await axios.post('https://elosystemv1.onrender.com/api/mpesa/lipa', payload, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            setMessage('Payment initiated successfully!');
+            console.log(response.data);
         } catch (error) {
-            console.error('Error initiating payment:', error);
-            setMessage('Payment initiation failed. Please try again.');
+            setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
+            console.error('Error:', error);
         }
-
-        setLoading(false);
     };
 
     return (
         <div style={styles.container}>
-            <h2>Initiate M-Pesa Payment</h2>
-            <form onSubmit={handlePayment} style={styles.form}>
-                <label>
-                    Phone Number:
-                    <input
-                        type="text"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="07XXXXXXXX"
-                        style={styles.input}
-                        required
-                    />
-                </label>
-                <label>
-                    Amount:
-                    <input
-                        type="number"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        placeholder="Amount"
-                        style={styles.input}
-                        required
-                    />
-                </label>
-                <button type="submit" style={styles.button} disabled={loading}>
-                    {loading ? 'Processing...' : 'Pay with M-Pesa'}
-                </button>
-            </form>
+            <h1>M-Pesa Payment</h1>
+            <input
+                type="text"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Phone Number (254...)"
+                required
+                style={styles.input}
+            />
+            <input
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="Amount"
+                required
+                style={styles.input}
+            />
+            <button onClick={handlePayment} style={styles.button}>Pay Now</button>
             {message && <p>{message}</p>}
         </div>
     );
@@ -62,28 +54,30 @@ const PaymentForm = () => {
 
 const styles = {
     container: {
+        background: 'white',
+        padding: '20px',
+        borderRadius: '5px',
+        boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
         maxWidth: '400px',
         margin: 'auto',
-        padding: '1rem',
-        textAlign: 'center',
-    },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '1rem',
+        textAlign: 'center'
     },
     input: {
-        padding: '0.5rem',
-        fontSize: '1rem',
+        width: '100%',
+        padding: '10px',
+        margin: '10px 0',
+        border: '1px solid #ccc',
+        borderRadius: '4px',
     },
     button: {
-        padding: '0.5rem',
-        fontSize: '1rem',
-        backgroundColor: '#4CAF50',
+        padding: '10px',
+        backgroundColor: '#28a745',
         color: 'white',
         border: 'none',
+        borderRadius: '4px',
         cursor: 'pointer',
+        width: '100%',
     },
 };
 
-export default PaymentForm;
+export default MpesaPayment;

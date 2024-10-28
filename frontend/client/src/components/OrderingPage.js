@@ -63,9 +63,9 @@ const OrderingPage = () => {
     const phoneNumber = e.target.value;
     setMpesaPhoneNumber(phoneNumber);
 
-    const phoneNumberPattern = /^(07|01)\d{8}$/;
+    const phoneNumberPattern = /^(2547|2541)\d{8}$/;
     if (!phoneNumberPattern.test(phoneNumber)) {
-      setMpesaPhoneNumberError('Please enter a valid 10-digit phone number starting with 07 or 01.');
+      setMpesaPhoneNumberError('Please enter a valid 12-digit phone number starting with 2547 or 2541.');
     } else {
       setMpesaPhoneNumberError('');
     }
@@ -93,7 +93,7 @@ const OrderingPage = () => {
       return;
     }
 
-    const orderReference = uuidv4();//generate uniq order ref
+    const orderReference = uuidv4(); // Generate unique order ref
 
     try {
       const orderDetails = {
@@ -107,17 +107,37 @@ const OrderingPage = () => {
         orderDate: new Date().toISOString(),
         username,
         mpesaPhoneNumber: paymentMethod === 'mpesa' ? mpesaPhoneNumber : undefined,
-        orderReference //order ref
+        orderReference // Order ref
       };
 
       const response = await axios.post('https://elosystemv1.onrender.com/api/orders', orderDetails);
       setMessage(response.data.message);
 
       // Send order details to the logistics system
-      await axios.post('https://elosystemv1.onrender.com/api/logistics', orderDetails);
-      setTimeout(() => {
-        navigate('/salespersonhome');
-      }, 3000);
+      //await axios.post('https://elosystemv1.onrender.com/api/logistics', orderDetails);
+
+      // If payment method is M-Pesa, initiate payment
+      if (paymentMethod === 'mpesa') {
+        const payload = {
+          phone: mpesaPhoneNumber,
+          amount: totalPrice.toFixed(0)
+      };
+
+      try {
+          const response = await axios.post('https://elosystemv1.onrender.com/api/mpesa/lipa', payload, {
+              headers: {
+                  'Content-Type': 'application/json'
+              }
+          });
+          setMessage('Payment initiated successfully!');
+          console.log(response.data);
+      } catch (error) {
+          setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
+          console.error('Error:', error);
+      }
+      }
+
+
     } catch (err) {
       console.error('Failed to submit order:', err);
       setError(err.response?.data?.message || 'Failed to submit order.');
@@ -208,7 +228,7 @@ const OrderingPage = () => {
               type="text"
               value={mpesaPhoneNumber}
               onChange={handleMpesaPhoneNumberChange}
-              placeholder="07XXXXXXXX"
+              placeholder="2547XXXXXXXX"
             />
             {mpesaPhoneNumberError && <Alert variant="danger">{mpesaPhoneNumberError}</Alert>}
           </Form.Group>
