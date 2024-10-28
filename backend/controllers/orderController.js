@@ -54,7 +54,7 @@ exports.getOrder = async (req, res) => {
     }
 
     // Find orders assigned to this delivery person
-    const orders = await Order.find({ deliveryPerson: deliveryPerson._id }).populate('deliveryPerson', 'firstName surname');
+    const orders = await Order.find({ deliveryPerson: deliveryPerson._id });
     
     res.json(orders);
   } catch (error) {
