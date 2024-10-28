@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Table, Alert } from 'react-bootstrap';
+import { Alert, Table } from 'react-bootstrap';
 
 const LogisticsPage = () => {
   const [orders, setOrders] = useState([]);
@@ -14,7 +14,7 @@ const LogisticsPage = () => {
       setLoading(true);
       setError('');
       try {
-        const response = await axios.get('https://elosystemv1.onrender.com/api/orders/logistics');
+        const response = await axios.get('https://elosystemv1.onrender.com/api/orders/');
         setOrders(response.data);
       } catch (err) {
         console.error('Failed to fetch orders:', err);
