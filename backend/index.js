@@ -17,6 +17,7 @@ const orderRoutes = require('./routes/orders');
 const logisticRoutes = require('./routes/logisticTest');//this also remove and also in the logisticTest remove
 const locations = require('./routes/locations');
 const mpesaRoutes = require('./routes/mpesaRoutes');
+const employeeRoutes = require('./routes/employeeRoutes');
 
 const uploadDir = path.join(__dirname, 'uploads');
 
@@ -27,7 +28,6 @@ if (!fs.existsSync(uploadDir)) {
 
 const app = express();
 app.use(cors());
-app.use(cors({ origin: '*' })); 
 app.use(express.json());
 
 const port = process.env.PORT || 5000;
@@ -50,6 +50,7 @@ app.use('/api', productRoutes);
 app.use('/api/orders', logisticRoutes)// remove this
 app.use(locations);
 app.use('/api/mpesa', mpesaRoutes);
+app.use('/api/employees', employeeRoutes);
 
 app.use((req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);
