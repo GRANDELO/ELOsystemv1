@@ -90,40 +90,7 @@ exports.updateOrderStatus = async (req, res) => {
 
 
 exports.getUnpackedOrderProducts = async (req, res) => {
-  try {
-    // Step 1: Fetch orders that are not packed
-    const ordersz = await Order.find({ packed: false });
-
-    // Step 2: Prepare response with orderId and product details
-    const orderProductDetails = await Promise.all(
-      ordersz.map(async (order) => {
-        // Extract product IDs from the items array
-        const productIds = order.items.map(item => item.productId);
-
-        // Fetch product details based on the extracted product IDs
-        const products = await Product.find({ _id: { $in: productIds } });
-
-        return {
-          orderId: order._id,
-          products: products.map(product => ({
-            _id: product._id,
-            name: product.name,
-            price: product.price,
-            category: product.category,
-            subCategory: product.subCategory,
-            productId: product.productId,
-            image: product.image
-            // Add any other fields you need from the product
-          })),
-        };
-      })
-    );
-
-    res.json(orderProductDetails);
-  } catch (error) {
-    console.error('Failed to fetch unpacked order products:', error);
-    res.status(500).json({ message: 'Failed to fetch unpacked order products', error: error.message });
-  }
+  res.status(500).json({ message: 'Failed to fetch unpacked order products', error: error.message });
 };
 
 
