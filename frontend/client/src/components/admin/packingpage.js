@@ -14,7 +14,7 @@ const LogisticsPage = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/orders/unpacked');
+      const response = await axios.get('https://elosystemv1.onrender.com/api/orders/unpacked-products');
       setUnpackedOrders(response.data); // Data structure: [{ orderId, products }]
     } catch (err) {
       console.error('Failed to fetch unpacked orders:', err);
