@@ -1,5 +1,3 @@
-// In src/pages/LogisticsPage.js
-
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Table } from 'react-bootstrap';
@@ -15,7 +13,8 @@ const LogisticsPage = () => {
     setError('');
     try {
       const response = await axios.get('https://elosystemv1.onrender.com/api/order2/unpacked');
-      setUnpackedOrders(response.data); // Data structure: [{ orderId, products }]
+      setUnpackedOrders(response.data);
+      console.log(response.data); // Data structure: [{ orderId, products }]
     } catch (err) {
       console.error('Failed to fetch unpacked orders:', err);
       setError(err.response?.data?.message || 'Failed to fetch unpacked orders');
@@ -58,6 +57,8 @@ const LogisticsPage = () => {
             <tr>
               <th>Order ID</th>
               <th>Product Name</th>
+              <th>Category</th>
+              <th>Image</th>
               <th>Quantity</th>
               <th>Price</th>
               <th>Action</th>
@@ -66,9 +67,13 @@ const LogisticsPage = () => {
           <tbody>
             {unpackedOrders.map((order) =>
               order.products.map((product) => (
-                <tr key={`${order.orderId}-${product._id}`}>
+                <tr key={`${order.orderId}-${product.name}`}>
                   <td>{order.orderId}</td>
                   <td>{product.name}</td>
+                  <td>{product.category}</td>
+                  <td>
+                    <img src={product.image} alt={product.name} style={{ width: '50px', height: '50px' }} />
+                  </td>
                   <td>{product.quantity}</td>
                   <td>Ksh {product.price.toFixed(2)}</td>
                   <td>

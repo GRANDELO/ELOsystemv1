@@ -92,24 +92,45 @@ exports.getUnpackedOrderProducts = async (req, res) => {
   try {
     // Step 1: Fetch orders that are not packed and not delivered
     const orders = await Order.find({ packed: false });
+    console.log('Fetched Orders:', orders); // Debugging line
 
-    // Step 2: Prepare response with orderId and product details
+    // Step 2: Prepare response with orderId, product details, and quantity
     const orderProductDetails = await Promise.all(
       orders.map(async (order) => {
-        const products = await Product.find({ _id: { $in: order.items } });
+        // Step 2a: Extract product IDs and quantities from order.items
+        const productIds = order.items.map(item => item.productId); // Array of productIds
+        const quantities = order.items.map(item => item.quantity); // Array of quantities
+        console.log('Product IDs:', productIds); // Debugging line
+
+        // Step 2b: Fetch product details
+        const products = await Product.find({ productId: { $in: productIds } });
+        console.log('Fetched Products:', products); // Debugging line
+
+        // Step 2c: Format product details to include quantity
+        const formattedProducts = products.map((product, index) => ({
+          name: product.name,
+          category: product.category,
+          image: product.image,
+          price: product.price,
+          quantity: quantities[index] // Get the corresponding quantity
+        }));
+
         return {
           orderId: order._id,
-          products,
+          products: formattedProducts,
         };
       })
     );
 
+    console.log('Order Product Details:', orderProductDetails); // Debugging line
     res.json(orderProductDetails);
   } catch (error) {
     console.error('Failed to fetch unpacked order products:', error);
     res.status(500).json({ message: 'Failed to fetch unpacked order products', error: error.message });
   }
 };
+
+
 
 
 exports.markOrderAsPacked = async (req, res) => {
