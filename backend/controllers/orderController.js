@@ -90,16 +90,30 @@ exports.updateOrderStatus = async (req, res) => {
 
 exports.getUnpackedOrderProducts = async (req, res) => {
   try {
-    // Step 1: Fetch orders that are not packed and not delivered
+    // Step 1: Fetch orders that are not packed
     const orders = await Order.find({ packed: false });
 
     // Step 2: Prepare response with orderId and product details
     const orderProductDetails = await Promise.all(
       orders.map(async (order) => {
-        const products = await Product.find({ _id: { $in: order.items } });
+        // Extract product IDs from the items array
+        const productIds = order.items.map(item => item.productId);
+
+        // Fetch product details based on the extracted product IDs
+        const products = await Product.find({ _id: { $in: productIds } });
+
         return {
           orderId: order._id,
-          products,
+          products: products.map(product => ({
+            _id: product._id,
+            name: product.name,
+            price: product.price,
+            category: product.category,
+            subCategory: product.subCategory,
+            productId: product.productId,
+            image: product.image
+            // Add any other fields you need from the product
+          })),
         };
       })
     );
