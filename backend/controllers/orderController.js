@@ -1,5 +1,6 @@
 const Order = require('../models/Order');
 const Employee = require('../models/Employee'); // Replace DeliveryPerson with Employee
+const Product = require('../models/oProduct'); // Adjust this path as needed
 
 // Create Order
 exports.createOrder = async (req, res) => {
@@ -87,14 +88,25 @@ exports.updateOrderStatus = async (req, res) => {
 };
 
 
-exports.getunpackedOrder = async (req, res) => {
+exports.getUnpackedOrderProducts = async (req, res) => {
   try {
+    // Step 1: Fetch orders that are not packed and not delivered
+    const orders = await Order.find({ packed: false, isDelivered: false });
 
-    const orders = await Order.find({ packed: false });
-    
-    res.json(orders);
+    // Step 2: Prepare response with orderId and product details
+    const orderProductDetails = await Promise.all(
+      orders.map(async (order) => {
+        const products = await Product.find({ _id: { $in: order.items } });
+        return {
+          orderId: order._id,
+          products,
+        };
+      })
+    );
+
+    res.json(orderProductDetails);
   } catch (error) {
-    console.error('Failed to fetch orders:', error);
-    res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
+    console.error('Failed to fetch unpacked order products:', error);
+    res.status(500).json({ message: 'Failed to fetch unpacked order products', error: error.message });
   }
 };
