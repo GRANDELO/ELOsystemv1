@@ -47,7 +47,7 @@ app.use('/api', newproductRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api', productRoutes);
-app.use('/api/orders', logisticRoutes)// remove this
+app.use('/api/ors', logisticRoutes)// remove this
 app.use(locations);
 app.use('/api/mpesa', mpesaRoutes);
 app.use('/api/employees', employeeRoutes);
