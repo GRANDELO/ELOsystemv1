@@ -32,6 +32,7 @@ import Seller from './components/sellerHome';
 import Upload from './components/upload';
 
 import Employies from './components/admin/employies';
+import Packingpage from './components/admin/packingpage';
 
 
 import './main.css';
@@ -87,6 +88,7 @@ const App = () => {
           <Route path="/logistics" element={<LogisticPage />} />
 
           <Route path="/employies" element={<Employies />} />
+          <Route path="/packingpage" element={<Packingpage />} />
         </Routes>
       </div>
     </Router>

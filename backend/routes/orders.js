@@ -7,7 +7,7 @@ router.post('/', orderController.createOrder);
 router.get('/:eid', orderController.getOrder);
 router.patch('/:orderId/status', orderController.updateOrderStatus);
 router.get('/unpacked-products', orderController.getUnpackedOrderProducts);
-router.patch('/orders/:orderId/packed', orderController.markOrderAsPacked); 
+router.patch('/:orderId/packed', orderController.markOrderAsPacked); 
 // You can add more routes here if needed.
 
 module.exports = router;

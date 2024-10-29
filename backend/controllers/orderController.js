@@ -110,3 +110,27 @@ exports.getUnpackedOrderProducts = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch unpacked order products', error: error.message });
   }
 };
+
+
+exports.markOrderAsPacked = async (req, res) => {
+  const { orderId } = req.params;
+
+  try {
+    // Find and update the order to set packed to true
+    const updatedOrder = await Order.findByIdAndUpdate(
+      orderId,
+      { packed: true },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    res.json({ message: 'Order marked as packed successfully', order: updatedOrder });
+  } catch (error) {
+    console.error('Failed to update order status:', error);
+    res.status(500).json({ message: 'Failed to update order status', error: error.message });
+  }
+};
+
