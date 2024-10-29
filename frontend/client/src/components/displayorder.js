@@ -1,8 +1,5 @@
-// OrdersPage.js
-
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-//import './OrdersPage.css'; // Import your CSS styles
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -16,7 +13,9 @@ const OrdersPage = () => {
     try {
       const username = 'Teekay'; // Replace with actual username logic
       const response = await axios.get(`https://elosystemv1.onrender.com/api/orders/my/${username}`);
-      setOrders(response.data);
+      
+      // Ensure that response.data is an array
+      setOrders(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error('Error fetching orders:', error);
     }
@@ -38,17 +37,17 @@ const OrdersPage = () => {
               <div onClick={() => handleOrderClick(order)} className="order-summary">
                 <p>Order Date: {new Date(order.orderDate).toLocaleDateString()}</p>
                 <p>Status: {order.isDelivered ? 'Delivered' : order.isDeliveryInProcess ? 'In Process' : 'Pending'}</p>
-                <p>Total: ${order.totalPrice.toFixed(2)}</p>
+                <p>Total: ${order.totalPrice?.toFixed(2) ?? 'N/A'}</p>
               </div>
               {selectedOrder === order && (
                 <div className="order-details">
                   <h3>Order Details</h3>
                   <ul>
-                    {order.products.map((product, index) => (
+                    {order.products?.map((product, index) => (
                       <li key={index}>
                         {product.name} - ${product.price} x {product.quantity}
                       </li>
-                    ))}
+                    )) ?? <li>No products available</li>}
                   </ul>
                   <button className="action-button">View More Details</button>
                   <button className="action-button">Cancel Order</button>

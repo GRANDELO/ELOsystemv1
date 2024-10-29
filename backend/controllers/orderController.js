@@ -19,6 +19,7 @@ exports.createOrder = async (req, res) => {
       items,
       totalPrice,
       paymentMethod,
+      paid: false,
       destination,
       orderDate,
       username,
