@@ -73,19 +73,17 @@ router.post('/lipa', async (req, res) => {
 
         const paymentResponse = await initiatePayment(accessToken, paymentRequest);
 
-        res.status(200).json({ message: 'Payment initiated successfully', data: paymentResponse });
+        res.status(200).json({ message: 'Payment initiated successfully', data: paymentResponse, CheckoutRequestID: paymentResponse.CheckoutRequestID });
     } catch (error) {
         console.error('Error initiating payment:', error);
         res.status(500).json({ message: 'Payment initiation failed', error: error.message });
     }
 });
 
-router.post('/paymentcallback', (req, res) => {
+router.post('/paymentcallback', async (req, res) => {
     console.log('....................... stk_confirm .............')
     console.log("Payload Received", req.body.Body.stkCallback)
-   
-   
-    /* const callbackData = req.body.Body.stkCallback
+    const callbackData = req.body.Body.stkCallback
     console.log("Payload Received", callbackData)
     var resultCode = callbackData.ResultCode;
     var checkoutId = callbackData.CheckoutRequestID
@@ -117,7 +115,7 @@ router.post('/paymentcallback', (req, res) => {
         })
         
 
-    }*/
+    }
     res.status(200).json(req.body)
     
 })

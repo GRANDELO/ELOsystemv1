@@ -4,10 +4,10 @@ const Product = require('../models/oProduct'); // Adjust this path as needed
 
 // Create Order
 exports.createOrder = async (req, res) => {
-  const { items, totalPrice, paymentMethod, destination, orderDate, username } = req.body;
+  const { items, totalPrice, paymentMethod, destination, orderDate, username, CheckoutRequestID } = req.body;
 
   try {
-    if (!items || !totalPrice || !paymentMethod || !destination || !orderDate || !username) {
+    if (!items || !totalPrice || !paymentMethod || !destination || !orderDate || !username || !CheckoutRequestID) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
@@ -26,7 +26,8 @@ exports.createOrder = async (req, res) => {
       deliveryPerson: deliveryPerson ? deliveryPerson._id : null,
       isDeliveryInProcess: false,
       isDelivered: false,
-      packed: false 
+      packed: false,
+      CheckoutRequestID
     });
 
     await order.save();
