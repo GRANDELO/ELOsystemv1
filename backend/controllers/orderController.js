@@ -90,7 +90,7 @@ exports.updateOrderStatus = async (req, res) => {
 
 
 exports.getUnpackedOrderProducts = async (req, res) => {
-  res.status(500).json({ message: 'Failed to fetch unpacked order products', error: error.message });
+  res.status(500).json({ message: 'Failed to fetch unpacked order products'});
 };
 
 
