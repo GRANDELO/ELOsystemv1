@@ -14,7 +14,7 @@ const LogisticsPage = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/orders/unpacked-products');
+      const response = await axios.get('https://elosystemv1.onrender.com/api/order2/unpacked');
       setUnpackedOrders(response.data); // Data structure: [{ orderId, products }]
     } catch (err) {
       console.error('Failed to fetch unpacked orders:', err);
@@ -27,7 +27,7 @@ const LogisticsPage = () => {
   // Function to mark an order as packed
   const markOrderAsPacked = async (orderId) => {
     try {
-      await axios.patch(`https://elosystemv1.onrender.com/api/orders/${orderId}/packed`, {
+      await axios.patch(`https://elosystemv1.onrender.com/api/order2/${orderId}/packed`, {
         packed: true,
       });
       // Update UI after marking as packed
