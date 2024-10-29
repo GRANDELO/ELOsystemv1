@@ -80,10 +80,12 @@ router.post('/lipa', async (req, res) => {
     }
 });
 
-router.post('/payment-callback', (req, res) => {
+router.post('/paymentcallback', (req, res) => {
     console.log('....................... stk_confirm .............')
     console.log("Payload Received", req.body.Body.stkCallback)
-   /* const callbackData = req.body.Body.stkCallback
+   
+   
+    /* const callbackData = req.body.Body.stkCallback
     console.log("Payload Received", callbackData)
     var resultCode = callbackData.ResultCode;
     var checkoutId = callbackData.CheckoutRequestID
