@@ -8,6 +8,7 @@ import Cart from './Cart';
 import NewProductList from './NewProductList';
 import Header from './header';
 import Settings from './settings';
+import Footer from './Footer';
 import './styles/salespersonhome.css';
 
 const Home = () => {
@@ -84,8 +85,8 @@ const Home = () => {
         </div>
       )}
       <footer className="salesp-home-footer">
-        <p>Contact us: grandeloltd1@gmail.com</p>
-        <p>&copy; 2024 Grandelo. All rights reserved.</p>
+        < Footer/>
+        
       </footer>
     </div>
   );

@@ -68,7 +68,7 @@
 }
 
 /* Footer */
-.salesp-home-footer {
+/* .salesp-home-footer {
     max-width: 100%;
     background-color: #333;
     color: white;
@@ -77,12 +77,12 @@
     margin-top: auto;
     font-size: 0.9rem;
     border-top-left-radius: 12px; /* Softer corners */
-    border-top-right-radius: 12px;
+    /* border-top-right-radius: 12px;
 }
 
 .salesp-home-footer p {
     margin: 5px 0;
-}
+} */ 
 
 /* Floating Buttons */
 .salesp-floating-buttons {
