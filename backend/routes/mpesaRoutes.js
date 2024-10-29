@@ -107,21 +107,25 @@ router.post('/paymentcallback', async (req, res) => {
     const resultCode = callbackData.ResultCode;
     const checkoutId = callbackData.CheckoutRequestID;
 
-    try {
-        const order = await Order.findOne({ CheckoutRequestID: checkoutId });
-        if (!order) {
-            return res.status(404).json({ message: 'Mpesa Order not found' });
+    if (resultCode == 0)
+        {
+            try {
+                const order = await Order.findOne({ CheckoutRequestID: checkoutId });
+                if (!order) {
+                    return res.status(404).json({ message: 'Mpesa Order not found' });
+                }
+        
+                order.paid = true;
+                await order.save();
+        
+                console.log("Order paid successfully for ");
+                return res.status(200).json({ message: 'Payment successful' });
+            } catch (error) {
+                console.error('Failed to fetch orders:', error);
+                return res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
+            }
         }
 
-        order.paid = true;
-        await order.save();
-
-        console.log("Order paid successfully for ");
-        return res.status(200).json({ message: 'Payment successful' });
-    } catch (error) {
-        console.error('Failed to fetch orders:', error);
-        return res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
-    }
 });
 
 module.exports = router;
