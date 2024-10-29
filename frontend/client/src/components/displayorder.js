@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import './styles/displayorder.css';
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -15,8 +16,6 @@ const OrdersPage = () => {
     try {
       const username = 'Teekay'; // Replace with actual username logic
       const response = await axios.get(`https://elosystemv1.onrender.com/api/orders/my/${username}`);
-      
-      // Ensure that response.data is an array
       setOrders(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error('Error fetching orders:', error);
@@ -25,8 +24,8 @@ const OrdersPage = () => {
 
   const handleOrderClick = (order) => {
     setSelectedOrder(selectedOrder === order ? null : order);
-    setMessage(''); // Clear any previous messages
-    setMpesaPhoneNumber(''); // Reset phone number input when switching orders
+    setMessage('');
+    setMpesaPhoneNumber('');
   };
 
   const handleMpesaPhoneNumberChange = (e) => {
@@ -69,24 +68,23 @@ const OrdersPage = () => {
   };
 
   return (
-    <div className="orders-page">
+    <div className="dsord-orders-page">
       <h1>My Orders</h1>
       {orders.length === 0 ? (
         <p>You have no orders yet.</p>
       ) : (
-        <ul className="orders-list">
+        <ul className="dsord-orders-list">
           {orders.map((order) => (
-            <li key={order._id} className="order-item">
-              <div onClick={() => handleOrderClick(order)} className="order-summary">
+            <li key={order._id} className="dsord-order-item">
+              <div onClick={() => handleOrderClick(order)} className="dsord-order-summary">
                 <p>Order Date: {new Date(order.orderDate).toLocaleDateString()}</p>
                 <p>Status: {order.isDelivered ? 'Delivered' : order.isDeliveryInProcess ? 'In Process' : 'Pending'}</p>
                 <p>Total: ${order.totalPrice?.toFixed(2) ?? 'N/A'}</p>
               </div>
               {selectedOrder === order && (
-                <div className="order-details">
-                  {/* Payment Section */}
+                <div className="dsord-order-details">
                   {!order.paid ? (
-                    <div className="payment-section">
+                    <div className="dsord-payment-section">
                       <label>M-Pesa Phone Number</label>
                       <input
                         type="text"
@@ -96,7 +94,7 @@ const OrdersPage = () => {
                       />
                       <button 
                         onClick={() => initiatePayment(order.orderNumber)} 
-                        className="action-button"
+                        className="dsord-action-button"
                       >
                         Pay Now
                       </button>
@@ -104,13 +102,13 @@ const OrdersPage = () => {
                   ) : (
                     <button 
                       onClick={() => confirmDelivery(order.orderNumber)} 
-                      className="action-button"
+                      className="dsord-action-button"
                     >
                       Confirm Delivery
                     </button>
                   )}
                   
-                  {message && <p>{message}</p>}
+                  {message && <p className="dsord-message">{message}</p>}
                 </div>
               )}
             </li>
