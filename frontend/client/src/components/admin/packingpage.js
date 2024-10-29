@@ -12,7 +12,7 @@ const LogisticsPage = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/orders/unpacked-products');
+      const response = await axios.get('https://elosystemv1.onrender.com/api/orders/unpackedproducts');
       setUnpackedOrders(response.data); 
       console.log(response.data);// Data structure: [{ orderId, products }]
     } catch (err) {
