@@ -179,31 +179,22 @@ exports.deliverypatcher = async (req, res) => {
   const { orderId } = req.params; 
 
   try {
-    const orders = await Order.find({ orderNumber: orderId });
+    // Find and update the order to set packed to true
+    const updatedOrder = await Order.findByIdAndUpdate(
+      orderId,
+      { isDelivered: true },
+      { new: true }
+    );
 
-    orders.isDelivered = true;
-    await orders.save();
+    if (!updatedOrder) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
 
-    res.json({ message: 'Order marked as Delivered successfully'});
+    res.json({ message: 'Order marked as delivered successfully', order: updatedOrder });
   } catch (error) {
-    console.error('Failed to fetch orders:', error);
-    res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
+    console.error('Failed to update order status:', error);
+    res.status(500).json({ message: 'Failed to update order status', error: error.message });
   }
-};
+  };
 
-exports.deliverypatcher = async (req, res) => {
-  const { orderId } = req.params; 
-
-  try {
-    const orders = await Order.find({ orderNumber: orderId });
-
-    orders.isDelivered = true;
-    await orders.save();
-
-    res.json({ message: 'Order marked as Delivered successfully'});
-  } catch (error) {
-    console.error('Failed to fetch orders:', error);
-    res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
-  }
-};
 

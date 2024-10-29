@@ -54,8 +54,20 @@ const OrdersPage = () => {
     }
   };
 
-  const confirmDelivery = () => {
+  const confirmDelivery = async (orderId) => {
+    try {
+        await axios.patch(`https://elosystemv1.onrender.com/api/order2/${orderId}/deliverypatcher`, {
+            isDelivered: true,
+          });
+        setMessage('Payment initiated successfully!');
+        console.log(response.data);
+      } catch (error) {
+        setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
+        console.error('Error:', error);
+      }
+    
     setMessage('Delivery confirmed!');
+
     // Implement delivery confirmation logic here
   };
 
@@ -97,7 +109,7 @@ const OrdersPage = () => {
                       <button onClick={initiatePayment} className="action-button">Pay Now</button>
                     </div>
                   ) : (
-                    <button onClick={confirmDelivery} className="action-button">Confirm Delivery</button>
+                    <button onClick={confirmDelivery(order.orderNumber)} className="action-button">Confirm Delivery</button>
                   )}
                   
                   {message && <p>{message}</p>}

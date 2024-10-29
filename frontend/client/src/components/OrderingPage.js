@@ -19,8 +19,9 @@ const OrderingPage = () => {
   const [selectedTown, setSelectedTown] = useState('');
   const [areas, setAreas] = useState([]);
   const [selectedArea, setSelectedArea] = useState('');
+  const [CheckoutRequestID, setCheckoutRequestID] = useState('');
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     const fetchCart = async () => {
       setLoading(true);
@@ -125,7 +126,7 @@ const OrderingPage = () => {
           });
           setMessage('Payment initiated successfully!');
           console.log(response.data);
-          CheckoutRequestID = response.CheckoutRequestID;
+          setCheckoutRequestID(response.CheckoutRequestID);
       } catch (error) {
           setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
           console.error('Error:', error);
