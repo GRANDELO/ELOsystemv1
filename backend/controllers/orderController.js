@@ -102,6 +102,7 @@ exports.getUnpackedOrderProducts = async (req, res) => {
     const productIds = orders.flatMap(order => 
       order.items.map(item => item.productId)
     );
+
     console.log('Product IDs:', productIds); // Log the product IDs array
 
     // Step 3: Fetch product details for all product IDs at once
@@ -111,7 +112,7 @@ exports.getUnpackedOrderProducts = async (req, res) => {
     // Step 4: Create a map for quick product lookup
     const productMap = {};
     products.forEach(product => {
-      productMap[product.productId] = {
+      productMap[product._id] = { // Use product._id instead of productId
         name: product.name,
         category: product.category,
         image: product.image,
@@ -139,6 +140,7 @@ exports.getUnpackedOrderProducts = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch unpacked order products', error: error.message });
   }
 };
+
 
 
 exports.markOrderAsPacked = async (req, res) => {
