@@ -54,7 +54,7 @@ exports.getOrder = async (req, res) => {
       return res.status(404).json({ message: 'Delivery person not found' });
     }
 
-    const orders = await Order.find({ deliveryPerson: deliveryPerson._id, packed: false, isDelivered: false });
+    const orders = await Order.find({ deliveryPerson: deliveryPerson._id, packed: true, isDelivered: false });
     
     res.json(orders);
   } catch (error) {
@@ -87,7 +87,6 @@ exports.updateOrderStatus = async (req, res) => {
   }
 };
 
-
 exports.getUnpackedOrderProducts = async (req, res) => {
   try {
     // Step 1: Fetch orders that are not packed
@@ -103,11 +102,8 @@ exports.getUnpackedOrderProducts = async (req, res) => {
       order.items.map(item => item.productId)
     );
 
-    console.log('Product IDs:', productIds); // Log the product IDs array
-
     // Step 3: Fetch product details for all product IDs at once
     const products = await Product.find({ _id: { $in: productIds } }).lean();
-    console.log('Fetched Products:', products.length); // Log the number of fetched products
 
     // Step 4: Create a map for quick product lookup
     const productMap = {};
@@ -133,15 +129,12 @@ exports.getUnpackedOrderProducts = async (req, res) => {
       };
     });
 
-    console.log('Order Product Details:', orderProductDetails); // Log the final details before sending response
-    res.json(orderProductDetails);
+res.json(orderProductDetails);
   } catch (error) {
     console.error('Failed to fetch unpacked order products:', error);
     res.status(500).json({ message: 'Failed to fetch unpacked order products', error: error.message });
   }
 };
-
-
 
 exports.markOrderAsPacked = async (req, res) => {
   const { orderId } = req.params;
