@@ -90,53 +90,55 @@ exports.updateOrderStatus = async (req, res) => {
 
 exports.getUnpackedOrderProducts = async (req, res) => {
   try {
-    // Step 1: Fetch orders that are not packed and not delivered
-    const orders = await Order.find({ packed: false });
-    console.log('Fetched Orders:', orders.length); // Count of fetched orders
+    // Step 1: Fetch orders that are not packed
+    const orders = await Order.find({ packed: false }).lean(); // Using .lean() for better performance
+    console.log('Fetched Orders:', orders.length); // Log the number of fetched orders
 
-    // Step 2: Prepare response with orderId, product details, and quantity
-    const orderProductDetails = await Promise.all(
-      orders.map(async (order) => {
-        console.log('Order Items:', order.items); // Log each order's items
+    if (orders.length === 0) {
+      return res.json([]); // Return empty if no orders found
+    }
 
-        // Step 2a: Extract product IDs and quantities from order.items
-        const productIds = order.items.map(item => item.productId); // Array of productIds
-        const quantities = order.items.map(item => item.quantity); // Array of quantities
-        console.log('Product IDs:', productIds); // Debugging line
-
-        // Step 2b: Fetch product details
-        const products = await Product.find({ productId: { $in: productIds } });
-        console.log('Fetched Products:', products); // Debugging line
-
-        // Check lengths of products and quantities
-        console.log('Products Length:', products.length, 'Quantities Length:', quantities.length);
-
-        // Step 2c: Format product details to include quantity
-        const formattedProducts = products.map((product, index) => ({
-          name: product.name,
-          category: product.category,
-          image: product.image,
-          price: product.price,
-          quantity: quantities[index] // Get the corresponding quantity
-        }));
-
-        return {
-          orderId: order._id,
-          products: formattedProducts,
-        };
-      })
+    // Step 2: Extract product IDs from all orders
+    const productIds = orders.flatMap(order => 
+      order.items.map(item => item.productId)
     );
+    console.log('Product IDs:', productIds); // Log the product IDs array
 
-    console.log('Order Product Details:', orderProductDetails); // Final details before response
+    // Step 3: Fetch product details for all product IDs at once
+    const products = await Product.find({ productId: { $in: productIds } }).lean();
+    console.log('Fetched Products:', products.length); // Log the number of fetched products
+
+    // Step 4: Create a map for quick product lookup
+    const productMap = {};
+    products.forEach(product => {
+      productMap[product.productId] = {
+        name: product.name,
+        category: product.category,
+        image: product.image,
+        price: product.price,
+      };
+    });
+
+    // Step 5: Format the response with order details
+    const orderProductDetails = orders.map(order => {
+      const formattedProducts = order.items.map(item => ({
+        ...productMap[item.productId], // Get the product details from the map
+        quantity: item.quantity, // Include the quantity from the order
+      }));
+
+      return {
+        orderId: order._id,
+        products: formattedProducts,
+      };
+    });
+
+    console.log('Order Product Details:', orderProductDetails); // Log the final details before sending response
     res.json(orderProductDetails);
   } catch (error) {
     console.error('Failed to fetch unpacked order products:', error);
     res.status(500).json({ message: 'Failed to fetch unpacked order products', error: error.message });
   }
 };
-
-
-
 
 
 exports.markOrderAsPacked = async (req, res) => {
