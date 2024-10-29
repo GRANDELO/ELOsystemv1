@@ -66,26 +66,36 @@ const LogisticsPage = () => {
           </thead>
           <tbody>
             {unpackedOrders.map((order) =>
-              order.products.map((product) => (
-                <tr key={`${order.orderId}-${product.name}`}>
-                  <td>{order.orderId}</td>
-                  <td>{product.name}</td>
-                  <td>{product.category}</td>
-                  <td>
-                    <img src={product.image} alt={product.name} style={{ width: '50px', height: '50px' }} />
-                  </td>
-                  <td>{product.quantity}</td>
-                  <td>Ksh {product.price.toFixed(2)}</td>
-                  <td>
-                    <Button
-                      variant="success"
-                      onClick={() => markOrderAsPacked(order.orderId)}
-                    >
-                      Mark as Packed
-                    </Button>
-                  </td>
-                </tr>
-              ))
+              order.products.map((product) => {
+                console.log(`Product Details:`, product); // Log each product
+
+                return (
+                  <tr key={`${order.orderId}-${product.name}`}>
+                    <td>{order.orderId}</td>
+                    <td>{product.name}</td>
+                    <td>{product.category}</td>
+                    <td>
+                      <img src={product.image} alt={product.name} style={{ width: '50px', height: '50px' }} />
+                    </td>
+                    <td>{product.quantity}</td>
+                    <td>
+                      {product.price !== undefined ? (
+                        `Ksh ${product.price.toFixed(2)}`
+                      ) : (
+                        'Price not available' // Default message if price is undefined
+                      )}
+                    </td>
+                    <td>
+                      <Button
+                        variant="success"
+                        onClick={() => markOrderAsPacked(order.orderId)}
+                      >
+                        Mark as Packed
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </Table>

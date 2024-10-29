@@ -88,57 +88,52 @@ exports.updateOrderStatus = async (req, res) => {
 };
 
 
-exports.getUnpackedOrderProducts = async (req, res) => {
+exports.getUnpackedOrders = async (req, res) => {
   try {
-    // Step 1: Fetch orders that are not packed
-    const orders = await Order.find({ packed: false }).lean(); // Using .lean() for better performance
-    console.log('Fetched Orders:', orders.length); // Log the number of fetched orders
-
-    if (orders.length === 0) {
-      return res.json([]); // Return empty if no orders found
+    // Fetch unpacked orders
+    const orders = await Order.find({ packed: false });
+    if (!orders || orders.length === 0) {
+      return res.status(404).json({ message: 'No unpacked orders found' });
     }
 
-    // Step 2: Extract product IDs from all orders
-    const productIds = orders.flatMap(order => 
-      order.items.map(item => item.productId)
+    const ordersWithProductDetails = await Promise.all(
+      orders.map(async (order) => {
+        const itemsWithProductDetails = await Promise.all(
+          order.items.map(async (item) => {
+            const product = await Product.findById(item.productId); // Assuming 'productId' is the correct field
+            if (!product) {
+              return null; // Handle missing product case
+            }
+            return {
+              name: product.name,
+              category: product.category,
+              image: product.image,
+              price: product.price,
+              quantity: item.quantity,
+            };
+          })
+        );
+
+        // Filter out any null products (missing product details)
+        const filteredItems = itemsWithProductDetails.filter(item => item !== null);
+
+        return {
+          orderId: order._id,
+          products: filteredItems,
+        };
+      })
     );
-    console.log('Product IDs:', productIds); // Log the product IDs array
 
-    // Step 3: Fetch product details for all product IDs at once
-    const products = await Product.find({ productId: { $in: productIds } }).lean();
-    console.log('Fetched Products:', products.length); // Log the number of fetched products
+    // Filter out any orders without products
+    const validOrders = ordersWithProductDetails.filter(order => order.products.length > 0);
 
-    // Step 4: Create a map for quick product lookup
-    const productMap = {};
-    products.forEach(product => {
-      productMap[product.productId] = {
-        name: product.name,
-        category: product.category,
-        image: product.image,
-        price: product.price,
-      };
-    });
-
-    // Step 5: Format the response with order details
-    const orderProductDetails = orders.map(order => {
-      const formattedProducts = order.items.map(item => ({
-        ...productMap[item.productId], // Get the product details from the map
-        quantity: item.quantity, // Include the quantity from the order
-      }));
-
-      return {
-        orderId: order._id,
-        products: formattedProducts,
-      };
-    });
-
-    console.log('Order Product Details:', orderProductDetails); // Log the final details before sending response
-    res.json(orderProductDetails);
+    res.status(200).json(validOrders);
   } catch (error) {
-    console.error('Failed to fetch unpacked order products:', error);
-    res.status(500).json({ message: 'Failed to fetch unpacked order products', error: error.message });
+    console.error('Error fetching unpacked orders:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
 
 
 exports.markOrderAsPacked = async (req, res) => {
