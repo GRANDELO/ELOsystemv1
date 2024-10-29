@@ -23,7 +23,8 @@ exports.createOrder = async (req, res) => {
       username,
       deliveryPerson: deliveryPerson ? deliveryPerson._id : null,
       isDeliveryInProcess: false,
-      isDelivered: false
+      isDelivered: false,
+      packed: false 
     });
 
     await order.save();
