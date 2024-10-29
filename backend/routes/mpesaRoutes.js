@@ -83,7 +83,6 @@ router.post('/lipa', async (req, res) => {
                     }
                 
                     order.CheckoutRequestID = paymentResponse.CheckoutRequestID;
-                    order.paid = true;
                     await order.save();
             
                     res.status(200).json(req.body)
@@ -107,6 +106,7 @@ router.post('/paymentcallback', async (req, res) => {
     console.log("Payload Received", callbackData)
     var resultCode = callbackData.ResultCode;
     var checkoutId = callbackData.CheckoutRequestID
+    /*
     var username = req.decoded.username
     if(resultCode === 0){
         const details = callbackData.CallbackMetadata.Item
@@ -135,7 +135,7 @@ router.post('/paymentcallback', async (req, res) => {
         })
         
 
-    }
+    }*/
     try {
         const order = await Order.findOne({ CheckoutRequestID: checkoutId });
         if (!order) {
@@ -146,7 +146,7 @@ router.post('/paymentcallback', async (req, res) => {
         await order.save();
 
         res.status(200).json(req.body)
-        console.log("Order paid succesfully for " + mPhoneNumber);
+        console.log("Order paid succesfully for ");
       } catch (error) {
         console.error('Failed to fetch orders:', error);
         res.status(500).json({ message: 'Failed to fetch orders', error: error.message });

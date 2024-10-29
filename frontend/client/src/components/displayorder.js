@@ -57,19 +57,15 @@ const OrdersPage = () => {
 
   const confirmDelivery = async (orderId) => {
     try {
-        const response = await axios.patch(`https://elosystemv1.onrender.com/api/order2/${orderId}/deliverypatcher`, {
-            isDelivered: true,
-          });
-        setMessage('Payment initiated successfully!');
-        console.log(response.data);
-      } catch (error) {
-        setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
-        console.error('Error:', error);
-      }
-    
-    setMessage('Delivery confirmed!');
-
-    // Implement delivery confirmation logic here
+      const response = await axios.patch(`https://elosystemv1.onrender.com/api/order2/${orderId}/deliverypatcher`, {
+        isDelivered: true,
+      });
+      setMessage('Delivery confirmed successfully!');
+      console.log(response.data);
+    } catch (error) {
+      setMessage('Delivery confirmation failed: ' + (error.response ? error.response.data.message : error.message));
+      console.error('Error:', error);
+    }
   };
 
   return (
@@ -88,15 +84,6 @@ const OrdersPage = () => {
               </div>
               {selectedOrder === order && (
                 <div className="order-details">
-                  <h3>Order Details</h3>
-                  <ul>
-                    {order.products?.map((product, index) => (
-                      <li key={index}>
-                        {product.name} - ${product.price} x {product.quantity}
-                      </li>
-                    )) ?? <li>No products available</li>}
-                  </ul>
-
                   {/* Payment Section */}
                   {!order.paid ? (
                     <div className="payment-section">
@@ -107,10 +94,20 @@ const OrdersPage = () => {
                         onChange={handleMpesaPhoneNumberChange}
                         placeholder="2547XXXXXXXX"
                       />
-                      <button onClick={initiatePayment(order.orderNumber)} className="action-button">Pay Now</button>
+                      <button 
+                        onClick={() => initiatePayment(order.orderNumber)} 
+                        className="action-button"
+                      >
+                        Pay Now
+                      </button>
                     </div>
                   ) : (
-                    <button onClick={confirmDelivery(order.orderNumber)} className="action-button">Confirm Delivery</button>
+                    <button 
+                      onClick={() => confirmDelivery(order.orderNumber)} 
+                      className="action-button"
+                    >
+                      Confirm Delivery
+                    </button>
                   )}
                   
                   {message && <p>{message}</p>}
