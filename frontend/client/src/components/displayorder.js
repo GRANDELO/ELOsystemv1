@@ -33,11 +33,12 @@ const OrdersPage = () => {
     setMpesaPhoneNumber(e.target.value);
   };
 
-  const initiatePayment = async () => {
+  const initiatePayment = async (inorderid) => {
     if (!selectedOrder) return;
     const payload = {
       phone: mpesaPhoneNumber,
       amount: selectedOrder.totalPrice.toFixed(0),
+      orderid: inorderid,
     };
 
     try {
@@ -106,7 +107,7 @@ const OrdersPage = () => {
                         onChange={handleMpesaPhoneNumberChange}
                         placeholder="2547XXXXXXXX"
                       />
-                      <button onClick={initiatePayment} className="action-button">Pay Now</button>
+                      <button onClick={initiatePayment(order.orderNumber)} className="action-button">Pay Now</button>
                     </div>
                   ) : (
                     <button onClick={confirmDelivery(order.orderNumber)} className="action-button">Confirm Delivery</button>

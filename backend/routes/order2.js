@@ -3,7 +3,6 @@ const router = express.Router();
 const orderController = require('../controllers/orderController');
 
 // Routes for Orders
-router.post('/mpesaidadder', orderController.mpesaidadder);
 router.get('/unpacked', orderController.getUnpackedOrderProducts);
 router.patch('/:orderId/packed', orderController.markOrderAsPacked); 
 router.patch('/:orderId/deliverypatcher', orderController.deliverypatcher);
