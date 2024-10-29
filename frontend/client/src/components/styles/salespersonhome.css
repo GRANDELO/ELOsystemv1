@@ -167,3 +167,16 @@
         font-size: 1.2rem;
     }
 }
+
+/* salespersonhome.css */
+.salesp-settings-section,
+.salesp-order-section {
+  /* Optional: add styling for better positioning and transitions */
+  display: flex;
+  flex-direction: column;
+}
+
+.salesp-settings-section.closed,
+.salesp-order-section.closed {
+  display: none; /* Ensures sections are hidden when not visible */
+}
