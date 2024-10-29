@@ -21,7 +21,6 @@ const generateTimestamp = () => {
     return `${year}${month}${day}${hours}${minutes}${seconds}`;
 };
 
-// Generate access token with basic auth headers
 const generateAccessToken = async () => {
     try {
         const response = await axios.get('https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', {
@@ -73,26 +72,27 @@ router.post('/lipa', async (req, res) => {
         };
 
         const paymentResponse = await initiatePayment(accessToken, paymentRequest);
-        const orderid = req.body.orderid
-        if (orderid)
-            {
-                try {
-                    const order = await Order.findOne({ orderNumber: orderid });
-                    if (!order) {
-                      return res.status(404).json({ message: 'Mpesa Order not found' });
-                    }
-                
-                    order.CheckoutRequestID = paymentResponse.CheckoutRequestID;
-                    await order.save();
-            
-                    res.status(200).json(req.body)
-                    console.log("Order paid succesfully for " + mPhoneNumber);
-                  } catch (error) {
-                    console.error('Failed to fetch orders:', error);
-                    res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
-                  }
+        const orderid = req.body.orderid;
+
+        if (orderid) {
+            try {
+                const order = await Order.findOne({ orderNumber: orderid });
+                if (!order) {
+                    return res.status(404).json({ message: 'Mpesa Order not found' });
+                }
+
+                order.CheckoutRequestID = paymentResponse.CheckoutRequestID;
+                await order.save();
+
+                console.log("Order paid successfully.");
+                return res.status(200).json({ message: 'Payment initiated successfully', data: paymentResponse });
+            } catch (error) {
+                console.error('Failed to fetch orders:', error);
+                return res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
             }
-        res.status(200).json({ message: 'Payment initiated successfully', data: paymentResponse, CheckoutRequestID: paymentResponse.CheckoutRequestID });
+        } else {
+            return res.status(400).json({ message: 'Order ID is required.' });
+        }
     } catch (error) {
         console.error('Error initiating payment:', error);
         res.status(500).json({ message: 'Payment initiation failed', error: error.message });
@@ -100,58 +100,52 @@ router.post('/lipa', async (req, res) => {
 });
 
 router.post('/paymentcallback', async (req, res) => {
-    console.log('....................... stk_confirm .............')
-    console.log("Payload Received", req.body.Body.stkCallback)
-    const callbackData = req.body.Body.stkCallback
-    console.log("Payload Received", callbackData)
-    var resultCode = callbackData.ResultCode;
-    var checkoutId = callbackData.CheckoutRequestID
-    /*
-    var username = req.decoded.username
-    if(resultCode === 0){
-        const details = callbackData.CallbackMetadata.Item
+    console.log('....................... stk_confirm .............');
+    console.log("Payload Received", req.body.Body.stkCallback);
 
-        var mReceipt;
-        var mPhoneNumber;
-        var mAmount;
+    const callbackData = req.body.Body.stkCallback;
+    const resultCode = callbackData.ResultCode;
+    const checkoutId = callbackData.CheckoutRequestID;
 
-        await details.forEach(entry =>{
-            switch (entry.Name){
+    if (resultCode === 0) {
+        const details = callbackData.CallbackMetadata.Item;
+        let mReceipt, mPhoneNumber, mAmount;
+
+        for (const entry of details) {
+            switch (entry.Name) {
                 case "MpesaReceiptNumber":
-                mReceipt = entry.Value
-                break;
-
+                    mReceipt = entry.Value;
+                    break;
                 case "PhoneNumber":
-                mPhoneNumber = entry.Value
-                break;
-
+                    mPhoneNumber = entry.Value;
+                    break;
                 case "Amount":
-                mAmount = entry.Value
-                break;
-
+                    mAmount = entry.Value;
+                    break;
                 default:
                     break;
             }
-        })
-        
-
-    }*/
-    try {
-        const order = await Order.findOne({ CheckoutRequestID: checkoutId });
-        if (!order) {
-          return res.status(404).json({ message: 'Mpesa Order not found' });
         }
-    
-        order.paid = true;
-        await order.save();
 
-        res.status(200).json(req.body)
-        console.log("Order paid succesfully for ");
-      } catch (error) {
-        console.error('Failed to fetch orders:', error);
-        res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
-      }
-    
-    
-})
+        try {
+            const order = await Order.findOne({ CheckoutRequestID: checkoutId });
+            if (!order) {
+                return res.status(404).json({ message: 'Mpesa Order not found' });
+            }
+
+            order.paid = true;
+            await order.save();
+
+            console.log("Order paid successfully for " + mPhoneNumber);
+            return res.status(200).json({ message: 'Payment successful', receipt: mReceipt, phoneNumber: mPhoneNumber, amount: mAmount });
+        } catch (error) {
+            console.error('Failed to fetch orders:', error);
+            return res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
+        }
+    } else {
+        console.log("Payment not successful.");
+        return res.status(400).json({ message: 'Payment not successful', resultCode });
+    }
+});
+
 module.exports = router;
