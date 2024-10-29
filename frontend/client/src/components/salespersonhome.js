@@ -5,10 +5,11 @@ import { IoClose } from 'react-icons/io5'; // Close icon
 import { useNavigate } from 'react-router-dom';
 import { getUsernameFromToken } from '../utils/auth';
 import Cart from './Cart';
+import Footer from './Footer';
 import NewProductList from './NewProductList';
+import Displayorder from './displayorder';
 import Header from './header';
 import Settings from './settings';
-import Footer from './Footer';
 import './styles/salespersonhome.css';
 
 const Home = () => {
@@ -65,6 +66,7 @@ const Home = () => {
         {isSettingsVisible && (
           <section className={`salesp-settings-section ${isSettingsVisible ? '' : 'closed'}`}>
             <Settings />
+            <Displayorder/>
             <button className="salesp-toggle-settings" onClick={toggleSettings}>
               <IoClose /> {/* Close icon without background */}
             </button>

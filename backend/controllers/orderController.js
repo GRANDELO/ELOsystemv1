@@ -63,6 +63,21 @@ exports.getOrder = async (req, res) => {
   }
 };
 
+exports.getMyOrder = async (req, res) => {
+  const { username } = req.params; 
+
+  try {
+
+
+    const orders = await Order.find({ username: username });
+    
+    res.json(orders);
+  } catch (error) {
+    console.error('Failed to fetch my orders:', error);
+    res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
+  }
+};
+
 exports.updateOrderStatus = async (req, res) => {
   const { orderId } = req.params; // Get order ID from request parameters
   const { isDeliveryInProcess } = req.body; // Status update from request body
