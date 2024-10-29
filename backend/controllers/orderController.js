@@ -88,14 +88,15 @@ exports.updateOrderStatus = async (req, res) => {
 };
 
 
-exports.getUnpackedOrderProducts = async (req, res) => {
+
+exports.getUnpackedOrderProduct = async (req, res) => {
   try {
     // Step 1: Fetch orders that are not packed
-    const orders = await Order.find({ packed: false });
+    const ordersz = await Order.find({ packed: false });
 
     // Step 2: Prepare response with orderId and product details
     const orderProductDetails = await Promise.all(
-      orders.map(async (order) => {
+      ordersz.map(async (order) => {
         // Extract product IDs from the items array
         const productIds = order.items.map(item => item.productId);
 
