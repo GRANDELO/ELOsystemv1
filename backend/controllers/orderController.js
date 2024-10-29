@@ -53,7 +53,7 @@ exports.getOrder = async (req, res) => {
       return res.status(404).json({ message: 'Delivery person not found' });
     }
 
-    const orders = await Order.find({ deliveryPerson: deliveryPerson._id, packed: true });
+    const orders = await Order.find({ deliveryPerson: deliveryPerson._id, packed: false, isDelivered: false });
     
     res.json(orders);
   } catch (error) {
