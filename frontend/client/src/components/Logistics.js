@@ -24,10 +24,29 @@ const LogisticsPage = () => {
     }
   };
 
+  const updateOrderStatus = async (orderId) => {
+    try {
+      // Send request to update the order status
+      const response = await axios.patch(`https://elosystemv1.onrender.com/api/orders/${orderId}/status`, {
+        isDeliveryInProcess: true,
+      });
+
+      // Update order status in the UI
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order._id === orderId ? { ...order, isDeliveryInProcess: true } : order
+        )
+      );
+    } catch (err) {
+      console.error('Failed to update order status:', err);
+      setError('Failed to update order status');
+    }
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (eid) {
-      fetchOrders(eid); // Fetch orders for the specified delivery person
+      fetchOrders(eid);
     } else {
       setError('Please enter a valid EID');
     }
@@ -83,7 +102,20 @@ const LogisticsPage = () => {
                     ? `${order.deliveryPerson.firstName} ${order.deliveryPerson.surname}`
                     : 'Unassigned'}
                 </td>
-                <td>{order.isDelivered ? 'Delivered' : 'In Process'}</td>
+                <td>
+                  {order.isDelivered ? (
+                    'Delivered'
+                  ) : order.isDeliveryInProcess ? (
+                    'In Process'
+                  ) : (
+                    <Button
+                      variant="warning"
+                      onClick={() => updateOrderStatus(order._id)}
+                    >
+                      Mark as In Process
+                    </Button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

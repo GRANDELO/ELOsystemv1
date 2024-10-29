@@ -61,6 +61,30 @@ exports.getOrder = async (req, res) => {
   }
 };
 
+exports.updateOrderStatus = async (req, res) => {
+  const { orderId } = req.params; // Get order ID from request parameters
+  const { isDeliveryInProcess } = req.body; // Status update from request body
+
+  try {
+    // Find the order by ID and update the isDeliveryInProcess status
+    const order = await Order.findByIdAndUpdate(
+      orderId,
+      { isDeliveryInProcess },
+      { new: true }
+    );
+
+    // If order not found, return 404 error
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    res.json({ message: 'Order status updated successfully', order });
+  } catch (error) {
+    console.error('Failed to update order status:', error);
+    res.status(500).json({ message: 'Failed to update order status', error: error.message });
+  }
+};
+
 
 exports.getunpackedOrder = async (req, res) => {
   try {
