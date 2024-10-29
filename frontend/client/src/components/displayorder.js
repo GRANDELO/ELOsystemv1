@@ -56,7 +56,7 @@ const OrdersPage = () => {
 
   const confirmDelivery = async (orderId) => {
     try {
-        await axios.patch(`https://elosystemv1.onrender.com/api/order2/${orderId}/deliverypatcher`, {
+        const response = await axios.patch(`https://elosystemv1.onrender.com/api/order2/${orderId}/deliverypatcher`, {
             isDelivered: true,
           });
         setMessage('Payment initiated successfully!');
