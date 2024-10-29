@@ -1,5 +1,3 @@
-// In src/pages/LogisticsPage.js
-
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Table } from 'react-bootstrap';
@@ -15,7 +13,8 @@ const LogisticsPage = () => {
     setError('');
     try {
       const response = await axios.get('https://elosystemv1.onrender.com/api/orders/unpacked-products');
-      setUnpackedOrders(response.data); // Data structure: [{ orderId, products }]
+      setUnpackedOrders(response.data); 
+      console.log(response.data);// Data structure: [{ orderId, products }]
     } catch (err) {
       console.error('Failed to fetch unpacked orders:', err);
       setError(err.response?.data?.message || 'Failed to fetch unpacked orders');

@@ -51,7 +51,7 @@ exports.getOrder = async (req, res) => {
   try {
     const deliveryPerson = await Employee.findOne({ eid, role: 'delivery' });
     if (!deliveryPerson) {
-      return res.status(404).json({ message: 'Delivery person not found' });
+      return res.status(404).json({ message: 'Delivery person not found new' });
     }
 
     const orders = await Order.find({ deliveryPerson: deliveryPerson._id, packed: false, isDelivered: false });
@@ -91,7 +91,7 @@ exports.updateOrderStatus = async (req, res) => {
 exports.getUnpackedOrderProducts = async (req, res) => {
   try {
     // Step 1: Fetch orders that are not packed and not delivered
-    const orders = await Order.find({ packed: false, isDelivered: false });
+    const orders = await Order.find({ packed: false });
 
     // Step 2: Prepare response with orderId and product details
     const orderProductDetails = await Promise.all(
