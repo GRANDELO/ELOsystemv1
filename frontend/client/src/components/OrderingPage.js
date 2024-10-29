@@ -107,14 +107,9 @@ const OrderingPage = () => {
         orderDate: new Date().toISOString(),
         username,
         mpesaPhoneNumber: paymentMethod === 'mpesa' ? mpesaPhoneNumber : undefined,
-        orderReference // Order ref
+        orderReference,
+        CheckoutRequestID
       };
-
-      const response = await axios.post('https://elosystemv1.onrender.com/api/orders', orderDetails);
-      setMessage(response.data.message);
-
-      // Send order details to the logistics system
-      //await axios.post('https://elosystemv1.onrender.com/api/logistics', orderDetails);
 
       if (paymentMethod === 'mpesa') {
         const payload = {
@@ -130,11 +125,18 @@ const OrderingPage = () => {
           });
           setMessage('Payment initiated successfully!');
           console.log(response.data);
+          CheckoutRequestID = response.CheckoutRequestID;
       } catch (error) {
           setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
           console.error('Error:', error);
       }
       }
+
+      const response = await axios.post('https://elosystemv1.onrender.com/api/orders', orderDetails);
+      setMessage(response.data.message);
+
+      // Send order details to the logistics system
+      //await axios.post('https://elosystemv1.onrender.com/api/logistics', orderDetails);
 
 
     } catch (err) {

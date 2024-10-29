@@ -175,3 +175,35 @@ exports.markOrderAsPacked = async (req, res) => {
   }
 };
 
+exports.deliverypatcher = async (req, res) => {
+  const { orderId } = req.params; 
+
+  try {
+    const orders = await Order.find({ orderNumber: orderId });
+
+    orders.isDelivered = true;
+    await orders.save();
+
+    res.json({ message: 'Order marked as Delivered successfully'});
+  } catch (error) {
+    console.error('Failed to fetch orders:', error);
+    res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
+  }
+};
+
+exports.deliverypatcher = async (req, res) => {
+  const { orderId } = req.params; 
+
+  try {
+    const orders = await Order.find({ orderNumber: orderId });
+
+    orders.isDelivered = true;
+    await orders.save();
+
+    res.json({ message: 'Order marked as Delivered successfully'});
+  } catch (error) {
+    console.error('Failed to fetch orders:', error);
+    res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
+  }
+};
+
