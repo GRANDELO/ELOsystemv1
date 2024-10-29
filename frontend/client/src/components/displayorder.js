@@ -1,77 +1,62 @@
+// OrdersPage.js
+
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Alert, Table } from 'react-bootstrap';
-import { getUsernameFromToken } from '../utils/auth';
-//import './styles/OrdersPage.css';
+//import './OrdersPage.css'; // Import your CSS styles
 
 const OrdersPage = () => {
-  const username = getUsernameFromToken();
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      setLoading(true);
-      setError('');
+    fetchOrders();
+  }, []);
 
-      try {
-        const response = await axios.get(`https://elosystemv1.onrender.com/api/orders/user/${username}`);
-        setOrders(response.data || []);
-      } catch (err) {
-        console.error('Failed to fetch orders:', err);
-        setError(err.response?.data?.message || 'Failed to fetch orders');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (username) {
-      fetchOrders();
+  const fetchOrders = async () => {
+    try {
+      const username = 'Teekay'; // Replace with actual username logic
+      const response = await axios.get(`https://elosystemv1.onrender.com/api/orders/my/${username}`);
+      setOrders(response.data);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
     }
-  }, [username]);
+  };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <Alert variant="danger">{error}</Alert>;
+  const handleOrderClick = (order) => {
+    setSelectedOrder(selectedOrder === order ? null : order);
+  };
 
   return (
     <div className="orders-page">
-      <h1>Your Orders</h1>
-      {orders.length > 0 ? (
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Product</th>
-              <th>Quantity</th>
-              <th>Total Price</th>
-              <th>Status</th>
-              <th>Order Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order) => (
-              <tr key={order._id}>
-                <td>{order._id}</td>
-                <td>
-                  {order.products.map((product) => (
-                    <div key={product._id}>
-                      {product.name} - Ksh {product.price} x {product.quantity}
-                    </div>
-                  ))}
-                </td>
-                <td>
-                  {order.products.reduce((total, product) => total + product.quantity, 0)}
-                </td>
-                <td>Ksh {order.totalPrice.toFixed(2)}</td>
-                <td>{order.isDelivered ? 'Delivered' : order.isDeliveryInProcess ? 'In Transit' : 'Pending'}</td>
-                <td>{new Date(order.orderDate).toLocaleDateString()}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+      <h1>My Orders</h1>
+      {orders.length === 0 ? (
+        <p>You have no orders yet.</p>
       ) : (
-        <p>No orders found.</p>
+        <ul className="orders-list">
+          {orders.map((order) => (
+            <li key={order._id} className="order-item">
+              <div onClick={() => handleOrderClick(order)} className="order-summary">
+                <p>Order Date: {new Date(order.orderDate).toLocaleDateString()}</p>
+                <p>Status: {order.isDelivered ? 'Delivered' : order.isDeliveryInProcess ? 'In Process' : 'Pending'}</p>
+                <p>Total: ${order.totalPrice.toFixed(2)}</p>
+              </div>
+              {selectedOrder === order && (
+                <div className="order-details">
+                  <h3>Order Details</h3>
+                  <ul>
+                    {order.products.map((product, index) => (
+                      <li key={index}>
+                        {product.name} - ${product.price} x {product.quantity}
+                      </li>
+                    ))}
+                  </ul>
+                  <button className="action-button">View More Details</button>
+                  <button className="action-button">Cancel Order</button>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );

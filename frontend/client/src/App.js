@@ -23,6 +23,7 @@ import Success from './components/Success';
 import Users from './components/User';
 import UserChart from './components/UserChart';
 import Verification from './components/Verification';
+import Displayorder from './components/displayorder';
 import Home from './components/home';
 import Image from './components/image';
 import Passwordrecovery from './components/passwordreset';
@@ -87,7 +88,7 @@ const App = () => {
           <Route path="/imageUpload" element={<ImageUpload />} />
           <Route path="/logistics" element={<LogisticPage />} />
 
-          <Route path="/Displayorder" element={<displayorder />} />
+          <Route path="/displayorder" element={<Displayorder />} />
 
           <Route path="/employies" element={<Employies />} />
           <Route path="/packingpage" element={<Packingpage />} />

@@ -5,7 +5,7 @@ const orderController = require('../controllers/orderController');
 // Routes for Orders
 router.post('/', orderController.createOrder);
 router.get('/:eid', orderController.getOrder);
-router.get('/my/:userame', orderController.getMyOrder);
+router.get('/my/:username', orderController.getMyOrder);
 router.patch('/:orderId/status', orderController.updateOrderStatus);
 // You can add more routes here if needed.
 
