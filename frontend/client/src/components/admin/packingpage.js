@@ -9,7 +9,7 @@ const UnpackedProducts = () => {
     // Fetch unpacked products on component mount
     const fetchUnpackedProducts = async () => {
       try {
-        const response = await axios.get('https://elosystemv1.onrender.com/api/orders/unpackedproducts'); // Adjust the URL based on your backend
+        const response = await axios.get(`https://elosystemv1.onrender.com/api/orders/unpackedproducts`); // Adjust the URL based on your backend
         setUnpackedProducts(response.data);
       } catch (err) {
         setError(err.message);
