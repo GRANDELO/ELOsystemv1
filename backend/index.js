@@ -14,7 +14,6 @@ const dashboardRoutes = require('./routes/dashboard');
 const newproductRoutes = require('./routes/newproductRoutes');
 const cartRoutes = require('./routes/cart');
 const orderRoutes = require('./routes/orders');
-const logisticRoutes = require('./routes/logisticTest');//this also remove and also in the logisticTest remove
 const locations = require('./routes/locations');
 const mpesaRoutes = require('./routes/mpesaRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
@@ -47,7 +46,6 @@ app.use('/api', newproductRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api', productRoutes);
-app.use('/api/ors', logisticRoutes)// remove this
 app.use(locations);
 app.use('/api/mpesa', mpesaRoutes);
 app.use('/api/employees', employeeRoutes);
