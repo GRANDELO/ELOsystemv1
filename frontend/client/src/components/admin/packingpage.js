@@ -1,65 +1,94 @@
+// In src/pages/LogisticsPage.js
+
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { Alert, Button, Table } from 'react-bootstrap';
 
-const UnpackedProducts = () => {
-  const [unpackedProducts, setUnpackedProducts] = useState([]);
-  const [error, setError] = useState(null);
+const LogisticsPage = () => {
+  const [unpackedOrders, setUnpackedOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    // Fetch unpacked products on component mount
-    const fetchUnpackedProducts = async () => {
-      try {
-        const response = await axios.get('https://elosystemv1.onrender.com/api/orders/unpackedproducts'); // Adjust the URL based on your backend
-        setUnpackedProducts(response.data);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-
-    fetchUnpackedProducts();
-  }, []);
-
-  const handleMarkAsPacked = async (orderId) => {
+  // Function to fetch unpacked orders with their products
+  const fetchUnpackedOrders = async () => {
+    setLoading(true);
+    setError('');
     try {
-      await axios.patch(`https://elosystemv1.onrender.com/api/orders/${orderId}/packed`); // Adjust the URL based on your backend
-      // Remove the packed product from the state
-      setUnpackedProducts((prev) => prev.filter(product => product.orderId !== orderId));
+      const response = await axios.get('https://elosystemv1.onrender.com/api/orders/unpacked');
+      setUnpackedOrders(response.data); // Data structure: [{ orderId, products }]
     } catch (err) {
-      setError(err.message);
+      console.error('Failed to fetch unpacked orders:', err);
+      setError(err.response?.data?.message || 'Failed to fetch unpacked orders');
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Function to mark an order as packed
+  const markOrderAsPacked = async (orderId) => {
+    try {
+      await axios.patch(`https://elosystemv1.onrender.com/api/orders/${orderId}/packed`, {
+        packed: true,
+      });
+      // Update UI after marking as packed
+      setUnpackedOrders((prevOrders) =>
+        prevOrders.filter((order) => order.orderId !== orderId) // Remove packed order from the list
+      );
+    } catch (err) {
+      console.error('Failed to update order status:', err);
+      setError('Failed to update order status');
+    }
+  };
+
+  // Fetch unpacked orders on component mount
+  useEffect(() => {
+    fetchUnpackedOrders();
+  }, []);
+
   return (
-    <div>
-      <h1>Unpacked Products</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {unpackedProducts.length === 0 ? (
-        <p>No unpacked products available.</p>
-      ) : (
-        <ul>
-          {unpackedProducts.map(({ orderId, products }) => (
-            <li key={orderId}>
-              <h2>Order ID: {orderId}</h2>
-              <ul>
-                {products.map(product => (
-                  <li key={product.productId}>
-                    <div>
-                      <h3>{product.name}</h3>
-                      <p>Category: {product.category}</p>
-                      <p>Price: ${product.price}</p>
-                      <p>Quantity: {product.quantity}</p>
-                      {product.image && <img src={product.image} alt={product.name} style={{ width: '100px' }} />}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              <button onClick={() => handleMarkAsPacked(orderId)}>Mark as Packed</button>
-            </li>
-          ))}
-        </ul>
+    <div className="logistics-page">
+      <h1>Unpacked Orders</h1>
+
+      {loading && <p>Loading...</p>}
+      {error && <Alert variant="danger">{error}</Alert>}
+
+      {!loading && unpackedOrders.length > 0 && (
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Product Name</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {unpackedOrders.map((order) =>
+              order.products.map((product) => (
+                <tr key={`${order.orderId}-${product._id}`}>
+                  <td>{order.orderId}</td>
+                  <td>{product.name}</td>
+                  <td>{product.quantity}</td>
+                  <td>Ksh {product.price.toFixed(2)}</td>
+                  <td>
+                    <Button
+                      variant="success"
+                      onClick={() => markOrderAsPacked(order.orderId)}
+                    >
+                      Mark as Packed
+                    </Button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </Table>
       )}
+
+      {!loading && unpackedOrders.length === 0 && !error && <p>No unpacked items found.</p>}
     </div>
   );
 };
 
-export default UnpackedProducts;
+export default LogisticsPage;
