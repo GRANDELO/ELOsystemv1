@@ -14,6 +14,7 @@ const orderSchema = new mongoose.Schema({
   paymentMethod: { type: String, required: true },
   destination: { type: String, required: true },
   orderDate: { type: Date, default: Date.now },
+  packed: {type: Boolean, defautlt: false},
   deliveryPerson: { type: mongoose.Schema.Types.ObjectId, ref: 'DeliveryPerson' }, 
   isDeliveryInProcess: { type: Boolean, default: false },
   isDelivered: { type: Boolean, default: false },

@@ -44,17 +44,15 @@ exports.createOrder = async (req, res) => {
 
 // Fetch All Orders with Populated Delivery Person Info
 exports.getOrder = async (req, res) => {
-  const { eid } = req.params; // Assuming eid is passed as a URL parameter
+  const { eid } = req.params; 
 
   try {
-    // Find the delivery person by EID
     const deliveryPerson = await Employee.findOne({ eid, role: 'delivery' });
     if (!deliveryPerson) {
       return res.status(404).json({ message: 'Delivery person not found' });
     }
 
-    // Find orders assigned to this delivery person
-    const orders = await Order.find({ deliveryPerson: deliveryPerson._id });
+    const orders = await Order.find({ deliveryPerson: deliveryPerson._id, packed: true });
     
     res.json(orders);
   } catch (error) {
@@ -63,3 +61,15 @@ exports.getOrder = async (req, res) => {
   }
 };
 
+
+exports.getunpackedOrder = async (req, res) => {
+  try {
+
+    const orders = await Order.find({ packed: false });
+    
+    res.json(orders);
+  } catch (error) {
+    console.error('Failed to fetch orders:', error);
+    res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
+  }
+};
