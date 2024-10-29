@@ -89,7 +89,7 @@ exports.updateOrderStatus = async (req, res) => {
 
 
 
-exports.getUnpackedOrderProduct = async (req, res) => {
+exports.getUnpackedOrderProducts = async (req, res) => {
   try {
     // Step 1: Fetch orders that are not packed
     const ordersz = await Order.find({ packed: false });
