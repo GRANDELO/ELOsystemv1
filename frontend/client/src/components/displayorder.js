@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [mpesaPhoneNumber, setMpesaPhoneNumber] = useState('');
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     fetchOrders();
@@ -23,6 +25,38 @@ const OrdersPage = () => {
 
   const handleOrderClick = (order) => {
     setSelectedOrder(selectedOrder === order ? null : order);
+    setMessage(''); // Clear any previous messages
+    setMpesaPhoneNumber(''); // Reset phone number input when switching orders
+  };
+
+  const handleMpesaPhoneNumberChange = (e) => {
+    setMpesaPhoneNumber(e.target.value);
+  };
+
+  const initiatePayment = async () => {
+    if (!selectedOrder) return;
+    const payload = {
+      phone: mpesaPhoneNumber,
+      amount: selectedOrder.totalPrice.toFixed(0),
+    };
+
+    try {
+      const response = await axios.post('https://elosystemv1.onrender.com/api/mpesa/lipa', payload, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      setMessage('Payment initiated successfully!');
+      console.log(response.data);
+    } catch (error) {
+      setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
+      console.error('Error:', error);
+    }
+  };
+
+  const confirmDelivery = () => {
+    setMessage('Delivery confirmed!');
+    // Implement delivery confirmation logic here
   };
 
   return (
@@ -49,8 +83,24 @@ const OrdersPage = () => {
                       </li>
                     )) ?? <li>No products available</li>}
                   </ul>
-                  <button className="action-button">View More Details</button>
-                  <button className="action-button">Cancel Order</button>
+
+                  {/* Payment Section */}
+                  {!order.paid ? (
+                    <div className="payment-section">
+                      <label>M-Pesa Phone Number</label>
+                      <input
+                        type="text"
+                        value={mpesaPhoneNumber}
+                        onChange={handleMpesaPhoneNumberChange}
+                        placeholder="2547XXXXXXXX"
+                      />
+                      <button onClick={initiatePayment} className="action-button">Pay Now</button>
+                    </div>
+                  ) : (
+                    <button onClick={confirmDelivery} className="action-button">Confirm Delivery</button>
+                  )}
+                  
+                  {message && <p>{message}</p>}
                 </div>
               )}
             </li>

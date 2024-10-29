@@ -81,8 +81,42 @@ router.post('/lipa', async (req, res) => {
 });
 
 router.post('/payment-callback', (req, res) => {
-    // Process Safaricom's callback response here
-    res.status(200).send('Payment received and processed.');
-});
+    console.log('....................... stk_confirm .............')
+    console.log("Payload Received", req.body.Body.stkCallback)
+   /* const callbackData = req.body.Body.stkCallback
+    console.log("Payload Received", callbackData)
+    var resultCode = callbackData.ResultCode;
+    var checkoutId = callbackData.CheckoutRequestID
+    var username = req.decoded.username
+    if(resultCode === 0){
+        const details = callbackData.CallbackMetadata.Item
 
+        var mReceipt;
+        var mPhoneNumber;
+        var mAmount;
+
+        await details.forEach(entry =>{
+            switch (entry.Name){
+                case "MpesaReceiptNumber":
+                mReceipt = entry.Value
+                break;
+
+                case "PhoneNumber":
+                mPhoneNumber = entry.Value
+                break;
+
+                case "Amount":
+                mAmount = entry.Value
+                break;
+
+                default:
+                    break;
+            }
+        })
+        
+
+    }*/
+    res.status(200).json(req.body)
+    
+})
 module.exports = router;
