@@ -175,7 +175,7 @@ exports.markOrderAsPacked = async (req, res) => {
   }
 };
 
-exports.deliveryPatcher = async (req, res) => {
+exports.deliverypatcher = async (req, res) => {
   const { orderId } = req.params;
 
   try {
