@@ -179,10 +179,15 @@ exports.deliverypatcher = async (req, res) => {
   const { orderId } = req.params; 
 
   try {
-    const orders = await Order.find({ orderNumber: orderId });
+    const updatedOrder = await Order.findByIdAndUpdate(
+      orderId,
+      { isDelivered: true },
+      { new: true }
+    );
 
-    orders.isDelivered = true;
-    await orders.save();
+    if (!updatedOrder) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
 
     res.json({ message: 'Order marked as Delivered successfully'});
   } catch (error) {

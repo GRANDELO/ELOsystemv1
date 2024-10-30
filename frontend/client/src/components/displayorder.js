@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { getUsernameFromToken } from '../utils/auth';
 import './styles/displayorder.css';
 
 const OrdersPage = () => {
@@ -7,6 +8,7 @@ const OrdersPage = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [mpesaPhoneNumber, setMpesaPhoneNumber] = useState('');
   const [message, setMessage] = useState('');
+  const username = getUsernameFromToken();
 
   useEffect(() => {
     fetchOrders();
@@ -14,7 +16,7 @@ const OrdersPage = () => {
 
   const fetchOrders = async () => {
     try {
-      const username = 'Teekay'; // Replace with actual username logic'/:orderId/deliverypatcher
+      // Replace with actual username logic'/:orderId/deliverypatcher
       const response = await axios.get(`https://elosystemv1.onrender.com/api/orders/my/${username}`);
       setOrders(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
