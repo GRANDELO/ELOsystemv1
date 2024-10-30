@@ -288,7 +288,7 @@ const htmlMessage = `
 
 
     try {
-      await sendEmail(user.email, subject, vermessage, htmlmessage);
+      await sendEmail(user.email, subject, vermessage, htmlMessage);
       console.log('Email sent successfully');
     } catch (error) {
       console.error('Error sending email:', error);
