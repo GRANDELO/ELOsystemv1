@@ -258,32 +258,34 @@ const resendVerificationCode = async (req, res) => {
     
     Best regards,
     Grandelo`;
-    const htmlmessage = `
-    <div style="font-family: Arial, sans-serif; color: #333;">
-      <h2 style="color: #4169E1;">
-        Welcome to Bazelink, ${user.username}!
-      </h2>
-      <p>
-        Thank you for registering with us. To complete your registration, please use the verification code below:
-      </p>
-      <p style="font-size: 18px; color: #000;">
-        <strong>
-          Verification Code: ${user.verificationCode}
-        </strong>
-      </p>
-      <p>
-        <a href="https://grandelo.web.app/verification" style="display: inline-block; padding: 10px 15px; background-color: #4169E1; color: #fff; text-decoration: none; border-radius: 5px;">
-          Verify Your Account
-        </a>
-      </p>
-      <p>
-        If you did not request this, please ignore this email.
-      </p>
-      <p>
-        Best regards, <br> Bazelink Team
+
+const htmlMessage = `
+  <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px; border-radius: 8px; background-color: #f9f9f9;">
+    <h2 style="color: #2a5db0; text-align: center; font-size: 24px;">
+      Welcome to Bazelink, ${user.username}!
+    </h2>
+    <p style="font-size: 16px; color: #444; text-align: center;">
+      Thank you for registering with us! To complete your registration, please use the verification code below:
+    </p>
+    <div style="margin: 20px 0; padding: 15px; background-color: #eaf0fb; border: 1px dashed #2a5db0; text-align: center; border-radius: 5px;">
+      <p style="font-size: 18px; font-weight: bold; color: #000;">
+        Verification Code: <span style="color: #2a5db0;">${user.verificationCode}</span>
       </p>
     </div>
-  `;
+    <p style="text-align: center;">
+      <a href="https://grandelo.web.app/verification" style="display: inline-block; padding: 12px 20px; font-size: 16px; color: #fff; background-color: #2a5db0; text-decoration: none; border-radius: 5px; margin-top: 10px;">
+        Verify Your Account
+      </a>
+    </p>
+    <p style="font-size: 14px; color: #666; text-align: center; margin-top: 20px;">
+      If you did not request this, please ignore this email.
+    </p>
+    <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
+      Best regards, <br> Bazelink Team
+    </p>
+  </div>
+`;
+
 
     try {
       await sendEmail(user.email, subject, vermessage, htmlmessage);
