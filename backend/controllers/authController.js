@@ -247,16 +247,19 @@ const resendVerificationCode = async (req, res) => {
 
 
     const subject = "Verification - " + user.verificationCode;
-    const vermessage = `Dear ${user.username},
+    const vermessage = `
+    <div style="font-family: Arial, sans-serif; color: #333;">
+      <h2 style="color: #4169E1;">Welcome to Bazelink, ${user.username}!</h2>
+      <p>Thank you for registering with us. To complete your registration, please use the verification code below:</p>
+      <p style="font-size: 18px; color: #000;"><strong>Verification Code: ${user.verificationCode}</strong></p>
+      <p><a href="https://grandelo.web.app/verification" style="display: inline-block; padding: 10px 15px; background-color: #4169E1; color: #fff; text-decoration: none; border-radius: 5px;">
+        Verify Your Account
+      </a></p>
+      <p>If you did not request this, please ignore this email.</p>
+      <p>Best regards, <br> Bazelink Team</p>
+    </div>
+  `;
 
-Thank you for registering with Grandelo. Please use the following verification code to complete your registration:
-
-Verification Code: ${user.verificationCode}
-
-Follow this link https://grandelo.web.app/verification to verify your account
-
-Best regards,
-Grandelo`;
     try {
       await sendEmail(user.email, subject, vermessage);
       console.log('Email sent successfully');

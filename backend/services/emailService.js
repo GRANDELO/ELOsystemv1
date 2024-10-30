@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail', 
+  service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
@@ -10,18 +10,20 @@ const transporter = nodemailer.createTransport({
 });
 
 /**
- * Function to send an email
+ * Function to send a styled email
  * @param {string} to - Recipient email address
  * @param {string} subject - Email subject
- * @param {string} text - Email body
+ * @param {string} text - Plain text body for non-HTML email clients
+ * @param {string} html - HTML body with inline styles for email clients
  * @returns {Promise} - Promise representing the success or failure of the email sending
  */
-function sendEmail(to, subject, text) {
+function sendEmail(to, subject, text, html) {
   const mailOptions = {
-    from: 'grandeloltd1@gmail.com',
+    from: `"BAZELINK" <${process.env.EMAIL_USER}>`,
     to: to,
     subject: subject,
-    text: text,
+    text: text, // Optional plain text
+    html: html, // HTML body for styling
   };
 
   return new Promise((resolve, reject) => {
