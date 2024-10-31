@@ -75,6 +75,7 @@ router.post('/lipa', async (req, res) => {
         const paymentResponse = await initiatePayment(accessToken, paymentRequest);
         const orderid = req.body.orderid;
         const orderReference = req.body.orderReference;
+
         if(orderReference)
             {
                 try {
@@ -118,7 +119,7 @@ router.post('/lipa', async (req, res) => {
         res.status(500).json({ message: 'Payment initiation failed', error: error.message });
     }
 });
-orderReference
+
 router.post('/paymentcallback', async (req, res) => {
     console.log('....................... stk_confirm .............');
     console.log("Payload Received", req.body.Body.stkCallback);
