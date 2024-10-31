@@ -267,8 +267,6 @@ Total Amount Paid: ${order.totalAmount}
 Payment Method: ${order.paymentMethod}
 Payment Number: ${order.paymentNumber}
 
-Estimated Delivery Date: ${order.deliveryDate.toLocaleDateString()}
-
 We hope to serve you again soon!
 
 Best regards,
@@ -285,7 +283,6 @@ Bazelink`;
         </p>
         <p style="font-size: 16px; color: #555;">
           <strong>Order Number:</strong> ${order.orderNumber}<br>
-          <strong>Estimated Delivery Date:</strong> ${order.deliveryDate.toLocaleDateString()}
         </p>
         <h3 style="color: #1d4ed8; margin-top: 20px;">Products Ordered:</h3>
         <ul style="font-size: 16px; color: #555;">
