@@ -74,7 +74,7 @@ router.post('/lipa', async (req, res) => {
 
         const paymentResponse = await initiatePayment(accessToken, paymentRequest);
         const orderid = req.body.orderid;
-
+        const orderReference = req.body.orderReference;
         if(orderReference)
             {
                 try {

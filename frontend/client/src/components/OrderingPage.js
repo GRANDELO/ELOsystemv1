@@ -129,10 +129,7 @@ const OrderingPage = () => {
           setMessage('Payment initiated successfully!');
           console.log(response.data);
           console.log(response.data.CheckoutRequestID);
-          CheckoutRequestID = (response.data.CheckoutRequestID);
-          console.log('----------start------------');
-          console.log(CheckoutRequestID);
-          console.log('-----------end-------------');
+
       } catch (error) {
           setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
           console.error('Error:', error);
