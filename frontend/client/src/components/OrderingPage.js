@@ -19,7 +19,6 @@ const OrderingPage = () => {
   const [selectedTown, setSelectedTown] = useState('');
   const [areas, setAreas] = useState([]);
   const [selectedArea, setSelectedArea] = useState('');
-  var CheckoutRequestID = '';
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -108,14 +107,17 @@ const OrderingPage = () => {
         orderDate: new Date().toISOString(),
         username,
         mpesaPhoneNumber: paymentMethod === 'mpesa' ? mpesaPhoneNumber : undefined,
-        orderReference,
-        CheckoutRequestID: CheckoutRequestID
+        orderReference
       };
+
+      const response = await axios.post('https://elosystemv1.onrender.com/api/orders', orderDetails);
+      setMessage(response.data.message);
 
       if (paymentMethod === 'mpesa') {
         const payload = {
           phone: mpesaPhoneNumber,
-          amount: totalPrice.toFixed(0)
+          amount: totalPrice.toFixed(0),
+          orderReference: orderReference
       };
 
       try {
@@ -136,9 +138,6 @@ const OrderingPage = () => {
           console.error('Error:', error);
       }
       }
-
-      const response = await axios.post('https://elosystemv1.onrender.com/api/orders', orderDetails);
-      setMessage(response.data.message);
 
       // Send order details to the logistics system
       //await axios.post('https://elosystemv1.onrender.com/api/logistics', orderDetails);

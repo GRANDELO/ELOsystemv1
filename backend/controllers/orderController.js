@@ -6,7 +6,7 @@ const User = require('../models/User');
 
 // Create Order
 exports.createOrder = async (req, res) => {
-  const { items, totalPrice, paymentMethod, destination, orderDate, username, CheckoutRequestID } = req.body;
+  const { items, totalPrice, paymentMethod, destination, orderDate, username, orderReference } = req.body;
 
   console.log();
   try {
@@ -28,9 +28,10 @@ exports.createOrder = async (req, res) => {
     if ( !username) {
       return res.status(400).json({ message: 'Missing required fields' +username +'ddddddddddd' });
     }
-    if ( !CheckoutRequestID) {
-      return res.status(400).json({ message: 'Missing required fields' + CheckoutRequestID+'ddddddddddd'});
+    if ( !orderReference) {
+      return res.status(400).json({ message: 'Missing required fields' +orderReference +'ddddddddddd' });
     }
+    
 
     // Find an available delivery person with role "delivery" and status "available"
     const deliveryPerson = await Employee.findOne({ role: 'delivery', status: 'available' }).sort({ createdAt: 1 });
@@ -48,7 +49,7 @@ exports.createOrder = async (req, res) => {
       isDeliveryInProcess: false,
       isDelivered: false,
       packed: false,
-      CheckoutRequestID
+      orderReference
     });
 
     await order.save();

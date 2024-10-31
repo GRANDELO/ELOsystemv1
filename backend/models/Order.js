@@ -20,7 +20,9 @@ const orderSchema = new mongoose.Schema({
   isDeliveryInProcess: { type: Boolean, default: false },
   isDelivered: { type: Boolean, default: false },
   username: { type: String, required: true },
-  CheckoutRequestID: { type: String, required: true }
+  CheckoutRequestID: { type: String, required: true },
+  orderReference: { type: String, required: true }
+
 });
 
 const Order = mongoose.model('Order', orderSchema);

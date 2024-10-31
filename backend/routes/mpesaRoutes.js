@@ -75,6 +75,25 @@ router.post('/lipa', async (req, res) => {
         const paymentResponse = await initiatePayment(accessToken, paymentRequest);
         const orderid = req.body.orderid;
 
+        if(orderReference)
+            {
+                try {
+                    const order = await Order.findOne({ orderReference: orderReference });
+                    if (!order) {
+                        return res.status(404).json({ message: 'Mpesa Order not found' });
+                    }
+    
+                    order.CheckoutRequestID = paymentResponse.CheckoutRequestID;
+                    await order.save();
+    
+                    return res.status(200).json({ message: 'Payment initiated successfully', data: paymentResponse ,CheckoutRequestID: paymentResponse.CheckoutRequestID});
+                } catch (error) {
+                    console.error('Failed to fetch orders:', error);
+                    return res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
+                }
+            }
+
+
         if (orderid) {
             try {
                 const order = await Order.findOne({ orderNumber: orderid });
@@ -99,7 +118,7 @@ router.post('/lipa', async (req, res) => {
         res.status(500).json({ message: 'Payment initiation failed', error: error.message });
     }
 });
-
+orderReference
 router.post('/paymentcallback', async (req, res) => {
     console.log('....................... stk_confirm .............');
     console.log("Payload Received", req.body.Body.stkCallback);
