@@ -120,14 +120,34 @@ router.post('/lipa', async (req, res) => {
     }
 });
 
-router.post('/paymentcallback', (req, res) => {
-    const callbackData = req.body;
+router.post('/paymentcallback', async (req, res) => {
+    console.log('....................... stk_confirm .............');
+    console.log("Payload Received", req.body.Body.stkCallback);
 
-    // Log the callback data to the console
-    console.log(callbackData);
-  
-    // Send a response back to the M-Pesa
-    res.json({ status: 'success' });
-  });
+    const callbackData = req.body.Body.stkCallback;
+    const resultCode = callbackData.ResultCode;
+    const checkoutId = callbackData.CheckoutRequestID;
+
+    if (resultCode == 0)
+        {
+            try {
+                const order = await Order.findOne({ CheckoutRequestID: checkoutId });
+                if (!order) {
+                    return res.status(404).json({ message: 'Mpesa Order not found' });
+                }
+        
+                order.paid = true;
+                await order.save();
+        
+                sendOrderReceiptEmail(order.orderNumber);
+                console.log("Order paid successfully for ");
+                return res.status(200).json({ message: 'Payment successful' });
+            } catch (error) {
+                console.error('Failed to fetch orders:', error);
+                return res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
+            }
+        }
+
+});
 
 module.exports = router;
