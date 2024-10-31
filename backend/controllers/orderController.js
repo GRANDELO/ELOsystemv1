@@ -1,6 +1,8 @@
 const Order = require('../models/Order');
 const Employee = require('../models/Employee'); // Replace DeliveryPerson with Employee
 const Product = require('../models/oProduct'); // Adjust this path as needed
+const sendEmail = require('../services/emailService');
+const User = require('../models/User');
 
 // Create Order
 exports.createOrder = async (req, res) => {
@@ -195,5 +197,110 @@ exports.deliverypatcher = async (req, res) => {
 };
 
 
+exports.sendOrderReceiptEmail = async (orderNumber) => {
+  try {
+    // Step 1: Fetch the order by order number
+    const order = await Order.findOne({ orderNumber }).lean();
+    const user = await User.findOne({ username: order.username }).lean();
+    
+    if (!order) {
+      throw new Error('Order not found');
+    }
+    if (!user) {
+      throw new Error('user not found');
+    }
+
+    // Step 2: Extract product IDs from the order
+    const productIds = order.items.map(item => item.productId);
+
+    // Step 3: Fetch product details for all product IDs
+    const products = await Product.find({ _id: { $in: productIds } }).lean();
+
+    // Step 4: Create a map for quick product lookup
+    const productMap = {};
+    products.forEach(product => {
+      productMap[product._id] = {
+        name: product.name,
+        category: product.category,
+        price: product.price,
+      };
+    });
+
+    // Step 5: Format products and order details for email content
+    const formattedProducts = order.items.map(item => ({
+      ...productMap[item.productId],
+      quantity: item.quantity,
+    }));
+
+    const subject = "Receipt for - " + order.orderNumber;
+    
+    const receiptMessage = `Dear Customer,
+
+Thank you for shopping with Bazelink! Here is the receipt for your recent purchase.
+
+Order Number: ${order.orderNumber}
+
+Products Ordered:
+${formattedProducts.map(product => `- ${product.name} (Category: ${product.category}) x${product.quantity} @ ${product.price} each`).join('\n')}
+
+Total Amount Paid: ${order.totalAmount}
+Payment Method: ${order.paymentMethod}
+Payment Number: ${order.paymentNumber}
+
+Estimated Delivery Date: ${order.deliveryDate.toLocaleDateString()}
+
+We hope to serve you again soon!
+
+Best regards,
+Bazelink`;
+
+    const htmlReceiptMessage = `
+      <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
+        <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
+          Order Receipt - Bazelink
+        </h2>
+        <p style="font-size: 16px; color: #555;">
+          Dear Customer,<br>
+          Thank you for your purchase! Here are the details for your order.
+        </p>
+        <p style="font-size: 16px; color: #555;">
+          <strong>Order Number:</strong> ${order.orderNumber}<br>
+          <strong>Estimated Delivery Date:</strong> ${order.deliveryDate.toLocaleDateString()}
+        </p>
+        <h3 style="color: #1d4ed8; margin-top: 20px;">Products Ordered:</h3>
+        <ul style="font-size: 16px; color: #555;">
+          ${formattedProducts.map(product => `
+            <li>
+              ${product.name} (Category: ${product.category}) x${product.quantity} @ ${product.price} each
+            </li>
+          `).join('')}
+        </ul>
+        <p style="font-size: 16px; color: #555; margin-top: 20px;">
+          <strong>Total Amount Paid:</strong> ${order.totalAmount}<br>
+          <strong>Payment Method:</strong> ${order.paymentMethod}<br>
+          <strong>Payment Number:</strong> ${order.paymentNumber}
+        </p>
+        <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
+          We hope to serve you again soon!
+        </p>
+        <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
+          Best regards,<br> Bazelink Support Team
+        </p>
+      </div>
+    `;
+
+    try {
+      await sendEmail(user.email, subject, receiptMessage, htmlReceiptMessage);
+      console.log('Email sent successfully');
+    } catch (error) {
+      console.error('Error sending email:', error);
+      return res.status(500).json({ message: 'Error sending verification email' });
+    }
+
+    console.log('Receipt email sent successfully');
+  } catch (error) {
+    console.error('Failed to send receipt email:', error);
+  }
+};
 
 

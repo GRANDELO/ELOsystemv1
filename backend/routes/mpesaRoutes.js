@@ -3,6 +3,7 @@ const router = express.Router();
 const axios = require('axios');
 require('dotenv').config();
 const Order = require('../models/Order');
+const {sendOrderReceiptEmail} = require('../controllers/orderController');
 
 const consumerKey = process.env.SAFARICOM_CONSUMER_KEY;
 const consumerSecret = process.env.SAFARICOM_CONSUMER_SECRET;
@@ -62,7 +63,7 @@ router.post('/lipa', async (req, res) => {
             Password: password,
             Timestamp: timestamp,
             TransactionType: 'CustomerPayBillOnline',
-            Amount: req.body.amount,
+            Amount: 1,
             PartyA: req.body.phone,
             PartyB: businessShortCode,
             PhoneNumber: req.body.phone,
@@ -118,6 +119,7 @@ router.post('/paymentcallback', async (req, res) => {
                 order.paid = true;
                 await order.save();
         
+                sendOrderReceiptEmail(order.orderNumber);
                 console.log("Order paid successfully for ");
                 return res.status(200).json({ message: 'Payment successful' });
             } catch (error) {

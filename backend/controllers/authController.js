@@ -346,8 +346,6 @@ const resendVerificationCode = async (req, res) => {
     </div>
   `;
   
-
-
     try {
       await sendEmail(user.email, subject, vermessage, htmlMessage);
       console.log('Email sent successfully');
