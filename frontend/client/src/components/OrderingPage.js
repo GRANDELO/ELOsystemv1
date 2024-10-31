@@ -19,7 +19,7 @@ const OrderingPage = () => {
   const [selectedTown, setSelectedTown] = useState('');
   const [areas, setAreas] = useState([]);
   const [selectedArea, setSelectedArea] = useState('');
-  const [CheckoutRequestID, setCheckoutRequestID] = useState('');
+  var CheckoutRequestID = '';
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -109,7 +109,7 @@ const OrderingPage = () => {
         username,
         mpesaPhoneNumber: paymentMethod === 'mpesa' ? mpesaPhoneNumber : undefined,
         orderReference,
-        CheckoutRequestID
+        CheckoutRequestID: CheckoutRequestID
       };
 
       if (paymentMethod === 'mpesa') {
@@ -126,7 +126,11 @@ const OrderingPage = () => {
           });
           setMessage('Payment initiated successfully!');
           console.log(response.data);
-          setCheckoutRequestID(response.CheckoutRequestID);
+          console.log(response.data.CheckoutRequestID);
+          CheckoutRequestID = (response.data.CheckoutRequestID);
+          console.log('----------start------------');
+          console.log(CheckoutRequestID);
+          console.log('-----------end-------------');
       } catch (error) {
           setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
           console.error('Error:', error);
