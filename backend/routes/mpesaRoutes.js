@@ -85,15 +85,15 @@ router.post('/lipa', async (req, res) => {
                 order.CheckoutRequestID = paymentResponse.CheckoutRequestID;
                 await order.save();
 
-                console.log("Order paid successfully.");
                 return res.status(200).json({ message: 'Payment initiated successfully', data: paymentResponse });
             } catch (error) {
                 console.error('Failed to fetch orders:', error);
                 return res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
             }
         } else {
-            return res.status(400).json({ message: 'Order ID is required.' });
+            return res.status(200).json({ message: 'Payment initiated successfully', data: paymentResponse, CheckoutRequestID: paymentResponse.CheckoutRequestID });
         }
+
     } catch (error) {
         console.error('Error initiating payment:', error);
         res.status(500).json({ message: 'Payment initiation failed', error: error.message });
