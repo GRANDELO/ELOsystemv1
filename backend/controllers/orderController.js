@@ -229,6 +229,7 @@ exports.sendOrderReceiptEmail = async (orderNumber) => {
     if (!user) {
       throw new Error('user not found');
     }
+    console.log(user);
 
     // Step 2: Extract product IDs from the order
     const productIds = order.items.map(item => item.productId);
