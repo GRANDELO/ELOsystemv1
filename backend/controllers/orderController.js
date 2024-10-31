@@ -264,9 +264,9 @@ Order Number: ${order.orderNumber}
 Products Ordered:
 ${formattedProducts.map(product => `- ${product.name} (Category: ${product.category}) x${product.quantity} @ ${product.price} each`).join('\n')}
 
-Total Amount Paid: ${order.totalAmount}
+Total Amount Paid: ${order.totalPrice}
 Payment Method: ${order.paymentMethod}
-Payment Number: ${order.paymentNumber}
+User: ${user.username}
 
 We hope to serve you again soon!
 
@@ -294,9 +294,9 @@ Bazelink`;
           `).join('')}
         </ul>
         <p style="font-size: 16px; color: #555; margin-top: 20px;">
-          <strong>Total Amount Paid:</strong> ${order.totalAmount}<br>
+          <strong>Total Amount Paid:</strong> ${order.totalPrice}<br>
           <strong>Payment Method:</strong> ${order.paymentMethod}<br>
-          <strong>Payment Number:</strong> ${order.paymentNumber}
+          <strong>User:</strong> ${user.username}
         </p>
         <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
           We hope to serve you again soon!
