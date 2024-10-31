@@ -58,9 +58,7 @@ const OrdersPage = () => {
 
   const confirmDelivery = async (orderId) => {
     try {
-      const response = await axios.patch(`https://elosystemv1.onrender.com/api/order2/${orderId}/deliverypatcher`, {
-        isDelivered: true,
-      });
+      const response = await axios.post(`https://elosystemv1.onrender.com/api/order2/${orderId}/deliverypatcher`);
       setMessage('Delivery confirmed successfully!');
       console.log(response.data);
     } catch (error) {

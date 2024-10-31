@@ -5,7 +5,7 @@ const orderController = require('../controllers/orderController');
 // Routes for Orders
 router.get('/unpacked', orderController.getUnpackedOrderProducts);
 router.patch('/:orderId/packed', orderController.markOrderAsPacked); 
-router.patch('/:orderId/deliverypatcher', orderController.deliverypatcher);
+router.post('/:orderId/deliverypatcher', orderController.deliverypatcher);
 
 // You can add more routes here if needed.
 
