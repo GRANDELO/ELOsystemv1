@@ -67,18 +67,46 @@ const registerUser = async (req, res) => {
     const subject = "Verification - " + alphanumericCode;
     const vermessage = `Dear ${username},
 
-Thank you for registering with Grandelo. Please use the following verification code to complete your registration:
+    Thank you for registering with Bazelink! Please use the following verification code to complete your registration:
+    
+    Verification Code: ${alphanumericCode}
+    
+    You can also follow this link to verify your account: https://bazelink.web.app/verification
+    
+    Best regards,
+    Bazelink Support Team`;
 
-Verification Code: ${alphanumericCode}
+    const htmlMessage = `
+  <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.8; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
+    <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
+      Welcome to Bazelink, ${username}!
+    </h2>
+    <p style="font-size: 16px; color: #555; text-align: center; margin-top: 0;">
+      Thank you for registering with us! To complete your registration, please use the verification code below:
+    </p>
+    <div style="margin: 25px 0; padding: 20px; background-color: #f0f5fc; border: 1px dashed #1d4ed8; text-align: center; border-radius: 8px;">
+      <p style="font-size: 20px; font-weight: bold; color: #1d4ed8; letter-spacing: 1px;">
+        Verification Code: <span style="color: #1d4ed8;">${alphanumericCode}</span>
+      </p>
+    </div>
+    <p style="text-align: center;">
+      <a href="https://bazelink.web.app/verification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+        Verify Your Account
+      </a>
+    </p>
+    <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
+      If you did not request this, please disregard this email.
+    </p>
+    <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
+      Best regards,<br> Bazelink Support Team
+    </p>
+  </div>
+`;
 
-Follow this link https://grandelo.web.app/verification to verify your account
-
-Best regards,
-Grandelo`;
 
     // Send verification email
     try {
-      await sendEmail(email, subject, vermessage);
+      await sendEmail(email, subject, vermessage, htmlMessage);
       console.log('Email sent successfully');
     } catch (error) {
       console.error('Error sending email:', error);
@@ -206,16 +234,46 @@ const updateEmail = async (req, res) => {
     const subject = "Verification - " + user.verificationCode;
     const vermessage = `Dear ${user.username},
 
-Thank you for registering with Grandelo. Please use the following verification code to complete your registration:
+    Thank you for registering with Bazelink! Please use the following verification code to complete your registration:
+    
+    Verification Code: ${user.verificationCode}
+    
+    You can also follow this link to verify your account: https://bazelink.web.app/verification
+    
+    Best regards,
+    Bazelink Support Team`;
+    
 
-Verification Code: ${user.verificationCode}
+    const htmlMessage = `
+  <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.8; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
+    <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
+      Welcome to Bazelink, ${user.username}!
+    </h2>
+    <p style="font-size: 16px; color: #555; text-align: center; margin-top: 0;">
+      Thank you for registering with us! To complete your registration, please use the verification code below:
+    </p>
+    <div style="margin: 25px 0; padding: 20px; background-color: #f0f5fc; border: 1px dashed #1d4ed8; text-align: center; border-radius: 8px;">
+      <p style="font-size: 20px; font-weight: bold; color: #1d4ed8; letter-spacing: 1px;">
+        Verification Code: <span style="color: #1d4ed8;">${user.verificationCode}</span>
+      </p>
+    </div>
+    <p style="text-align: center;">
+      <a href="https://bazelink.web.app/verification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+        Verify Your Account
+      </a>
+    </p>
+    <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
+      If you did not request this, please disregard this email.
+    </p>
+    <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
+      Best regards,<br> Bazelink Support Team
+    </p>
+  </div>
+`;
 
-Follow this link https://grandelo.web.app/verification to verify your account
 
-Best regards,
-Grandelo`;
     try {
-      await sendEmail(email, subject, vermessage);
+      await sendEmail(email, subject, vermessage, htmlMessage);
       console.log('Email sent successfully');
     } catch (error) {
       console.error('Error sending email:', error);
@@ -322,19 +380,46 @@ const newrecoverPassword = async (req, res) => {
     const subject = 'Password Reset Request';
     const message = `Dear ${user.username},
 
-You have requested to reset your password. Please use the following token to reset your password:
-
-Follow this link https://grandelo.web.app/reset-password to verify your account
-
-Password Reset Token: ${user.passwordRecoveryToken}
-
-This token is valid for 1 hour. 
-
-Best regards,
-Grandelo`;
-
+    We received a request to reset your password. To proceed, please use the token provided below:
+    
+    Password Reset Token: ${user.passwordRecoveryToken}
+    
+    Alternatively, you can reset your password by following this link: https://grandelo.web.app/reset-password
+    
+    This token is valid for 1 hour. If you did not request a password reset, please ignore this message.
+    
+    Best regards,
+    Bazelink Support Team`;
+    
+    const htmlMessage = `
+    <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.8; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
+      <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
+        Password Reset Request
+      </h2>
+      <p style="font-size: 16px; color: #555; text-align: center; margin-top: 0;">
+        Dear ${user.username},<br> We received a request to reset your password. To proceed, please use the token provided below:
+      </p>
+      <div style="margin: 25px 0; padding: 20px; background-color: #f0f5fc; border: 1px dashed #1d4ed8; text-align: center; border-radius: 8px;">
+        <p style="font-size: 20px; font-weight: bold; color: #1d4ed8; letter-spacing: 1px;">
+          Password Reset Token: <span style="color: #1d4ed8;">${user.passwordRecoveryToken}</span>
+        </p>
+      </div>
+      <p style="text-align: center;">
+        <a href="https://grandelo.web.app/reset-password" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+          Reset Your Password
+        </a>
+      </p>
+      <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
+        This token is valid for 1 hour. If you did not request a password reset, please disregard this email.
+      </p>
+      <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
+        Best regards,<br> Bazelink Support Team
+      </p>
+    </div>
+  `;
+  
     try {
-      await sendEmail(user.email, subject, message);
+      await sendEmail(user.email, subject, message, htmlMessage);
       await user.save();
       res.status(200).json({ message: 'Password recovery email sent successfully.' });
     } catch (error) {
@@ -473,16 +558,46 @@ const changeemail = async (req, res) => {
     const subject = "Verification - " + user.verificationCode;
     const vermessage = `Dear ${user.username},
 
-Thank you for registering with Grandelo. Please use the following verification code to complete your registration:
+    Thank you for registering with Bazelink! Please use the following verification code to complete your registration:
+    
+    Verification Code: ${user.verificationCode}
+    
+    Alternatively, you can follow this link to verify your account: https://bazelink.web.app/verification
+    
+    Best regards,
+    Bazelink Support Team`;
 
-Verification Code: ${user.verificationCode}
+    const htmlMessage = `
+  <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.8; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
+    <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
+      Welcome to Bazelink, ${user.username}!
+    </h2>
+    <p style="font-size: 16px; color: #555; text-align: center; margin-top: 0;">
+      Thank you for registering with us! To complete your registration, please use the verification code below:
+    </p>
+    <div style="margin: 25px 0; padding: 20px; background-color: #f0f5fc; border: 1px dashed #1d4ed8; text-align: center; border-radius: 8px;">
+      <p style="font-size: 20px; font-weight: bold; color: #1d4ed8; letter-spacing: 1px;">
+        Verification Code: <span style="color: #1d4ed8;">${user.verificationCode}</span>
+      </p>
+    </div>
+    <p style="text-align: center;">
+      <a href="https://bazelink.web.app/verification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+        Verify Your Account
+      </a>
+    </p>
+    <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
+      If you did not request this, please disregard this email.
+    </p>
+    <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
+      Best regards,<br> Bazelink Support Team
+    </p>
+  </div>
+`;
 
-Follow this link https://grandelo.web.app/verification to verify your account
 
-Best regards,
-Grandelo`;
+
     try {
-      await sendEmail(lemail, subject, vermessage);
+      await sendEmail(lemail, subject, vermessage, htmlMessage);
       console.log('Email sent successfully');
     } catch (error) {
       console.error('Error sending email:', error);
