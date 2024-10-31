@@ -255,7 +255,7 @@ exports.sendOrderReceiptEmail = async (orderNumber) => {
 
     const subject = "Receipt for - " + order.orderNumber;
     
-    const receiptMessage = `Dear Customer,
+    const receiptMessage = `Dear ${user.username},
 
 Thank you for shopping with Bazelink! Here is the receipt for your recent purchase.
 
@@ -279,7 +279,7 @@ Bazelink`;
           Order Receipt - Bazelink
         </h2>
         <p style="font-size: 16px; color: #555;">
-          Dear Customer,<br>
+          Dear ${user.username},<br>
           Thank you for your purchase! Here are the details for your order.
         </p>
         <p style="font-size: 16px; color: #555;">
