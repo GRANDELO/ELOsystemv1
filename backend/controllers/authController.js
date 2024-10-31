@@ -250,41 +250,44 @@ const resendVerificationCode = async (req, res) => {
     
     const vermessage = `Dear ${user.username},
 
-    Thank you for registering with Grandelo. Please use the following verification code to complete your registration:
+    Thank you for joining Bazelink! Please use the following verification code to complete your registration:
     
     Verification Code: ${user.verificationCode}
     
-    Follow this link https://grandelo.web.app/verification to verify your account
+    Alternatively, you can follow this link to verify your account: https://grandelo.web.app/verification
+    
+    If you did not sign up for this account, please disregard this email.
     
     Best regards,
-    Grandelo`;
-
-const htmlMessage = `
-  <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px; border-radius: 8px; background-color: #f9f9f9;">
-    <h2 style="color: #2a5db0; text-align: center; font-size: 24px;">
-      Welcome to Bazelink, ${user.username}!
-    </h2>
-    <p style="font-size: 16px; color: #444; text-align: center;">
-      Thank you for registering with us! To complete your registration, please use the verification code below:
-    </p>
-    <div style="margin: 20px 0; padding: 15px; background-color: #eaf0fb; border: 1px dashed #2a5db0; text-align: center; border-radius: 5px;">
-      <p style="font-size: 18px; font-weight: bold; color: #000;">
-        Verification Code: <span style="color: #2a5db0;">${user.verificationCode}</span>
+    Bazelink Team`;
+    
+    const htmlMessage = `
+    <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.8; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
+      <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
+        Welcome to Bazelink, ${user.username}!
+      </h2>
+      <p style="font-size: 16px; color: #555; text-align: center; margin-top: 0;">
+        Thank you for joining us! To finalize your registration, please use the following verification code:
+      </p>
+      <div style="margin: 25px 0; padding: 20px; background-color: #f0f5fc; border: 1px dashed #1d4ed8; text-align: center; border-radius: 8px;">
+        <p style="font-size: 20px; font-weight: bold; color: #1d4ed8; letter-spacing: 1px;">
+          Verification Code: <span style="color: #1d4ed8;">${user.verificationCode}</span>
+        </p>
+      </div>
+      <p style="text-align: center;">
+        <a href="https://grandelo.web.app/verification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+          Verify Your Account
+        </a>
+      </p>
+      <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
+        If you did not sign up for this account, please disregard this email.
+      </p>
+      <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
+        Best regards,<br> Bazelink Team
       </p>
     </div>
-    <p style="text-align: center;">
-      <a href="https://grandelo.web.app/verification" style="display: inline-block; padding: 12px 20px; font-size: 16px; color: #fff; background-color: #2a5db0; text-decoration: none; border-radius: 5px; margin-top: 10px;">
-        Verify Your Account
-      </a>
-    </p>
-    <p style="font-size: 14px; color: #666; text-align: center; margin-top: 20px;">
-      If you did not request this, please ignore this email.
-    </p>
-    <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
-      Best regards, <br> Bazelink Team
-    </p>
-  </div>
-`;
+  `;
+  
 
 
     try {
