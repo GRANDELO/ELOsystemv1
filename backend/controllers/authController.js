@@ -171,7 +171,7 @@ const login = async (req, res) => {
     });
     
     console.log(user.amount);
-    res.json({ message: 'Login successful', token , category: user.category, username: user.username, amount: user.amount });
+    res.json({ message: 'Login successful', token , category: user.category, username: user.username, amount: user.amount.toFixed(2) });
   } catch (error) {
     console.error('Error logging in:', error);
     res.status(500).json({ message: 'Error logging in', error });

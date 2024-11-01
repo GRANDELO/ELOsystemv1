@@ -337,8 +337,8 @@ const TransactionLedgerfuc = async (totalAmount, seller, orderNumber ) => {
   const companyPercentage = 0.2; // 20% for the company
 
   // Calculate earnings
-  const sellerEarnings = totalAmount * sellerPercentage;
-  const companyEarnings = totalAmount * companyPercentage;
+  const sellerEarnings = (totalAmount *100) * sellerPercentage;
+  const companyEarnings = (totalAmount *100) * companyPercentage;
 
   // Record transaction in ledger
   await TransactionLedger.create({
