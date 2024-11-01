@@ -22,7 +22,7 @@ const processPendingJobs = async () => {
                     console.error(`Order not found for CheckoutRequestID: ${checkoutId}`);
                 }
             }
-            x
+
             job.processed = true; // Mark job as processed
             await job.save();
         }
