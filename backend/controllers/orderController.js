@@ -3,6 +3,7 @@ const Employee = require('../models/Employee'); // Replace DeliveryPerson with E
 const Product = require('../models/oProduct'); // Adjust this path as needed
 const sendEmail = require('../services/emailService');
 const User = require('../models/User');
+const TransactionLedger = require('../models/TransactionLedger'); // Adjust the path as needed
 
 // Create Order
 exports.createOrder = async (req, res) => {
@@ -314,7 +315,7 @@ Bazelink`;
       return res.status(500).json({ message: 'Error sending verification email' });
     }
 
-    const ledger = TransactionLedger(order.totalPrice, order.username,  order.orderNumber);
+    const ledger = TransactionLedgerfuc(order.totalPrice, order.username,  order.orderNumber);
     
     console.log(ledger);
     console.log('Receipt email sent successfully');
@@ -323,7 +324,7 @@ Bazelink`;
   }
 };
 
-const TransactionLedger = async (totalAmount, seller, orderNumber ) => {
+const TransactionLedgerfuc = async (totalAmount, seller, orderNumber ) => {
   
   const user = await User.findOne({ username: seller }).lean();
 
