@@ -117,37 +117,38 @@ const registerUser = async (req, res) => {
 
 const login = async (req, res) => {
 
-  try {
-    const newFields = {
-      active: false,
-      amount: undefined, // default to undefined for non-Seller categories
-    };
-  
-    // Prepare the update object with conditional defaults
-    const updateFields = {};
-    for (const [key, value] of Object.entries(newFields)) {
-      updateFields[key] = { $ifNull: [`$${key}`, value] };
-    }
-  
-    // Step 1: Update users without the 'active' field or 'amount' field
-    await User.updateMany(
-      {
-        $or: Object.keys(newFields).map((key) => ({ [key]: { $exists: false } })),
-      },
-      { $set: newFields }
-    );
-  
-    // Step 2: Specifically update 'Seller' users to set 'amount' to 0
-    await User.updateMany(
-      { category: 'Seller' },
-      { $set: { amount: 0 } }
-    );
-  
-    console.log('Missing fields added, and amount set for Seller users');
-  } catch (error) {
-    console.error('Error updating users:', error);
-  }
-  
+    /*
+      try {
+        const newFields = {
+          active: false,
+          amount: undefined, // default to undefined for non-Seller categories
+        };
+      
+        // Prepare the update object with conditional defaults
+        const updateFields = {};
+        for (const [key, value] of Object.entries(newFields)) {
+          updateFields[key] = { $ifNull: [`$${key}`, value] };
+        }
+      
+        // Step 1: Update users without the 'active' field or 'amount' field
+        await User.updateMany(
+          {
+            $or: Object.keys(newFields).map((key) => ({ [key]: { $exists: false } })),
+          },
+          { $set: newFields }
+        );
+      
+        // Step 2: Specifically update 'Seller' users to set 'amount' to 0
+        await User.updateMany(
+          { category: 'Seller' },
+          { $set: { amount: 0 } }
+        );
+      
+        console.log('Missing fields added, and amount set for Seller users');
+      } catch (error) {
+        console.error('Error updating users:', error);
+      }
+    */
 
   const { username, password } = req.body;
   try {
@@ -168,8 +169,9 @@ const login = async (req, res) => {
     const token = jwt.sign({ id: user._id, username: user.username, email: user.email, category: user.category }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
-
-    res.json({ message: 'Login successful', token , category: user.category, username: user.username });
+    
+    console.log(user.amount);
+    res.json({ message: 'Login successful', token , category: user.category, username: user.username, amount: user.amount });
   } catch (error) {
     console.error('Error logging in:', error);
     res.status(500).json({ message: 'Error logging in', error });
