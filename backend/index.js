@@ -43,13 +43,13 @@ mongoose
 
   try {
     // Update all existing users with the new field based on category
-    const result = await User.updateMany(
+    const result = User.updateMany(
       { category: 'Seller' },
       { $set: { amount: 0 } }
     );
 
     // If other users (non-Seller) shouldn't have the amount field, we can unset it
-    const unsetResult = await User.updateMany(
+    const unsetResult = User.updateMany(
       { category: { $ne: 'Seller' } },
       { $unset: { amount: '' } }
     );
