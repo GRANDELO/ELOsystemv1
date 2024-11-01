@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 const transactionLedgerSchema = new mongoose.Schema({
-  orderId: { type: mongoose.Schema.Types.ObjectId, ref: 'Order' },
+  orderId: String,
   seller: String,
   sellerEarnings: Number,
   companyEarnings: Number,
