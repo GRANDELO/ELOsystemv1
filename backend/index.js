@@ -39,6 +39,27 @@ mongoose
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Could not connect to MongoDB', err));
 
+
+  try {
+    // Update all existing users with the new field based on category
+    const result = await User.updateMany(
+      { category: 'Seller' },
+      { $set: { amount: 0 } }
+    );
+
+    // If other users (non-Seller) shouldn't have the amount field, we can unset it
+    const unsetResult = await User.updateMany(
+      { category: { $ne: 'Seller' } },
+      { $unset: { amount: '' } }
+    );
+
+    console.log(`Updated ${result.modifiedCount} Seller users with amount = 0`);
+    console.log(`Unset amount field for ${unsetResult.modifiedCount} non-Seller users`);
+
+  } catch (error) {
+    console.error('Error updating users:', error);
+  }
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);

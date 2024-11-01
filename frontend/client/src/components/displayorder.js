@@ -5,18 +5,29 @@ import './styles/displayorder.css';
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [mpesaPhoneNumber, setMpesaPhoneNumber] = useState('');
   const [message, setMessage] = useState('');
+  const [showDelivered, setShowDelivered] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [deliveredCurrentPage, setDeliveredCurrentPage] = useState(1);
+
   const username = getUsernameFromToken();
+  const ordersPerPage = 6;
 
   useEffect(() => {
     fetchOrders();
   }, []);
 
+  useEffect(() => {
+    const sortedOrders = [...orders].sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+    const filtered = sortedOrders.filter(order => showDelivered ? order.isDelivered : !order.isDelivered);
+    setFilteredOrders(filtered);
+  }, [orders, showDelivered, currentPage, deliveredCurrentPage]);
+
   const fetchOrders = async () => {
     try {
-      // Replace with actual username logic'/:orderId/deliverypatcher
       const response = await axios.get(`https://elosystemv1.onrender.com/api/orders/my/${username}`);
       setOrders(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
@@ -67,14 +78,36 @@ const OrdersPage = () => {
     }
   };
 
+  // Pagination
+  const indexOfLastOrder = (showDelivered ? deliveredCurrentPage : currentPage) * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
+
+  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+
+  const handlePageChange = (page) => {
+    if (showDelivered) setDeliveredCurrentPage(page);
+    else setCurrentPage(page);
+  };
+
   return (
     <div className="dsord-orders-page">
       <h1>My Orders</h1>
-      {orders.length === 0 ? (
-        <p>You have no orders yet.</p>
+      
+      {/* Toggle Delivered Section */}
+      <button onClick={() => {
+        setShowDelivered(!showDelivered);
+        setCurrentPage(1);
+        setDeliveredCurrentPage(1);
+      }}>
+        {showDelivered ? 'Show Pending Orders' : 'Show Delivered Orders'}
+      </button>
+      
+      {currentOrders.length === 0 ? (
+        <p>No {showDelivered ? 'delivered' : 'pending'} orders found.</p>
       ) : (
         <ul className="dsord-orders-list">
-          {orders.map((order) => (
+          {currentOrders.map((order) => (
             <li key={order._id} className="dsord-order-item">
               <div onClick={() => handleOrderClick(order)} className="dsord-order-summary">
                 <p>Order Date: {new Date(order.orderDate).toLocaleDateString()}</p>
@@ -114,6 +147,21 @@ const OrdersPage = () => {
             </li>
           ))}
         </ul>
+      )}
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="dsord-pagination">
+          {[...Array(totalPages)].map((_, index) => (
+            <button
+              key={index + 1}
+              onClick={() => handlePageChange(index + 1)}
+              className={index + 1 === (showDelivered ? deliveredCurrentPage : currentPage) ? 'active' : ''}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
       )}
     </div>
   );

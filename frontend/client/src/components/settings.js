@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 import { getUsernameFromToken, getcategoryFromToken, getemailFromToken } from '../utils/auth';
-import Prof from './images/prof.jpeg';
 import './styles/setting.css';
 
 const Settings = () => {
@@ -125,9 +124,8 @@ const Settings = () => {
     };
 
     return (
-        <div className="">
+        <div className="settingmain">
             <div className="userinfo">
-              <img width="70px" src={Prof} alt="User Avatar"/>
               <spam className='userinfospan'>
                 <p><b>Username:</b> <i>{lusername}</i></p>
                 <p><b>Email:</b> <i>{lemail}</i></p>
@@ -136,7 +134,7 @@ const Settings = () => {
 
             </div>
             <h2>Settings</h2>
-            <div>
+            <div className="set-buttons">
                 <button className="settings-button" onClick={() => setChangeUsername(!changeUsername)}>Change Username</button>
                 <button className="settings-button" onClick={() => setChangePassword(!changePassword)}>Change Password</button>
                 <button className="settings-button" onClick={() => setChangeEmail(!changeEmail)}>Change Email</button>

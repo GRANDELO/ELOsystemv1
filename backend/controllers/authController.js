@@ -10,49 +10,23 @@ require('dotenv').config();
 const registerUser = async (req, res) => {
   const { fullName, email, password, confirmPassword, phoneNumber, username, dateOfBirth, gender, category } = req.body;
 
-  const isDateValid = (date) => {
+  const isDateWithinRange = (date, minYears, maxYears) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const enteredDate = new Date(date);
-    return enteredDate <= today;
+    const minAgeDate = new Date(today.setFullYear(today.getFullYear() - minYears));
+    const maxAgeDate = new Date(today.setFullYear(today.getFullYear() - maxYears));
+    return enteredDate <= minAgeDate && enteredDate >= maxAgeDate;
   };
 
-  const isDate12Valid = (date) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const enteredDate = new Date(date);
-    const minAgeDate = new Date(today.setFullYear(today.getFullYear() - 12));
-    return enteredDate < minAgeDate;
-  };
-
-  const isDate85Valid = (date) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const enteredDate = new Date(date);
-    const maxAgeDate = new Date(today.setFullYear(today.getFullYear() - 85));
-    return enteredDate > maxAgeDate;
-  };
-
-  if (!isDateValid(dateOfBirth)) {
-    return res.status(400).json({ message: 'Date cannot be past today.' });
-  } else if (!isDate12Valid(dateOfBirth)) {
-    return res.status(400).json({ message: 'You have to be at least 12 years old to join this site.' });
-  } else if (!isDate85Valid(dateOfBirth)) {
-    return res.status(400).json({ message: 'You have to be less than 85 years old to join this site.' });
+  if (!isDateWithinRange(dateOfBirth, 12, 85)) {
+    return res.status(400).json({ message: 'Age must be between 12 and 85 to join.' });
   }
 
   if (password !== confirmPassword) {
-    return res.status(400).json({ message: 'Passwords do not match' });
-  } else if (password.length < 8) {
-    return res.status(400).json({ message: 'Password must be at least 8 characters long.' });
-  } else if (!/[A-Z]/.test(password)) {
-    return res.status(400).json({ message: 'Password must contain at least one uppercase letter.' });
-  } else if (!/[a-z]/.test(password)) {
-    return res.status(400).json({ message: 'Password must contain at least one lowercase letter.' });
-  } else if (!/\d/.test(password)) {
-    return res.status(400).json({ message: 'Password must contain at least one number.' });
-  } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-    return res.status(400).json({ message: 'Password must contain at least one special character.' });
+    return res.status(400).json({ message: 'Passwords do not match.' });
+  } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/.test(password)) {
+    return res.status(400).json({ message: 'Password must be at least 8 characters, with an uppercase letter, a lowercase letter, a number, and a special character.' });
   }
 
   try {
@@ -62,9 +36,9 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Generate verification code
+    // Generate verification code and send email
     const alphanumericCode = generateAlphanumericVerificationCode(6);
-    const subject = "Verification - " + alphanumericCode;
+    const subject = `Verification - ${alphanumericCode}`;
     const vermessage = `Dear ${username},
 
     Thank you for registering with Bazelink! Please use the following verification code to complete your registration:
@@ -75,36 +49,34 @@ const registerUser = async (req, res) => {
     
     Best regards,
     Bazelink Support Team`;
-
+    
     const htmlMessage = `
-  <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.8; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
-    <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
-      Welcome to Bazelink, ${username}!
-    </h2>
-    <p style="font-size: 16px; color: #555; text-align: center; margin-top: 0;">
-      Thank you for registering with us! To complete your registration, please use the verification code below:
-    </p>
-    <div style="margin: 25px 0; padding: 20px; background-color: #f0f5fc; border: 1px dashed #1d4ed8; text-align: center; border-radius: 8px;">
-      <p style="font-size: 20px; font-weight: bold; color: #1d4ed8; letter-spacing: 1px;">
-        Verification Code: <span style="color: #1d4ed8;">${alphanumericCode}</span>
-      </p>
-    </div>
-    <p style="text-align: center;">
-      <a href="https://bazelink.web.app/verification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
-        Verify Your Account
-      </a>
-    </p>
-    <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
-      If you did not request this, please disregard this email.
-    </p>
-    <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
-      Best regards,<br> Bazelink Support Team
-    </p>
-  </div>
-`;
+      <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.8; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
+        <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
+          Welcome to Bazelink, ${username}!
+        </h2>
+        <p style="font-size: 16px; color: #555; text-align: center; margin-top: 0;">
+          Thank you for registering with us! To complete your registration, please use the verification code below:
+        </p>
+        <div style="margin: 25px 0; padding: 20px; background-color: #f0f5fc; border: 1px dashed #1d4ed8; text-align: center; border-radius: 8px;">
+          <p style="font-size: 20px; font-weight: bold; color: #1d4ed8; letter-spacing: 1px;">
+            Verification Code: <span style="color: #1d4ed8;">${alphanumericCode}</span>
+          </p>
+        </div>
+        <p style="text-align: center;">
+          <a href="https://bazelink.web.app/verification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+            Verify Your Account
+          </a>
+        </p>
+        <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
+          If you did not request this, please disregard this email.
+        </p>
+        <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
+          Best regards,<br> Bazelink Support Team
+        </p>
+      </div>
+    `;
 
-
-    // Send verification email
     try {
       await sendEmail(email, subject, vermessage, htmlMessage);
       console.log('Email sent successfully');
@@ -113,10 +85,10 @@ const registerUser = async (req, res) => {
       return res.status(500).json({ message: 'Error sending verification email' });
     }
 
-    // Format the date of birth using moment
+    // Create new user with conditional amount field
     const formattedDateOfBirth = moment(dateOfBirth).format('YYYY-MM-DD');
+    const userAmount = category === 'Seller' ? 0 : undefined;
 
-    // Create new user
     user = new User({
       fullName,
       email,
@@ -129,8 +101,9 @@ const registerUser = async (req, res) => {
       verificationCode: alphanumericCode,
       isVerified: false,
       active: false,
-      resetPasswordToken: "undefined",
-      resetPasswordExpires: "undefined",
+      resetPasswordToken: undefined,
+      resetPasswordExpires: undefined,
+      amount: userAmount,
     });
     await user.save();
 
@@ -140,6 +113,7 @@ const registerUser = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 const login = async (req, res) => {
 

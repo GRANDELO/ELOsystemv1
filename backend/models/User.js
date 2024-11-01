@@ -16,6 +16,7 @@ const UserSchema = new mongoose.Schema({
   tokenExpiry: { type: Date, default: undefined },
   createdAt: { type: Date, default: Date.now },
   active: { type: Boolean, default: false },
+  amount: { type: Number, default: undefined},
 }, { timestamps: true });
 
 UserSchema.pre('save', async function(next) {

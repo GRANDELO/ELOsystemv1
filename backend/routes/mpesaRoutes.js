@@ -63,7 +63,7 @@ router.post('/lipa', async (req, res) => {
             Password: password,
             Timestamp: timestamp,
             TransactionType: 'CustomerPayBillOnline',
-            Amount: 1,
+            Amount: req.body.amount,
             PartyA: req.body.phone,
             PartyB: businessShortCode,
             PhoneNumber: req.body.phone,
@@ -139,7 +139,7 @@ router.post('/paymentcallback', async (req, res) => {
                 order.paid = true;
                 await order.save();
         
-                sendOrderReceiptEmail(order.orderNumber);
+                sendOrderReceiptEmail(order.orderNumber, );
                 console.log("Order paid successfully for ");
                 return res.status(200).json({ message: 'Payment successful' });
             } catch (error) {

@@ -100,6 +100,11 @@ const Home = () => {
             </button>
           </section>
         )}
+        {isCartVisible && (
+        <div className="salesp-floating-cart show">
+          {!loading && !error && cart.length > 0 && <Cart cart={cart} setCart={setCart} />}
+        </div>
+      )}
       </main>
       <div className="salesp-floating-buttons">
         <button className="salesp-toggle-button" onClick={toggleCart}>
@@ -112,11 +117,6 @@ const Home = () => {
           <FaBoxOpen /> {/* New icon for Displayorder */}
         </button>
       </div>
-      {isCartVisible && (
-        <div className="salesp-floating-cart show">
-          {!loading && !error && cart.length > 0 && <Cart cart={cart} setCart={setCart} />}
-        </div>
-      )}
       <footer className="salesp-home-footer">
         <Footer />
       </footer>

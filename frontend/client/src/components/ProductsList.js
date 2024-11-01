@@ -6,6 +6,8 @@ const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 30;
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -18,13 +20,26 @@ const ProductList = () => {
         setLoading(false);
       }
     };
-
     fetchProducts();
   }, []);
 
-  const categorizeProducts = () => {
+  // Calculate paginated products based on screen size
+  const screenWidth = window.innerWidth;
+  const displayedProducts = screenWidth < 768 ? products : products.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage);
+
+  const totalPages = Math.ceil(products.length / productsPerPage);
+
+  const nextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const previousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const categorizeProducts = (productList) => {
     const categories = {};
-    products.forEach(product => {
+    productList.forEach(product => {
       if (!categories[product.category]) {
         categories[product.category] = [];
       }
@@ -36,28 +51,35 @@ const ProductList = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
-  const categorizedProducts = categorizeProducts();
+  const categorizedProducts = categorizeProducts(displayedProducts);
 
   return (
     <div className="product-list">
-      {Object.keys(categorizedProducts).length > 0 ? (
-        Object.keys(categorizedProducts).map(category => (
-          <div key={category} className="product-category">
-            <h2>{category}</h2>
-            <div className="product-cards">
-              {categorizedProducts[category].map(product => (
-                <div key={product._id} className="product-card">
-                  <img src={product.image} alt={product.name} />
-                  <h3>{product.name}</h3>
-                  <p>{product.description}</p>
-                  <h4>ksh{product.price}</h4>
-                  <a href={`/products/${product._id}`} className="view-details-link">View Details</a>
-                </div>
-              ))}
-            </div>
+      {Object.keys(categorizedProducts).map(category => (
+        <div key={category} className="product-category">
+          <h2>{category}</h2>
+          <div className="product-cards">
+            {categorizedProducts[category].map(product => (
+              <div key={product._id} className="product-card">
+                <img src={product.image} alt={product.name} />
+                <h3>{product.name}</h3>
+                <p>{product.description}</p>
+                <h4>ksh {product.price}</h4>
+                <a href={`/products/${product._id}`} className="view-details-link">View Details</a>
+              </div>
+            ))}
           </div>
-        ))
-      ) : null}
+        </div>
+      ))}
+
+      {/* Pagination controls */}
+      {screenWidth >= 768 && totalPages > 1 && (
+        <div className="pagination">
+          <button onClick={previousPage} disabled={currentPage === 1}>Previous</button>
+          <span>Page {currentPage} of {totalPages}</span>
+          <button onClick={nextPage} disabled={currentPage === totalPages}>Next</button>
+        </div>
+      )}
     </div>
   );
 };
