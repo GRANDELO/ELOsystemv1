@@ -49,7 +49,7 @@ const registerUser = async (req, res) => {
     
     Best regards,
     Bazelink Support Team`;
-    
+
     const htmlMessage = `
       <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.8; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
         <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
@@ -116,7 +116,7 @@ const registerUser = async (req, res) => {
 
 
 const login = async (req, res) => {
-
+/*
   try {
     const newFields = {
       active: false,
@@ -138,7 +138,7 @@ const login = async (req, res) => {
     console.log('New fields added to users that were missing them');
   } catch (error) {
     console.error('Error updating users:', error);
-  }
+  }*/
 
   const { username, password } = req.body;
   try {

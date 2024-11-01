@@ -6,6 +6,7 @@ const socketIo = require('socket.io');
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
+const User = require('../models/User');
 
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
