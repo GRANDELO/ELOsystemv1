@@ -1,6 +1,6 @@
 const PendingJob = require('./models/PendingJob');
 const Order = require('./models/Order');
-
+const {sendOrderReceiptEmail} = require('./controllers/orderController');
 const processPendingJobs = async () => {
     try {
         const unprocessedJobs = await PendingJob.find({ processed: false }); // Get unprocessed jobs
@@ -15,12 +15,14 @@ const processPendingJobs = async () => {
                     order.paid = true;
                     await order.save();
 
+                    await sendOrderReceiptEmail(order.orderNumber);
+
                     console.log(`Processed job for order ${checkoutId}`);
                 } else {
                     console.error(`Order not found for CheckoutRequestID: ${checkoutId}`);
                 }
             }
-
+            x
             job.processed = true; // Mark job as processed
             await job.save();
         }
