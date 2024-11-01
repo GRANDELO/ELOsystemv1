@@ -1,6 +1,6 @@
 const paymentQueue = require('./queue');
-const Order = require('./models/Order'); // Adjust the path as necessary
-const { sendOrderReceiptEmail } = require('./emailService'); // Import your email service
+const Order = require('./models/Order');
+const {sendOrderReceiptEmail} = require('./controllers/orderController');
 
 paymentQueue.process(async (job) => {
     const { checkoutId } = job.data;

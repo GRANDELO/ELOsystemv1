@@ -3,7 +3,6 @@ const router = express.Router();
 const axios = require('axios');
 require('dotenv').config();
 const Order = require('../models/Order');
-const {sendOrderReceiptEmail} = require('../controllers/orderController');
 
 const consumerKey = process.env.SAFARICOM_CONSUMER_KEY;
 const consumerSecret = process.env.SAFARICOM_CONSUMER_SECRET;
