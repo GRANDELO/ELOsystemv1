@@ -352,8 +352,8 @@ const TransactionLedgerfuc = async (totalAmount, seller, orderNumber ) => {
   const newbal = oldbal + sellerEarnings;
   user.amount = newbal;
   await user.save();
-
-  return {`Sales done for seller ${seller}. Your earnings: $${sellerEarnings.toFixed(2)}. Company earnings: $${companyEarnings.toFixed(2)}. Data stored successfully.` };
+  message =`Sales done for seller ${seller}. Your earnings: $${sellerEarnings.toFixed(2)}. Company earnings: $${companyEarnings.toFixed(2)}. Data stored successfully.` ;
+  return {message};
 };
 
 
