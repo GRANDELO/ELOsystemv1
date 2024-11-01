@@ -3,6 +3,8 @@ const router = express.Router();
 const axios = require('axios');
 require('dotenv').config();
 const Order = require('../models/Order');
+const PendingJob = require('../models/PendingJob');
+
 
 const consumerKey = process.env.SAFARICOM_CONSUMER_KEY;
 const consumerSecret = process.env.SAFARICOM_CONSUMER_SECRET;
@@ -119,22 +121,18 @@ router.post('/lipa', async (req, res) => {
     }
 });
 
-const paymentQueue = require('../queue'); // Adjust the path as necessary
+
 
 router.post('/paymentcallback', async (req, res) => {
-    console.log('....................... stk_confirm .............');
-    console.log("Payload Received", req.body.Body.stkCallback);
+    console.log("Received payment callback");
 
     const callbackData = req.body.Body.stkCallback;
-    const resultCode = callbackData.ResultCode;
-    const checkoutId = callbackData.CheckoutRequestID;
-
-    // Send a quick response to the caller
-    res.status(200).json({ message: 'Callback received, processing in the background' });
-
-    // Add the payload to the queue
-    if (resultCode === 0) {
-        paymentQueue.add({ checkoutId }); // Queue the job with relevant data
+    try {
+        await PendingJob.create({ callbackData, processed: false }); // Save unprocessed job
+        res.status(200).json({ message: 'Callback received and queued for processing.' });
+    } catch (error) {
+        console.error("Failed to queue job:", error);
+        res.status(500).json({ message: 'Error queuing callback for processing' });
     }
 });
 
