@@ -42,6 +42,26 @@ const socket = io('https://elosystemv1.onrender.com');
 
 const App = () => {
   useEffect(() => {
+    const keepAlive = () => {
+      fetch('https://elosystemv1.onrender.com/api/products') // Replace with your actual endpoint
+        .then(response => {
+          if (!response.ok) {
+            console.error('Failed to ping backend:', response.status);
+          }
+        })
+        .catch(error => {
+          console.error('Error pinging backend:', error);
+        });
+    };
+
+    // Set the interval to ping every five minutes (300000 milliseconds)
+    const intervalId = setInterval(keepAlive, 300000);
+
+    // Cleanup on unmount
+    return () => clearInterval(intervalId);
+  }, []);
+  
+  useEffect(() => {
     socket.on('connect', () => {
       console.log('Connected to Socket.IO server');
     });
