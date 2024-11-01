@@ -314,10 +314,50 @@ Bazelink`;
       return res.status(500).json({ message: 'Error sending verification email' });
     }
 
+    const ledger = TransactionLedger(order.totalPrice, order.username,  order.orderNumber);
+    
+    console.log(ledger);
     console.log('Receipt email sent successfully');
   } catch (error) {
     console.error('Failed to send receipt email:', error);
   }
 };
+
+const TransactionLedger = async (totalAmount, seller, orderNumber ) => {
+  
+  const user = await User.findOne({ username: seller }).lean();
+
+  if (!user) {
+    throw new Error('user not found');
+  }
+
+  // Define the percentage split
+  const sellerPercentage = 0.8; // 80% for the seller
+  const companyPercentage = 0.2; // 20% for the company
+
+  // Calculate earnings
+  const sellerEarnings = totalAmount * sellerPercentage;
+  const companyEarnings = totalAmount * companyPercentage;
+
+  // Record transaction in ledger
+  await TransactionLedger.create({
+    orderId: orderNumber,
+    seller,
+    sellerEarnings,
+    companyEarnings
+  });
+
+  const oldbal = user.amount;
+  const newbal = oldbal + sellerEarnings;
+  user.amount = newbal;
+  await user.save();
+
+  return {
+    message: `Sales done for seller ${seller}. Your earnings: $${sellerEarnings.toFixed(2)}. Company earnings: $${companyEarnings.toFixed(2)}. Data stored successfully.`,
+    sellerEarnings,
+    companyEarnings
+  };
+};
+
 
 
