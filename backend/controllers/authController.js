@@ -116,41 +116,8 @@ const registerUser = async (req, res) => {
 
 
 const login = async (req, res) => {
-
-    /*
-      try {
-        const newFields = {
-          active: false,
-          amount: undefined, // default to undefined for non-Seller categories
-        };
-      
-        // Prepare the update object with conditional defaults
-        const updateFields = {};
-        for (const [key, value] of Object.entries(newFields)) {
-          updateFields[key] = { $ifNull: [`$${key}`, value] };
-        }
-      
-        // Step 1: Update users without the 'active' field or 'amount' field
-        await User.updateMany(
-          {
-            $or: Object.keys(newFields).map((key) => ({ [key]: { $exists: false } })),
-          },
-          { $set: newFields }
-        );
-      
-        // Step 2: Specifically update 'Seller' users to set 'amount' to 0
-        await User.updateMany(
-          { category: 'Seller' },
-          { $set: { amount: 0 } }
-        );
-      
-        console.log('Missing fields added, and amount set for Seller users');
-      } catch (error) {
-        console.error('Error updating users:', error);
-      }
-    */
-
   const { username, password } = req.body;
+
   try {
     const user = await User.findOne({ username });
     if (!user) {
@@ -162,31 +129,45 @@ const login = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid password '});
+      return res.status(401).json({ message: 'Invalid password' });
     }
+
     user.active = true;
     await user.save();
-    const token = jwt.sign({ id: user._id, username: user.username, email: user.email, category: user.category }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
 
-    const money ='';
-    if (user.amount == "undefined")
+    const token = jwt.sign(
       {
-        money = undefined;
-       }else{
-        money = amount.toFixed(2);
-      }
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        category: user.category,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
 
-    
-    
+    // Handle `amount` field with proper checks
+    let money;
+    if (typeof user.amount === 'undefined') {
+      money = undefined;
+    } else {
+      money = user.amount.toFixed(2);
+    }
+
     console.log(user.amount);
-    res.json({ message: 'Login successful', token , category: user.category, username: user.username, amount: money });
+    res.json({
+      message: 'Login successful',
+      token,
+      category: user.category,
+      username: user.username,
+      amount: money,
+    });
   } catch (error) {
     console.error('Error logging in:', error);
     res.status(500).json({ message: 'Error logging in', error });
   }
 };
+
 
 const verifyUser = async (req, res) => {
   const { email, verificationCode } = req.body;
