@@ -218,13 +218,31 @@ exports.deliverypatcher = async (req, res) => {
 };
 
 exports.getUnpa = async (req, res) => {
-  const totalAmount = 1;
-  const seller = 'kinyi';
-  const orderNumber = 'f4b79db7-c5d8-4ff5-9a6a-bdf725e70889';
+  const totalAmount = 100; // Sample total amount for the order
+  const orderNumber = 'f4b79db7-c5d8-4ff5-9a6a-bdf725e70889'; // Sample order number
+
+  // Sample products array with the new field structure
+  const products = [
+    {
+      username: 'kinyi', // Seller's username
+      price: 25,          // Price per unit
+      quantity: 2         // Quantity of units
+    },
+    {
+      username: '__tee__', // Another seller's username
+      price: 10,           // Price per unit
+      quantity: 3          // Quantity of units
+    },
+    {
+      username: 'samnjoro', // Another seller's username
+      price: 10,           // Price per unit
+      quantity: 3          // Quantity of units
+    }
+  ];
 
   try {
     // Await the result of TransactionLedgerfuc and send the success message as a response
-    const result = await TransactionLedgerfuc(totalAmount, seller, orderNumber);
+    const result = await TransactionLedgerfuc(totalAmount, products, orderNumber);
     res.status(200).json(result); // Send the success message to the client
   } catch (error) {
     // Capture any error and send an error response
@@ -232,6 +250,7 @@ exports.getUnpa = async (req, res) => {
     res.status(500).json({ message: 'An error occurred', error: error.message });
   }
 };
+
 
 
 exports.sendOrderReceiptEmail = async (orderNumber) => {
