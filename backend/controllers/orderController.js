@@ -391,7 +391,7 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
   }
 
   // Now, update the CompanyFinancials model
-  const financialRecord = await CompanyFinancials.findOne({}); // Assuming you have only one financial record
+  let financialRecord = await CompanyFinancials.findOne({}); // Using let for reassigning if needed
 
   if (!financialRecord) {
     console.warn('Financial record not found, creating a new one.');
@@ -410,7 +410,7 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
         }
       },
       totalIncome: financialRecord.totalIncome + totalCompanyEarnings,
-      netBalance:  financialRecord.totalIncome + totalCompanyEarnings,
+      netBalance: financialRecord.netBalance + totalCompanyEarnings,
       updatedAt: new Date()
     }
   );
