@@ -169,9 +169,18 @@ const login = async (req, res) => {
     const token = jwt.sign({ id: user._id, username: user.username, email: user.email, category: user.category }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
+
+    if (user.amount.toFixed(2) == "undefined")
+      {
+        const money = amount;
+       }else{
+        const money = amount.toFixed(2);
+      }
+
+    
     
     console.log(user.amount);
-    res.json({ message: 'Login successful', token , category: user.category, username: user.username, amount: user.amount.toFixed(2) });
+    res.json({ message: 'Login successful', token , category: user.category, username: user.username, amount: money });
   } catch (error) {
     console.error('Error logging in:', error);
     res.status(500).json({ message: 'Error logging in', error });
