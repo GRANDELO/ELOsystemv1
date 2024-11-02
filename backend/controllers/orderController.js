@@ -343,6 +343,10 @@ Bazelink`;
 
 const TransactionLedgerfuc = async (totalAmount, seller, orderNumber ) => {
   
+  if (isNaN(totalAmount) || totalAmount === null) {
+    throw new Error('Invalid totalAmount value');
+  }
+  
   const user = await User.findOne({ username: seller });
 
   if (!user) {
