@@ -328,7 +328,7 @@ const htmlReceiptMessage = `
 </div>
 `;
 
-    await sendEmail(order.userEmail, subject, receiptMessage, htmlReceiptMessage);
+    await sendEmail(user.email, subject, receiptMessage, htmlReceiptMessage);
     console.log('Receipt email sent successfully');
 
     // Pass the formatted products array to the TransactionLedger function
