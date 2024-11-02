@@ -232,11 +232,6 @@ exports.getUnpa = async (req, res) => {
       username: '__tee__', // Another seller's username
       price: 10,           // Price per unit
       quantity: 3          // Quantity of units
-    },
-    {
-      username: 'samnjoro', // Another seller's username
-      price: 10,           // Price per unit
-      quantity: 3          // Quantity of units
     }
   ];
 
