@@ -347,6 +347,7 @@ Bazelink`;
     console.log('Receipt email sent successfully');
 
     // Pass the formatted products array to the TransactionLedger function
+    await notifyOutOfStockAndDelete();
     await TransactionLedgerfuc(order.totalPrice, formattedProducts, order.orderNumber);
 
   } catch (error) {
@@ -443,6 +444,68 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
 
   const message = `Sales processed successfully for order ${orderNumber}. Total company earnings: $${totalCompanyEarnings.toFixed(2)}`;
   return { message };
+};
+
+
+const notifyOutOfStockAndDelete = async () => {
+  try {
+    // Fetch all products with zero or negative stock
+    const outOfStockProducts = await Product.find({ stock: { $lte: 0 } }).lean();
+
+    if (outOfStockProducts.length === 0) {
+      console.log('No out-of-stock products to process.');
+      return;
+    }
+    
+
+    for (const product of outOfStockProducts) {
+      // Fetch the seller's details
+      const seller = await User.findOne({ username: product.username }).lean();
+      if (!seller) {
+        console.warn(`Seller not found for product ${product.name} (ID: ${product._id})`);
+        continue;
+      }
+
+      // Prepare and send email notification
+      const subject = `Product Out of Stock - ${product.name}`;
+      const message = `Dear ${seller.username},
+
+Your product "${product.name}" is now out of stock and has been removed from the marketplace.
+
+If you would like to restock, please update your inventory accordingly.
+
+Best regards,
+Bazelink Team`;
+
+      const htmlMessage = `
+      <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
+        <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
+          Product Out of Stock Notification
+        </h2>
+        <p style="font-size: 16px; color: #555;">
+          Dear ${seller.username},<br>
+          Your product <strong>${product.name}</strong> is now out of stock and has been removed from the marketplace.
+        </p>
+        <p style="font-size: 16px; color: #555;">
+          If you would like to restock, please update your inventory accordingly.
+        </p>
+        <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
+          Best regards,<br> Bazelink Team
+        </p>
+      </div>
+      `;
+
+      // Send email using the sendEmail function
+      await sendEmail(seller.email, subject, message, htmlMessage);
+      console.log(`Out-of-stock notification sent for product: ${product.name}`);
+
+      // Delete the out-of-stock product
+      await Product.findByIdAndDelete(product._id);
+      console.log(`Deleted out-of-stock product: ${product.name}`);
+    }
+  } catch (error) {
+    console.error('Failed to process out-of-stock products:', error);
+  }
 };
 
 
