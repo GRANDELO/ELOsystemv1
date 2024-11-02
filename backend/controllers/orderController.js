@@ -218,7 +218,7 @@ exports.deliverypatcher = async (req, res) => {
 };
 
 exports.getUnpa = async (req, res) => {
-  const totalAmount = 100;
+  const totalAmount = 1;
   const seller = 'kinyi';
   const orderNumber = 'f4b79db7-c5d8-4ff5-9a6a-bdf725e70889';
 
@@ -346,7 +346,7 @@ const TransactionLedgerfuc = async (totalAmount, seller, orderNumber ) => {
   if (isNaN(totalAmount) || totalAmount === null) {
     throw new Error('Invalid totalAmount value');
   }
-  
+
   const user = await User.findOne({ username: seller });
 
   if (!user) {
