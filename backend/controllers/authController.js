@@ -170,11 +170,12 @@ const login = async (req, res) => {
       expiresIn: '1h',
     });
 
+    const money ='';
     if (user.amount == "undefined")
       {
-        const money = undefined;
+        money = undefined;
        }else{
-        const money = amount.toFixed(2);
+        money = amount.toFixed(2);
       }
 
     
