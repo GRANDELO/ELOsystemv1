@@ -273,7 +273,7 @@ exports.sendOrderReceiptEmail = async (orderNumber) => {
         name: product.name,
         category: product.category,
         price: product.price,
-        seller: product.username, // Include seller info
+        username: product.username, // Include seller info
       };
     });
 

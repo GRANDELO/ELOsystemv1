@@ -133,7 +133,8 @@ const OrderingPage = () => {
           phone: mpesaPhoneNumber,
           amount: totalPrice.toFixed(0),
           orderReference: orderReference
-      };
+      }
+      ;
 
       try {
           const response = await axios.post('https://elosystemv1.onrender.com/api/mpesa/lipa', payload, {
@@ -152,6 +153,11 @@ const OrderingPage = () => {
           setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
           console.error('Error:', error);
       }
+      }else{
+        await handleClearCart();
+        setTimeout(() => {
+          navigate('/salespersonhome');
+        }, 3000);
       }
 
       // Send order details to the logistics system
