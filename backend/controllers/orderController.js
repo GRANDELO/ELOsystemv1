@@ -4,6 +4,7 @@ const Product = require('../models/oProduct'); // Adjust this path as needed
 const sendEmail = require('../services/emailService');
 const User = require('../models/User');
 const TransactionLedger = require('../models/TransactionLedger'); // Adjust the path as needed
+const CompanyFinancials = require('./models/CompanyFinancials'); // Adjust path as necessary
 
 // Create Order
 exports.createOrder = async (req, res) => {
@@ -339,23 +340,28 @@ const htmlReceiptMessage = `
 };
 
 const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
-  // Define the percentage split
   const sellerPercentage = 0.8; // 80% for the seller
   const companyPercentage = 0.2; // 20% for the company
-  const companyEarnings = totalAmount * companyPercentage;
 
   const earningsData = {};
 
   for (const product of products) {
-    const { username, price, quantity } = product; // using 'username' instead of 'seller'
+    const { username, price, quantity } = product;
     const sellerEarnings = price * quantity * sellerPercentage;
+    const companyEarnings = price * quantity * companyPercentage;
 
+    // Initialize earnings data for this seller if it doesn't exist
     if (!earningsData[username]) {
-      earningsData[username] = { earnings: 0 };
+      earningsData[username] = { sellerEarnings: 0, companyEarnings: 0 };
     }
 
-    earningsData[username].earnings += sellerEarnings;
+    // Accumulate seller and company earnings for this seller
+    earningsData[username].sellerEarnings += sellerEarnings;
+    earningsData[username].companyEarnings += companyEarnings;
   }
+
+  // Variable to accumulate total company earnings across all sellers
+  let totalCompanyEarnings = 0;
 
   for (const [username, data] of Object.entries(earningsData)) {
     const user = await User.findOne({ username });
@@ -366,24 +372,53 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
 
     // Update user balance
     const oldbal = user.amount;
-    const newbal = oldbal + data.earnings;
+    const newbal = oldbal + data.sellerEarnings;
     user.amount = newbal;
     await user.save();
 
-    // Record transaction in the ledger
+    // Add to total company earnings
+    totalCompanyEarnings += data.companyEarnings;
+
+    // Record transaction in the ledger with separate company earnings for each seller
     await TransactionLedger.create({
       orderId: orderNumber,
       seller: username,
-      sellerEarnings: data.earnings,
-      companyEarnings
+      sellerEarnings: data.sellerEarnings,
+      companyEarnings: data.companyEarnings // Separate company earnings for this seller
     });
 
     console.log(`Earnings recorded for ${username}`);
   }
 
-  const message = `Sales processed successfully for order ${orderNumber}. Company earnings: $${companyEarnings.toFixed(2)}`;
+  // Now, update the CompanyFinancials model
+  const financialRecord = await CompanyFinancials.findOne({}); // Assuming you have only one financial record
+
+  if (!financialRecord) {
+    console.warn('Financial record not found, creating a new one.');
+    financialRecord = new CompanyFinancials();
+  }
+
+  // Record the income for the company
+  await CompanyFinancials.updateOne(
+    { _id: financialRecord._id }, // Find the correct record
+    {
+      $push: {
+        transactions: {
+          transactionType: 'income',
+          amount: totalCompanyEarnings,
+          description: `Earnings from order ${orderNumber}`
+        }
+      },
+      totalIncome: financialRecord.totalIncome + totalCompanyEarnings,
+      netBalance:  financialRecord.totalIncome + totalCompanyEarnings,
+      updatedAt: new Date()
+    }
+  );
+
+  const message = `Sales processed successfully for order ${orderNumber}. Total company earnings: $${totalCompanyEarnings.toFixed(2)}`;
   return { message };
 };
+
 
 
 
