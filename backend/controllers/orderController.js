@@ -218,12 +218,21 @@ exports.deliverypatcher = async (req, res) => {
 };
 
 exports.getUnpa = async (req, res) => {
-
   const totalAmount = 100;
-  const seller='kinyi';
-  const orderNumber='f4b79db7-c5d8-4ff5-9a6a-bdf725e70889';
-  TransactionLedgerfuc (totalAmount, seller, orderNumber ) 
-}
+  const seller = 'kinyi';
+  const orderNumber = 'f4b79db7-c5d8-4ff5-9a6a-bdf725e70889';
+
+  try {
+    // Await the result of TransactionLedgerfuc and send the success message as a response
+    const result = await TransactionLedgerfuc(totalAmount, seller, orderNumber);
+    res.status(200).json(result); // Send the success message to the client
+  } catch (error) {
+    // Capture any error and send an error response
+    console.error(error);
+    res.status(500).json({ message: 'An error occurred', error: error.message });
+  }
+};
+
 
 
 exports.sendOrderReceiptEmail = async (orderNumber) => {
