@@ -220,8 +220,8 @@ exports.deliverypatcher = async (req, res) => {
 exports.getUnpa = async (req, res) => {
 
   const totalAmount = 100;
-  const seller='kinyi':
-  const orderNumber=
+  const seller='kinyi';
+  const orderNumber='f4b79db7-c5d8-4ff5-9a6a-bdf725e70889';
   TransactionLedgerfuc (totalAmount, seller, orderNumber ) 
 }
 
