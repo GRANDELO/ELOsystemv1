@@ -128,31 +128,30 @@ const OrderingPage = () => {
       const response = await axios.post('https://elosystemv1.onrender.com/api/orders', orderDetails);
       setMessage(response.data.message);
 
-      if (paymentMethod === 'mpesa') {
-        const payload = {
-          phone: mpesaPhoneNumber,
-          amount: totalPrice.toFixed(0),
-          orderReference: orderReference
-      }
-      ;
+      if (paymentMethod === 'mpesa') 
+        {
+            const payload = 
+            {
+                phone: mpesaPhoneNumber,
+                amount: totalPrice.toFixed(0),
+                orderReference: orderReference
+            };
 
-      try {
-          const response = await axios.post('https://elosystemv1.onrender.com/api/mpesa/lipa', payload, {
-              headers: {
-                  'Content-Type': 'application/json'
-              }
-          });
-          setMessage('Payment initiated successfully!');
-          await handleClearCart();
-          setTimeout(() => {
-            navigate('/salespersonhome');
-          }, 3000);
-         
-
-      } catch (error) {
-          setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
-          console.error('Error:', error);
-      }
+            try {
+                const response = await axios.post('https://elosystemv1.onrender.com/api/mpesa/lipa', payload, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                setMessage('Payment initiated successfully!');
+                handleClearCart();
+                setTimeout(() => {
+                  navigate('/salespersonhome');
+                }, 3000);
+            } catch (error) {
+                setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
+                console.error('Error:', error);
+            }
       }else{
         await handleClearCart();
         setTimeout(() => {
