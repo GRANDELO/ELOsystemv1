@@ -4,7 +4,7 @@ const Product = require('../models/oProduct'); // Adjust this path as needed
 const sendEmail = require('../services/emailService');
 const User = require('../models/User');
 const TransactionLedger = require('../models/TransactionLedger'); // Adjust the path as needed
-const CompanyFinancials = require('./models/CompanyFinancials'); // Adjust path as necessary
+const CompanyFinancials = require('../models/CompanyFinancials'); // Adjust path as necessary
 
 // Create Order
 exports.createOrder = async (req, res) => {
