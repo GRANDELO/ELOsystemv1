@@ -286,7 +286,7 @@ exports.sendOrderReceiptEmail = async (orderNumber) => {
     for (const item of order.items) {
       const product = products.find(p => p._id.toString() === item.productId.toString());
       if (product) {
-        product.stock -= item.quantity; // Reduce stock by quantity ordered
+        product.quantity -= item.quantity; // Reduce stock by quantity ordered
         if (product.stock < 0) product.stock = 0; // Ensure stock doesn’t go negative
         await product.save(); // Save changes to the product in the database
       }
