@@ -98,6 +98,7 @@ const NewProductList = () => {
               <h3>{product.name}</h3>
               <p>{product.description}</p>
               <h4>Ksh {product.price}</h4>
+              <p>In stock {product.quantity}</p>
               <button className="view-details-btn" onClick={() => handleProductClick(product)}>
                 View Details
               </button>

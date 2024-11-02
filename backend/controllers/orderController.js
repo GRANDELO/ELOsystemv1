@@ -5,6 +5,7 @@ const sendEmail = require('../services/emailService');
 const User = require('../models/User');
 const TransactionLedger = require('../models/TransactionLedger'); // Adjust the path as needed
 const CompanyFinancials = require('../models/CompanyFinancials'); // Adjust path as necessary
+const ProductPerformance = require('../models/ProductPerformance');
 
 // Create Order
 exports.createOrder = async (req, res) => {
@@ -392,11 +393,14 @@ const sendOrderReceiptEmail = async (orderNumber) => {
     for (const item of order.items) {
       const product = products.find(p => p._id.toString() === item.productId.toString());
       if (product) {
-        product.quantity -= item.quantity; // Reduce stock by quantity ordered
-        if (product.quantity < 0) product.quantity = 0; // Ensure stock doesn’t go negative
-        await product.save(); // Save changes to the product in the database
+        product.quantity -= item.quantity;
+        const saleDate = new Date();
+        await updateProductPerformance(product._id, product.name, product.username, saleDate);
+        if (product.quantity < 0) product.quantity = 0;
+        await product.save();
       }
     }
+    
 
     // Prepare email content
     const subject = "Receipt for - " + order.orderNumber;
@@ -455,7 +459,7 @@ Bazelink`;
     // Pass the formatted products array to the TransactionLedger function
     await notifyOutOfStockAndDelete();
     await TransactionLedgerfuc(order.totalPrice, formattedProducts, order.orderNumber);
-
+    
   } catch (error) {
     console.error('Failed to send receipt email:', error);
   }
@@ -611,6 +615,36 @@ Bazelink Team`;
     }
   } catch (error) {
     console.error('Failed to process out-of-stock products:', error);
+  }
+};
+
+
+const updateProductPerformance = async (productId, productName, seller, saleDate) => {
+  try {
+    // Check if the product performance record exists
+    let productRecord = await ProductPerformance.findOne({ productId });
+
+    if (!productRecord) {
+      // Create a new record if it doesn't exist
+      productRecord = new ProductPerformance({
+        productId,
+        productName,
+        seller,
+        saleDates: [saleDate]
+      });
+      await productRecord.save();
+      console.log(`New performance record created for product: ${productName} by seller: ${seller}`);
+    } else {
+      // Add the sale date to the existing record
+      productRecord.saleDates.push(saleDate);
+      await productRecord.save();
+      console.log(`Sale date added to existing record for product: ${productName}`);
+    }
+
+    return { message: `Product performance updated for ${productName}`, data: productRecord };
+  } catch (error) {
+    console.error('Failed to update product performance:', error);
+    return { error: 'Failed to update product performance' };
   }
 };
 
