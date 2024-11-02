@@ -218,7 +218,7 @@ exports.deliverypatcher = async (req, res) => {
 };
 
 exports.getUnpa = async (req, res) => {
-  const totalAmount = 100; // Sample total amount for the order
+  const totalAmount = 80; // Sample total amount for the order
   const orderNumber = 'f4b79db7-c5d8-4ff5-9a6a-bdf725e70889'; // Sample order number
 
   // Sample products array with the new field structure
