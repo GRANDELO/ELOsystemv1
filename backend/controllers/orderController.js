@@ -334,7 +334,7 @@ Bazelink`;
 
 const TransactionLedgerfuc = async (totalAmount, seller, orderNumber ) => {
   
-  const user = await User.findOne({ username: seller }).lean();
+  const user = await User.findOne({ username: seller });
 
   if (!user) {
     throw new Error('user not found');
@@ -360,6 +360,7 @@ const TransactionLedgerfuc = async (totalAmount, seller, orderNumber ) => {
   const newbal = oldbal + sellerEarnings;
   user.amount = newbal.toFixed(2);
   await user.save();
+
   message =`Sales done for seller ${seller}. Your earnings: $${sellerEarnings.toFixed(2)}. Company earnings: $${companyEarnings.toFixed(2)}. Data stored successfully.` ;
   return {message};
 };
