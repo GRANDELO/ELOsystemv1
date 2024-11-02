@@ -355,6 +355,112 @@ Bazelink`;
   }
 };
 
+const sendOrderReceiptEmail = async (orderNumber) => {
+  try {
+    // Fetch the order by order number
+    const order = await Order.findOne({ orderNumber }).lean();
+    if (!order) {
+      throw new Error('Order not found');
+    }
+
+    const user = await User.findOne({ username: order.username }).lean();
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Extract product IDs and seller usernames from the order items
+    const productIds = order.items.map(item => item.productId);
+    const products = await Product.find({ _id: { $in: productIds } });
+
+    const productMap = {};
+    products.forEach(product => {
+      productMap[product._id] = {
+        name: product.name,
+        category: product.category,
+        price: product.price,
+        username: product.username, // Include seller info
+      };
+    });
+
+    // Format products with details for email content
+    const formattedProducts = order.items.map(item => ({
+      ...productMap[item.productId],
+      quantity: item.quantity,
+    }));
+
+    // Decrement stock for each product
+    for (const item of order.items) {
+      const product = products.find(p => p._id.toString() === item.productId.toString());
+      if (product) {
+        product.quantity -= item.quantity; // Reduce stock by quantity ordered
+        if (product.stock < 0) product.stock = 0; // Ensure stock doesn’t go negative
+        await product.save(); // Save changes to the product in the database
+      }
+    }
+
+    // Prepare email content
+    const subject = "Receipt for - " + order.orderNumber;
+    const receiptMessage = `Dear ${user.username},
+
+Thank you for shopping with Bazelink! Here is the receipt for your recent purchase.
+
+Order Number: ${order.orderNumber}
+
+Products Ordered:
+${formattedProducts.map(product => `- ${product.name} (Category: ${product.category}) x${product.quantity} @ ${product.price} each`).join('\n')}
+
+Total Amount Paid: ${order.totalPrice}
+Payment Method: ${order.paymentMethod}
+
+Best regards,
+Bazelink`;
+
+    const htmlReceiptMessage = `
+<div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
+  <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
+    Order Receipt - Bazelink
+  </h2>
+  <p style="font-size: 16px; color: #555;">
+    Dear ${user.username},<br>
+    Thank you for your purchase! Here are the details for your order.
+  </p>
+  <p style="font-size: 16px; color: #555;">
+    <strong>Order Number:</strong> ${order.orderNumber}<br>
+  </p>
+  <h3 style="color: #1d4ed8; margin-top: 20px;">Products Ordered:</h3>
+  <ul style="font-size: 16px; color: #555;">
+    ${formattedProducts.map(product => `
+      <li>
+        ${product.name} (Category: ${product.category}) x${product.quantity} @ ${product.price} each
+      </li>
+    `).join('')}
+  </ul>
+  <p style="font-size: 16px; color: #555; margin-top: 20px;">
+    <strong>Total Amount Paid:</strong> ${order.totalPrice}<br>
+    <strong>Payment Method:</strong> ${order.paymentMethod}<br>
+    <strong>User:</strong> ${user.username}
+  </p>
+  <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
+    We hope to serve you again soon!
+  </p>
+  <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
+    Best regards,<br> Bazelink Support Team
+  </p>
+</div>
+`;
+
+    await sendEmail(user.email, subject, receiptMessage, htmlReceiptMessage);
+    console.log('Receipt email sent successfully');
+
+    // Pass the formatted products array to the TransactionLedger function
+    await notifyOutOfStockAndDelete();
+    await TransactionLedgerfuc(order.totalPrice, formattedProducts, order.orderNumber);
+
+  } catch (error) {
+    console.error('Failed to send receipt email:', error);
+  }
+};
+
 
 const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
   const sellerPercentage = 0.8; // 80% for the seller
