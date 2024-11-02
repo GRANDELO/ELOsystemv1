@@ -234,45 +234,37 @@ exports.getUnpa = async (req, res) => {
 };
 
 
-
 exports.sendOrderReceiptEmail = async (orderNumber) => {
   try {
-    // Step 1: Fetch the order by order number
+    // Fetch the order by order number
     const order = await Order.findOne({ orderNumber }).lean();
-    const user = await User.findOne({ username: order.username }).lean();
-    
     if (!order) {
       throw new Error('Order not found');
     }
-    if (!user) {
-      throw new Error('user not found');
-    }
 
-    // Step 2: Extract product IDs from the order
+    // Extract product IDs and seller usernames from the order items
     const productIds = order.items.map(item => item.productId);
-
-    // Step 3: Fetch product details for all product IDs
     const products = await Product.find({ _id: { $in: productIds } }).lean();
 
-    // Step 4: Create a map for quick product lookup
     const productMap = {};
     products.forEach(product => {
       productMap[product._id] = {
         name: product.name,
         category: product.category,
         price: product.price,
+        seller: product.username, // Include seller info
       };
     });
 
-    // Step 5: Format products and order details for email content
+    // Format products with details for email content
     const formattedProducts = order.items.map(item => ({
       ...productMap[item.productId],
       quantity: item.quantity,
     }));
 
+    // Prepare email content
     const subject = "Receipt for - " + order.orderNumber;
-    
-    const receiptMessage = `Dear ${user.username},
+    const receiptMessage = `Dear ${order.username},
 
 Thank you for shopping with Bazelink! Here is the receipt for your recent purchase.
 
@@ -283,99 +275,100 @@ ${formattedProducts.map(product => `- ${product.name} (Category: ${product.categ
 
 Total Amount Paid: ${order.totalPrice}
 Payment Method: ${order.paymentMethod}
-User: ${user.username}
-
-We hope to serve you again soon!
 
 Best regards,
 Bazelink`;
 
-    const htmlReceiptMessage = `
-      <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
-        <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
-          Order Receipt - Bazelink
-        </h2>
-        <p style="font-size: 16px; color: #555;">
-          Dear ${user.username},<br>
-          Thank you for your purchase! Here are the details for your order.
-        </p>
-        <p style="font-size: 16px; color: #555;">
-          <strong>Order Number:</strong> ${order.orderNumber}<br>
-        </p>
-        <h3 style="color: #1d4ed8; margin-top: 20px;">Products Ordered:</h3>
-        <ul style="font-size: 16px; color: #555;">
-          ${formattedProducts.map(product => `
-            <li>
-              ${product.name} (Category: ${product.category}) x${product.quantity} @ ${product.price} each
-            </li>
-          `).join('')}
-        </ul>
-        <p style="font-size: 16px; color: #555; margin-top: 20px;">
-          <strong>Total Amount Paid:</strong> ${order.totalPrice}<br>
-          <strong>Payment Method:</strong> ${order.paymentMethod}<br>
-          <strong>User:</strong> ${user.username}
-        </p>
-        <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
-          We hope to serve you again soon!
-        </p>
-        <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
-          Best regards,<br> Bazelink Support Team
-        </p>
-      </div>
-    `;
+const htmlReceiptMessage = `
+<div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
+  <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
+    Order Receipt - Bazelink
+  </h2>
+  <p style="font-size: 16px; color: #555;">
+    Dear ${user.username},<br>
+    Thank you for your purchase! Here are the details for your order.
+  </p>
+  <p style="font-size: 16px; color: #555;">
+    <strong>Order Number:</strong> ${order.orderNumber}<br>
+  </p>
+  <h3 style="color: #1d4ed8; margin-top: 20px;">Products Ordered:</h3>
+  <ul style="font-size: 16px; color: #555;">
+    ${formattedProducts.map(product => `
+      <li>
+        ${product.name} (Category: ${product.category}) x${product.quantity} @ ${product.price} each
+      </li>
+    `).join('')}
+  </ul>
+  <p style="font-size: 16px; color: #555; margin-top: 20px;">
+    <strong>Total Amount Paid:</strong> ${order.totalPrice}<br>
+    <strong>Payment Method:</strong> ${order.paymentMethod}<br>
+    <strong>User:</strong> ${user.username}
+  </p>
+  <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
+    We hope to serve you again soon!
+  </p>
+  <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
+    Best regards,<br> Bazelink Support Team
+  </p>
+</div>
+`;
 
-    try {
-      await sendEmail(user.email, subject, receiptMessage, htmlReceiptMessage);
-      console.log('Email sent successfully');
-    } catch (error) {
-      console.error('Error sending email:', error);
-      return res.status(500).json({ message: 'Error sending verification email' });
-    }
-
-    const ledger = TransactionLedgerfuc(order.totalPrice, order.username,  order.orderNumber);
-    
-    console.log(ledger);
+    await sendEmail(order.userEmail, subject, receiptMessage, htmlReceiptMessage);
     console.log('Receipt email sent successfully');
+
+    // Pass the formatted products array to the TransactionLedger function
+    await TransactionLedgerfuc(order.totalPrice, formattedProducts, order.orderNumber);
+
   } catch (error) {
     console.error('Failed to send receipt email:', error);
   }
 };
 
-const TransactionLedgerfuc = async (totalAmount, seller, orderNumber ) => {
-  
-  if (isNaN(totalAmount) || totalAmount === null) {
-    throw new Error('Invalid totalAmount value');
-  }
-
-  const user = await User.findOne({ username: seller });
-
-  if (!user) {
-    throw new Error('user not found');
-  }
-
+const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
   // Define the percentage split
   const sellerPercentage = 0.8; // 80% for the seller
   const companyPercentage = 0.2; // 20% for the company
-
-  // Calculate earnings
-  const sellerEarnings = totalAmount * sellerPercentage;
   const companyEarnings = totalAmount * companyPercentage;
 
-  // Record transaction in ledger
-  await TransactionLedger.create({
-    orderId: orderNumber,
-    seller,
-    sellerEarnings,
-    companyEarnings
-  });
+  const earningsData = {};
 
-  const oldbal = user.amount;
-  const newbal = oldbal + sellerEarnings;
-  user.amount = newbal.toFixed(2);
-  await user.save();
+  for (const product of products) {
+    const { username, price, quantity } = product; // using 'username' instead of 'seller'
+    const sellerEarnings = price * quantity * sellerPercentage;
 
-  message =`Sales done for seller ${seller}. Your earnings: $${sellerEarnings.toFixed(2)}. Company earnings: $${companyEarnings.toFixed(2)}. Data stored successfully.` ;
-  return {message};
+    if (!earningsData[username]) {
+      earningsData[username] = { earnings: 0 };
+    }
+
+    earningsData[username].earnings += sellerEarnings;
+  }
+
+  for (const [username, data] of Object.entries(earningsData)) {
+    const user = await User.findOne({ username });
+    if (!user) {
+      console.warn(`User ${username} not found, skipping`);
+      continue;
+    }
+
+    // Update user balance
+    const oldbal = user.amount;
+    const newbal = oldbal + data.earnings;
+    user.amount = newbal;
+    await user.save();
+
+    // Record transaction in the ledger
+    await TransactionLedger.create({
+      orderId: orderNumber,
+      seller: username,
+      sellerEarnings: data.earnings,
+      companyEarnings
+    });
+
+    console.log(`Earnings recorded for ${username}`);
+  }
+
+  const message = `Sales processed successfully for order ${orderNumber}. Company earnings: $${companyEarnings.toFixed(2)}`;
+  return { message };
 };
 
 
