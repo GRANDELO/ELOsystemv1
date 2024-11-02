@@ -360,7 +360,6 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
     earningsData[username].companyEarnings += companyEarnings;
   }
 
-  // Variable to accumulate total company earnings across all sellers
   let totalCompanyEarnings = 0;
 
   for (const [username, data] of Object.entries(earningsData)) {
@@ -376,31 +375,37 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
     user.amount = newbal;
     await user.save();
 
-    // Add to total company earnings
     totalCompanyEarnings += data.companyEarnings;
 
-    // Record transaction in the ledger with separate company earnings for each seller
+    // Record transaction in the ledger
     await TransactionLedger.create({
       orderId: orderNumber,
       seller: username,
       sellerEarnings: data.sellerEarnings,
-      companyEarnings: data.companyEarnings // Separate company earnings for this seller
+      companyEarnings: data.companyEarnings
     });
 
     console.log(`Earnings recorded for ${username}`);
   }
 
-  // Now, update the CompanyFinancials model
-  let financialRecord = await CompanyFinancials.findOne({}); // Using let for reassigning if needed
-
+  // Retrieve the CompanyFinancials record or create a new one if not found
+  let financialRecord = await CompanyFinancials.findOne({});
   if (!financialRecord) {
     console.warn('Financial record not found, creating a new one.');
-    financialRecord = new CompanyFinancials();
+    financialRecord = new CompanyFinancials({
+      totalIncome: 0, 
+      netBalance: 0,
+      transactions: []
+    });
+    await financialRecord.save();
   }
 
-  // Record the income for the company
-  await CompanyFinancials.updateOne(
-    { _id: financialRecord._id }, // Find the correct record
+  // Log the financialRecord to confirm retrieval or creation
+  console.log('CompanyFinancials record:', financialRecord);
+
+  // Update the CompanyFinancials with transaction details
+  const updateResult = await CompanyFinancials.updateOne(
+    { _id: financialRecord._id },
     {
       $push: {
         transactions: {
@@ -409,15 +414,21 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
           description: `Earnings from order ${orderNumber}`
         }
       },
-      totalIncome: financialRecord.totalIncome + totalCompanyEarnings,
-      netBalance: financialRecord.netBalance + totalCompanyEarnings,
+      $inc: {
+        totalIncome: totalCompanyEarnings,
+        netBalance: totalCompanyEarnings
+      },
       updatedAt: new Date()
     }
   );
 
+  // Log the result of the update operation to check if it succeeded
+  console.log('Update result for CompanyFinancials:', updateResult);
+
   const message = `Sales processed successfully for order ${orderNumber}. Total company earnings: $${totalCompanyEarnings.toFixed(2)}`;
   return { message };
 };
+
 
 
 
