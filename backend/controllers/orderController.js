@@ -393,7 +393,7 @@ const sendOrderReceiptEmail = async (orderNumber) => {
       const product = products.find(p => p._id.toString() === item.productId.toString());
       if (product) {
         product.quantity -= item.quantity; // Reduce stock by quantity ordered
-        if (product.stock < 0) product.stock = 0; // Ensure stock doesn’t go negative
+        if (product.quantity < 0) product.quantity = 0; // Ensure stock doesn’t go negative
         await product.save(); // Save changes to the product in the database
       }
     }
@@ -556,7 +556,7 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
 const notifyOutOfStockAndDelete = async () => {
   try {
     // Fetch all products with zero or negative stock
-    const outOfStockProducts = await Product.find({ stock: { $lte: 0 } }).lean();
+    const outOfStockProducts = await Product.find({ quantity: { $lte: 0 } }).lean();
 
     if (outOfStockProducts.length === 0) {
       console.log('No out-of-stock products to process.');
