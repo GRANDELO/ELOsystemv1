@@ -82,6 +82,21 @@ const OrderingPage = () => {
     setSelectedArea(e.target.value);
   };
 
+  const handleClearCart = async () => {
+    try {
+      setMessage('');
+      setError('');
+      const clearResponse = await axios.post('https://elosystemv1.onrender.com/api/cart/cart/clear', 
+        { username }
+      );
+      setMessage(clearResponse.data.message);
+      setCart([]); // Clear the cart
+    } catch (err) {
+      console.error('Failed to clear cart:', err);
+      setError(err.response?.data?.message || 'Failed to clear cart');
+    }
+  };
+
   const handleSubmitOrder = async () => {
     if (!paymentMethod || !selectedTown || !selectedArea || (paymentMethod === 'mpesa' && !mpesaPhoneNumber)) {
       setError('Please select a payment method, provide a delivery destination, and enter M-Pesa phone number if applicable.');
@@ -127,8 +142,11 @@ const OrderingPage = () => {
               }
           });
           setMessage('Payment initiated successfully!');
-          console.log(response.data);
-          console.log(response.data.CheckoutRequestID);
+          await handleClearCart();
+          setTimeout(() => {
+            navigate('/salespersonhome');
+          }, 3000);
+         
 
       } catch (error) {
           setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));

@@ -252,9 +252,15 @@ exports.getUnpa = async (req, res) => {
 exports.sendOrderReceiptEmail = async (orderNumber) => {
   try {
     // Fetch the order by order number
+
     const order = await Order.findOne({ orderNumber }).lean();
     if (!order) {
       throw new Error('Order not found');
+    }
+    const user = await User.findOne({ username: order.username }).lean();
+    
+    if (!user) {
+      throw new Error('user not found');
     }
 
     // Extract product IDs and seller usernames from the order items
