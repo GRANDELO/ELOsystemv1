@@ -172,7 +172,7 @@ const login = async (req, res) => {
 
     if (user.amount == "undefined")
       {
-        const money = amount;
+        const money = undefined;
        }else{
         const money = amount.toFixed(2);
       }
