@@ -27,10 +27,12 @@ import Displayorder from './components/displayorder';
 import Home from './components/home';
 import Image from './components/image';
 import Passwordrecovery from './components/passwordreset';
+import Productperfomance from './components/productperfomance';
 import Regdeliverypeople from './components/regdeliverypeople';
 import Salespersonhome from './components/salespersonhome';
 import Seller from './components/sellerHome';
 import Upload from './components/upload';
+
 
 import Employies from './components/admin/employies';
 import Packingpage from './components/admin/packingpage';
@@ -107,8 +109,9 @@ const App = () => {
           <Route path="/imageList" element={<ImageList />} />
           <Route path="/imageUpload" element={<ImageUpload />} />
           <Route path="/logistics" element={<LogisticPage />} />
-
+          
           <Route path="/displayorder" element={<Displayorder />} />
+          <Route path="/productperfomance" element={<Productperfomance />} />
 
           <Route path="/employies" element={<Employies />} />
           <Route path="/packingpage" element={<Packingpage />} />
