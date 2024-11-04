@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import ProductModal from './ProductModal';
+import ProductModal from './ProductModalowner';
 import axiosInstance from './axiosInstance'; // Use axios instance instead of axios
 import './styles/NewProductList.css';
 

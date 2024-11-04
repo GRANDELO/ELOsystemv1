@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import NewProductForm from './NewProductForm';
 import Header from './header';
 import Productowner from './productowner';
+import Productperfomance from './productperfomance';
 import Settings from './settings';
 import './styles/Home.css';
 
@@ -62,6 +63,12 @@ const Home = () => {
             >
               Add New Product
             </button>
+            <button
+              className={`home-settings-button ${activeSection === 'product-perfomance' ? 'active' : ''}`}
+              onClick={() => toggleSection('product-perfomance')}
+            >
+              View perfomance
+            </button>
           </div>
 
           {/* Display Loading Indicator or Product List / Add Product Form */}
@@ -82,6 +89,12 @@ const Home = () => {
                     <NewProductForm />
                   </div>
                 )}
+                {activeSection === 'product-perfomance' && (
+                  <div className="home-product-form-container">
+                    <Productperfomance/>
+                  </div>
+                )}
+               
               </>
             )}
           </div>

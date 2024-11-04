@@ -56,26 +56,6 @@ exports.createProduct = async (req, res) => {
   }
 };
 
-
-// Get product by ID
-
-// Update product
-exports.updateProduct = async (req, res) => {
-  try {
-    const { name, description, price, category } = req.body;
-    const updateData = { name, description, price, category };
-
-    if (req.file) {
-      updateData.image = await uploadFile(req.file); // Update image if a new one is provided
-    }
-
-    const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
-    if (!updatedProduct) return res.status(404).json({ message: 'Product not found' });
-    res.json({ product: updatedProduct });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
 //get all items
 exports.getAllProducts = async (req, res) => {
   try {
@@ -98,16 +78,52 @@ exports.getNewProductById = async (req, res) => {
   }
 };
 
-// Delete product
-exports.deleteProduct = async (req, res) => {
+exports.updateProduct = async (req, res) => {
+  const { productId } = req.params;
+  const { field, value } = req.body;
+
   try {
-    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
-    if (!deletedProduct) return res.status(404).json({ message: 'Product not found' });
-    res.json({ message: 'Product deleted' });
+    // Check if the field is allowed to be updated
+    const allowedFields = ['name', 'description', 'price', 'quantity'];
+    if (!allowedFields.includes(field)) {
+      return res.status(400).json({ message: 'Invalid field name provided.' });
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      { [field]: value },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: 'Product not found.' });
+    }
+
+    res.status(200).json({ message: 'Product updated successfully.', product: updatedProduct });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ message: 'Server error while updating product.' });
   }
 };
+
+// Delete a product
+exports.deleteProduct = async (req, res) => {
+  const { productId } = req.params;
+
+  try {
+    const deletedProduct = await Product.findByIdAndDelete(productId);
+
+    if (!deletedProduct) {
+      return res.status(404).json({ message: 'Product not found.' });
+    }
+
+    res.status(200).json({ message: 'Product deleted successfully.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error while deleting product.' });
+  }
+};
+
 
 // Serve image from Firebase Storage
 exports.getImage = async (req, res) => {
