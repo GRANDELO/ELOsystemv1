@@ -15,10 +15,17 @@ const ProductModal = ({ product, show, handleClose, onProductUpdate, onProductDe
       return;
     }
 
+    // Basic validation for price to ensure it is a number
+    if (updatedField === 'price' && isNaN(updatedValue)) {
+      setError('Price must be a number.');
+      return;
+    }
+
     try {
-      console.log("meeeeee " + [updatedField]+ ' '+ updatedValue)
+      // Sending the updated field and value to the backend
       const response = await axios.patch(`https://elosystemv1.onrender.com/api/products/${product._id}`, {
-        [updatedField]: updatedValue,
+        field: updatedField,  // Sending field name
+        value: updatedValue,  // Sending new value
       });
 
       setMessage(response.data.message);

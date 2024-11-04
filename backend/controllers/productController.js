@@ -80,13 +80,13 @@ exports.getNewProductById = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
   const { productId } = req.params;
-  const { [field]: value } = req.body;
+  const { field, value } = req.body; // Expecting { field: "name", value: "New Name" }
 
   try {
     // Check if the field is allowed to be updated
     const allowedFields = ['name', 'description', 'price', 'quantity'];
     if (!allowedFields.includes(field)) {
-      return res.status(400).json({ message: 'Invalid field name provided.'+ [field] +' '+ value});
+      return res.status(400).json({ message: `Invalid field name provided: ${field}.` });
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(
@@ -105,6 +105,7 @@ exports.updateProduct = async (req, res) => {
     res.status(500).json({ message: 'Server error while updating product.' });
   }
 };
+
 
 // Delete a product
 exports.deleteProduct = async (req, res) => {
