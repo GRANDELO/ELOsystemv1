@@ -1,5 +1,4 @@
 const NewProduct = require('../models/newproductModel');
-const ProductPerformance = require('../models/ProductPerformance');
 
 const { v4: uuidv4 } = require('uuid');
 const { bucket } = require('../config/firebase');
@@ -97,22 +96,5 @@ exports.deleteNewProduct = async (req, res) => {
   }
 };
 
-exports.getProductPerformanceByUsername = async (req, res) => {
-  try {
-    const { username } = req.params; // Get username from request parameters
 
-    // Find all products with the specified username
-    const products = await ProductPerformance.find({ username });
-
-    if (products.length === 0) {
-      return res.status(404).json({ message: 'No product performance records found for this user.' });
-    }
-
-    // Return product performance details
-    return res.status(200).json(products);
-  } catch (error) {
-    console.error('Error fetching product performance:', error);
-    return res.status(500).json({ message: 'Failed to fetch product performance' });
-  }
-};
 

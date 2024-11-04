@@ -3,6 +3,8 @@ const router = express.Router();
 const upload = require('../middleware/upload');
 const productController = require('../controllers/productController');
 
+router.get('/performance/:username', productController.getProductPerformanceByUsername);
+
 router.post('/products', upload.single('image'), productController.createProduct);
 router.get('/products', productController.getAllProducts);
 router.put('/products/:id', upload.single('image'), productController.updateProduct);

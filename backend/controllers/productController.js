@@ -2,6 +2,7 @@ const Product = require('../models/oProduct');
 const { bucket } = require('../config/firebase');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
+const ProductPerformance = require('../models/ProductPerformance');
 
 // Upload a file to Firebase Storage
 async function uploadFile(file) {
@@ -97,7 +98,6 @@ exports.getNewProductById = async (req, res) => {
   }
 };
 
-
 // Delete product
 exports.deleteProduct = async (req, res) => {
   try {
@@ -123,5 +123,24 @@ exports.getImage = async (req, res) => {
     res.redirect(publicUrl);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getProductPerformanceByUsername = async (req, res) => {
+  try {
+    const { username } = req.params; // Get username from request parameters
+
+    // Find all products with the specified username
+    const products = await ProductPerformance.find({ username });
+
+    if (products.length === 0) {
+      return res.status(404).json({ message: 'No product performance records found for this user.' });
+    }
+
+    // Return product performance details
+    return res.status(200).json(products);
+  } catch (error) {
+    console.error('Error fetching product performance:', error);
+    return res.status(500).json({ message: 'Failed to fetch product performance' });
   }
 };
