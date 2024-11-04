@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import './styles/ProductModal.css';
 
-const ProductModal = ({ product, show, handleClose, onProductUpdate, onProductDelete }) => {
+const ProductModal = ({ product, show, handleClose }) => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [updatedField, setUpdatedField] = useState('');
@@ -29,7 +29,6 @@ const ProductModal = ({ product, show, handleClose, onProductUpdate, onProductDe
       });
 
       setMessage(response.data.message);
-      onProductUpdate(response.data.product); // Assuming the response includes the updated product
       setUpdatedField('');
       setUpdatedValue('');
     } catch (err) {
@@ -42,7 +41,6 @@ const ProductModal = ({ product, show, handleClose, onProductUpdate, onProductDe
     try {
       await axios.delete(`https://elosystemv1.onrender.com/api/products/${product._id}`);
       setMessage('Product deleted successfully.');
-      onProductDelete(product._id); // Assuming you handle product deletion in the parent component
       handleClose(); // Close the modal after deletion
     } catch (err) {
       console.error('Failed to delete product:', err);

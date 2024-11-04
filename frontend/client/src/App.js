@@ -26,6 +26,7 @@ import Verification from './components/Verification';
 import Displayorder from './components/displayorder';
 import Home from './components/home';
 import Image from './components/image';
+import Notification from './components/notification';
 import Passwordrecovery from './components/passwordreset';
 import Productperfomance from './components/productperfomance';
 import Regdeliverypeople from './components/regdeliverypeople';
@@ -109,7 +110,8 @@ const App = () => {
           <Route path="/imageList" element={<ImageList />} />
           <Route path="/imageUpload" element={<ImageUpload />} />
           <Route path="/logistics" element={<LogisticPage />} />
-          
+          <Route path="/notification" element={<Notification />} />
+
           <Route path="/displayorder" element={<Displayorder />} />
           <Route path="/productperfomance" element={<Productperfomance />} />
 
