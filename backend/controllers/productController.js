@@ -33,10 +33,8 @@ async function uploadFile(file) {
 exports.createProduct = async (req, res) => {
   try {
     const { name, category, subCategory, description, price, username, quantity } = req.body;
-    
-    const imageUrls = await Promise.all(req.files.map(file => uploadFile(file)));
-    console.log("Uploaded images:", imageUrls);
-
+    const image = await Promise.all(req.files.map(file => uploadFile(file)));
+    console.log("error image", image);
     const productId = uuidv4();
     const newProduct = new Product({
       name,
@@ -47,7 +45,7 @@ exports.createProduct = async (req, res) => {
       username,
       productId,
       quantity,
-      image: imageUrls,
+      image,
     });
 
     await newProduct.save();
