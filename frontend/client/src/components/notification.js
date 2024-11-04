@@ -1,12 +1,11 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button } from 'react-bootstrap';
-import { getUsernameFromToken } from '../utils/auth';
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [error, setError] = useState('');
-  const username = getUsernameFromToken();
+  const username = 'kinyi';
 
   useEffect(() => {
     const fetchNotifications = async () => {
