@@ -16,6 +16,7 @@ const ProductModal = ({ product, show, handleClose, onProductUpdate, onProductDe
     }
 
     try {
+      console.log("meeeeee " + [updatedField]+ ' '+ updatedValue)
       const response = await axios.patch(`https://elosystemv1.onrender.com/api/products/${product._id}`, {
         [updatedField]: updatedValue,
       });
