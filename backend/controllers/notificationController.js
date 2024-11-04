@@ -12,6 +12,16 @@ const createNotification = async (req, res) => {
   }
 };
 
+const increateNotification = async (username, message, topic) => {
+  try {
+    const notification = new Notification({ username, message, topic });
+    await notification.save();
+    res.status(201).json(notification);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to create notification' });
+  }
+};
+
 // Get all notifications for a user
 const getUserNotifications = async (req, res) => {
   try {
@@ -53,4 +63,5 @@ module.exports = {
   getUserNotifications,
   markNotificationAsRead,
   deleteNotification,
+  increateNotification,
 };

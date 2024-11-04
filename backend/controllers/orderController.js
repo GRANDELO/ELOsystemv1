@@ -6,7 +6,7 @@ const User = require('../models/User');
 const TransactionLedger = require('../models/TransactionLedger'); // Adjust the path as needed
 const CompanyFinancials = require('../models/CompanyFinancials'); // Adjust path as necessary
 const ProductPerformance = require('../models/ProductPerformance');
-
+const {increateNotification} = require('./notificationController');
 // Create Order
 exports.createOrder = async (req, res) => {
   const { items, totalPrice, paymentMethod, destination, orderDate, username, orderReference } = req.body;
@@ -605,8 +605,10 @@ Bazelink Team`;
       </div>
       `;
 
+      const notificationmessage = `Your product "${product.name}" is now out of stock and has been removed from the marketplace. If you would like to restock, please update your inventory accordingly.`;
       // Send email using the sendEmail function
       await sendEmail(seller.email, subject, message, htmlMessage);
+      await increateNotification(seller.username, notificationmessage, subject);
       console.log(`Out-of-stock notification sent for product: ${product.name}`);
 
       // Delete the out-of-stock product
