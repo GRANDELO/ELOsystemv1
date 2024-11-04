@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { io } from 'socket.io-client';
+import RequireAuth from './RequireAuth'; // Import the authentication check component
 import Dashboard from './components/Dashboard';
 import ImageList from './components/ImageList';
 import ImageUpload from './components/ImageUpload';
@@ -23,6 +24,8 @@ import Success from './components/Success';
 import Users from './components/User';
 import UserChart from './components/UserChart';
 import Verification from './components/Verification';
+import Employies from './components/admin/employies';
+import Packingpage from './components/admin/packingpage';
 import Displayorder from './components/displayorder';
 import Home from './components/home';
 import Image from './components/image';
@@ -34,11 +37,6 @@ import Salespersonhome from './components/salespersonhome';
 import Seller from './components/sellerHome';
 import Upload from './components/upload';
 
-
-import Employies from './components/admin/employies';
-import Packingpage from './components/admin/packingpage';
-
-
 import './main.css';
 
 const socket = io('https://elosystemv1.onrender.com');
@@ -46,7 +44,7 @@ const socket = io('https://elosystemv1.onrender.com');
 const App = () => {
   useEffect(() => {
     const keepAlive = () => {
-      fetch('https://elosystemv1.onrender.com/api/products') // Replace with your actual endpoint
+      fetch('https://elosystemv1.onrender.com/api/products')
         .then(response => {
           if (!response.ok) {
             console.error('Failed to ping backend:', response.status);
@@ -57,13 +55,10 @@ const App = () => {
         });
     };
 
-    // Set the interval to ping every five minutes (300000 milliseconds)
     const intervalId = setInterval(keepAlive, 300000);
-
-    // Cleanup on unmount
     return () => clearInterval(intervalId);
   }, []);
-  
+
   useEffect(() => {
     socket.on('connect', () => {
       console.log('Connected to Socket.IO server');
@@ -82,41 +77,44 @@ const App = () => {
     <Router>
       <div className="App">
         <Routes>
+          {/* Public routes */}
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/success" element={<Success />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/verification" element={<Verification />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/productForm" element={<ProductForm />} />
-          <Route path="/reset-password" element={<Passwordrecovery />} />
-          <Route path="/products" element={<ProductList />} />
-          <Route path="/seller" element={<Seller />} />
-          <Route path="/upload" element={<Upload />} />
-          <Route path="/salespersonhome" element={<Salespersonhome />} />
-          <Route path="/userChart" element={<UserChart />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/reports" element={<Reports />} />
-          <Route path="/sales" element={<Sales />} />
-          <Route path="/logout" element={<Logout />} />
-          <Route path="/order" element={<Order />} />
-          <Route path="/regdeliverypeople" element={<Regdeliverypeople />} />
-          <Route path="/newproductform" element={<NewProductForm />} />
-          <Route path="/newproductlist" element={<NewProductList />} />
-          <Route path="/newproductdetail" element={<NewProductDetail />} />
-          <Route path="/newproductedit" element={<NewProductEdit />} />
-          <Route path="/image" element={<Image />} />
-          <Route path="/paymentForm" element={<PaymentForm />} />
-          <Route path="/imageList" element={<ImageList />} />
-          <Route path="/imageUpload" element={<ImageUpload />} />
-          <Route path="/logistics" element={<LogisticPage />} />
-          <Route path="/notification" element={<Notification />} />
 
-          <Route path="/displayorder" element={<Displayorder />} />
-          <Route path="/productperfomance" element={<Productperfomance />} />
-
-          <Route path="/employies" element={<Employies />} />
-          <Route path="/packingpage" element={<Packingpage />} />
+          {/* Protected routes */}
+          <Route element={<RequireAuth />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/verification" element={<Verification />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/productForm" element={<ProductForm />} />
+            <Route path="/reset-password" element={<Passwordrecovery />} />
+            <Route path="/products" element={<ProductList />} />
+            <Route path="/seller" element={<Seller />} />
+            <Route path="/upload" element={<Upload />} />
+            <Route path="/salespersonhome" element={<Salespersonhome />} />
+            <Route path="/userChart" element={<UserChart />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/sales" element={<Sales />} />
+            <Route path="/logout" element={<Logout />} />
+            <Route path="/order" element={<Order />} />
+            <Route path="/regdeliverypeople" element={<Regdeliverypeople />} />
+            <Route path="/newproductform" element={<NewProductForm />} />
+            <Route path="/newproductlist" element={<NewProductList />} />
+            <Route path="/newproductdetail" element={<NewProductDetail />} />
+            <Route path="/newproductedit" element={<NewProductEdit />} />
+            <Route path="/image" element={<Image />} />
+            <Route path="/paymentForm" element={<PaymentForm />} />
+            <Route path="/imageList" element={<ImageList />} />
+            <Route path="/imageUpload" element={<ImageUpload />} />
+            <Route path="/logistics" element={<LogisticPage />} />
+            <Route path="/notification" element={<Notification />} />
+            <Route path="/displayorder" element={<Displayorder />} />
+            <Route path="/productperfomance" element={<Productperfomance />} />
+            <Route path="/employies" element={<Employies />} />
+            <Route path="/packingpage" element={<Packingpage />} />
+          </Route>
         </Routes>
       </div>
     </Router>

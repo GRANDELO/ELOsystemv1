@@ -19,6 +19,7 @@ const Login = () => {
       const response = await axios.post('https://elosystemv1.onrender.com/api/auth/login', { username, password });
       setMessage(response.data.message);
       sessionStorage.setItem('userToken', response.data.token);
+      localStorage.setItem('token', response.data.token);
       sessionStorage.setItem('amount', response.data.amount);
       
       if (response.data.category.trim().toLowerCase() === 'seller'){
