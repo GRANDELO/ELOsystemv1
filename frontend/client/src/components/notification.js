@@ -1,13 +1,12 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Alert, Badge, Button } from 'react-bootstrap';
-import { FaBell } from 'react-icons/fa'; // Import bell icon from react-icons
+import { Alert, Button } from 'react-bootstrap';
+import './styles/notification.css'; // Import CSS for styling
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
-  const [unreadNotifications, setUnreadNotifications] = useState([]);
   const [error, setError] = useState('');
-  const [showNotifications, setShowNotifications] = useState(false);
+  const [showAll, setShowAll] = useState(false); // Toggle between all and unread notifications
   const username = 'kinyi';
 
   useEffect(() => {
@@ -15,7 +14,6 @@ const Notifications = () => {
       try {
         const response = await axios.get(`https://elosystemv1.onrender.com/api/notifications/${username}`);
         setNotifications(response.data);
-        setUnreadNotifications(response.data.filter(notification => !notification.isRead));
       } catch (err) {
         setError('Failed to fetch notifications');
       }
@@ -31,7 +29,6 @@ const Notifications = () => {
           notification._id === id ? { ...notification, isRead: true } : notification
         )
       );
-      setUnreadNotifications((prev) => prev.filter(notification => notification._id !== id));
     } catch (err) {
       setError('Failed to mark notification as read');
     }
@@ -41,41 +38,42 @@ const Notifications = () => {
     try {
       await axios.delete(`https://elosystemv1.onrender.com/api/notifications/${id}`);
       setNotifications((prev) => prev.filter(notification => notification._id !== id));
-      setUnreadNotifications((prev) => prev.filter(notification => notification._id !== id));
     } catch (err) {
       setError('Failed to delete notification');
     }
   };
 
-  const toggleNotifications = () => {
-    setShowNotifications(!showNotifications);
-  };
+  // Toggle between showing all and only unread notifications
+  const toggleShowAll = () => setShowAll(!showAll);
+
+  // Filter notifications based on `showAll` state
+  const displayedNotifications = showAll ? notifications : notifications.filter(notification => !notification.isRead);
 
   return (
-    <div>
-      {error && <Alert variant="danger">{error}</Alert>}
-      
-      {/* Notification Button with Icon and Count */}
-      <Button variant="primary" onClick={toggleNotifications}>
-        <FaBell /> <Badge bg="secondary">{unreadNotifications.length}</Badge>
-      </Button>
+    <div className="not-container">
+      {error && <Alert variant="danger" className="not-alert">{error}</Alert>}
 
-      {/* Conditionally Render Notifications */}
-      {showNotifications && (
-        <div className="notification-list">
-          <h2>Unread Notifications</h2>
-          {unreadNotifications.length === 0 ? (
-            <p>No unread notifications.</p>
-          ) : (
-            unreadNotifications.map((notification) => (
-              <div key={notification._id} className="notification unread">
-                <p>{notification.message}</p>
-                <Button variant="secondary" onClick={() => markAsRead(notification._id)}>Mark as Read</Button>
-                <Button variant="danger" onClick={() => deleteNotification(notification._id)}>Delete</Button>
-              </div>
-            ))
-          )}
-        </div>
+      <div className="not-header">
+        <h2>{showAll ? 'All Notifications' : 'Unread Notifications'}</h2>
+        <Button onClick={toggleShowAll} className="not-toggle-button">
+          {showAll ? 'Show Unread Only' : 'View All Notifications'}
+        </Button>
+      </div>
+
+      {displayedNotifications.length === 0 ? (
+        <p className="not-empty-message">None found</p>
+      ) : (
+        displayedNotifications.map((notification) => (
+          <div key={notification._id} className={`not-notification ${notification.isRead ? 'not-read' : 'not-unread'}`}>
+            <p className="not-message">{notification.message}</p>
+            <Button variant="secondary" onClick={() => markAsRead(notification._id)} className="not-read-button">
+              Mark as Read
+            </Button>
+            <Button variant="danger" onClick={() => deleteNotification(notification._id)} className="not-delete-button">
+              Delete
+            </Button>
+          </div>
+        ))
       )}
     </div>
   );

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { FaBell, FaCog } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import NewProductForm from './NewProductForm';
 import Header from './header';
+import Notifications from './notification'; // Import Notifications component
 import Productowner from './productowner';
 import Productperfomance from './productperfomance';
 import Settings from './settings';
@@ -9,27 +11,38 @@ import './styles/Home.css';
 
 const Home = () => {
   const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState('product-list'); // Default is product list
+  const [activeSection, setActiveSection] = useState('product-list');
   const [loading, setLoading] = useState(false);
+  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+  const [isNotificationsVisible, setIsNotificationsVisible] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(5); // Placeholder for unread notifications
 
   const toggleSection = (section) => {
     if (activeSection === section) {
-      setActiveSection(''); // Close the section if it's already active
+      setActiveSection('');
     } else {
-      setActiveSection(section); // Open the selected section
+      setActiveSection(section);
     }
   };
 
+  const toggleSettings = () => {
+    setIsSettingsVisible(!isSettingsVisible);
+    setIsNotificationsVisible(false); // Hide notifications when settings is toggled
+  };
+
+  const toggleNotifications = () => {
+    setIsNotificationsVisible(!isNotificationsVisible);
+    setIsSettingsVisible(false); // Hide settings when notifications is toggled
+    setUnreadNotifications(0); // Reset unread count on open
+  };
+
   useEffect(() => {
-    // Simulate loading when products are fetched
     if (activeSection === 'product-list') {
       setLoading(true);
       const fetchProducts = async () => {
-        // Simulate an API call
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate 1 second loading time
-        setLoading(false); // Set loading to false after fetching products
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        setLoading(false);
       };
-
       fetchProducts();
     }
   }, [activeSection]);
@@ -38,10 +51,19 @@ const Home = () => {
     <div className="home">
       <Header />
       <main className="home-main">
-        {/* User Settings Section */}
-        <section className="home-user-section">
-          <Settings />
-        </section>
+        {/* Settings Section */}
+        {isSettingsVisible && (
+          <section className="home-settings-section">
+            <Settings />
+          </section>
+        )}
+
+        {/* Notifications Section */}
+        {isNotificationsVisible && (
+          <section className="home-notifications-section">
+            <Notifications />
+          </section>
+        )}
 
         {/* Introduction Section */}
         <section className="home-intro">
@@ -49,7 +71,6 @@ const Home = () => {
             <strong>This is the seller home page</strong>
           </p>
 
-          {/* Buttons to Toggle Between Product List and Add Product Form */}
           <div className="home-toggle-buttons">
             <button
               className={`home-settings-button ${activeSection === 'product-list' ? 'active' : ''}`}
@@ -64,18 +85,17 @@ const Home = () => {
               Add New Product
             </button>
             <button
-              className={`home-settings-button ${activeSection === 'product-perfomance' ? 'active' : ''}`}
-              onClick={() => toggleSection('product-perfomance')}
+              className={`home-settings-button ${activeSection === 'product-performance' ? 'active' : ''}`}
+              onClick={() => toggleSection('product-performance')}
             >
-              View perfomance
+              View Performance
             </button>
           </div>
 
-          {/* Display Loading Indicator or Product List / Add Product Form */}
           <div className="home-show-section">
             {loading ? (
               <div className="home-loading-container">
-                <p>Loading products...</p> {/* You can replace this with a spinner */}
+                <p>Loading products...</p>
               </div>
             ) : (
               <>
@@ -89,19 +109,31 @@ const Home = () => {
                     <NewProductForm />
                   </div>
                 )}
-                {activeSection === 'product-perfomance' && (
-                  <div className="home-product-form-container">
-                    <Productperfomance/>
+                {activeSection === 'product-performance' && (
+                  <div className="home-product-performance-container">
+                    <Productperfomance />
                   </div>
                 )}
-               
               </>
             )}
           </div>
         </section>
       </main>
 
-      {/* Footer Section */}
+      {/* Floating Action Buttons */}
+      <div className="salesp-floating-buttons">
+        <button className="salesp-toggle-button" onClick={toggleSettings}>
+          <FaCog />
+        </button>
+        <button className="salesp-toggle-button" onClick={toggleNotifications}>
+          <FaBell />
+          {unreadNotifications > 0 && (
+            <span className="salesp-notification-count">{unreadNotifications}</span>
+          )}
+        </button>
+      </div>
+
+      {/* Footer */}
       <footer className="home-footer">
         <p>Contact us: grandeloltd1@gmail.com</p>
         <p>&copy; 2024 Grandelo. All rights reserved.</p>

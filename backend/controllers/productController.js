@@ -33,9 +33,9 @@ async function uploadFile(file) {
 exports.createProduct = async (req, res) => {
   try {
     const { name, category, subCategory, description, price, username, quantity } = req.body;
-    const image = req.file ? await uploadFile(req.file) : null;
-    console.log("error image", image);
+    const images = req.files ? await Promise.all(req.files.map(file => uploadFile(file))) : []; // Store multiple images
     const productId = uuidv4();
+    
     const newProduct = new Product({
       name,
       category,
@@ -45,16 +45,17 @@ exports.createProduct = async (req, res) => {
       username,
       productId,
       quantity,
-      image,
+      images, // Use the array of images here
     });
 
     await newProduct.save();
     res.status(201).json({ product: newProduct });
   } catch (error) {
-    console.error('Error in createProduct:', error);  // Add this log to see the exact error
+    console.error('Error in createProduct:', error);
     res.status(500).json({ error: error.message });
   }
 };
+
 
 //get all items
 exports.getAllProducts = async (req, res) => {

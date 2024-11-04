@@ -4,7 +4,7 @@ const upload = require('../middleware/upload');
 const productController = require('../controllers/productController');
 
 router.get('/performance/:username', productController.getProductPerformanceByUsername);
-router.post('/products', upload.single('image'), productController.createProduct);
+router.post('/products', upload.array('images', 10), productController.createProduct);
 router.get('/products', productController.getAllProducts);
 router.get('/images/:filename', productController.getImage);
 router.get('/products/:id', productController.getNewProductById);
