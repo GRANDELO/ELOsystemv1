@@ -86,7 +86,7 @@ exports.updateProduct = async (req, res) => {
     // Check if the field is allowed to be updated
     const allowedFields = ['name', 'description', 'price', 'quantity'];
     if (!allowedFields.includes(field)) {
-      return res.status(400).json({ message: 'Invalid field name provided.' });
+      return res.status(400).json({ message: 'Invalid field name provided.'+ field });
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(
