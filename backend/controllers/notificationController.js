@@ -2,9 +2,9 @@ const Notification = require('../models/Notification');
 
 // Create a new notification
 const createNotification = async (req, res) => {
-  const { userId, message, topic } = req.body; // Include topic if applicable
+  const { username, message, topic } = req.body; // Include topic if applicable
   try {
-    const notification = new Notification({ userId, message, topic });
+    const notification = new Notification({ username, message, topic });
     await notification.save();
     res.status(201).json(notification);
   } catch (error) {
@@ -15,7 +15,7 @@ const createNotification = async (req, res) => {
 // Get all notifications for a user
 const getUserNotifications = async (req, res) => {
   try {
-    const notifications = await Notification.find({ userId: req.params.userId }).sort({ createdAt: -1 });
+    const notifications = await Notification.find({ userId: req.params.username }).sort({ createdAt: -1 });
     res.json(notifications);
   } catch (error) {
     res.status(500).json({ message: 'Failed to retrieve notifications' });

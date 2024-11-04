@@ -10,6 +10,7 @@ import {
 } from 'chart.js';
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
+import { getUsernameFromToken } from '../utils/auth';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -18,7 +19,7 @@ const BarChart = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const username = 'kinyi';
+  const username = getUsernameFromToken();
 
   useEffect(() => {
     const fetchProductPerformance = async () => {

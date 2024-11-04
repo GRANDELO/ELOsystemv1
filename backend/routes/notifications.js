@@ -11,7 +11,7 @@ const router = express.Router();
 
 
 router.post('/', createNotification);
-router.get('/:userId', getUserNotifications);
+router.get('/:username', getUserNotifications);
 router.patch('/:id/read', markNotificationAsRead);
 router.delete('/:id', deleteNotification);
 
