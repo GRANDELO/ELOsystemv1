@@ -1,6 +1,8 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FaBell, FaCog } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { getUsernameFromToken } from '../utils/auth';
 import NewProductForm from './NewProductForm';
 import Header from './header';
 import Notifications from './notification'; // Import Notifications component
@@ -15,7 +17,8 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [isNotificationsVisible, setIsNotificationsVisible] = useState(false);
-  const [unreadNotifications, setUnreadNotifications] = useState(5); // Placeholder for unread notifications
+  const [unreadNotifications, setUnreadNotifications] = useState(0); // Placeholder for unread notifications
+  const username = getUsernameFromToken();
 
   const toggleSection = (section) => {
     if (activeSection === section) {
@@ -35,6 +38,21 @@ const Home = () => {
     setIsSettingsVisible(false); // Hide settings when notifications is toggled
     setUnreadNotifications(0); // Reset unread count on open
   };
+
+  const fetchUnreadNotifications = async () => {
+    try {
+      const response = await axios.get(`https://elosystemv1.onrender.com/api/notifications/${username}`);
+      const unreadNotifications = response.data.filter(notification => !notification.isRead);
+      setUnreadNotifications(unreadNotifications.length);
+    } catch (err) {
+      console.error('Failed to fetch notifications');
+    }
+  };
+  
+  if (username) {
+    fetchUnreadNotifications();
+  }
+
 
   useEffect(() => {
     if (activeSection === 'product-list') {

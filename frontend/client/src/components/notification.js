@@ -1,13 +1,14 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button } from 'react-bootstrap';
+import { getUsernameFromToken } from '../utils/auth';
 import './styles/notification.css'; // Import CSS for styling
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [error, setError] = useState('');
   const [showAll, setShowAll] = useState(false); // Toggle between all and unread notifications
-  const username = 'kinyi';
+  const username = getUsernameFromToken();
 
   useEffect(() => {
     const fetchNotifications = async () => {
