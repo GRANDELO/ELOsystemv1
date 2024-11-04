@@ -109,7 +109,6 @@ const categories = [
 
 ];
 
-
 const NewProductForm = () => {
   const lusername = getUsernameFromToken();
   const fileInputRef = useRef(null);
@@ -121,9 +120,9 @@ const NewProductForm = () => {
     description: '',
     username: lusername,
     quantity: '',
-    images: [], // Now an array for multiple images
+    image: null, // Add image field here
   });
-
+  
   const [subCategories, setSubCategories] = useState([]);
   const [dragging, setDragging] = useState(false);
   const [message, setMessage] = useState('');
@@ -139,9 +138,8 @@ const NewProductForm = () => {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === 'images') {
-      const newImages = Array.from(files).filter(file => file.type.startsWith('image/')); // Filter for image files
-      setNewProduct({ ...newProduct, images: [...newProduct.images, ...newImages] });
+    if (name === 'image') {
+      setNewProduct({ ...newProduct, image: files[0] }); // Update image field
     } else {
       setNewProduct({
         ...newProduct,
@@ -153,9 +151,9 @@ const NewProductForm = () => {
   const handleDrop = (e) => {
     e.preventDefault();
     setDragging(false);
-    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/')); // Filter for image files
+    const files = e.dataTransfer.files;
     if (files.length > 0) {
-      setNewProduct({ ...newProduct, images: [...newProduct.images, ...files] });
+      setNewProduct({ ...newProduct, image: files[0] });
     }
   };
 
@@ -183,29 +181,16 @@ const NewProductForm = () => {
     formData.append('description', newProduct.description);
     formData.append('username', newProduct.username);
     formData.append('quantity', newProduct.quantity);
-
-    // Append each image to formData
-    newProduct.images.forEach((image, index) => {
-      formData.append(`images[${index}]`, image);
-    });
+    if (newProduct.image) {
+      formData.append('image', newProduct.image); // Include the image in the form data
+    }
 
     try {
       const res = await axios.post('https://elosystemv1.onrender.com/api/products', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      console.log('New product created:', res.data);
+      console.log('NewProduct created:', res.data);
       setMessage('Product created successfully');
-      // Reset the form
-      setNewProduct({
-        name: '',
-        category: '',
-        subCategory: '',
-        price: '',
-        description: '',
-        username: lusername,
-        quantity: '',
-        images: [],
-      });
     } catch (err) {
       console.error(err);
       setMessage('Error creating product');
@@ -265,11 +250,10 @@ const NewProductForm = () => {
         onChange={handleChange}
       />
       <label>
-        Images:
+        Image:
         <input
           type="file"
-          name="images"
-          multiple // Allow multiple file selection
+          name="image"
           onChange={handleChange}
           ref={fileInputRef}
           style={{ display: 'none' }}
@@ -281,18 +265,11 @@ const NewProductForm = () => {
           onDrop={handleDrop}
           onClick={handleClick}
         >
-          {newProduct.images.length > 0 
-            ? newProduct.images.map((img, index) => (
-                <div key={index}>
-                  <p>{img.name}</p>
-                  <img src={URL.createObjectURL(img)} alt={img.name} style={{ width: '50px', height: '50px', objectFit: 'cover', marginRight: '10px' }} />
-                </div>
-              ))
-            : 'Drag and drop images or click to select'}
+          {newProduct.image ? newProduct.image.name : 'Drag and drop an image or click to select'}
         </div>
       </label>
 
-      <button type="submit">Create Product</button>
+      <button type="submit">Create NewProduct</button>
       {message && <p>{message}</p>}
     </form>
   );
