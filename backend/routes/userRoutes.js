@@ -6,21 +6,21 @@ const UserController = require('../controllers/userController');
 router.get('/users', UserController.getAllUsers);
 
 // Disable a user
-router.patch('/user/disable/:userId', UserController.disableUser);
+router.patch('/disable/:userId', UserController.disableUser);
 
 // Undo disable a user
-router.patch('/user/undo-disable/:userId', UserController.undoDisableUser);
+router.patch('/undo-disable/:userId', UserController.undoDisableUser);
 
 // Show a graph of registration dates
-router.get('/users/registration-graph', UserController.getRegistrationDatesGraph);
+router.get('/registration-graph', UserController.getRegistrationDatesGraph);
 
 // Show active users
-router.get('/users/active', UserController.getActiveUsers);
+router.get('/active', UserController.getActiveUsers);
 
 // Show disabled users
-router.get('/users/disabled', UserController.getDisabledUsers);
+router.get('/disabled', UserController.getDisabledUsers);
 
 // Show unverified users
-router.get('/users/unverified', UserController.getUnverifiedUsers);
+router.get('/unverified', UserController.getUnverifiedUsers);
 
 module.exports = router;
