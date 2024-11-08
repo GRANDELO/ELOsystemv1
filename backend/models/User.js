@@ -12,6 +12,7 @@ const UserSchema = new mongoose.Schema({
   category: { type: String, required: true },
   verificationCode: { type: String },
   isVerified: { type: Boolean, default: false },
+  isDisabled: { type: Boolean, default: false },
   passwordRecoveryToken: { type: String, default: undefined },
   tokenExpiry: { type: Date, default: undefined },
   createdAt: { type: Date, default: Date.now },
