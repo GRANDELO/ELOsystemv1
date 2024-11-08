@@ -1,71 +1,49 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
-import './styles/Sales.css';
 
-const Sales = () => {
-    const [salesData, setSalesData] = useState({
-        labels: [],
-        datasets: [{
-            label: 'Sales',
-            data: [],
-            fill: false,
-            backgroundColor: '#42A5F5',
-            borderColor: '#42A5F5',
-        }]
-    });
-    const [recentSales, setRecentSales] = useState([]);
+const FinancialSummary = () => {
+  const [summary, setSummary] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchSalesData = async () => {
-            try {
-                const res = await axios.get('https://elosystemv1.onrender.com/api/dash/sales/monthly');
-                const data = res.data;
+  useEffect(() => {
+    const fetchSummary = async () => {
+      try {
+        const response = await axios.get('https://elosystemv1.onrender.com/api/financials/summary');
+        setSummary(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError('Error fetching financial data');
+        setLoading(false);
+      }
+    };
 
-                setSalesData({
-                    labels: data.map(sale => sale.month),
-                    datasets: [{
-                        label: 'Sales',
-                        data: data.map(sale => sale.total),
-                        fill: false,
-                        backgroundColor: '#42A5F5',
-                        borderColor: '#42A5F5',
-                    }]
-                });
-            } catch (err) {
-                console.error('Error fetching sales data:', err);
-            }
-        };
+    fetchSummary();
+  }, []);
 
-        const fetchRecentSales = async () => {
-            try {
-                const res = await axios.get('https://elosystemv1.onrender.com/api/dash/sales/recent');
-                setRecentSales(res.data);
-            } catch (err) {
-                console.error('Error fetching recent sales:', err);
-            }
-        };
+  if (loading) return <p>Loading financial data...</p>;
+  if (error) return <p>{error}</p>;
 
-        fetchSalesData();
-        fetchRecentSales();
-    }, []);
-
-    return (
-        <div className="sales-container">
-            <h1>Sales Overview</h1>
-            <div style={{ width: '80%', margin: '0 auto' }}>
-                <Line data={salesData} />
-            </div>
-            <div className="recent-sales">
-                <h2>Recent Sales</h2>
-                <ul>
-                    {recentSales.map(sale => (
-                        <li key={sale.id}>{sale.description} - ${sale.amount}</li>
-                    ))}
-                </ul>
-            </div>
-        </div>
-    );
+  return (
+    <div>
+      <h2>Financial Summary</h2>
+      <p><strong>Total Income:</strong> {summary.totalIncome}</p>
+      <p><strong>Total Expenses:</strong> {summary.totalExpenses}</p>
+      <p><strong>Net Balance:</strong> {summary.netBalance}</p>
+      <h3>Monthly Sales:</h3>
+      <ul>
+        {Object.entries(summary.monthlySales).map(([month, data]) => (
+          <li key={month}>
+            <strong>{month}</strong> - Income: {data.income}, Expenses: {data.expenses}
+          </li>
+        ))}
+      </ul>
+      <p><strong>Total Transactions:</strong> {summary.totalTransactions}</p>
+      <p><strong>Average Income per Transaction:</strong> {summary.avgIncome}</p>
+      <p><strong>Average Expenses per Transaction:</strong> {summary.avgExpenses}</p>
+      <p><strong>Last Updated:</strong> {new Date(summary.lastUpdated).toLocaleString()}</p>
+    </div>
+  );
 };
 
-export default Sales;
+export default FinancialSummary;
