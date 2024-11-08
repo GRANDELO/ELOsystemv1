@@ -20,6 +20,7 @@ const locations = require('./routes/locations');
 const mpesaRoutes = require('./routes/mpesaRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
 const notificationRoutes = require('./routes/notifications');
+const financialsRoute = require('./routes/financials');
 
 const uploadDir = path.join(__dirname, 'uploads');
 
@@ -55,7 +56,7 @@ app.use(locations);
 app.use('/api/mpesa', mpesaRoutes);
 app.use('/api/employees', employeeRoutes);
 app.use('/api/notifications', notificationRoutes);
-
+app.use('/api/financials', financialsRoute);
 
 app.use((req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);
