@@ -1,6 +1,7 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { getUsernameFromToken, getcategoryFromToken } from '../utils/auth';
 import './styles/Login.css';
 
 const Login = () => {
@@ -10,6 +11,25 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [recoverpassword, setRecoverPassword] = useState(false);
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+
+  useEffect(() => {
+    if (token) {
+      sessionStorage.setItem('userToken', token);
+      const category = getcategoryFromToken();
+      const trimmedCategory = category?.trim().toLowerCase(); // Add optional chaining for safety
+      const storedUsername = getUsernameFromToken();
+      sessionStorage.setItem('username', storedUsername);
+
+      if (trimmedCategory === 'seller') {
+        navigate('/home');
+      } else if (trimmedCategory === 'admin') {
+        navigate('/dashboard');
+      } else {
+        navigate('/salespersonhome');
+      }
+    }
+  }, [token, navigate]); // Include navigate as a dependency
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,17 +41,16 @@ const Login = () => {
       sessionStorage.setItem('userToken', response.data.token);
       localStorage.setItem('token', response.data.token);
       sessionStorage.setItem('amount', response.data.amount);
-      
-      if (response.data.category.trim().toLowerCase() === 'seller'){
-        navigate('/home');
+
+      const category = response.data.category.trim().toLowerCase();
+      if (category === 'seller') {
         sessionStorage.setItem('username', response.data.username);
-      }else if (response.data.category.trim().toLowerCase() === 'admin')
-      {
+        navigate('/home');
+      } else if (category === 'admin') {
         navigate('/dashboard');
-      }else{
+      } else {
         navigate('/salespersonhome');
       }
-      
     } catch (error) {
       if (error.response && error.response.data) {
         setMessage(error.response.data.message);
@@ -56,14 +75,13 @@ const Login = () => {
       if (error.response && error.response.data) {
         setMessage(error.response.data.message);
       } else {
-        setMessage('An error occurred while processing your request..');
+        setMessage('An error occurred while processing your request.');
       }
     }
   };
 
   return (
     <div className="container">
-      
       <form onSubmit={recoverpassword ? sendRecovEmail : handleSubmit}>
         {!recoverpassword ? (
           <div>
