@@ -10,6 +10,7 @@
     "chart.js": "^4.4.6",
     "cors": "^2.8.5",
     "express": "^4.19.2",
+    "file-saver": "^2.0.5",
     "gridfs-stream": "^1.1.1",
     "jwt-decode": "^4.0.0",
     "mongoose": "^8.5.1",

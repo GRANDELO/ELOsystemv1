@@ -1,79 +1,58 @@
-/* src/components/Users.css */
-
-.users-container {
+.usal-dashboard {
     padding: 20px;
-}
-
-.filter-container {
+    max-width: 900px;
+    margin: auto;
+  }
+  
+  .usal-dashboard-title {
+    font-size: 2rem;
+    text-align: center;
     margin-bottom: 20px;
+  }
+  
+  .usal-section {
+    margin-bottom: 30px;
+  }
+  
+  .usal-section-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+  
+  .usal-user-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .usal-user-item {
     display: flex;
-    align-items: center;
-}
-
-.filter-container input {
-    margin-right: 10px;
-    padding: 5px;
-}
-
-.filter-container select {
-    margin-right: 10px;
-    padding: 5px;
-}
-
-.users-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.users-table th, .users-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-.users-table th {
-    background-color: #f4f4f4;
-}
-
-.pagination {
-    margin-top: 20px;
-}
-
-.pagination button {
-    margin: 0 5px;
-    padding: 5px 10px;
-    cursor: pointer;
-}
-
-.pagination button.active {
-    background-color: #007bff;
-    color: white;
-    border: none;
-}
-
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background: #fff;
-    padding: 20px;
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    width: 50%;
-    position: relative;
-}
-
-.close {
-    position: absolute;
-    top: 10px;
-    right: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .usal-btn {
+    margin: 5px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 20px;
-}
+  }
+  
+  .usal-btn-disable {
+    background-color: #ff6666;
+    color: white;
+  }
+  
+  .usal-btn-enable {
+    background-color: #66cc66;
+    color: white;
+  }
+  
+  .usal-chart {
+    max-width: 600px;
+    margin: 20px auto;
+  }
+  
