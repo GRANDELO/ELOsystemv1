@@ -4,6 +4,9 @@ const mongoose = require('mongoose');
 const http = require('http');
 const socketIo = require('socket.io');
 const fs = require('fs');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const morgan = require('morgan');
 const path = require('path');
 require('dotenv').config();
 require('./worker');
@@ -30,8 +33,47 @@ if (!fs.existsSync(uploadDir)) {
 
 
 const app = express();
-app.use(cors());
+
+const allowedOrigins = ['https://grandelo.web.app'];
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',  // Allowed HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'],  // Allowed headers
+  credentials: true,  // Allow sending cookies from client
+};
+
+app.use(helmet({
+  contentSecurityPolicy: false,  // Disable this if you're using inline scripts or styles
+  crossOriginEmbedderPolicy: true,
+  crossOriginResourcePolicy: { policy: "same-origin" },
+  dnsPrefetchControl: true,
+  expectCt: true,
+  frameguard: { action: 'deny' },  // Prevent clickjacking
+  hidePoweredBy: true,  // Hides 'X-Powered-By' header
+  hsts: { maxAge: 31536000, includeSubDomains: true },  // Enforce HTTPS
+  noSniff: true,  // Prevent MIME-type sniffing
+  xssFilter: true,  // Basic XSS protection
+})); 
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: 'Too many requests from this IP, please try again after 15 minutes',
+});
+
+
+app.use(morgan('dev'));
+app.use(cors(corsOptions));
 app.use(express.json());
+app.use(limiter);
 
 const port = process.env.PORT || 5000;
 mongoose.set('strictQuery', true);
@@ -79,7 +121,12 @@ const io = socketIo(server, {
   cors: {
     origin: "*",
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  }
+    allowedHeaders: ['Authorization'],
+    credentials: true,
+  },
+  reconnection: true,
+  reconnectionAttempts: 5,
+  reconnectionDelay: 2000,
 });
 
 io.on('connection', (socket) => {
@@ -92,3 +139,4 @@ io.on('connection', (socket) => {
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
