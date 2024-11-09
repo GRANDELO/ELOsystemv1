@@ -34,7 +34,7 @@ if (!fs.existsSync(uploadDir)) {
 
 const app = express();
 
-const allowedOrigins = ['https://grandelo.web.app'];
+const allowedOrigins = ['https://grandelo.web.app', 'http://locahost:3000'];
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
