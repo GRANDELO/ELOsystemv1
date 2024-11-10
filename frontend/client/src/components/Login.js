@@ -21,13 +21,6 @@ const Login = () => {
       const storedUsername = getUsernameFromToken();
       sessionStorage.setItem('username', storedUsername);
 
-      if (trimmedCategory === 'seller') {
-        navigate('/home');
-      } else if (trimmedCategory === 'admin') {
-        navigate('/dashboard');
-      } else {
-        navigate('/salespersonhome');
-      }
     }
   }, [token, navigate]); // Include navigate as a dependency
 

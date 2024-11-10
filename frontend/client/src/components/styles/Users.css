@@ -56,3 +56,28 @@
     margin: 20px auto;
   }
   
+  /* Hide options initially */
+.usal-user-options {
+  margin-top: 10px;
+}
+
+/* Add some spacing to the user info and button */
+.usal-btn-more {
+  margin-top: 10px;
+}
+
+/* Optional: Style for expand/collapse buttons */
+.usal-btn-more {
+  background-color: #007bff;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+}
+.usal-btn-more:hover {
+  background-color: #0056b3;
+}
+
+.usal-btn-disable, .usal-btn-enable {
+  margin-top: 5px;
+}

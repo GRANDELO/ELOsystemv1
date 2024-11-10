@@ -5,19 +5,21 @@ import Reports from './Reports';
 import Sales from './Sales';
 import Users from './User';
 import UserChart from './UserChart';
+import Header from './header';
 import './styles/Dashboard.css';
 
 const Dashboard = () => {
     const [view, setView] = useState('summary');
     const [totalUsers, setTotalUsers] = useState(0);
     const [activeUsers, setActiveUsers] = useState(0);
-    const [sales, setSales] = useState(0);
     const [recentActivities, setRecentActivities] = useState([]);
     const navigate = useNavigate();
+    const [summary, setSummary] = useState(null);
 
     const handleLogout = () => {
-      navigate('/logout');
+        navigate('/logout');
     };
+
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
@@ -27,8 +29,8 @@ const Dashboard = () => {
                 const activeUsersRes = await axios.get('https://elosystemv1.onrender.com/api/dash/users/active-count');
                 setActiveUsers(activeUsersRes.data.count);
 
-                const salesRes = await axios.get('https://elosystemv1.onrender.com/api/dash/sales/total');
-                setSales(salesRes.data.total);
+                const response = await axios.get('https://elosystemv1.onrender.com/api/financials/summary');
+                setSummary(response.data);
 
                 const activitiesRes = await axios.get('https://elosystemv1.onrender.com/api/dash/activities/recent');
                 setRecentActivities(activitiesRes.data);
@@ -42,8 +44,9 @@ const Dashboard = () => {
 
     return (
         <div className="dashboard-container">
+            <Header/>
             <nav>
-            <button onClick={handleLogout}>Logout</button>
+                <button onClick={handleLogout}>Logout</button>
                 <button
                     className={`nav-button ${view === 'summary' ? 'active' : ''}`}
                     onClick={() => setView('summary')}
@@ -90,7 +93,9 @@ const Dashboard = () => {
                             </div>
                             <div className="metric">
                                 <h2>Total Sales</h2>
-                                <p>{sales}</p>
+                                <p className={`sal-amount ${summary && summary.netBalance >= 0 ? 'sal-positive' : 'sal-negative'}`}>
+                                    {summary ? summary.netBalance.toLocaleString() : 'Loading...'}
+                                </p>
                             </div>
                         </div>
                         <div className="recent-activities">
