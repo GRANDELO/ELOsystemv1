@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Form } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { getUsernameFromToken } from '../utils/auth';
 import './styles/OrderingPage.css';
@@ -20,11 +20,13 @@ const OrderingPage = () => {
   const [areas, setAreas] = useState([]);
   const [selectedArea, setSelectedArea] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // Extract sellerOrderId and productId from the URL params
-  const sellerOrderId = queryParams.get('sellerOrderId');
+  // Extract query parameters from URL
+  const queryParams = new URLSearchParams(location.search);
   const productId = queryParams.get('productId');
-  
+  const sellerOrderId = queryParams.get('sellerOrderId');
+
   useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);
@@ -59,7 +61,9 @@ const OrderingPage = () => {
     fetchLocations();
   }, []);
 
-  const handlePaymentMethodChange = (e) => setPaymentMethod(e.target.value);
+  const handlePaymentMethodChange = (e) => {
+    setPaymentMethod(e.target.value);
+  };
 
   const handleMpesaPhoneNumberChange = (e) => {
     const phoneNumber = e.target.value;
@@ -76,16 +80,17 @@ const OrderingPage = () => {
   const handleTownChange = (e) => {
     const selectedTown = e.target.value;
     setSelectedTown(selectedTown);
-    const town = towns.find(t => t.town === selectedTown);
+    const town = towns.find((t) => t.town === selectedTown);
     setAreas(town ? town.areas : []);
   };
 
-  const handleAreaChange = (e) => setSelectedArea(e.target.value);
-
+  const handleAreaChange = (e) => {
+    setSelectedArea(e.target.value);
+  };
 
   const handleSubmitOrder = async () => {
     if (!paymentMethod || !selectedTown || !selectedArea || (paymentMethod === 'mpesa' && !mpesaPhoneNumber)) {
-      setError('Please complete all required fields.');
+      setError('Please select a payment method, provide a delivery destination, and enter M-Pesa phone number if applicable.');
       return;
     }
 
@@ -94,40 +99,50 @@ const OrderingPage = () => {
       return;
     }
 
-    const orderReference = uuidv4(); // Unique order reference
-    const orderDetails = {
-      productId,
-      quantity: 1,
-      paymentMethod,
-      destination: `${selectedTown}, ${selectedArea}`,
-      orderDate: new Date().toISOString(),
-      username,
-      mpesaPhoneNumber: paymentMethod === 'mpesa' ? mpesaPhoneNumber : undefined,
-      orderReference,
-      sellerOrderId
-    };
+    const orderReference = uuidv4(); // Generate unique order reference
+    const totalPrice = product.price; // Assuming quantity = 1 for simplicity
 
     try {
+      const orderDetails = {
+        items: [{ productId, quantity: 1 }],
+        totalPrice,
+        paymentMethod,
+        destination: `${selectedTown}, ${selectedArea}`,
+        orderDate: new Date().toISOString(),
+        username,
+        mpesaPhoneNumber: paymentMethod === 'mpesa' ? mpesaPhoneNumber : undefined,
+        orderReference,
+        sellerOrderId,
+      };
+
       const response = await axios.post('https://elosystemv1.onrender.com/api/orders', orderDetails);
       setMessage(response.data.message);
 
       if (paymentMethod === 'mpesa') {
-        const paymentPayload = {
+        const payload = {
           phone: mpesaPhoneNumber,
-          amount: product.price.toFixed(0),
-          orderReference
+          amount: totalPrice.toFixed(0),
+          orderReference: orderReference,
         };
 
         try {
-          const mpesaResponse = await axios.post('https://elosystemv1.onrender.com/api/mpesa/lipa', paymentPayload);
+          const response = await axios.post('https://elosystemv1.onrender.com/api/mpesa/lipa', payload, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
           setMessage('Payment initiated successfully!');
-          setTimeout(() => navigate('/salespersonhome'), 3000);
-        } catch (paymentError) {
-          setMessage('Payment initiation failed.');
-          console.error('Error:', paymentError);
+          setTimeout(() => {
+            navigate('/salespersonhome');
+          }, 3000);
+        } catch (error) {
+          setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
+          console.error('Error:', error);
         }
       } else {
-        setTimeout(() => navigate('/salespersonhome'), 3000);
+        setTimeout(() => {
+          navigate('/salespersonhome');
+        }, 3000);
       }
     } catch (err) {
       console.error('Failed to submit order:', err);
@@ -142,14 +157,18 @@ const OrderingPage = () => {
     <div className="ordering-page">
       <h1>Order Page</h1>
       {message && <Alert variant="success">{message}</Alert>}
+      <h2>Total Price: Ksh {product?.price.toFixed(2)}</h2>
+
+      {/* Display Product Details */}
       {product && (
         <div>
-          <h2>{product.name}</h2>
-          <p>Price: Ksh {product.price.toFixed(2)}</p>
+          <h3>{product.name}</h3>
+          <p>Price: Ksh {product.price}</p>
+          <p>{product.description}</p>
         </div>
       )}
-      
-      {/* Delivery and Payment Form */}
+
+      {/* Delivery Destination */}
       <Form.Group>
         <Form.Label>Town</Form.Label>
         <Form.Control as="select" value={selectedTown} onChange={handleTownChange}>
@@ -176,23 +195,47 @@ const OrderingPage = () => {
         </Form.Group>
       )}
 
-      <Form.Group>
-        <Form.Label>Payment Method</Form.Label>
-        <Form.Check type="radio" label="M-Pesa" name="paymentMethod" value="mpesa" checked={paymentMethod === 'mpesa'} onChange={handlePaymentMethodChange} />
-        <Form.Check type="radio" label="Cash on Delivery" name="paymentMethod" value="cod" checked={paymentMethod === 'cod'} onChange={handlePaymentMethodChange} />
-      </Form.Group>
-
-      {paymentMethod === 'mpesa' && (
+      {/* Payment Method Selection */}
+      <Form>
         <Form.Group>
-          <Form.Label>M-Pesa Phone Number</Form.Label>
-          <Form.Control type="text" value={mpesaPhoneNumber} onChange={handleMpesaPhoneNumberChange} placeholder="2547XXXXXXXX" />
-          {mpesaPhoneNumberError && <Alert variant="danger">{mpesaPhoneNumberError}</Alert>}
+          <Form.Label>Payment Method</Form.Label>
+          <Form.Check
+            type="radio"
+            label="M-Pesa"
+            name="paymentMethod"
+            value="mpesa"
+            checked={paymentMethod === 'mpesa'}
+            onChange={handlePaymentMethodChange}
+          />
+          <Form.Check
+            type="radio"
+            label="Cash on Delivery"
+            name="paymentMethod"
+            value="cod"
+            checked={paymentMethod === 'cod'}
+            onChange={handlePaymentMethodChange}
+          />
         </Form.Group>
-      )}
 
-      <Button variant="primary" onClick={handleSubmitOrder}>
-        Submit Order
-      </Button>
+        {/* M-Pesa Phone Number */}
+        {paymentMethod === 'mpesa' && (
+          <Form.Group>
+            <Form.Label>M-Pesa Phone Number</Form.Label>
+            <Form.Control
+              type="text"
+              value={mpesaPhoneNumber}
+              onChange={handleMpesaPhoneNumberChange}
+              placeholder="2547XXXXXXXX"
+            />
+            {mpesaPhoneNumberError && <Alert variant="danger">{mpesaPhoneNumberError}</Alert>}
+          </Form.Group>
+        )}
+
+        {/* Submit Order Button */}
+        <Button variant="primary" onClick={handleSubmitOrder}>
+          Submit Order
+        </Button>
+      </Form>
     </div>
   );
 };
