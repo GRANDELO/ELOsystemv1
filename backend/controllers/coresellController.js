@@ -1,7 +1,7 @@
 // controllers/coresellController.js
 
 const { CoreSellOrder } = require('../models/CoreSellOrder');
-const { Product } = require('../models/Product');
+const { Product } = require('../models/oProduct');
 const crypto = require('crypto');
 
 exports.createCoreSellOrder = async (req, res) => {
