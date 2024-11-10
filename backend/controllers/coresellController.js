@@ -1,4 +1,4 @@
-const { CoreSellOrder } = require('../models/CoreSellOrder');
+const CoreSellOrder = require('../models/CoreSellOrder');
 const Product = require('../models/oProduct');
 const crypto = require('crypto');
 
@@ -11,16 +11,7 @@ exports.createCoreSellOrder = async (req, res) => {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
-    console.log(mpesaNumber);
-    console.log(username);
-    console.log(productId);
-    // Debug request body data
-    console.log('Received data:', req.body);
-
-    // Check if the product exists
     const product = await Product.findById(productId);
-    console.log('Product found:', product);
-
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
