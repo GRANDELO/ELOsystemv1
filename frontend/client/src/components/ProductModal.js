@@ -54,7 +54,7 @@ const ProductModal = ({ product, show, handleClose }) => {
       setMessage('');
       setError('');
 
-      const response = await axios.post('https://elosystemv1.onrender.com/api/coresell/transaction', {
+      const response = await axios.post('https://elosystemv1.onrender.com/api/coresell/initiate', {
         username,
         mpesaNumber,
         productId: product._id,

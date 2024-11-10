@@ -1,5 +1,3 @@
-// controllers/coresellController.js
-
 const { CoreSellOrder } = require('../models/CoreSellOrder');
 const { Product } = require('../models/oProduct');
 const crypto = require('crypto');
@@ -9,12 +7,17 @@ exports.createCoreSellOrder = async (req, res) => {
     const { mpesaNumber, username, productId } = req.body;
 
     // Validate inputs
-    if (!mpesaNumber || !username || !productId ) {
+    if (!mpesaNumber || !username || !productId) {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
+    // Debug request body data
+    console.log('Received data:', req.body);
+
     // Check if the product exists
     const product = await Product.findById(productId);
+    console.log('Product found:', product);
+
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
