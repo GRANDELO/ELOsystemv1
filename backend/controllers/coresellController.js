@@ -11,6 +11,9 @@ exports.createCoreSellOrder = async (req, res) => {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
+    console.log(mpesaNumber);
+    console.log(username);
+    console.log(productId);
     // Debug request body data
     console.log('Received data:', req.body);
 
