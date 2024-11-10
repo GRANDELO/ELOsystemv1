@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import RequireAuth from './RequireAuth'; // Import the authentication check component
-import ProtectedRoute from './components/ProtectRoute';
 import Dashboard from './components/Dashboard';
 import ImageList from './components/ImageList';
 import ImageUpload from './components/ImageUpload';
@@ -18,6 +17,7 @@ import Order from "./components/OrderingPage";
 import PaymentForm from './components/PaymentForm';
 import ProductForm from './components/ProductForm';
 import ProductList from './components/ProductsList';
+import ProtectedRoute from './components/ProtectRoute';
 import Register from './components/Register';
 import Reports from './components/Reports';
 import Sales from './components/Sales';
@@ -27,6 +27,7 @@ import UserChart from './components/UserChart';
 import Verification from './components/Verification';
 import Employies from './components/admin/employies';
 import Packingpage from './components/admin/packingpage';
+import Coreordering from './components/coreordering';
 import Displayorder from './components/displayorder';
 import Home from './components/home';
 import Image from './components/image';
@@ -82,6 +83,8 @@ const App = () => {
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/success" element={<Success />} />
+          <Route path="/coreorder/:sellerOrderId/:productId" element={<Coreordering />} />
+
 
           {/* Protected routes */}
           <Route element={<RequireAuth />}>*
@@ -115,6 +118,7 @@ const App = () => {
             <Route path="/sales" element={<Sales />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/order" element={<Order />} />
+
             <Route path="/regdeliverypeople" element={<Regdeliverypeople />} />
             <Route path="/newproductform" element={<NewProductForm />} />
             <Route path="/newproductlist" element={<NewProductList />} />

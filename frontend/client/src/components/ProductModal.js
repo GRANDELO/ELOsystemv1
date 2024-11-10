@@ -12,8 +12,9 @@ const ProductModal = ({ product, show, handleClose }) => {
   const [error, setError] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [mpesaNumber, setMpesaNumber] = useState('');
-  const [showMpesaInput, setShowMpesaInput] = useState(false); // New state for MPesa input visibility
+  const [showMpesaInput, setShowMpesaInput] = useState(false); 
   const [showQrCode, setShowQrCode] = useState(false);
+  const [sellerOrderId, setSellerOrderId] = useState(''); // New state for sellerOrderId
   const username = getUsernameFromToken();
 
   const handleAddToCart = async () => {
@@ -39,7 +40,7 @@ const ProductModal = ({ product, show, handleClose }) => {
   };
 
   const handleCoreSellButtonClick = () => {
-    setShowMpesaInput(true); // Show MPesa input when Core Sell button is clicked
+    setShowMpesaInput(true); 
     setMessage('');
     setError('');
   };
@@ -61,6 +62,7 @@ const ProductModal = ({ product, show, handleClose }) => {
       });
 
       setMessage('Core sell completed! You can now download the product info and QR code.');
+      setSellerOrderId(response.data.sellerOrderId); // Save sellerOrderId from response
       setShowQrCode(true);
 
     } catch (err) {
@@ -105,7 +107,8 @@ const ProductModal = ({ product, show, handleClose }) => {
         setMessage(''); 
         setError(''); 
         setShowQrCode(false); 
-        setShowMpesaInput(false); // Reset MPesa input visibility on close
+        setShowMpesaInput(false); 
+        setSellerOrderId(''); // Reset sellerOrderId on close
       }}
     >
       <Modal.Header closeButton>
@@ -135,7 +138,7 @@ const ProductModal = ({ product, show, handleClose }) => {
           Core Sell
         </Button>
 
-        {/* MPesa Number input for Core Sell (only shown if showMpesaInput is true) */}
+        {/* MPesa Number input for Core Sell */}
         {showMpesaInput && (
           <>
             <Form.Group controlId="mpesaNumber" className="mt-3">
@@ -153,11 +156,11 @@ const ProductModal = ({ product, show, handleClose }) => {
           </>
         )}
 
-        {showQrCode && (
+        {showQrCode && sellerOrderId && (
           <div className="qr-section mt-4">
             <QRCodeCanvas
               id="qrCode"
-              value={`Order for ${product.name} by ${username}`}
+              value={`https://grandelo.web.app/coreorder?sellerOrderId=${sellerOrderId}&productId=${product._id}`}
               size={150}
             />
             <Button variant="primary" className="mt-3" onClick={downloadQRCode}>
@@ -175,7 +178,8 @@ const ProductModal = ({ product, show, handleClose }) => {
           setMessage(''); 
           setError(''); 
           setShowQrCode(false); 
-          setShowMpesaInput(false); // Reset MPesa input visibility on close
+          setShowMpesaInput(false); 
+          setSellerOrderId(''); 
         }}>
           Close
         </Button>
