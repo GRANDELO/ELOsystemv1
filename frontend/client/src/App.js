@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import RequireAuth from './RequireAuth'; // Import the authentication check component
+import ProtectedRoute from './components/ProtectRoute';
 import Dashboard from './components/Dashboard';
 import ImageList from './components/ImageList';
 import ImageUpload from './components/ImageUpload';
@@ -83,16 +84,31 @@ const App = () => {
           <Route path="/success" element={<Success />} />
 
           {/* Protected routes */}
-          <Route element={<RequireAuth />}>
-            <Route path="/dashboard" element={<Dashboard />} />
+          <Route element={<RequireAuth />}>*
+            <Route path="/dashboard"
+              element={
+                <ProtectedRoute>
+                 <Dashboard />
+                </ProtectedRoute>
+                 } />
             <Route path="/verification" element={<Verification />} />
-            <Route path="/home" element={<Home />} />
+            <Route path="/home" 
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              } />
             <Route path="/productForm" element={<ProductForm />} />
             <Route path="/reset-password" element={<Passwordrecovery />} />
             <Route path="/products" element={<ProductList />} />
             <Route path="/seller" element={<Seller />} />
             <Route path="/upload" element={<Upload />} />
-            <Route path="/salespersonhome" element={<Salespersonhome />} />
+            <Route path="/salespersonhome" 
+               element={
+                <ProtectedRoute>
+                  <Salespersonhome />
+                </ProtectedRoute>
+               } />
             <Route path="/userChart" element={<UserChart />} />
             <Route path="/users" element={<Users />} />
             <Route path="/reports" element={<Reports />} />

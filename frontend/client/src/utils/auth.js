@@ -13,6 +13,17 @@ export const getUsernameFromToken = () => {
     return null;
   }
 };
+export const getToken = () => {
+  return localStorage.getItem('token');
+};
+
+export const removeToken = () => {
+  localStorage.removeItem('token');
+};
+
+export const isAuthenticated = () => {
+  return !!getToken();
+};
 export const getemailFromToken = () => {
   const token = sessionStorage.getItem('userToken');
   if (!token) return null;
