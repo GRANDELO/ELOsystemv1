@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { QRCodeCanvas } from 'qrcode.react'; // Import QRCodeCanvas instead of QRCode
+import { QRCodeCanvas } from 'qrcode.react';
 import React, { useState } from 'react';
 import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { useCart } from '../contexts/CartContext';
@@ -12,6 +12,7 @@ const ProductModal = ({ product, show, handleClose }) => {
   const [error, setError] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [mpesaNumber, setMpesaNumber] = useState('');
+  const [showMpesaInput, setShowMpesaInput] = useState(false); // New state for MPesa input visibility
   const [showQrCode, setShowQrCode] = useState(false);
   const username = getUsernameFromToken();
 
@@ -19,7 +20,7 @@ const ProductModal = ({ product, show, handleClose }) => {
     try {
       setMessage('');
       setError('');
-      
+
       if (quantity < 1) {
         setError('Quantity must be at least 1');
         return;
@@ -37,6 +38,12 @@ const ProductModal = ({ product, show, handleClose }) => {
     }
   };
 
+  const handleCoreSellButtonClick = () => {
+    setShowMpesaInput(true); // Show MPesa input when Core Sell button is clicked
+    setMessage('');
+    setError('');
+  };
+
   const handleCoreSell = async () => {
     if (!mpesaNumber) {
       setError('Please enter your MPesa number');
@@ -47,7 +54,7 @@ const ProductModal = ({ product, show, handleClose }) => {
       setMessage('');
       setError('');
 
-      const response = await axios.post('https://elosystemv1.onrender.com/api/transaction', {
+      const response = await axios.post('https://elosystemv1.onrender.com/api/coresell/transaction', {
         username,
         mpesaNumber,
         productId: product._id,
@@ -93,7 +100,13 @@ const ProductModal = ({ product, show, handleClose }) => {
     <Modal 
       className="custom-modal" 
       show={show} 
-      onHide={() => { handleClose(); setMessage(''); setError(''); setShowQrCode(false); }}
+      onHide={() => { 
+        handleClose(); 
+        setMessage(''); 
+        setError(''); 
+        setShowQrCode(false); 
+        setShowMpesaInput(false); // Reset MPesa input visibility on close
+      }}
     >
       <Modal.Header closeButton>
         <Modal.Title>{product.name}</Modal.Title>
@@ -117,20 +130,28 @@ const ProductModal = ({ product, show, handleClose }) => {
           />
         </Form.Group>
 
-        {/* MPesa Number input for Core Sell */}
-        <Form.Group controlId="mpesaNumber" className="mt-3">
-          <Form.Label>MPesa Number for Core Sell</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter your MPesa number"
-            value={mpesaNumber}
-            onChange={(e) => setMpesaNumber(e.target.value)}
-          />
-        </Form.Group>
-        
-        <Button variant="warning" className="mt-3" onClick={handleCoreSell}>
+        {/* Core Sell Button */}
+        <Button variant="warning" className="mt-3" onClick={handleCoreSellButtonClick}>
           Core Sell
         </Button>
+
+        {/* MPesa Number input for Core Sell (only shown if showMpesaInput is true) */}
+        {showMpesaInput && (
+          <>
+            <Form.Group controlId="mpesaNumber" className="mt-3">
+              <Form.Label>MPesa Number</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter your MPesa number"
+                value={mpesaNumber}
+                onChange={(e) => setMpesaNumber(e.target.value)}
+              />
+            </Form.Group>
+            <Button variant="success" className="mt-3" onClick={handleCoreSell}>
+              Confirm Core Sell
+            </Button>
+          </>
+        )}
 
         {showQrCode && (
           <div className="qr-section mt-4">
@@ -149,7 +170,13 @@ const ProductModal = ({ product, show, handleClose }) => {
         )}
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={() => { handleClose(); setMessage(''); setError(''); setShowQrCode(false); }}>
+        <Button variant="secondary" onClick={() => { 
+          handleClose(); 
+          setMessage(''); 
+          setError(''); 
+          setShowQrCode(false); 
+          setShowMpesaInput(false); // Reset MPesa input visibility on close
+        }}>
           Close
         </Button>
         <Button variant="primary" onClick={handleAddToCart}>
