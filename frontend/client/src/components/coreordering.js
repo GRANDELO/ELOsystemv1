@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Form } from 'react-bootstrap';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { getUsernameFromToken } from '../utils/auth';
 import './styles/OrderingPage.css';
@@ -22,8 +22,9 @@ const OrderingPage = () => {
   const navigate = useNavigate();
 
   // Extract sellerOrderId and productId from the URL params
-  const { sellerOrderId, productId } = useParams();
-
+  const sellerOrderId = queryParams.get('sellerOrderId');
+  const productId = queryParams.get('productId');
+  
   useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);
@@ -81,7 +82,7 @@ const OrderingPage = () => {
 
   const handleAreaChange = (e) => setSelectedArea(e.target.value);
 
-  
+
   const handleSubmitOrder = async () => {
     if (!paymentMethod || !selectedTown || !selectedArea || (paymentMethod === 'mpesa' && !mpesaPhoneNumber)) {
       setError('Please complete all required fields.');

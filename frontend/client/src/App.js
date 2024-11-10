@@ -83,7 +83,7 @@ const App = () => {
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/success" element={<Success />} />
-          <Route path="/coreorder/:sellerOrderId/:productId" element={<Coreordering />} />
+          <Route path="/coreorder" element={<Coreordering />} />
 
 
           {/* Protected routes */}
