@@ -9,38 +9,46 @@ const ProductPerformance = require('../models/ProductPerformance');
 const {increateNotification} = require('./notificationController');
 // Create Order
 exports.createOrder = async (req, res) => {
-  const { items, totalPrice, paymentMethod, destination, orderDate, username, orderReference } = req.body;
+  const {
+    items,
+    totalPrice,
+    paymentMethod,
+    destination,
+    orderDate,
+    username,
+    orderReference,
+    sellerOrderId = undefined, // Default to undefined if not provided
+  } = req.body;
 
-  console.log();
   try {
-    if (!items ) {
-      return res.status(400).json({ message: 'Missing required fields '+  items +'ddddddddddd'});
+    // Validate required fields
+    if (!items) {
+      return res.status(400).json({ message: 'Missing required field: items' });
     }
     if (!totalPrice) {
-      return res.status(400).json({ message: 'Missing required fields' +totalPrice  +'ddddddddddd'});
+      return res.status(400).json({ message: 'Missing required field: totalPrice' });
     }
-    if (!paymentMethod ) {
-      return res.status(400).json({ message: 'Missing required fields' +paymentMethod +'ddddddddddd'});
+    if (!paymentMethod) {
+      return res.status(400).json({ message: 'Missing required field: paymentMethod' });
     }
-    if (!destination ) {
-      return res.status(400).json({ message: 'Missing required fields' + destination+'ddddddddddd'});
+    if (!destination) {
+      return res.status(400).json({ message: 'Missing required field: destination' });
     }
-    if (!orderDate ) {
-      return res.status(400).json({ message: 'Missing required fields' +orderDate +'ddddddddddd'});
+    if (!orderDate) {
+      return res.status(400).json({ message: 'Missing required field: orderDate' });
     }
-    if ( !username) {
-      return res.status(400).json({ message: 'Missing required fields' +username +'ddddddddddd' });
+    if (!username) {
+      return res.status(400).json({ message: 'Missing required field: username' });
     }
-    if ( !orderReference) {
-      return res.status(400).json({ message: 'Missing required fields' +orderReference +'ddddddddddd' });
+    if (!orderReference) {
+      return res.status(400).json({ message: 'Missing required field: orderReference' });
     }
-    
 
     // Find an available delivery person with role "delivery" and status "available"
     const deliveryPerson = await Employee.findOne({ role: 'delivery', status: 'available' }).sort({ createdAt: 1 });
 
-    // Create the order
-    const order = new Order({
+    // Create the order, conditionally include sellerOrderId only if it is provided
+    const orderData = {
       items,
       totalPrice,
       paymentMethod,
@@ -52,17 +60,12 @@ exports.createOrder = async (req, res) => {
       isDeliveryInProcess: false,
       isDelivered: false,
       packed: false,
-      orderReference
-    });
+      orderReference,
+      ...(sellerOrderId && { sellerOrderId }) // Only include sellerOrderId if it's provided
+    };
 
+    const order = new Order(orderData);
     await order.save();
-
-    // Update delivery person status to "assigned" if found
-    /*
-    if (deliveryPerson) {
-      deliveryPerson.status = 'assigned';
-      await deliveryPerson.save();
-    }*/
 
     res.status(201).json({ message: 'Order created successfully', order });
   } catch (err) {
@@ -70,6 +73,7 @@ exports.createOrder = async (req, res) => {
     res.status(400).json({ message: 'Failed to create order', error: err.message });
   }
 };
+
 
 // Fetch All Orders with Populated Delivery Person Info
 exports.getOrder = async (req, res) => {

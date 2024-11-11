@@ -21,8 +21,8 @@ const orderSchema = new mongoose.Schema({
   isDelivered: { type: Boolean, default: false },
   username: { type: String, required: true },
   CheckoutRequestID: { type: String},
-  orderReference: { type: String, required: true }
-
+  orderReference: { type: String, required: true },
+  sellerOrderId: { type: String, default: undefined},
 });
 
 const Order = mongoose.model('Order', orderSchema);

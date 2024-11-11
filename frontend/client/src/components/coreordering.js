@@ -163,6 +163,7 @@ const OrderingPage = () => {
       {product && (
         <div>
           <h3>{product.name}</h3>
+          <img src={product.image} alt={product.name} className="product-image" />
           <p>Price: Ksh {product.price}</p>
           <p>{product.description}</p>
         </div>
