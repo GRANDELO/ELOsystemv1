@@ -1,4 +1,5 @@
 const Order = require('../models/Order');
+const CoreSellOrder = require('../models/CoreSellOrder');
 const Employee = require('../models/Employee'); // Replace DeliveryPerson with Employee
 const Product = require('../models/oProduct'); // Adjust this path as needed
 const sendEmail = require('../services/emailService');
@@ -484,10 +485,16 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
   // Check if order has a sellerOrderId to determine the model
   const order = await Order.findOne({ orderNumber });
   const useAlternativeModel = Boolean(order && order.sellerOrderId);
+  if (useAlternativeModel)
+    {
+      const coreseller = await CoreSellOrder.findOne({ sellerOrderId: order.sellerOrderId });
+      const coresellerUsername = coreseller.username;
+    }
+  
   console.log(useAlternativeModel);
   
   for (const product of products) {
-    const { username, price, quantity, coresellerUsername } = product;
+    const { username, price, quantity } = product;
 
     // Determine which percentages to use based on the presence of sellerOrderId
     const sellerPercentage = useAlternativeModel ? alternativeSellerPercentage : defaultSellerPercentage;
