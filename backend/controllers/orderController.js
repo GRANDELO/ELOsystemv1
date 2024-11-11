@@ -471,34 +471,57 @@ Bazelink`;
 
 
 const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
-  const sellerPercentage = 0.8; // Always 80% for the seller
-  const defaultCompanyPercentage = 0.2; // 20% for the company if no coreseller
-  const coresellerPercentage = 0.1; // 10% for coreseller if sellerOrderId is present
-  const reducedCompanyPercentage = 0.1; // 10% for company if coreseller is present
+  // Define the default and alternative percentages
+  const defaultSellerPercentage = 0.8;
+  const defaultCompanyPercentage = 0.2;
+  const alternativeSellerPercentage = 0.8;
+  const alternativeCompanyPercentage = 0.1;
+  const coresellerPercentage = 0.1;
 
   const earningsData = {};
 
   for (const product of products) {
     const { username, price, quantity, sellerOrderId, coresellerUsername } = product;
 
-    const currentCompanyPercentage = sellerOrderId ? reducedCompanyPercentage : defaultCompanyPercentage;
+    // Check if sellerOrderId is present and choose the appropriate model
+    let sellerPercentage, companyPercentage, coresellerEarnings;
+    if (sellerOrderId) {
+      // Apply alternative model with coreseller
+      sellerPercentage = alternativeSellerPercentage;
+      companyPercentage = alternativeCompanyPercentage;
+      coresellerEarnings = price * quantity * coresellerPercentage;
+    } else {
+      // Apply default model without coreseller
+      sellerPercentage = defaultSellerPercentage;
+      companyPercentage = defaultCompanyPercentage;
+      coresellerEarnings = 0; // No coreseller earnings if sellerOrderId is absent
+    }
+
+    // Calculate earnings based on selected model
     const sellerEarnings = price * quantity * sellerPercentage;
-    const companyEarnings = price * quantity * currentCompanyPercentage;
-    const coresellerEarnings = sellerOrderId ? price * quantity * coresellerPercentage : 0;
+    const companyEarnings = price * quantity * companyPercentage;
 
     // Initialize earnings data for this seller if it doesn't exist
     if (!earningsData[username]) {
-      earningsData[username] = { sellerEarnings: 0, companyEarnings: 0, coresellerEarnings: 0 };
+      earningsData[username] = {
+        sellerEarnings: 0,
+        companyEarnings: 0,
+        coresellerEarnings: 0,
+      };
     }
 
-    // Accumulate seller and company earnings
+    // Accumulate seller, company, and coreseller earnings for this seller
     earningsData[username].sellerEarnings += sellerEarnings;
     earningsData[username].companyEarnings += companyEarnings;
 
-    // Accumulate coreseller earnings if applicable
-    if (sellerOrderId && coresellerUsername) {
+    // If coreseller earnings are applicable, accumulate those too
+    if (coresellerEarnings && coresellerUsername) {
       if (!earningsData[coresellerUsername]) {
-        earningsData[coresellerUsername] = { coresellerEarnings: 0 };
+        earningsData[coresellerUsername] = {
+          sellerEarnings: 0,
+          companyEarnings: 0,
+          coresellerEarnings: 0,
+        };
       }
       earningsData[coresellerUsername].coresellerEarnings += coresellerEarnings;
     }
@@ -513,29 +536,24 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
       continue;
     }
 
-    // Update user balances for seller and coreseller
-    if (data.sellerEarnings) {
-      user.amount += data.sellerEarnings;
-      await user.save();
-      console.log(`Earnings recorded for ${username}: $${data.sellerEarnings.toFixed(2)}`);
-    }
-
-    if (data.coresellerEarnings) {
-      user.amount += data.coresellerEarnings;
-      await user.save();
-      console.log(`Earnings recorded for coreseller ${username}: $${data.coresellerEarnings.toFixed(2)}`);
-    }
+    // Update user balance
+    const oldbal = user.amount;
+    const newbal = oldbal + data.sellerEarnings + data.coresellerEarnings;
+    user.amount = newbal;
+    await user.save();
 
     totalCompanyEarnings += data.companyEarnings;
 
-    // Record transaction in the ledger for both seller and coreseller
+    // Record transaction in the ledger
     await TransactionLedger.create({
       orderId: orderNumber,
       seller: username,
-      sellerEarnings: data.sellerEarnings || 0,
+      sellerEarnings: data.sellerEarnings,
       coresellerEarnings: data.coresellerEarnings || 0,
-      companyEarnings: data.companyEarnings
+      companyEarnings: data.companyEarnings,
     });
+
+    console.log(`Earnings recorded for ${username}`);
   }
 
   // Retrieve or create the CompanyFinancials record
@@ -543,9 +561,9 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
   if (!financialRecord) {
     console.warn('Financial record not found, creating a new one.');
     financialRecord = new CompanyFinancials({
-      totalIncome: 0, 
+      totalIncome: 0,
       netBalance: 0,
-      transactions: []
+      transactions: [],
     });
     await financialRecord.save();
   }
@@ -558,22 +576,25 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
         transactions: {
           transactionType: 'income',
           amount: totalCompanyEarnings,
-          description: `Earnings from order ${orderNumber}`
-        }
+          description: `Earnings from order ${orderNumber}`,
+        },
       },
       $inc: {
         totalIncome: totalCompanyEarnings,
-        netBalance: totalCompanyEarnings
+        netBalance: totalCompanyEarnings,
       },
-      updatedAt: new Date()
+      updatedAt: new Date(),
     }
   );
 
+  // Log the result of the update operation to check if it succeeded
   console.log('Update result for CompanyFinancials:', updateResult);
 
   const message = `Sales processed successfully for order ${orderNumber}. Total company earnings: $${totalCompanyEarnings.toFixed(2)}`;
   return { message };
 };
+
+
 
 
 const notifyOutOfStockAndDelete = async () => {
