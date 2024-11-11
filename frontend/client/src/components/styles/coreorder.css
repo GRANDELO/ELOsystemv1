@@ -1,126 +1,174 @@
-/* Container and general layout */
-.ordcore-ordering-page {
-  padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
+/* General Styling */
+body, .ordcore-ordering-page {
   font-family: Arial, sans-serif;
+  background-color: #f4f7fb;
   color: #333;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
 }
 
-.ordcore-ordering-page h1,
-.ordcore-ordering-page h2,
-.ordcore-ordering-page h3 {
-  color: #1a73e8;
-  margin-bottom: 15px;
+/* Container Styling */
+.ordcore-ordering-page {
+  max-width: 700px;
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px 30px;
 }
 
-.ordcore-ordering-page p {
-  font-size: 0.95em;
-  color: #555;
-}
-
-/* Product details */
-.ordcore-product-details {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 15px;
-  margin-bottom: 20px;
+/* Heading */
+.ordcore-heading {
   text-align: center;
-  background-color: #f9f9f9;
+  color: #333;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+/* Alert Styling */
+.ordcore-alert {
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.ordcore-message {
+  color: #28a745;
+  text-align: center;
+}
+
+/* Total Price */
+.ordcore-total-price {
+  text-align: center;
+  color: #e63946;
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin-top: 1rem;
+}
+
+/* Product Details Styling */
+.ordcore-product-details {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f7f9fc;
+  border: 1px solid #e5e9f2;
+  text-align: center;
+}
+
+.ordcore-product-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #2a9d8f;
+  margin-bottom: 10px;
 }
 
 .ordcore-product-image {
   max-width: 100%;
   height: auto;
-  border-radius: 5px;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+.ordcore-product-price {
+  color: #333;
+  font-size: 1.2rem;
   margin: 10px 0;
+  font-weight: 600;
 }
 
-/* Forms and labels */
+.ordcore-product-description {
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* Form Group Styling */
 .ordcore-form-group {
-  margin-bottom: 15px;
+  margin-top: 1.5rem;
 }
 
-.ordcore-form-label {
-  font-weight: bold;
-  margin-bottom: 5px;
-  display: block;
-}
-
-.ordcore-form-select,
-.ordcore-form-input {
+.ordcore-select, .ordcore-form-control, .ordcore-phone-number {
   width: 100%;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  font-size: 0.95em;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+  transition: border-color 0.3s ease;
 }
 
-/* Payment options */
-.ordcore-payment-method {
-  margin: 20px 0;
+.ordcore-select:focus, .ordcore-form-control:focus, .ordcore-phone-number:focus {
+  outline: none;
+  border-color: #2a9d8f;
 }
 
-.ordcore-payment-method label {
-  font-size: 0.95em;
-  margin-left: 5px;
+/* Radio Button Styling */
+.ordcore-radio-label {
+  display: block;
+  margin-top: 10px;
+  font-weight: 500;
+  font-size: 1rem;
   color: #333;
 }
 
-/* Alerts */
-.ordcore-alert-warning,
-.ordcore-alert-danger,
-.ordcore-alert-success {
-  margin: 15px 0;
-  padding: 10px;
-  border-radius: 5px;
-  color: #fff;
+.ordcore-radio-label input {
+  margin-right: 8px;
 }
 
-.ordcore-alert-warning {
-  background-color: #ffcc00;
+/* Mpesa Phone Number Error Styling */
+.ordcore-form-control.is-invalid {
+  border-color: #e63946;
 }
 
-.ordcore-alert-danger {
-  background-color: #d9534f;
+.ordcore-form-control .ordcore-phone-number {
+  color: #e63946;
 }
 
-.ordcore-alert-success {
-  background-color: #5cb85c;
-}
-
-/* Button */
-.ordcore-submit-button {
+/* Button Styling */
+.ordcore-submit-btn {
   display: block;
   width: 100%;
+  background-color: #2a9d8f;
+  color: #fff;
   padding: 12px;
-  font-size: 1em;
-  background-color: #1a73e8;
-  color: white;
+  font-size: 1rem;
+  font-weight: 600;
   border: none;
   border-radius: 5px;
+  margin-top: 20px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease;
 }
 
-.ordcore-submit-button:hover {
-  background-color: #1558b5;
+.ordcore-submit-btn:hover {
+  background-color: #21867a;
+}
+
+.ordcore-submit-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.3);
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .ordcore-ordering-page {
     padding: 15px;
   }
 
-  .ordcore-product-details,
-  .ordcore-form-select,
-  .ordcore-form-input {
-    font-size: 0.9em;
+  .ordcore-heading {
+    font-size: 1.8rem;
   }
 
-  .ordcore-submit-button {
-    padding: 10px;
-    font-size: 0.9em;
+  .ordcore-total-price {
+    font-size: 1.3rem;
+  }
+
+  .ordcore-product-name {
+    font-size: 1.2rem;
+  }
+
+  .ordcore-product-price, .ordcore-submit-btn {
+    font-size: 0.95rem;
   }
 }
