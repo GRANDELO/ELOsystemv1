@@ -46,30 +46,38 @@ const ProductModal = ({ product, show, handleClose }) => {
   };
 
   const handleCoreSell = async () => {
+    const mpesaRegex = /^(2547|2541)\d{8}$/;
+  
     if (!mpesaNumber) {
       setError('Please enter your MPesa number');
       return;
     }
-
+  
+    if (!mpesaRegex.test(mpesaNumber)) {
+      setError('Please enter a valid MPesa number starting with 2547 or 2541 and followed by 8 digits');
+      return;
+    }
+  
     try {
       setMessage('');
       setError('');
-
+  
       const response = await axios.post('https://elosystemv1.onrender.com/api/coresell/initiate', {
         username,
         mpesaNumber,
         productId: product._id,
       });
-
+  
       setMessage('Core sell completed! You can now download the product info and QR code.');
       setSellerOrderId(response.data.sellerOrderId); // Save sellerOrderId from response
       setShowQrCode(true);
-
+  
     } catch (err) {
       console.error('Failed to complete core sell:', err);
       setError(err.response?.data?.message || 'Core sell failed');
     }
   };
+  
 
   const downloadProductInfo = () => {
     const dataStr = `
