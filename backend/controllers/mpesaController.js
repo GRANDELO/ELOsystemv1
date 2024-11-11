@@ -144,6 +144,34 @@ exports.b2cRequestHandler = async (req, res) => {
   }
 };
 
+exports.b2cRequestHandler = async (Amount, Phonenumber) => {
+    try {
+      const accessToken = await getAccessToken();
+      const securityCredential = process.env.SECURITYCREDENTIAL; // Your Security Credential here
+      const url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest";
+      const response = await axios.post(url, {
+        InitiatorName: "BAZELINK",
+        SecurityCredential: securityCredential,
+        CommandID: "PromotionPayment",
+        Amount: Amount,
+        PartyA: process.env.REGISTER_BUSINESS_SHORT_CODE,
+        PartyB: Phonenumber, // Phone number to receive funds
+        Remarks: "Withdrawal",
+        QueueTimeOutURL: "https://elosystemv1.onrender.com/api/newpay/b2c/queue",
+        ResultURL: "https://elosystemv1.onrender.com/api/newpay/b2c/result",
+        Occasion: "Withdrawal",
+      }, {
+        headers: { Authorization: "Bearer " + accessToken }
+      });
+  
+      return "Payment done succesfully";
+    } catch (error) {
+      console.log(error);
+      return "❌ B2C request failed";
+    }
+  };
+  
+
 exports.queue = (req, res) => {
     console.log("All queue transactions will be sent to this URL");
     console.log(req.body);

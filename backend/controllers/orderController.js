@@ -7,6 +7,9 @@ const TransactionLedger = require('../models/TransactionLedger'); // Adjust the 
 const CompanyFinancials = require('../models/CompanyFinancials'); // Adjust path as necessary
 const ProductPerformance = require('../models/ProductPerformance');
 const {increateNotification} = require('./notificationController');
+const {b2cRequestHandler} = require("../controllers/mpesaController");
+const CoreSellOrder = require('../models/CoreSellOrder');
+
 // Create Order
 exports.createOrder = async (req, res) => {
   const {
@@ -474,6 +477,11 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
   const order = await Order.findOne({ orderNumber });
   const sellerOrderId = order ? order.sellerOrderId : undefined;
 
+  if(sellerOrderId)
+    {
+      const coreseller = await CoreSellOrder.findOne({ sellerOrderId });
+    }
+
   // Set default percentages
   const defaultSellerPercentage = 0.8;
   const defaultCompanyPercentage = 0.2;
@@ -521,6 +529,12 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
     totalCompanyEarnings += data.companyEarnings;
 
     // Record transaction in the ledger
+    if(coreseller)
+      {
+        const resp = await b2cRequestHandler(data.coSellerEarnings, coreseller.mpesaNumber);
+        console.log(resp);
+      }
+
     await TransactionLedger.create({
       orderId: orderNumber,
       seller: username,
