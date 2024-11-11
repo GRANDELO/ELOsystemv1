@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { io } from 'socket.io-client';
-import RequireAuth from './RequireAuth'; // Import the authentication check component
+//import RequireAuth from './RequireAuth'; // Import the authentication check component
 import ProtectedRoute from './components/ProtectRoute';
 import Dashboard from './components/Dashboard';
 import ImageList from './components/ImageList';
@@ -83,8 +83,8 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/success" element={<Success />} />
 
-          {/* Protected routes */}
-          <Route element={<RequireAuth />}>*
+          {/* Protected routes 
+          <Route element={<RequireAuth />}>*/}
             <Route path="/dashboard"
               element={
                 <ProtectedRoute>
@@ -130,7 +130,7 @@ const App = () => {
             <Route path="/productperfomance" element={<Productperfomance />} />
             <Route path="/employies" element={<Employies />} />
             <Route path="/packingpage" element={<Packingpage />} />
-          </Route>
+          {/*</Route>*/}
         </Routes>
       </div>
     </Router>
