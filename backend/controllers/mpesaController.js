@@ -57,7 +57,7 @@ exports.stkPushHandler = async (req, res) => {
       PartyA: "254742243421", // Phone number to receive the STK push
       PartyB: process.env.BUSINESS_SHORT_CODE,
       PhoneNumber: "254742243421",
-      CallBackURL: process.env.CALLBACK_URL,
+      CallBackURL: "https://elosystemv1.onrender.com/api/newmpesa/callback",
       AccountReference: "BAZELINK",
       TransactionDesc: 'Payment for Order',
     }, {
@@ -70,6 +70,7 @@ exports.stkPushHandler = async (req, res) => {
     res.status(500).send("❌ STK Push request failed");
   }
 };
+
 
 // STK Push Callback Handler
 exports.stkPushCallbackHandler = (req, res) => {
@@ -87,10 +88,10 @@ exports.registerURLHandler = async (req, res) => {
     const accessToken = await getAccessToken();
     const url = "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl";
     const response = await axios.post(url, {
-      ShortCode: "174379",
+      ShortCode: process.env.BUSINESS_SHORT_CODE,
       ResponseType: "Complete",
-      ConfirmationURL: "http://example.com/confirmation",
-      ValidationURL: "http://example.com/validation",
+      ConfirmationURL: "https://elosystemv1.onrender.com/api/newmpesa/confirmation",
+      ValidationURL: "https://elosystemv1.onrender.com/api/newmpesa/validation",
     }, {
       headers: { Authorization: "Bearer " + accessToken }
     });
