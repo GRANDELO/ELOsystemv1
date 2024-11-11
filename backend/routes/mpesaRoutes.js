@@ -69,7 +69,7 @@ router.post('/lipa', async (req, res) => {
             PartyB: businessShortCode,
             PhoneNumber: req.body.phone,
             CallBackURL: callbackURL,
-            AccountReference: 'GRANDELO',
+            AccountReference: 'BAZELINK',
             TransactionDesc: 'Payment for Order',
         };
 

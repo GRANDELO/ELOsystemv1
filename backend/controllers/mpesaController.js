@@ -42,7 +42,7 @@ exports.stkPushHandler = async (req, res) => {
     const url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
     const timestamp = moment().format("YYYYMMDDHHmmss");
     const passkey = process.env.PASS_KEY;
-    const businessShortCode = process.env.REGISTER_BUSINESS_SHORT_CODE;
+    const businessShortCode = process.env.BUSINESS_SHORT_CODE;
     const password = Buffer.from(`${businessShortCode}${passkey}${timestamp}`).toString('base64');
 
 
