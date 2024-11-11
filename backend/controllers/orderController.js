@@ -469,70 +469,46 @@ Bazelink`;
   }
 };
 
+const TransactionLedgerfuc = async (totalAmount, products, orderNumber, ) => {
 
-const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
-  // Define the default and alternative percentages
+  const orders = await Order.find({ orderNumber});
+  if(orders)
+    {
+      const sellerOrderId = orders.sellerOrderId;
+    }else{
+      const sellerOrderId = undefined;
+    }
+  // Set default percentages
   const defaultSellerPercentage = 0.8;
   const defaultCompanyPercentage = 0.2;
 
-  const alternativeSellerPercentage = 0.8;
-  const alternativeCompanyPercentage = 0.1;
-  const coresellerPercentage = 0.1;
+  // Set adjusted percentages if co-seller is involved
+  const sellerPercentage = sellerOrderId ? 0.8 : defaultSellerPercentage;
+  const coSellerPercentage = sellerOrderId ? 0.1 : 0; 
+  const companyPercentage = sellerOrderId ? 0.1 : defaultCompanyPercentage;
 
   const earningsData = {};
-
-  // Check if order has a sellerOrderId to determine the model
-  const order = await Order.findOne({ orderNumber });
-  const useAlternativeModel = Boolean(order && order.sellerOrderId);
-  console.log(useAlternativeModel);
-
-  // Retrieve the coreseller details if sellerOrderId exists
-  let coresellerUsername = null;
-  if (useAlternativeModel) {
-    const coreSellOrder = await CoreSellOrder.findOne({ sellerOrderId: order.sellerOrderId });
-    if (coreSellOrder) {
-      coresellerUsername = coreSellOrder.username;
-      console.log(`Coreseller username: ${coresellerUsername}`);
-    } else {
-      console.warn(`No coreseller found for sellerOrderId: ${order.sellerOrderId}`);
-    }
-  }
 
   for (const product of products) {
     const { username, price, quantity } = product;
 
-    // Determine which percentages to use based on the presence of sellerOrderId
-    const sellerPercentage = useAlternativeModel ? alternativeSellerPercentage : defaultSellerPercentage;
-    const companyPercentage = useAlternativeModel ? alternativeCompanyPercentage : defaultCompanyPercentage;
-    const coresellerEarnings = coresellerUsername
-      ? price * quantity * coresellerPercentage
-      : 0;
-
-    // Calculate seller and company earnings
     const sellerEarnings = price * quantity * sellerPercentage;
+    const coSellerEarnings = sellerOrderId ? price * quantity * coSellerPercentage : 0;
     const companyEarnings = price * quantity * companyPercentage;
 
     // Initialize earnings data for this seller if it doesn't exist
     if (!earningsData[username]) {
-      earningsData[username] = { sellerEarnings: 0, companyEarnings: 0, coresellerEarnings: 0 };
+      earningsData[username] = { sellerEarnings: 0, coSellerEarnings: 0, companyEarnings: 0 };
     }
 
-    // Accumulate seller and company earnings for this seller
+    // Accumulate seller, co-seller, and company earnings for this seller
     earningsData[username].sellerEarnings += sellerEarnings;
     earningsData[username].companyEarnings += companyEarnings;
-
-    // If coreseller is involved, accumulate earnings under coresellerUsername
-    if (coresellerEarnings > 0 && coresellerUsername) {
-      if (!earningsData[coresellerUsername]) {
-        earningsData[coresellerUsername] = { sellerEarnings: 0, companyEarnings: 0, coresellerEarnings: 0 };
-      }
-      earningsData[coresellerUsername].coresellerEarnings += coresellerEarnings;
-    }
+    earningsData[username].coSellerEarnings += coSellerEarnings;
   }
 
   let totalCompanyEarnings = 0;
 
-  // Process each user in earningsData
   for (const [username, data] of Object.entries(earningsData)) {
     const user = await User.findOne({ username });
     if (!user) {
@@ -540,30 +516,23 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
       continue;
     }
 
-    // Update user balance by adding seller and coreseller earnings (if any)
-    user.amount += data.sellerEarnings + data.coresellerEarnings;
+    // Update user balance
+    const oldbal = user.amount;
+    const newbal = oldbal + data.sellerEarnings;
+    user.amount = newbal;
     await user.save();
 
     totalCompanyEarnings += data.companyEarnings;
 
-    // Log the coreseller earnings before storing it in the ledger
-    if (data.coresellerEarnings > 0) {
-      console.log(`Coreseller earnings for ${username}: $${data.coresellerEarnings.toFixed(2)}`);
-    }
-
-    // Record transaction in the ledger for sellers and coresellers
-    const transactionData = {
+    // Record transaction in the ledger
+    await TransactionLedger.create({
       orderId: orderNumber,
       seller: username,
       sellerEarnings: data.sellerEarnings,
-      coresellerEarnings: data.coresellerEarnings || 0,  // Ensure coresellerEarnings is set, even if 0
       companyEarnings: data.companyEarnings,
-    };
+      coSellerEarnings: data.coSellerEarnings || 0, // Set to 0 if no co-seller earnings
+    });
 
-    // Log the transaction data before saving it to the ledger
-    console.log('Transaction Data:', transactionData);
-
-    await TransactionLedger.create(transactionData);
     console.log(`Earnings recorded for ${username}`);
   }
 
@@ -572,12 +541,14 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
   if (!financialRecord) {
     console.warn('Financial record not found, creating a new one.');
     financialRecord = new CompanyFinancials({
-      totalIncome: 0,
+      totalIncome: 0, 
       netBalance: 0,
-      transactions: [],
+      transactions: []
     });
     await financialRecord.save();
   }
+
+  console.log('CompanyFinancials record:', financialRecord);
 
   // Update the CompanyFinancials with transaction details
   const updateResult = await CompanyFinancials.updateOne(
@@ -587,14 +558,14 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
         transactions: {
           transactionType: 'income',
           amount: totalCompanyEarnings,
-          description: `Earnings from order ${orderNumber}`,
-        },
+          description: `Earnings from order ${orderNumber}`
+        }
       },
       $inc: {
         totalIncome: totalCompanyEarnings,
-        netBalance: totalCompanyEarnings,
+        netBalance: totalCompanyEarnings
       },
-      updatedAt: new Date(),
+      updatedAt: new Date()
     }
   );
 
