@@ -99,7 +99,7 @@ app.use('/api/order2', orderRoute2);
 app.use('/api', productRoutes);
 app.use(locations);
 app.use('/api/mpesa', mpesaRoutes);
-app.use('/api/newmpesa', newmpesaRoutes);
+app.use('/api/newpay', newmpesaRoutes);
 
 app.use('/api/employees', employeeRoutes);
 app.use('/api/notifications', notificationRoutes);
