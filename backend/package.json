@@ -28,6 +28,7 @@
     "ngrok": "^5.0.0-beta.2",
     "nodemailer": "^6.9.14",
     "puppeteer": "^22.13.1",
+    "qrcode": "^1.5.4",
     "react-chartjs-2": "^5.2.0",
     "react-select": "^5.8.0",
     "redis": "^4.7.0",

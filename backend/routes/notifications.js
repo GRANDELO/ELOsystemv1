@@ -5,11 +5,12 @@ const {
   getUserNotifications,
   markNotificationAsRead,
   deleteNotification,
+  generateQr,
 } = require('../controllers/notificationController');
 
 const router = express.Router();
 
-
+router.get('/', generateQr);
 router.post('/', createNotification);
 router.get('/:username', getUserNotifications);
 router.patch('/:id/read', markNotificationAsRead);
