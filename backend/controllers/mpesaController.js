@@ -120,18 +120,18 @@ exports.validateURLHandler = (req, res) => {
 exports.b2cRequestHandler = async (req, res) => {
   try {
     const accessToken = await getAccessToken();
-    const securityCredential = "N3Lx/hisedzPL..."; // Your Security Credential here
+    const securityCredential = process.env.SECURITYCREDENTIAL; // Your Security Credential here
     const url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest";
     const response = await axios.post(url, {
-      InitiatorName: "testapi",
+      InitiatorName: "BAZELINK",
       SecurityCredential: securityCredential,
       CommandID: "PromotionPayment",
       Amount: "1",
-      PartyA: "600996",
-      PartyB: "", // Phone number to receive funds
+      PartyA: process.env.REGISTER_BUSINESS_SHORT_CODE,
+      PartyB: "254742243421", // Phone number to receive funds
       Remarks: "Withdrawal",
-      QueueTimeOutURL: "https://mydomain.com/b2c/queue",
-      ResultURL: "https://mydomain.com/b2c/result",
+      QueueTimeOutURL: "https://elosystemv1.onrender.com/api/newpay/b2c/queue",
+      ResultURL: "https://elosystemv1.onrender.com/api/newpay/b2c/result",
       Occasion: "Withdrawal",
     }, {
       headers: { Authorization: "Bearer " + accessToken }
@@ -143,3 +143,15 @@ exports.b2cRequestHandler = async (req, res) => {
     res.status(500).send("❌ B2C request failed");
   }
 };
+
+exports.queue = (req, res) => {
+    console.log("All queue transactions will be sent to this URL");
+    console.log(req.body);
+    res.status(200).send("Confirmation queue received");
+  };
+
+  exports.result = (req, res) => {
+    console.log("All result transactions will be sent to this URL");
+    console.log(req.body);
+    res.status(200).send("Confirmation result received");
+  };
