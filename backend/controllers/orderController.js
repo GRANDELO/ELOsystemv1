@@ -470,24 +470,37 @@ Bazelink`;
 
 
 const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
-  const sellerPercentage = 0.8; // 80% for the seller
-  const companyPercentage = 0.2; // 20% for the company
+  // Find the order by orderNumber and retrieve sellerOrderId
+  const order = await Order.findOne({ orderNumber });
+  const sellerOrderId = order ? order.sellerOrderId : undefined;
+
+  // Set default percentages
+  const defaultSellerPercentage = 0.8;
+  const defaultCompanyPercentage = 0.2;
+
+  // Adjust percentages if a co-seller is involved
+  const sellerPercentage = sellerOrderId ? 0.8 : defaultSellerPercentage;
+  const coSellerPercentage = sellerOrderId ? 0.1 : 0; 
+  const companyPercentage = sellerOrderId ? 0.1 : defaultCompanyPercentage;
 
   const earningsData = {};
 
   for (const product of products) {
     const { username, price, quantity } = product;
+
     const sellerEarnings = price * quantity * sellerPercentage;
+    const coSellerEarnings = sellerOrderId ? price * quantity * coSellerPercentage : 0;
     const companyEarnings = price * quantity * companyPercentage;
 
     // Initialize earnings data for this seller if it doesn't exist
     if (!earningsData[username]) {
-      earningsData[username] = { sellerEarnings: 0, companyEarnings: 0 };
+      earningsData[username] = { sellerEarnings: 0, coSellerEarnings: 0, companyEarnings: 0 };
     }
 
-    // Accumulate seller and company earnings for this seller
+    // Accumulate seller, co-seller, and company earnings
     earningsData[username].sellerEarnings += sellerEarnings;
     earningsData[username].companyEarnings += companyEarnings;
+    earningsData[username].coSellerEarnings += coSellerEarnings;
   }
 
   let totalCompanyEarnings = 0;
@@ -512,13 +525,14 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
       orderId: orderNumber,
       seller: username,
       sellerEarnings: data.sellerEarnings,
-      companyEarnings: data.companyEarnings
+      companyEarnings: data.companyEarnings,
+      coSellerEarnings: data.coSellerEarnings || 0, // Defaults to 0 if no co-seller
     });
 
     console.log(`Earnings recorded for ${username}`);
   }
 
-  // Retrieve the CompanyFinancials record or create a new one if not found
+  // Retrieve or create the CompanyFinancials record
   let financialRecord = await CompanyFinancials.findOne({});
   if (!financialRecord) {
     console.warn('Financial record not found, creating a new one.');
@@ -530,7 +544,6 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
     await financialRecord.save();
   }
 
-  // Log the financialRecord to confirm retrieval or creation
   console.log('CompanyFinancials record:', financialRecord);
 
   // Update the CompanyFinancials with transaction details
@@ -552,7 +565,6 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
     }
   );
 
-  // Log the result of the update operation to check if it succeeded
   console.log('Update result for CompanyFinancials:', updateResult);
 
   const message = `Sales processed successfully for order ${orderNumber}. Total company earnings: $${totalCompanyEarnings.toFixed(2)}`;
