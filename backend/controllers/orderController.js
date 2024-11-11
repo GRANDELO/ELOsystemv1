@@ -485,10 +485,11 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
   // Check if order has a sellerOrderId to determine the model
   const order = await Order.findOne({ orderNumber });
   const useAlternativeModel = Boolean(order && order.sellerOrderId);
+  let coresellerUsername = '';
   if (useAlternativeModel)
     {
       const coreseller = await CoreSellOrder.findOne({ sellerOrderId: order.sellerOrderId });
-      const coresellerUsername = coreseller.username;
+      coresellerUsername = coreseller.username;
     }
   
   console.log(useAlternativeModel);
