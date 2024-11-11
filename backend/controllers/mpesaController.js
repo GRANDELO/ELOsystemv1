@@ -42,20 +42,20 @@ exports.stkPushHandler = async (req, res) => {
     const url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
     const timestamp = moment().format("YYYYMMDDHHmmss");
     const passkey = process.env.PASS_KEY;
-    const businessShortCode = process.env.BUSINESS_SHORT_CODE;
+    const businessShortCode = process.env.REGISTER_BUSINESS_SHORT_CODE;
     const password = Buffer.from(`${businessShortCode}${passkey}${timestamp}`).toString('base64');
 
 
 
 
     const response = await axios.post(url, {
-      BusinessShortCode: process.env.REGISTER_BUSINESS_SHORT_CODE,
+      BusinessShortCode: businessShortCode,
       Password: password,
       Timestamp: timestamp,
       TransactionType: "CustomerPayBillOnline",
       Amount: "1",
       PartyA: "254742243421", // Phone number to receive the STK push
-      PartyB: process.env.BUSINESS_SHORT_CODE,
+      PartyB: businessShortCode,
       PhoneNumber: "254742243421",
       CallBackURL: "https://elosystemv1.onrender.com/api/newmpesa/callback",
       AccountReference: "BAZELINK",
