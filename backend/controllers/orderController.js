@@ -474,7 +474,7 @@ Bazelink`;
   }
 };
 
-const TransactionLedgerfuc = async ( products, orderNumber) => {
+const TransactionLedgerfuc = async (products, orderNumber) => {
   const order = await Order.findOne({ orderNumber });
   const sellerOrderId = order ? order.sellerOrderId : undefined;
   const coreseller = sellerOrderId ? await CoreSellOrder.findOne({ sellerOrderId }) : null;
@@ -489,6 +489,10 @@ const TransactionLedgerfuc = async ( products, orderNumber) => {
 
   for (const product of products) {
     const { username, price, quantity } = product;
+
+    // Log product details
+    console.log(`Processing product for username: ${username}, price: ${price}, quantity: ${quantity}`);
+
     const sellerEarnings = price * quantity * sellerPercentage;
     const coSellerEarnings = sellerOrderId ? price * quantity * coSellerPercentage : 0;
     const companyEarnings = price * quantity * companyPercentage;
@@ -505,12 +509,14 @@ const TransactionLedgerfuc = async ( products, orderNumber) => {
   let totalCompanyEarnings = 0;
 
   for (const [username, data] of Object.entries(earningsData)) {
-    const user = await User.findOne({ username });
+    // Confirm that each username exists in User database
+    const user = await User.findOne({ username: username });
     if (!user) {
       console.warn(`User ${username} not found, skipping`);
       continue;
     }
 
+    console.log(`Found user: ${username}, current balance: ${user.amount || 0}`);
     const oldbal = user.amount || 0;
     const newbal = oldbal + (data.sellerEarnings || 0);
     user.amount = newbal;
@@ -519,8 +525,9 @@ const TransactionLedgerfuc = async ( products, orderNumber) => {
     totalCompanyEarnings += data.companyEarnings;
 
     if (coreseller) {
+      console.log(`Sending co-seller earnings: ${data.coSellerEarnings} to Mpesa Number: ${coreseller.mpesaNumber}`);
       const resp = await b2cRequestHandler(data.coSellerEarnings, coreseller.mpesaNumber);
-      console.log(resp);
+      console.log('Response from Mpesa transfer:', resp);
     }
 
     await TransactionLedger.create({
@@ -563,6 +570,7 @@ const TransactionLedgerfuc = async ( products, orderNumber) => {
   const message = `Sales processed successfully for order ${orderNumber}. Total company earnings: $${totalCompanyEarnings.toFixed(2)}`;
   return { message };
 };
+
 
 
 
