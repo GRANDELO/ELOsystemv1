@@ -479,9 +479,12 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
   const coresellerPercentage = 0.1;
 
   const earningsData = {};
-
+  
+  const orders = await Order.find({ orderNumber });
+  const sellerOrderId = orders.sellerOrderId;
+    
   for (const product of products) {
-    const { username, price, quantity, sellerOrderId, coresellerUsername } = product;
+    const { username, price, quantity, coresellerUsername } = product;
 
     // Check if sellerOrderId is present and choose the appropriate model
     let sellerPercentage, companyPercentage, coresellerEarnings;
