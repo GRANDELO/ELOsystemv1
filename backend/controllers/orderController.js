@@ -588,23 +588,18 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
 
 const notifyOutOfStockAndDelete = async () => {
   try {
-    // Fetch all products with zero or negative stock
     const outOfStockProducts = await Product.find({ quantity: { $lte: 0 } }).lean();
-
     if (outOfStockProducts.length === 0) {
       console.log('No out-of-stock products to process.');
       return;
     }
     
-
     for (const product of outOfStockProducts) {
-      // Fetch the seller's details
       const seller = await User.findOne({ username: product.username }).lean();
       if (!seller) {
         console.warn(`Seller not found for product ${product.name} (ID: ${product._id})`);
         continue;
       }
-
       // Prepare and send email notification
       const subject = `Product Out of Stock - ${product.name}`;
       const message = `Dear ${seller.username},
@@ -635,12 +630,10 @@ Bazelink Team`;
       `;
 
       const notificationmessage = `Your product "${product.name}" is now out of stock and has been removed from the marketplace. If you would like to restock, please update your inventory accordingly.`;
-      // Send email using the sendEmail function
       await sendEmail(seller.email, subject, message, htmlMessage);
       await increateNotification(seller.username, notificationmessage, subject);
       console.log(`Out-of-stock notification sent for product: ${product.name}`);
-
-      // Delete the out-of-stock product
+      
       await Product.findByIdAndDelete(product._id);
       console.log(`Deleted out-of-stock product: ${product.name}`);
     }
