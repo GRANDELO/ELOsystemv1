@@ -227,7 +227,7 @@ exports.deliverypatcher = async (req, res) => {
 
 exports.getUnpa = async (req, res) => {
   const totalAmount = 80; // Sample total amount for the order
-  const orderNumber = 'f3599051-5a9d-41b5-9049-347d9beffeb0'; // Sample order number
+  const orderNumber = 'bae21692-457c-4c6e-888c-39eb18327b2e'; // Sample order number
 
   // Sample products array with the new field structure
   const products = [
@@ -369,19 +369,17 @@ const sendOrderReceiptEmail = async (orderNumber) => {
   try {
     // Fetch the order by order number
     const order = await Order.findOne({ orderNumber }).lean();
-    if (!order) {
-      throw new Error('Order not found');
-    }
+    if (!order) throw new Error('Order not found');
 
+    // Fetch the user by username from the order
     const user = await User.findOne({ username: order.username }).lean();
-    if (!user) {
-      throw new Error('User not found');
-    }
+    if (!user) throw new Error('User not found');
 
-    // Extract product IDs and seller usernames from the order items
+    // Extract product IDs from the order items and fetch product details
     const productIds = order.items.map(item => item.productId);
     const products = await Product.find({ _id: { $in: productIds } });
 
+    // Map product details for easy access
     const productMap = {};
     products.forEach(product => {
       productMap[product._id] = {
@@ -398,21 +396,19 @@ const sendOrderReceiptEmail = async (orderNumber) => {
       quantity: item.quantity,
     }));
 
-    // Decrement stock for each product
+    // Decrement stock for each product and update performance
     for (const item of order.items) {
       const product = products.find(p => p._id.toString() === item.productId.toString());
       if (product) {
         product.quantity -= item.quantity;
-        const saleDate = new Date();
-        await updateProductPerformance(product._id, product.name, product.username, saleDate);
-        if (product.quantity < 0) product.quantity = 0;
+        product.quantity = Math.max(0, product.quantity); // Ensure stock doesn't go negative
+        await updateProductPerformance(product._id, product.name, product.username, new Date());
         await product.save();
       }
     }
-    
 
     // Prepare email content
-    const subject = "Receipt for - " + order.orderNumber;
+    const subject = "Receipt for Order - " + order.orderNumber;
     const receiptMessage = `Dear ${user.username},
 
 Thank you for shopping with Bazelink! Here is the receipt for your recent purchase.
@@ -428,6 +424,7 @@ Payment Method: ${order.paymentMethod}
 Best regards,
 Bazelink`;
 
+    // HTML email template for better readability
     const htmlReceiptMessage = `
 <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
   <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
@@ -451,7 +448,6 @@ Bazelink`;
   <p style="font-size: 16px; color: #555; margin-top: 20px;">
     <strong>Total Amount Paid:</strong> ${order.totalPrice}<br>
     <strong>Payment Method:</strong> ${order.paymentMethod}<br>
-    <strong>User:</strong> ${user.username}
   </p>
   <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
     We hope to serve you again soon!
@@ -462,10 +458,11 @@ Bazelink`;
 </div>
 `;
 
+    // Send email
     await sendEmail(user.email, subject, receiptMessage, htmlReceiptMessage);
     console.log('Receipt email sent successfully');
 
-    // Pass the formatted products array to the TransactionLedger function
+    // Notify out-of-stock and log transaction
     await notifyOutOfStockAndDelete();
     await TransactionLedgerfuc(formattedProducts, order.orderNumber);
     
@@ -475,102 +472,95 @@ Bazelink`;
 };
 
 const TransactionLedgerfuc = async (products, orderNumber) => {
-  const order = await Order.findOne({ orderNumber });
-  const sellerOrderId = order ? order.sellerOrderId : undefined;
-  const coreseller = sellerOrderId ? await CoreSellOrder.findOne({ sellerOrderId }) : null;
+  try {
+    const order = await Order.findOne({ orderNumber });
+    const sellerOrderId = order ? order.sellerOrderId : undefined;
+    const coreseller = sellerOrderId ? await CoreSellOrder.findOne({ sellerOrderId }) : null;
 
-  const defaultSellerPercentage = 0.8;
-  const defaultCompanyPercentage = 0.2;
-  const sellerPercentage = sellerOrderId ? 0.8 : defaultSellerPercentage;
-  const coSellerPercentage = sellerOrderId ? 0.1 : 0;
-  const companyPercentage = sellerOrderId ? 0.1 : defaultCompanyPercentage;
+    const defaultSellerPercentage = 0.8;
+    const defaultCompanyPercentage = 0.2;
+    const sellerPercentage = sellerOrderId ? 0.8 : defaultSellerPercentage;
+    const coSellerPercentage = sellerOrderId ? 0.1 : 0;
+    const companyPercentage = sellerOrderId ? 0.1 : defaultCompanyPercentage;
 
-  const earningsData = {};
+    const earningsData = {};
 
-  for (const product of products) {
-    const { username, price, quantity } = product;
+    // Calculate earnings
+    for (const product of products) {
+      const { username, price, quantity } = product;
 
-    // Log product details
-    console.log(`Processing product for username: ${username}, price: ${price}, quantity: ${quantity}`);
+      const sellerEarnings = price * quantity * sellerPercentage;
+      const coSellerEarnings = sellerOrderId ? price * quantity * coSellerPercentage : 0;
+      const companyEarnings = price * quantity * companyPercentage;
 
-    const sellerEarnings = price * quantity * sellerPercentage;
-    const coSellerEarnings = sellerOrderId ? price * quantity * coSellerPercentage : 0;
-    const companyEarnings = price * quantity * companyPercentage;
+      if (!earningsData[username]) {
+        earningsData[username] = { sellerEarnings: 0, coSellerEarnings: 0, companyEarnings: 0 };
+      }
 
-    if (!earningsData[username]) {
-      earningsData[username] = { sellerEarnings: 0, coSellerEarnings: 0, companyEarnings: 0 };
+      earningsData[username].sellerEarnings += sellerEarnings;
+      earningsData[username].companyEarnings += companyEarnings;
+      earningsData[username].coSellerEarnings += coSellerEarnings;
     }
 
-    earningsData[username].sellerEarnings += sellerEarnings;
-    earningsData[username].companyEarnings += companyEarnings;
-    earningsData[username].coSellerEarnings += coSellerEarnings;
+    let totalCompanyEarnings = 0;
+
+    // Update each seller's earnings and log
+    for (const [username, data] of Object.entries(earningsData)) {
+      const user = await User.findOne({ username });
+      if (!user) {
+        console.warn(`User ${username} not found, skipping`);
+        continue;
+      }
+
+      user.amount = (user.amount || 0) + data.sellerEarnings;
+      await user.save();
+
+      totalCompanyEarnings += data.companyEarnings;
+
+      if (coreseller) {
+        const resp = await b2cRequestHandler(data.coSellerEarnings, coreseller.mpesaNumber);
+        console.log('Response from Mpesa transfer:', resp);
+      }
+
+      await TransactionLedger.create({
+        orderId: orderNumber,
+        seller: username,
+        sellerEarnings: data.sellerEarnings,
+        companyEarnings: data.companyEarnings,
+        cosellerEarnings: data.coSellerEarnings || 0,
+      });
+    }
+
+    // Update company financials
+    let financialRecord = await CompanyFinancials.findOne({});
+    if (!financialRecord) {
+      financialRecord = new CompanyFinancials({ totalIncome: 0, netBalance: 0, transactions: [] });
+      await financialRecord.save();
+    }
+
+    await CompanyFinancials.updateOne(
+      { _id: financialRecord._id },
+      {
+        $push: {
+          transactions: {
+            transactionType: 'income',
+            amount: totalCompanyEarnings,
+            description: `Earnings from order ${orderNumber}`
+          }
+        },
+        $inc: {
+          totalIncome: totalCompanyEarnings,
+          netBalance: totalCompanyEarnings
+        },
+        updatedAt: new Date()
+      }
+    );
+
+    console.log(`Sales processed successfully for order ${orderNumber}. Total company earnings: $${totalCompanyEarnings.toFixed(2)}`);
+  } catch (error) {
+    console.error('Error processing transaction ledger:', error);
   }
-
-  let totalCompanyEarnings = 0;
-
-  for (const [username, data] of Object.entries(earningsData)) {
-    // Confirm that each username exists in User database
-    const user = await User.findOne({ username: username });
-    if (!user) {
-      console.warn(`User ${username} not found, skipping`);
-      continue;
-    }
-
-    console.log(`Found user: ${username}, current balance: ${user.amount || 0}`);
-    const oldbal = user.amount || 0;
-    const newbal = oldbal + (data.sellerEarnings || 0);
-    user.amount = newbal;
-    await user.save();
-
-    totalCompanyEarnings += data.companyEarnings;
-
-    if (coreseller) {
-      console.log(`Sending co-seller earnings: ${data.coSellerEarnings} to Mpesa Number: ${coreseller.mpesaNumber}`);
-      const resp = await b2cRequestHandler(data.coSellerEarnings, coreseller.mpesaNumber);
-      console.log('Response from Mpesa transfer:', resp);
-    }
-
-    await TransactionLedger.create({
-      orderId: orderNumber,
-      seller: username,
-      sellerEarnings: data.sellerEarnings,
-      companyEarnings: data.companyEarnings,
-      cosellerEarnings: data.coSellerEarnings || 0,
-    });
-
-    console.log(`Earnings recorded for ${username}`);
-  }
-
-  let financialRecord = await CompanyFinancials.findOne({});
-  if (!financialRecord) {
-    console.warn('Financial record not found, creating a new one.');
-    financialRecord = new CompanyFinancials({ totalIncome: 0, netBalance: 0, transactions: [] });
-    await financialRecord.save();
-  }
-
-  const updateResult = await CompanyFinancials.updateOne(
-    { _id: financialRecord._id },
-    {
-      $push: {
-        transactions: {
-          transactionType: 'income',
-          amount: totalCompanyEarnings,
-          description: `Earnings from order ${orderNumber}`
-        }
-      },
-      $inc: {
-        totalIncome: totalCompanyEarnings,
-        netBalance: totalCompanyEarnings
-      },
-      updatedAt: new Date()
-    }
-  );
-
-  console.log('Update result for CompanyFinancials:', updateResult);
-  const message = `Sales processed successfully for order ${orderNumber}. Total company earnings: $${totalCompanyEarnings.toFixed(2)}`;
-  return { message };
 };
-
 
 
 
