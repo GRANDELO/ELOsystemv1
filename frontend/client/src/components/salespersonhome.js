@@ -5,6 +5,7 @@ import { IoClose } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import { getUsernameFromToken } from '../utils/auth';
 import Cart from './Cart';
+import AppDownloadQRIcon from './qrCode';
 import Footer from './Footer';
 import NewProductList from './NewProductList';
 import Displayorder from './displayorder';
@@ -148,6 +149,9 @@ const Home = () => {
         <button className="salesp-toggle-button" onClick={toggleNotifications}>
           <FaBell />
           {unreadCount > 0 && <span className="salesp-notification-count">{unreadCount}</span>}
+        </button>
+        <button>
+          <AppDownloadQRIcon />
         </button>
       </div>
 
