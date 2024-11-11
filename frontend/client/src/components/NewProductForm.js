@@ -120,9 +120,9 @@ const NewProductForm = () => {
     description: '',
     username: lusername,
     quantity: '',
-    image: null, // Add image field here
+    images: [], // Change to array to hold multiple images
   });
-  
+
   const [subCategories, setSubCategories] = useState([]);
   const [dragging, setDragging] = useState(false);
   const [message, setMessage] = useState('');
@@ -138,22 +138,20 @@ const NewProductForm = () => {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === 'image') {
-      setNewProduct({ ...newProduct, image: files[0] }); // Update image field
+    if (name === 'images') {
+      // Set selected files in state
+      setNewProduct({ ...newProduct, images: Array.from(files) });
     } else {
-      setNewProduct({
-        ...newProduct,
-        [name]: value,
-      });
+      setNewProduct({ ...newProduct, [name]: value });
     }
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
     setDragging(false);
-    const files = e.dataTransfer.files;
+    const files = Array.from(e.dataTransfer.files);
     if (files.length > 0) {
-      setNewProduct({ ...newProduct, image: files[0] });
+      setNewProduct({ ...newProduct, images: files });
     }
   };
 
@@ -181,9 +179,11 @@ const NewProductForm = () => {
     formData.append('description', newProduct.description);
     formData.append('username', newProduct.username);
     formData.append('quantity', newProduct.quantity);
-    if (newProduct.image) {
-      formData.append('image', newProduct.image); // Include the image in the form data
-    }
+
+    // Append each image to the FormData
+    newProduct.images.forEach((image) => {
+      formData.append('images', image);
+    });
 
     try {
       const res = await axios.post('https://elosystemv1.onrender.com/api/products', formData, {
@@ -250,13 +250,14 @@ const NewProductForm = () => {
         onChange={handleChange}
       />
       <label>
-        Image:
+        Images:
         <input
           type="file"
-          name="image"
+          name="images"
           onChange={handleChange}
           ref={fileInputRef}
           style={{ display: 'none' }}
+          multiple // Allow multiple images
         />
         <div
           className={`drop-zone ${dragging ? 'dragging' : ''}`}
@@ -265,11 +266,13 @@ const NewProductForm = () => {
           onDrop={handleDrop}
           onClick={handleClick}
         >
-          {newProduct.image ? newProduct.image.name : 'Drag and drop an image or click to select'}
+          {newProduct.images.length > 0
+            ? newProduct.images.map((image) => image.name).join(', ')
+            : 'Drag and drop images or click to select'}
         </div>
       </label>
 
-      <button type="submit">Create NewProduct</button>
+      <button type="submit">Create New Product</button>
       {message && <p>{message}</p>}
     </form>
   );

@@ -5,36 +5,46 @@ const { v4: uuidv4 } = require('uuid');
 const ProductPerformance = require('../models/ProductPerformance');
 
 // Upload a file to Firebase Storage
-async function uploadFile(file) {
-  if (!file) return null;
+// Function to upload multiple files
+async function uploadFiles(files) {
+  if (!files || files.length === 0) return [];
 
-  const fileName = Date.now() + path.extname(file.originalname); // Generate a unique file name
-  const fileUpload = bucket.file(fileName);
+  // Use `map` to upload all files and return an array of promises
+  const uploadPromises = files.map(async (file) => {
+    const fileName = Date.now() + '-' + file.originalname; // Generate unique file name
+    const fileUpload = bucket.file(fileName);
 
-  const stream = fileUpload.createWriteStream({
-    metadata: {
-      contentType: file.mimetype,
-    },
-  });
-
-  return new Promise((resolve, reject) => {
-    stream.on('error', (err) => reject(err));
-    stream.on('finish', async () => {
-      // Get the public URL for the uploaded file
-      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
-      console.log("image", publicUrl);
-      resolve(publicUrl);
+    const stream = fileUpload.createWriteStream({
+      metadata: {
+        contentType: file.mimetype,
+      },
     });
-    stream.end(file.buffer);
+
+    return new Promise((resolve, reject) => {
+      stream.on('error', (err) => reject(err));
+      stream.on('finish', async () => {
+        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+        console.log("Uploaded image:", publicUrl);
+        resolve(publicUrl);
+      });
+      stream.end(file.buffer);
+    });
   });
+
+  // Await all promises and return array of URLs
+  return Promise.all(uploadPromises);
 }
 
 // Create product
+// Create product with multiple images
 exports.createProduct = async (req, res) => {
   try {
     const { name, category, subCategory, description, price, username, quantity } = req.body;
-    const image = req.file ? await uploadFile(req.file) : null;
-    console.log("error image", image);
+
+    // Upload multiple images if available
+    const imageUrls = req.files && req.files.length > 0 ? await uploadFiles(req.files) : [];
+    console.log("Uploaded images:", imageUrls);
+
     const productId = uuidv4();
     const newProduct = new Product({
       name,
@@ -45,16 +55,17 @@ exports.createProduct = async (req, res) => {
       username,
       productId,
       quantity,
-      image,
+      images: imageUrls,  // Store array of image URLs
     });
 
     await newProduct.save();
     res.status(201).json({ product: newProduct });
   } catch (error) {
-    console.error('Error in createProduct:', error);  // Add this log to see the exact error
+    console.error('Error in createProduct:', error);
     res.status(500).json({ error: error.message });
   }
 };
+
 
 //get all items
 exports.getAllProducts = async (req, res) => {
