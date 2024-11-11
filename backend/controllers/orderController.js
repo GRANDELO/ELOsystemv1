@@ -474,57 +474,45 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
   // Define the default and alternative percentages
   const defaultSellerPercentage = 0.8;
   const defaultCompanyPercentage = 0.2;
+
   const alternativeSellerPercentage = 0.8;
   const alternativeCompanyPercentage = 0.1;
   const coresellerPercentage = 0.1;
 
   const earningsData = {};
+
+  // Check if order has a sellerOrderId to determine the model
+  const order = await Order.findOne({ orderNumber });
+  const useAlternativeModel = Boolean(order && order.sellerOrderId);
+  console.log(useAlternativeModel);
   
-  const orders = await Order.find({ orderNumber });
-  const sellerOrderId = orders.sellerOrderId;
-    
   for (const product of products) {
     const { username, price, quantity, coresellerUsername } = product;
 
-    // Check if sellerOrderId is present and choose the appropriate model
-    let sellerPercentage, companyPercentage, coresellerEarnings;
-    if (sellerOrderId) {
-      // Apply alternative model with coreseller
-      sellerPercentage = alternativeSellerPercentage;
-      companyPercentage = alternativeCompanyPercentage;
-      coresellerEarnings = price * quantity * coresellerPercentage;
-    } else {
-      // Apply default model without coreseller
-      sellerPercentage = defaultSellerPercentage;
-      companyPercentage = defaultCompanyPercentage;
-      coresellerEarnings = 0; // No coreseller earnings if sellerOrderId is absent
-    }
+    // Determine which percentages to use based on the presence of sellerOrderId
+    const sellerPercentage = useAlternativeModel ? alternativeSellerPercentage : defaultSellerPercentage;
+    const companyPercentage = useAlternativeModel ? alternativeCompanyPercentage : defaultCompanyPercentage;
+    const coresellerEarnings = useAlternativeModel && coresellerUsername
+      ? price * quantity * coresellerPercentage
+      : 0;
 
-    // Calculate earnings based on selected model
+    // Calculate seller and company earnings
     const sellerEarnings = price * quantity * sellerPercentage;
     const companyEarnings = price * quantity * companyPercentage;
 
     // Initialize earnings data for this seller if it doesn't exist
     if (!earningsData[username]) {
-      earningsData[username] = {
-        sellerEarnings: 0,
-        companyEarnings: 0,
-        coresellerEarnings: 0,
-      };
+      earningsData[username] = { sellerEarnings: 0, companyEarnings: 0, coresellerEarnings: 0 };
     }
 
-    // Accumulate seller, company, and coreseller earnings for this seller
+    // Accumulate seller and company earnings for this seller
     earningsData[username].sellerEarnings += sellerEarnings;
     earningsData[username].companyEarnings += companyEarnings;
 
-    // If coreseller earnings are applicable, accumulate those too
-    if (coresellerEarnings && coresellerUsername) {
+    // If coreseller is involved, accumulate earnings under coresellerUsername
+    if (coresellerEarnings > 0 && coresellerUsername) {
       if (!earningsData[coresellerUsername]) {
-        earningsData[coresellerUsername] = {
-          sellerEarnings: 0,
-          companyEarnings: 0,
-          coresellerEarnings: 0,
-        };
+        earningsData[coresellerUsername] = { sellerEarnings: 0, companyEarnings: 0, coresellerEarnings: 0 };
       }
       earningsData[coresellerUsername].coresellerEarnings += coresellerEarnings;
     }
@@ -532,6 +520,7 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
 
   let totalCompanyEarnings = 0;
 
+  // Process each user in earningsData
   for (const [username, data] of Object.entries(earningsData)) {
     const user = await User.findOne({ username });
     if (!user) {
@@ -539,10 +528,8 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
       continue;
     }
 
-    // Update user balance
-    const oldbal = user.amount;
-    const newbal = oldbal + data.sellerEarnings + data.coresellerEarnings;
-    user.amount = newbal;
+    // Update user balance by adding seller and coreseller earnings (if any)
+    user.amount += data.sellerEarnings + data.coresellerEarnings;
     await user.save();
 
     totalCompanyEarnings += data.companyEarnings;
@@ -590,12 +577,12 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
     }
   );
 
-  // Log the result of the update operation to check if it succeeded
   console.log('Update result for CompanyFinancials:', updateResult);
 
   const message = `Sales processed successfully for order ${orderNumber}. Total company earnings: $${totalCompanyEarnings.toFixed(2)}`;
   return { message };
 };
+
 
 
 
