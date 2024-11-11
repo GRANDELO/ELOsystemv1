@@ -1,5 +1,4 @@
 const Order = require('../models/Order');
-const CoreSellOrder = require('../models/CoreSellOrder');
 const Employee = require('../models/Employee'); // Replace DeliveryPerson with Employee
 const Product = require('../models/oProduct'); // Adjust this path as needed
 const sendEmail = require('../services/emailService');
@@ -485,22 +484,27 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
   // Check if order has a sellerOrderId to determine the model
   const order = await Order.findOne({ orderNumber });
   const useAlternativeModel = Boolean(order && order.sellerOrderId);
-  let coresellerUsername = '';
-  if (useAlternativeModel)
-    {
-      const coreseller = await CoreSellOrder.findOne({ sellerOrderId: order.sellerOrderId });
-      coresellerUsername = coreseller.username;
-    }
-  
   console.log(useAlternativeModel);
-  
+
+  // Retrieve the coreseller details if sellerOrderId exists
+  let coresellerUsername = null;
+  if (useAlternativeModel) {
+    const coreSellOrder = await CoreSellOrder.findOne({ sellerOrderId: order.sellerOrderId });
+    if (coreSellOrder) {
+      coresellerUsername = coreSellOrder.username;
+      console.log(`Coreseller username: ${coresellerUsername}`);
+    } else {
+      console.warn(`No coreseller found for sellerOrderId: ${order.sellerOrderId}`);
+    }
+  }
+
   for (const product of products) {
     const { username, price, quantity } = product;
 
     // Determine which percentages to use based on the presence of sellerOrderId
     const sellerPercentage = useAlternativeModel ? alternativeSellerPercentage : defaultSellerPercentage;
     const companyPercentage = useAlternativeModel ? alternativeCompanyPercentage : defaultCompanyPercentage;
-    const coresellerEarnings = useAlternativeModel && coresellerUsername
+    const coresellerEarnings = coresellerUsername
       ? price * quantity * coresellerPercentage
       : 0;
 
@@ -599,6 +603,7 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
   const message = `Sales processed successfully for order ${orderNumber}. Total company earnings: $${totalCompanyEarnings.toFixed(2)}`;
   return { message };
 };
+
 
 
 
