@@ -227,7 +227,7 @@ exports.deliverypatcher = async (req, res) => {
 
 exports.getUnpa = async (req, res) => {
   const totalAmount = 80; // Sample total amount for the order
-  const orderNumber = '59543527-3e87-4acf-967a-cff1249d27f4'; // Sample order number
+  const orderNumber = 'f3599051-5a9d-41b5-9049-347d9beffeb0'; // Sample order number
 
   // Sample products array with the new field structure
   const products = [
@@ -488,7 +488,7 @@ const TransactionLedgerfuc = async ( products, orderNumber) => {
   const earningsData = {};
 
   for (const product of products) {
-    const { username, price = 0, quantity = 0 } = product;
+    const { username, price, quantity } = product;
     const sellerEarnings = price * quantity * sellerPercentage;
     const coSellerEarnings = sellerOrderId ? price * quantity * coSellerPercentage : 0;
     const companyEarnings = price * quantity * companyPercentage;
