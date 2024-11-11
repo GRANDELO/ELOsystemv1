@@ -469,20 +469,16 @@ Bazelink`;
   }
 };
 
-const TransactionLedgerfuc = async (totalAmount, products, orderNumber, ) => {
+const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
+  // Find the order by orderNumber and retrieve sellerOrderId
+  const order = await Order.findOne({ orderNumber });
+  const sellerOrderId = order ? order.sellerOrderId : undefined;
 
-  const orders = await Order.find({ orderNumber});
-  if(orders)
-    {
-      const sellerOrderId = orders.sellerOrderId;
-    }else{
-      const sellerOrderId = undefined;
-    }
   // Set default percentages
   const defaultSellerPercentage = 0.8;
   const defaultCompanyPercentage = 0.2;
 
-  // Set adjusted percentages if co-seller is involved
+  // Adjust percentages if a co-seller is involved
   const sellerPercentage = sellerOrderId ? 0.8 : defaultSellerPercentage;
   const coSellerPercentage = sellerOrderId ? 0.1 : 0; 
   const companyPercentage = sellerOrderId ? 0.1 : defaultCompanyPercentage;
@@ -501,7 +497,7 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber, ) => {
       earningsData[username] = { sellerEarnings: 0, coSellerEarnings: 0, companyEarnings: 0 };
     }
 
-    // Accumulate seller, co-seller, and company earnings for this seller
+    // Accumulate seller, co-seller, and company earnings
     earningsData[username].sellerEarnings += sellerEarnings;
     earningsData[username].companyEarnings += companyEarnings;
     earningsData[username].coSellerEarnings += coSellerEarnings;
@@ -530,7 +526,7 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber, ) => {
       seller: username,
       sellerEarnings: data.sellerEarnings,
       companyEarnings: data.companyEarnings,
-      coSellerEarnings: data.coSellerEarnings || 0, // Set to 0 if no co-seller earnings
+      coSellerEarnings: data.coSellerEarnings || 0, // Defaults to 0 if no co-seller
     });
 
     console.log(`Earnings recorded for ${username}`);
@@ -574,6 +570,7 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber, ) => {
   const message = `Sales processed successfully for order ${orderNumber}. Total company earnings: $${totalCompanyEarnings.toFixed(2)}`;
   return { message };
 };
+
 
 
 
