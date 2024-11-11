@@ -24,6 +24,7 @@ const mpesaRoutes = require('./routes/mpesaRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
 const notificationRoutes = require('./routes/notifications');
 const financialsRoute = require('./routes/financials');
+const coresellRoutes = require('./routes/coresell');
 
 const uploadDir = path.join(__dirname, 'uploads');
 
@@ -34,7 +35,7 @@ if (!fs.existsSync(uploadDir)) {
 
 const app = express();
 
-const allowedOrigins = ['https://grandelo.web.app', 'http://locahost:3000'];
+const allowedOrigins = ['https://grandelo.web.app', 'http://localhost:3000'];
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
@@ -99,6 +100,7 @@ app.use('/api/mpesa', mpesaRoutes);
 app.use('/api/employees', employeeRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/financials', financialsRoute);
+app.use('/api/coresell', coresellRoutes);
 
 app.use((req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);

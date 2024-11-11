@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { io } from 'socket.io-client';
-//import RequireAuth from './RequireAuth'; // Import the authentication check component
+import RequireAuth from './RequireAuth'; // Import the authentication check component
 import ProtectedRoute from './components/ProtectRoute';
 import Dashboard from './components/Dashboard';
 import ImageList from './components/ImageList';
@@ -27,6 +27,7 @@ import UserChart from './components/UserChart';
 import Verification from './components/Verification';
 import Employies from './components/admin/employies';
 import Packingpage from './components/admin/packingpage';
+import Coreordering from './components/coreordering';
 import Displayorder from './components/displayorder';
 import Home from './components/home';
 import Image from './components/image';
@@ -82,9 +83,11 @@ const App = () => {
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/success" element={<Success />} />
+          <Route path="/coreorder" element={<Coreordering />} />
 
-          {/* Protected routes 
-          <Route element={<RequireAuth />}>*/}
+
+          {/* Protected routes */}
+          <Route element={<RequireAuth />} >
             <Route path="/dashboard"
               element={
                 <ProtectedRoute>
@@ -115,6 +118,7 @@ const App = () => {
             <Route path="/sales" element={<Sales />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/order" element={<Order />} />
+
             <Route path="/regdeliverypeople" element={<Regdeliverypeople />} />
             <Route path="/newproductform" element={<NewProductForm />} />
             <Route path="/newproductlist" element={<NewProductList />} />
@@ -130,7 +134,7 @@ const App = () => {
             <Route path="/productperfomance" element={<Productperfomance />} />
             <Route path="/employies" element={<Employies />} />
             <Route path="/packingpage" element={<Packingpage />} />
-          {/*</Route>*/}
+          </Route>
         </Routes>
       </div>
     </Router>

@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 import React, { useEffect, useState } from 'react';
-import { Bar } from 'react-chartjs-2';
 import Pagination from './Pagination';
 import './styles/Users.css';
 
@@ -13,7 +12,10 @@ const AdminDashboard = () => {
   const [registrationData, setRegistrationData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [error, setError] = useState(null); // Error state
+  const [activePage, setActivePage] = useState(1); // Track active user pagination
+  const [error, setError] = useState(null);
+  const [expandedUserId, setExpandedUserId] = useState(null); // Track which user's details are expanded
+  const [activeSection, setActiveSection] = useState('all'); // Tracks the active section
   const usersPerPage = 5;
 
   useEffect(() => {
@@ -25,13 +27,11 @@ const AdminDashboard = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/users');
-      console.log("Fetched Users:", response.data); // Debugging log
+      const response = await axios.get('https://elosystemv1.onrender.com/api/users/users');
       setUsers(response.data);
       setFilteredUsers(response.data);
-      setError(null); // Clear any existing errors
+      setError(null);
     } catch (error) {
-      console.error('Error fetching users:', error);
       setError('Failed to fetch users');
     }
   };
@@ -39,11 +39,9 @@ const AdminDashboard = () => {
   const fetchActiveUsers = async () => {
     try {
       const response = await axios.get('https://elosystemv1.onrender.com/api/users/active');
-      console.log("Fetched Active Users:", response.data); // Debugging log
       setActiveUsers(response.data);
-      setError(null); // Clear any existing errors
+      setError(null);
     } catch (error) {
-      console.error('Error fetching active users:', error);
       setError('Failed to fetch active users');
     }
   };
@@ -51,23 +49,19 @@ const AdminDashboard = () => {
   const fetchDisabledUsers = async () => {
     try {
       const response = await axios.get('https://elosystemv1.onrender.com/api/users/disabled');
-      console.log("Fetched Disabled Users:", response.data); // Debugging log
       setDisabledUsers(response.data);
-      setError(null); // Clear any existing errors
+      setError(null);
     } catch (error) {
-      console.error('Error fetching disabled users:', error);
       setError('Failed to fetch disabled users');
     }
   };
 
   const fetchRegistrationGraph = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/usersregistration-graph');
-      console.log("Fetched Registration Graph Data:", response.data.graphData); // Debugging log
+      const response = await axios.get('https://elosystemv1.onrender.com/api/users/registration-graph');
       setRegistrationData(response.data.graphData);
-      setError(null); // Clear any existing errors
+      setError(null);
     } catch (error) {
-      console.error('Error fetching registration graph data:', error);
       setError('Failed to fetch registration graph data');
     }
   };
@@ -77,7 +71,6 @@ const AdminDashboard = () => {
       await axios.patch(`https://elosystemv1.onrender.com/api/users/disable/${userId}`);
       fetchUsers();
     } catch (error) {
-      console.error('Error disabling user:', error);
       setError('Failed to disable user');
     }
   };
@@ -87,12 +80,10 @@ const AdminDashboard = () => {
       await axios.patch(`https://elosystemv1.onrender.com/api/users/undo-disable/${userId}`);
       fetchUsers();
     } catch (error) {
-      console.error('Error enabling user:', error);
       setError('Failed to enable user');
     }
   };
 
-  // CSV export function
   const exportCSV = () => {
     const csvData = users.map(user => ({
       Name: user.fullName,
@@ -110,12 +101,15 @@ const AdminDashboard = () => {
     saveAs(blob, "user_data.csv");
   };
 
-  // Pagination calculation
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
-  // Handle search
+  // Active users pagination
+  const indexOfLastActiveUser = activePage * usersPerPage;
+  const indexOfFirstActiveUser = indexOfLastActiveUser - usersPerPage;
+  const currentActiveUsers = activeUsers.slice(indexOfFirstActiveUser, indexOfLastActiveUser);
+
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
     const term = e.target.value.toLowerCase();
@@ -127,26 +121,12 @@ const AdminDashboard = () => {
     setCurrentPage(1); // Reset to first page after search
   };
 
-  const chartData = {
-    labels: registrationData.map((item) => item._id),
-    datasets: [
-      {
-        label: 'Registrations',
-        data: registrationData.map((item) => item.count),
-        backgroundColor: 'rgba(75,192,192,0.4)',
-        borderColor: 'rgba(75,192,192,1)',
-      },
-    ],
-  };
-
   return (
     <div className="usal-dashboard">
       <h1 className="usal-dashboard-title">Admin Dashboard</h1>
 
-      {/* Error Message */}
       {error && <div className="usal-error-message">{error}</div>}
 
-      {/* Search and Export */}
       <div className="usal-dashboard-controls">
         <input
           type="text"
@@ -158,73 +138,97 @@ const AdminDashboard = () => {
         <button onClick={exportCSV} className="usal-btn usal-export-btn">Export CSV</button>
       </div>
 
+      {/* Section Control Buttons */}
+      <div className="usal-section-controls">
+        <button onClick={() => setActiveSection('all')} className="usal-btn">All Users</button>
+        <button onClick={() => setActiveSection('active')} className="usal-btn">Active Users</button>
+        <button onClick={() => setActiveSection('disabled')} className="usal-btn">Disabled Users</button>
+      </div>
+
       {/* User List with Pagination */}
-      <section className="usal-section">
-        <h2 className="usal-section-title">All Users</h2>
-        <ul className="usal-user-list">
-          {currentUsers.map(user => (
-            <li key={user._id} className="usal-user-item">
-              <p>Name: {user.fullName}</p>
-              <p>Email: {user.email}</p>
-              <p>Status: {user.isDisabled ? 'Disabled' : 'Active'}</p>
-              <button
-                onClick={() => disableUser(user._id)}
-                className="usal-btn usal-btn-disable"
-                disabled={user.isDisabled}
-              >
-                Disable
-              </button>
-              <button
-                onClick={() => undoDisableUser(user._id)}
-                className="usal-btn usal-btn-enable"
-                disabled={!user.isDisabled}
-              >
-                Enable
-              </button>
-            </li>
-          ))}
-        </ul>
-        <Pagination
-          totalItems={filteredUsers.length}
-          itemsPerPage={usersPerPage}
-          currentPage={currentPage}
-          onPageChange={(pageNumber) => setCurrentPage(pageNumber)}
-        />
-      </section>
+      {activeSection === 'all' && (
+        <section className="usal-section">
+          <h2 className="usal-section-title">All Users</h2>
+          <ul className="usal-user-list">
+            {currentUsers.map(user => (
+              <li key={user._id} className="usal-user-item">
+                <p>Name: {user.fullName}</p>
+                <p>Email: {user.email}</p>
+                {/* Show 'More' button to expand user options */}
+                <button
+                  onClick={() => setExpandedUserId(expandedUserId === user._id ? null : user._id)}
+                  className="usal-btn usal-btn-more"
+                >
+                  More
+                </button>
+                {/* Show additional user options if 'More' is clicked */}
+                {expandedUserId === user._id && (
+                  <div className="usal-user-options">
+                    <p>Status: {user.isDisabled ? 'Disabled' : 'Active'}</p>
+                    <button
+                      onClick={() => disableUser(user._id)}
+                      className="usal-btn usal-btn-disable"
+                      disabled={user.isDisabled}
+                    >
+                      Disable
+                    </button>
+                    <button
+                      onClick={() => undoDisableUser(user._id)}
+                      className="usal-btn usal-btn-enable"
+                      disabled={!user.isDisabled}
+                    >
+                      Enable
+                    </button>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+          <Pagination
+            totalItems={filteredUsers.length}
+            itemsPerPage={usersPerPage}
+            currentPage={currentPage}
+            onPageChange={(pageNumber) => setCurrentPage(pageNumber)}
+          />
+        </section>
+      )}
 
-      {/* Active Users */}
-      <section className="usal-section">
-        <h2 className="usal-section-title">Active Users</h2>
-        <ul className="usal-user-list">
-          {activeUsers.map(user => (
-            <li key={user._id} className="usal-user-item">
-              <p>Name: {user.fullName}</p>
-              <p>Email: {user.email}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
+      {/* Active Users Section with Pagination */}
+      {activeSection === 'active' && (
+        <section className="usal-section">
+          <h2 className="usal-section-title">Active Users</h2>
+          <ul className="usal-user-list">
+            {currentActiveUsers.map(user => (
+              <li key={user._id} className="usal-user-item">
+                <p>Name: {user.fullName}</p>
+                <p>Email: {user.email}</p>
+              </li>
+            ))}
+          </ul>
+          <Pagination
+            totalItems={activeUsers.length}
+            itemsPerPage={usersPerPage}
+            currentPage={activePage}
+            onPageChange={(pageNumber) => setActivePage(pageNumber)}
+          />
+        </section>
+      )}
 
-      {/* Disabled Users */}
-      <section className="usal-section">
-        <h2 className="usal-section-title">Disabled Users</h2>
-        <ul className="usal-user-list">
-          {disabledUsers.map(user => (
-            <li key={user._id} className="usal-user-item">
-              <p>Name: {user.fullName}</p>
-              <p>Email: {user.email}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
+      {/* Disabled Users Section */}
+      {activeSection === 'disabled' && (
+        <section className="usal-section">
+          <h2 className="usal-section-title">Disabled Users</h2>
+          <ul className="usal-user-list">
+            {disabledUsers.map(user => (
+              <li key={user._id} className="usal-user-item">
+                <p>Name: {user.fullName}</p>
+                <p>Email: {user.email}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
-      {/* Registration Graph */}
-      <section className="usal-section">
-        <h2 className="usal-section-title">Registrations Over Time</h2>
-        <div className="usal-chart">
-          <Bar data={chartData} />
-        </div>
-      </section>
     </div>
   );
 };
