@@ -90,8 +90,8 @@ exports.registerURLHandler = async (req, res) => {
     const response = await axios.post(url, {
       ShortCode: process.env.BUSINESS_SHORT_CODE,
       ResponseType: "Complete",
-      ConfirmationURL: "https://elosystemv1.onrender.com/api/newmpesa/confirmation",
-      ValidationURL: "https://elosystemv1.onrender.com/api/newmpesa/validation",
+      ConfirmationURL: "http://example.com/confirmation",
+      ValidationURL: "http://example.com/validation",
     }, {
       headers: { Authorization: "Bearer " + accessToken }
     });
