@@ -6,7 +6,7 @@ const transactionLedgerSchema = new mongoose.Schema({
   seller: String,
   sellerEarnings: Number,
   companyEarnings: Number,
-  coresellerEarnings: Number,
+  cosellerEarnings: Number,
   transactionDate: { type: Date, default: Date.now }
 });
 

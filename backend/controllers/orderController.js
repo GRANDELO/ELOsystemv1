@@ -526,7 +526,7 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
       seller: username,
       sellerEarnings: data.sellerEarnings,
       companyEarnings: data.companyEarnings,
-      coSellerEarnings: data.coSellerEarnings || 0, // Defaults to 0 if no co-seller
+      cosellerEarnings: data.coSellerEarnings || 0, // Defaults to 0 if no co-seller
     });
 
     console.log(`Earnings recorded for ${username}`);
