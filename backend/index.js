@@ -21,6 +21,8 @@ const orderRoutes = require('./routes/orders');
 const orderRoute2 = require('./routes/order2');
 const locations = require('./routes/locations');
 const mpesaRoutes = require('./routes/mpesaRoutes');
+const newmpesaRoutes = require('./routes/newmpesaRoutes');
+
 const employeeRoutes = require('./routes/employeeRoutes');
 const notificationRoutes = require('./routes/notifications');
 const financialsRoute = require('./routes/financials');
@@ -97,6 +99,8 @@ app.use('/api/order2', orderRoute2);
 app.use('/api', productRoutes);
 app.use(locations);
 app.use('/api/mpesa', mpesaRoutes);
+app.use('/api/newmpesa', newmpesaRoutes);
+
 app.use('/api/employees', employeeRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/financials', financialsRoute);
