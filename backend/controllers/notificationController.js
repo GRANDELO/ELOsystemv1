@@ -16,9 +16,9 @@ const increateNotification = async (username, message, topic) => {
   try {
     const notification = new Notification({ username, message, topic });
     await notification.save();
-    res.status(201).json(notification);
+    return(notification);
   } catch (error) {
-    res.status(500).json({ message: 'Failed to create notification' });
+    return'Failed to create notification';
   }
 };
 
