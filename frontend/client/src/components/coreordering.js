@@ -19,6 +19,7 @@ const OrderingPage = () => {
   const [selectedTown, setSelectedTown] = useState('');
   const [areas, setAreas] = useState([]);
   const [selectedArea, setSelectedArea] = useState('');
+  const [loginPrompt, setLoginPrompt] = useState(''); // For storing login prompt if user isn’t logged in
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -32,6 +33,7 @@ const OrderingPage = () => {
       setLoading(true);
       setError('');
       try {
+        sessionStorage.setItem('currentpage', `/coreorder?sellerOrderId=${sellerOrderId}&productId=${productId}`);
         const response = await axios.get(`https://elosystemv1.onrender.com/api/products/${productId}`);
         setProduct(response.data);
       } catch (err) {
@@ -89,6 +91,12 @@ const OrderingPage = () => {
   };
 
   const handleSubmitOrder = async () => {
+    // Check if user is logged in
+    if (!username) {
+      setLoginPrompt('You have to sign in to complete the order. If you don’t have an account, please register.');
+      return;
+    }
+
     if (!paymentMethod || !selectedTown || !selectedArea || (paymentMethod === 'mpesa' && !mpesaPhoneNumber)) {
       setError('Please select a payment method, provide a delivery destination, and enter M-Pesa phone number if applicable.');
       return;
@@ -156,6 +164,11 @@ const OrderingPage = () => {
   return (
     <div className="ordering-page">
       <h1>Order Page</h1>
+      {loginPrompt && (
+        <Alert variant="warning">
+          {loginPrompt} <a href="/">Sign In</a> or <a href="/register">Register</a>
+        </Alert>
+      )}
       {message && <Alert variant="success">{message}</Alert>}
       <h2>Total Price: Ksh {product?.price.toFixed(2)}</h2>
 

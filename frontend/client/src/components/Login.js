@@ -42,7 +42,16 @@ const Login = () => {
       } else if (category === 'admin') {
         navigate('/dashboard');
       } else {
-        navigate('/salespersonhome');
+        const currentpage = sessionStorage.getItem('currentpage');
+        if (currentpage)
+          {
+            navigate(currentpage);
+          }
+        else
+          {
+            navigate('/salespersonhome');
+          }
+        
       }
     } catch (error) {
       if (error.response && error.response.data) {

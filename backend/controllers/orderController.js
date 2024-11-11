@@ -471,24 +471,37 @@ Bazelink`;
 
 
 const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
-  const sellerPercentage = 0.8; // 80% for the seller
-  const companyPercentage = 0.2; // 20% for the company
+  const sellerPercentage = 0.8; // Always 80% for the seller
+  const defaultCompanyPercentage = 0.2; // 20% for the company if no coreseller
+  const coresellerPercentage = 0.1; // 10% for coreseller if sellerOrderId is present
+  const reducedCompanyPercentage = 0.1; // 10% for company if coreseller is present
 
   const earningsData = {};
 
   for (const product of products) {
-    const { username, price, quantity } = product;
+    const { username, price, quantity, sellerOrderId, coresellerUsername } = product;
+
+    const currentCompanyPercentage = sellerOrderId ? reducedCompanyPercentage : defaultCompanyPercentage;
     const sellerEarnings = price * quantity * sellerPercentage;
-    const companyEarnings = price * quantity * companyPercentage;
+    const companyEarnings = price * quantity * currentCompanyPercentage;
+    const coresellerEarnings = sellerOrderId ? price * quantity * coresellerPercentage : 0;
 
     // Initialize earnings data for this seller if it doesn't exist
     if (!earningsData[username]) {
-      earningsData[username] = { sellerEarnings: 0, companyEarnings: 0 };
+      earningsData[username] = { sellerEarnings: 0, companyEarnings: 0, coresellerEarnings: 0 };
     }
 
-    // Accumulate seller and company earnings for this seller
+    // Accumulate seller and company earnings
     earningsData[username].sellerEarnings += sellerEarnings;
     earningsData[username].companyEarnings += companyEarnings;
+
+    // Accumulate coreseller earnings if applicable
+    if (sellerOrderId && coresellerUsername) {
+      if (!earningsData[coresellerUsername]) {
+        earningsData[coresellerUsername] = { coresellerEarnings: 0 };
+      }
+      earningsData[coresellerUsername].coresellerEarnings += coresellerEarnings;
+    }
   }
 
   let totalCompanyEarnings = 0;
@@ -500,26 +513,32 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
       continue;
     }
 
-    // Update user balance
-    const oldbal = user.amount;
-    const newbal = oldbal + data.sellerEarnings;
-    user.amount = newbal;
-    await user.save();
+    // Update user balances for seller and coreseller
+    if (data.sellerEarnings) {
+      user.amount += data.sellerEarnings;
+      await user.save();
+      console.log(`Earnings recorded for ${username}: $${data.sellerEarnings.toFixed(2)}`);
+    }
+
+    if (data.coresellerEarnings) {
+      user.amount += data.coresellerEarnings;
+      await user.save();
+      console.log(`Earnings recorded for coreseller ${username}: $${data.coresellerEarnings.toFixed(2)}`);
+    }
 
     totalCompanyEarnings += data.companyEarnings;
 
-    // Record transaction in the ledger
+    // Record transaction in the ledger for both seller and coreseller
     await TransactionLedger.create({
       orderId: orderNumber,
       seller: username,
-      sellerEarnings: data.sellerEarnings,
+      sellerEarnings: data.sellerEarnings || 0,
+      coresellerEarnings: data.coresellerEarnings || 0,
       companyEarnings: data.companyEarnings
     });
-
-    console.log(`Earnings recorded for ${username}`);
   }
 
-  // Retrieve the CompanyFinancials record or create a new one if not found
+  // Retrieve or create the CompanyFinancials record
   let financialRecord = await CompanyFinancials.findOne({});
   if (!financialRecord) {
     console.warn('Financial record not found, creating a new one.');
@@ -530,9 +549,6 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
     });
     await financialRecord.save();
   }
-
-  // Log the financialRecord to confirm retrieval or creation
-  console.log('CompanyFinancials record:', financialRecord);
 
   // Update the CompanyFinancials with transaction details
   const updateResult = await CompanyFinancials.updateOne(
@@ -553,7 +569,6 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
     }
   );
 
-  // Log the result of the update operation to check if it succeeded
   console.log('Update result for CompanyFinancials:', updateResult);
 
   const message = `Sales processed successfully for order ${orderNumber}. Total company earnings: $${totalCompanyEarnings.toFixed(2)}`;
