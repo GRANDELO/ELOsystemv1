@@ -17,9 +17,8 @@ exports.createOrder = async (req, res) => {
     orderDate,
     username,
     orderReference,
+    sellerOrderId // Add sellerOrderId directly here
   } = req.body;
-
-  let sellerOrderId = req.body;
 
   try {
     // Validate required fields
@@ -44,10 +43,6 @@ exports.createOrder = async (req, res) => {
     if (!orderReference) {
       return res.status(400).json({ message: 'Missing required field: orderReference' });
     }
-    if (!sellerOrderId) {
-      sellerOrderId = undefined;
-    }
-
 
     // Find an available delivery person with role "delivery" and status "available"
     const deliveryPerson = await Employee.findOne({ role: 'delivery', status: 'available' }).sort({ createdAt: 1 });
@@ -66,7 +61,7 @@ exports.createOrder = async (req, res) => {
       isDelivered: false,
       packed: false,
       orderReference,
-      sellerOrderId,
+      ...(sellerOrderId && { sellerOrderId }), // Only add sellerOrderId if it exists
     };
 
     const order = new Order(orderData);
