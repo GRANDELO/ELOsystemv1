@@ -534,15 +534,16 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
 
     totalCompanyEarnings += data.companyEarnings;
 
-    // Record transaction in the ledger
-    await TransactionLedger.create({
+    // Record transaction in the ledger for sellers and coresellers
+    const transactionData = {
       orderId: orderNumber,
       seller: username,
       sellerEarnings: data.sellerEarnings,
-      coresellerEarnings: data.coresellerEarnings || 0,
+      coresellerEarnings: data.coresellerEarnings || 0,  // Ensure coresellerEarnings is set, even if 0
       companyEarnings: data.companyEarnings,
-    });
-
+    };
+    
+    await TransactionLedger.create(transactionData);
     console.log(`Earnings recorded for ${username}`);
   }
 
@@ -582,6 +583,7 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
   const message = `Sales processed successfully for order ${orderNumber}. Total company earnings: $${totalCompanyEarnings.toFixed(2)}`;
   return { message };
 };
+
 
 
 
