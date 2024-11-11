@@ -293,11 +293,14 @@ exports.sendOrderReceiptEmail = async (orderNumber) => {
     for (const item of order.items) {
       const product = products.find(p => p._id.toString() === item.productId.toString());
       if (product) {
-        product.quantity -= item.quantity; // Reduce stock by quantity ordered
-        if (product.stock < 0) product.stock = 0; // Ensure stock doesn’t go negative
-        await product.save(); // Save changes to the product in the database
+        product.quantity -= item.quantity;
+        const saleDate = new Date();
+        await updateProductPerformance(product._id, product.name, product.username, saleDate);
+        if (product.quantity < 0) product.quantity = 0;
+        await product.save();
       }
     }
+    
 
     // Prepare email content
     const subject = "Receipt for - " + order.orderNumber;
@@ -355,8 +358,8 @@ Bazelink`;
 
     // Pass the formatted products array to the TransactionLedger function
     await notifyOutOfStockAndDelete();
-    await TransactionLedgerfuc(order.totalPrice, formattedProducts, order.orderNumber);
-
+    await TransactionLedgerfuc(formattedProducts, order.orderNumber);
+    
   } catch (error) {
     console.error('Failed to send receipt email:', error);
   }
@@ -464,48 +467,36 @@ Bazelink`;
 
     // Pass the formatted products array to the TransactionLedger function
     await notifyOutOfStockAndDelete();
-    await TransactionLedgerfuc(order.totalPrice, formattedProducts, order.orderNumber);
+    await TransactionLedgerfuc(formattedProducts, order.orderNumber);
     
   } catch (error) {
     console.error('Failed to send receipt email:', error);
   }
 };
 
-
-const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
-  // Find the order by orderNumber and retrieve sellerOrderId
+const TransactionLedgerfuc = async ( products, orderNumber) => {
   const order = await Order.findOne({ orderNumber });
   const sellerOrderId = order ? order.sellerOrderId : undefined;
+  const coreseller = sellerOrderId ? await CoreSellOrder.findOne({ sellerOrderId }) : null;
 
-  if(sellerOrderId)
-    {
-      const coreseller = await CoreSellOrder.findOne({ sellerOrderId });
-    }
-
-  // Set default percentages
   const defaultSellerPercentage = 0.8;
   const defaultCompanyPercentage = 0.2;
-
-  // Adjust percentages if a co-seller is involved
   const sellerPercentage = sellerOrderId ? 0.8 : defaultSellerPercentage;
-  const coSellerPercentage = sellerOrderId ? 0.1 : 0; 
+  const coSellerPercentage = sellerOrderId ? 0.1 : 0;
   const companyPercentage = sellerOrderId ? 0.1 : defaultCompanyPercentage;
 
   const earningsData = {};
 
   for (const product of products) {
-    const { username, price, quantity } = product;
-
+    const { username, price = 0, quantity = 0 } = product;
     const sellerEarnings = price * quantity * sellerPercentage;
     const coSellerEarnings = sellerOrderId ? price * quantity * coSellerPercentage : 0;
     const companyEarnings = price * quantity * companyPercentage;
 
-    // Initialize earnings data for this seller if it doesn't exist
     if (!earningsData[username]) {
       earningsData[username] = { sellerEarnings: 0, coSellerEarnings: 0, companyEarnings: 0 };
     }
 
-    // Accumulate seller, co-seller, and company earnings
     earningsData[username].sellerEarnings += sellerEarnings;
     earningsData[username].companyEarnings += companyEarnings;
     earningsData[username].coSellerEarnings += coSellerEarnings;
@@ -520,47 +511,36 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
       continue;
     }
 
-    // Update user balance
-    const oldbal = user.amount;
-    const newbal = oldbal + data.sellerEarnings;
+    const oldbal = user.amount || 0;
+    const newbal = oldbal + (data.sellerEarnings || 0);
     user.amount = newbal;
     await user.save();
 
     totalCompanyEarnings += data.companyEarnings;
 
-    // Record transaction in the ledger
-    if(coreseller)
-      {
-        const resp = await b2cRequestHandler(data.coSellerEarnings, coreseller.mpesaNumber);
-        console.log(resp);
-      }
+    if (coreseller) {
+      const resp = await b2cRequestHandler(data.coSellerEarnings, coreseller.mpesaNumber);
+      console.log(resp);
+    }
 
     await TransactionLedger.create({
       orderId: orderNumber,
       seller: username,
       sellerEarnings: data.sellerEarnings,
       companyEarnings: data.companyEarnings,
-      cosellerEarnings: data.coSellerEarnings || 0, // Defaults to 0 if no co-seller
+      cosellerEarnings: data.coSellerEarnings || 0,
     });
 
     console.log(`Earnings recorded for ${username}`);
   }
 
-  // Retrieve or create the CompanyFinancials record
   let financialRecord = await CompanyFinancials.findOne({});
   if (!financialRecord) {
     console.warn('Financial record not found, creating a new one.');
-    financialRecord = new CompanyFinancials({
-      totalIncome: 0, 
-      netBalance: 0,
-      transactions: []
-    });
+    financialRecord = new CompanyFinancials({ totalIncome: 0, netBalance: 0, transactions: [] });
     await financialRecord.save();
   }
 
-  console.log('CompanyFinancials record:', financialRecord);
-
-  // Update the CompanyFinancials with transaction details
   const updateResult = await CompanyFinancials.updateOne(
     { _id: financialRecord._id },
     {
@@ -580,10 +560,10 @@ const TransactionLedgerfuc = async (totalAmount, products, orderNumber) => {
   );
 
   console.log('Update result for CompanyFinancials:', updateResult);
-
   const message = `Sales processed successfully for order ${orderNumber}. Total company earnings: $${totalCompanyEarnings.toFixed(2)}`;
   return { message };
 };
+
 
 
 const notifyOutOfStockAndDelete = async () => {
