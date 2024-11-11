@@ -1,0 +1,126 @@
+/* Container and general layout */
+.ordcore-ordering-page {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.ordcore-ordering-page h1,
+.ordcore-ordering-page h2,
+.ordcore-ordering-page h3 {
+  color: #1a73e8;
+  margin-bottom: 15px;
+}
+
+.ordcore-ordering-page p {
+  font-size: 0.95em;
+  color: #555;
+}
+
+/* Product details */
+.ordcore-product-details {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 20px;
+  text-align: center;
+  background-color: #f9f9f9;
+}
+
+.ordcore-product-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin: 10px 0;
+}
+
+/* Forms and labels */
+.ordcore-form-group {
+  margin-bottom: 15px;
+}
+
+.ordcore-form-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.ordcore-form-select,
+.ordcore-form-input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 0.95em;
+}
+
+/* Payment options */
+.ordcore-payment-method {
+  margin: 20px 0;
+}
+
+.ordcore-payment-method label {
+  font-size: 0.95em;
+  margin-left: 5px;
+  color: #333;
+}
+
+/* Alerts */
+.ordcore-alert-warning,
+.ordcore-alert-danger,
+.ordcore-alert-success {
+  margin: 15px 0;
+  padding: 10px;
+  border-radius: 5px;
+  color: #fff;
+}
+
+.ordcore-alert-warning {
+  background-color: #ffcc00;
+}
+
+.ordcore-alert-danger {
+  background-color: #d9534f;
+}
+
+.ordcore-alert-success {
+  background-color: #5cb85c;
+}
+
+/* Button */
+.ordcore-submit-button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  font-size: 1em;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.ordcore-submit-button:hover {
+  background-color: #1558b5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .ordcore-ordering-page {
+    padding: 15px;
+  }
+
+  .ordcore-product-details,
+  .ordcore-form-select,
+  .ordcore-form-input {
+    font-size: 0.9em;
+  }
+
+  .ordcore-submit-button {
+    padding: 10px;
+    font-size: 0.9em;
+  }
+}
