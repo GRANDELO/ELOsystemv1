@@ -49,7 +49,7 @@ exports.stkPushHandler = async (req, res) => {
 
 
     const response = await axios.post(url, {
-      BusinessShortCode: businessShortCode,
+      BusinessShortCode: process.env.REGISTER_BUSINESS_SHORT_CODE,
       Password: password,
       Timestamp: timestamp,
       TransactionType: "CustomerPayBillOnline",
