@@ -27,7 +27,7 @@ const BarChart = () => {
         const response = await axios.get(`https://elosystemv1.onrender.com/api/performance/${username}`);
         setProductData(response.data);
       } catch (err) {
-        setError('Failed to fetch product performance data');
+        setError("No products sold for "+ username);
         console.error(err);
       } finally {
         setLoading(false);
