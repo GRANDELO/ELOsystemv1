@@ -23,6 +23,7 @@ exports.withdraw = async (req, res) => {
     const resp = await b2cRequestHandler(amount, Phonenumber);
     console.log(resp);
 
+    const amount = user.amount;
     user.amount -= amount;
     await user.save();
 
@@ -31,7 +32,7 @@ exports.withdraw = async (req, res) => {
       username: user.username,
       phonenumber: Phonenumber,
       amount: amount,
-      balance: user.amount,
+      balance: amount-amount,
     });
     await withdrawal.save();
 
