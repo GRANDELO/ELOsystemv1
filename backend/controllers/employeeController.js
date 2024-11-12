@@ -12,7 +12,9 @@ const registerEmployee = async (req, res) => {
         await employee.save();
         res.status(201).json({ message: 'Employee registered successfully', employee });
     } catch (error) {
+        console.log(error);
         res.status(400).json({ message: 'Error registering employee', error });
+
     }
 };
 
