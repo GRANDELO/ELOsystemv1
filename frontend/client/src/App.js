@@ -2,9 +2,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { io } from 'socket.io-client';
+
 import RequireAuth from './RequireAuth'; // Import the authentication check component
-import ProtectedRoute from './components/ProtectRoute';
-import Dashboard from './components/Dashboard';
 import ImageList from './components/ImageList';
 import ImageUpload from './components/ImageUpload';
 import Login from './components/Login';
@@ -18,6 +17,7 @@ import Order from "./components/OrderingPage";
 import PaymentForm from './components/PaymentForm';
 import ProductForm from './components/ProductForm';
 import ProductList from './components/ProductsList';
+import ProtectedRoute from './components/ProtectRoute';
 import Register from './components/Register';
 import Reports from './components/Reports';
 import Sales from './components/Sales';
@@ -25,8 +25,11 @@ import Success from './components/Success';
 import Users from './components/User';
 import UserChart from './components/UserChart';
 import Verification from './components/Verification';
+
+import Dashboard from './components/admin/Dashboard';
 import Employies from './components/admin/employies';
 import Packingpage from './components/admin/packingpage';
+
 import Coreordering from './components/coreordering';
 import Displayorder from './components/displayorder';
 import Home from './components/home';
@@ -132,6 +135,7 @@ const App = () => {
             <Route path="/notification" element={<Notification />} />
             <Route path="/displayorder" element={<Displayorder />} />
             <Route path="/productperfomance" element={<Productperfomance />} />
+            
             <Route path="/employies" element={<Employies />} />
             <Route path="/packingpage" element={<Packingpage />} />
           </Route>

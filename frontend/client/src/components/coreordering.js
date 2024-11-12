@@ -20,6 +20,7 @@ const OrderingPage = () => {
   const [areas, setAreas] = useState([]);
   const [selectedArea, setSelectedArea] = useState('');
   const [loginPrompt, setLoginPrompt] = useState('');
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -57,6 +58,18 @@ const OrderingPage = () => {
     };
     fetchLocations();
   }, []);
+
+  // Image rotation interval
+  useEffect(() => {
+    if (product?.images?.length > 0) {
+      const interval = setInterval(() => {
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % product.images.length);
+      }, 3000); // Change the image every 3 seconds
+
+      // Cleanup the interval on component unmount
+      return () => clearInterval(interval);
+    }
+  }, [product]);
 
   const handlePaymentMethodChange = (e) => setPaymentMethod(e.target.value);
 
@@ -126,7 +139,17 @@ const OrderingPage = () => {
       {product && (
         <div className="ordcore-product-details">
           <h3 className="ordcore-product-name">{product.name}</h3>
-          <img src={product.image} alt={product.name} className="ordcore-product-image" />
+          <div className="product-images">
+            {product.images && product.images.length > 0 ? (
+              <img
+                src={product.images[currentImageIndex]}
+                alt={`product-image-${currentImageIndex}`}
+                className="ordcore-product-image"
+              />
+            ) : (
+              <p>No images available for this product.</p>
+            )}
+          </div>
           <p className="ordcore-product-price">Price: Ksh {product.price}</p>
           <p className="ordcore-product-description">{product.description}</p>
         </div>
