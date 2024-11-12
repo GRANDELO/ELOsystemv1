@@ -20,6 +20,9 @@ function Login() {
             const response = await axios.post('https://elosystemv1.onrender.com/api/employees/login', formData);
             setMessage(`Login successful! Welcome, ${response.data.username}`);
             // Store the token, if needed, in localStorage or context
+            name: user.firstName,
+            role: user.role,
+            eid: user.eid,
             localStorage.setItem('token', response.data.token);
         } catch (error) {
             setMessage(`Error: ${error.response?.data.message || 'Login failed'}`);
