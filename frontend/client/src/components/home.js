@@ -10,6 +10,7 @@ import Productowner from './productowner';
 import Productperfomance from './productperfomance';
 import Settings from './settings';
 import './styles/Home.css';
+import Withdrawal from './withdrawal';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -72,7 +73,9 @@ const Home = () => {
         {/* Settings Section */}
         {isSettingsVisible && (
           <section className="home-settings-section">
+            <Withdrawal/>
             <Settings />
+            
           </section>
         )}
 

@@ -167,6 +167,7 @@ exports.b2cRequestHandler = async (Amount, Phonenumber) => {
       return "Payment done succesfully";
     } catch (error) {
       console.log(error);
+      console.log("❌ B2C request failed");
       return "❌ B2C request failed";
     }
   };
