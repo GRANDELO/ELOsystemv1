@@ -8,7 +8,7 @@ const registerEmployee = async (req, res) => {
     const { firstName, surname, eid, role, password } = req.body;
 
     const user = await Employee.findOne({ eid });
-    if (!user) {
+    if (user) {
         return res.status(401).json({ message: 'Eid exists' });
     }
     try {
