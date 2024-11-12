@@ -7,7 +7,8 @@ function EmployeeRegistration() {
         firstName: '',
         surname: '',
         eid: '',
-        role: '', // Default value
+        role: '',
+        password: '',
     });
     const [message, setMessage] = useState('');
 
@@ -15,10 +16,21 @@ function EmployeeRegistration() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const validatePassword = (password) => {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        return regex.test(password);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!validatePassword(formData.password)) {
+            setMessage('Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, one number, and one special character.');
+            return;
+        }
+
         try {
-            const response = await axios.post('https://elosystemv1.onrender.com/api/employees/register', formData );
+            const response = await axios.post('https://elosystemv1.onrender.com/api/employees/register', formData);
             setMessage(`Success: ${response.data.message}`);
         } catch (error) {
             setMessage(`Error: ${error.response?.data.message || 'Registration failed'}`);
@@ -49,6 +61,7 @@ function EmployeeRegistration() {
                 <label>
                     Role:
                     <select name="role" value={formData.role} onChange={handleChange} required>
+                        <option value="">Select Role</option>
                         <option value="admin">Admin</option>
                         <option value="sales_manager">Sales Manager</option>
                         <option value="customer_support">Customer Support</option>
@@ -68,6 +81,19 @@ function EmployeeRegistration() {
                         <option value="data_analyst">Data Analyst</option>
                         <option value="quality_assurance">Quality Assurance</option>
                     </select>
+                </label>
+                <br />
+
+                <label>
+                    Password:
+                    <input
+                        type="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                        placeholder="At least 8 characters, including upper, lower, number, and special character"
+                    />
                 </label>
                 <br />
 

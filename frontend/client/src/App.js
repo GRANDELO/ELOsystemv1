@@ -29,6 +29,7 @@ import Verification from './components/Verification';
 import Dashboard from './components/admin/Dashboard';
 import Employies from './components/admin/employies';
 import Packingpage from './components/admin/packingpage';
+import Loginadm from './components/admin/Login';
 
 import Coreordering from './components/coreordering';
 import Displayorder from './components/displayorder';
@@ -135,8 +136,10 @@ const App = () => {
             <Route path="/notification" element={<Notification />} />
             <Route path="/displayorder" element={<Displayorder />} />
             <Route path="/productperfomance" element={<Productperfomance />} />
-            
+
             <Route path="/employies" element={<Employies />} />
+            <Route path="/loginadm" element={<Loginadm />} />
+
             <Route path="/packingpage" element={<Packingpage />} />
           </Route>
         </Routes>
