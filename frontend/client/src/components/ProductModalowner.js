@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import './styles/ProductModal.css';
 
@@ -8,6 +8,18 @@ const ProductModal = ({ product, show, handleClose }) => {
   const [error, setError] = useState('');
   const [updatedField, setUpdatedField] = useState('');
   const [updatedValue, setUpdatedValue] = useState('');
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Function to update the image index periodically
+  useEffect(() => {
+    if (product?.images?.length > 1) {
+      const intervalId = setInterval(() => {
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % product.images.length);
+      }, 4000); // Change every 4 seconds
+
+      return () => clearInterval(intervalId); // Cleanup interval on component unmount or product change
+    }
+  }, [product]);
 
   const handleUpdate = async () => {
     if (!product || !updatedField || !updatedValue) {
@@ -62,11 +74,23 @@ const ProductModal = ({ product, show, handleClose }) => {
       <Modal.Body>
         {message && <Alert variant="success">{message}</Alert>}
         {error && <Alert variant="danger">{error}</Alert>}
-        <img src={product.image} alt={product.name} className="product-image" />
+        
+        {/* Display product images */}
+        <div className="product-images">
+          {product.images && product.images.length > 0 ? (
+            <img
+              src={product.images[currentImageIndex]}
+              alt={`product-image-${currentImageIndex}`}
+              className="product-image"
+            />
+          ) : (
+            <p>No images available for this product.</p>
+          )}
+        </div>
+
         <p>{product.description}</p>
         <p>Ksh {product.price}</p>
         <p>{product.category}</p>
-        {product.imageUrl && <img src={product.imageUrl} alt={product.name} style={{ width: '100%' }} />}
 
         {/* Update Field Selection */}
         <Form.Group className="mt-3">

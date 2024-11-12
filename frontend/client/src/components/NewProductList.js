@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ProductModal from './ProductModal';
-import axiosInstance from './axiosInstance'; // Use axios instance instead of axios
+import axiosInstance from './axiosInstance';
 import './styles/NewProductList.css';
 
 const NewProductList = () => {
@@ -10,6 +10,7 @@ const NewProductList = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [imageIndexes, setImageIndexes] = useState({});
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -25,6 +26,27 @@ const NewProductList = () => {
 
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    const updateImageIndexes = () => {
+      setImageIndexes((prevIndexes) => {
+        const newIndexes = { ...prevIndexes };
+        products.forEach((product) => {
+          if (product.images && product.images.length > 1) {
+            // Rotate through images for each product
+            const currentIndex = prevIndexes[product._id] || 0;
+            newIndexes[product._id] = (currentIndex + 1) % product.images.length;
+          }
+        });
+        return newIndexes;
+      });
+    };
+
+    const intervalId = setInterval(updateImageIndexes, 4000); // Update every 4 seconds
+
+    // Clear the interval when component unmounts or products change
+    return () => clearInterval(intervalId);
+  }, [products]);
 
   const handleProductClick = (product) => {
     setSelectedProduct(product);
@@ -79,30 +101,33 @@ const NewProductList = () => {
         />
       </header>
 
-      {/* Display products in a single grid */}
       <div className="product-cards">
         {filteredProducts.length > 0 ? (
-          filteredProducts.map((product) => (
-            <div key={product._id} className="product-card">
-              <div className="product-image-wrapper">
-                <img src={product.image} alt={product.name} className="product-image" />
-                {product.isNew && <span className="product-badge new-badge">New</span>}
-                {product.isOnSale && <span className="product-badge sale-badge">Sale</span>}
+          filteredProducts.map((product) => {
+            const currentImageIndex = imageIndexes[product._id] || 0;
+            const imageSrc = product.images ? product.images[currentImageIndex] : product.image;
+
+            return (
+              <div key={product._id} className="product-card">
+                <div className="product-image-wrapper">
+                  <img src={imageSrc} alt={product.name} className="product-image" />
+                  {product.isNew && <span className="product-badge new-badge">New</span>}
+                  {product.isOnSale && <span className="product-badge sale-badge">Sale</span>}
+                </div>
+                <h3>{product.name}</h3>
+                <p>{product.description}</p>
+                <h4>Ksh {product.price}</h4>
+                <button className="view-details-btn" onClick={() => handleProductClick(product)}>
+                  View Details
+                </button>
               </div>
-              <h3>{product.name}</h3>
-              <p>{product.description}</p>
-              <h4>Ksh {product.price}</h4>
-              <button className="view-details-btn" onClick={() => handleProductClick(product)}>
-                View Details
-              </button>
-            </div>
-          ))
+            );
+          })
         ) : (
           <p>No products found</p>
         )}
       </div>
 
-      {/* Modal for selected product */}
       {selectedProduct && (
         <ProductModal
           product={selectedProduct}

@@ -142,7 +142,6 @@
     font-size: 20px;
     margin: 10px 0;
     color: #333;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     transition: color 0.3s ease;
@@ -150,6 +149,7 @@
   .product-card:hover h3 {
     color: #e60000;
   }
+  
   .product-card p {
     font-size: 1rem;
     margin: 0 0 10px;

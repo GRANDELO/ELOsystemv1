@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { QRCodeCanvas } from 'qrcode.react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react'; // Import useEffect
 import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { useCart } from '../contexts/CartContext';
 import { getUsernameFromToken } from '../utils/auth';
@@ -14,8 +14,20 @@ const ProductModal = ({ product, show, handleClose }) => {
   const [mpesaNumber, setMpesaNumber] = useState('');
   const [showMpesaInput, setShowMpesaInput] = useState(false); 
   const [showQrCode, setShowQrCode] = useState(false);
-  const [sellerOrderId, setSellerOrderId] = useState(''); // New state for sellerOrderId
+  const [sellerOrderId, setSellerOrderId] = useState('');
   const username = getUsernameFromToken();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Function to update the image index periodically
+  useEffect(() => {
+    if (product?.images?.length > 1) {
+      const intervalId = setInterval(() => {
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % product.images.length);
+      }, 4000); // Change every 4 seconds
+
+      return () => clearInterval(intervalId); // Cleanup interval on component unmount or product change
+    }
+  }, [product]);
 
   const handleAddToCart = async () => {
     try {
@@ -71,13 +83,13 @@ const ProductModal = ({ product, show, handleClose }) => {
       setMessage('Core sell completed! You can now download the product info and QR code.');
       setSellerOrderId(response.data.sellerOrderId); // Save sellerOrderId from response
       setShowQrCode(true);
+      setMpesaNumber(''); // Reset MPesa number after successful sell
   
     } catch (err) {
       console.error('Failed to complete core sell:', err);
       setError(err.response?.data?.message || 'Core sell failed');
     }
   };
-  
 
   const downloadProductInfo = () => {
     const dataStr = `
@@ -117,6 +129,7 @@ const ProductModal = ({ product, show, handleClose }) => {
         setShowQrCode(false); 
         setShowMpesaInput(false); 
         setSellerOrderId(''); // Reset sellerOrderId on close
+        setMpesaNumber(''); // Reset MPesa number on modal close
       }}
     >
       <Modal.Header closeButton>
@@ -125,7 +138,20 @@ const ProductModal = ({ product, show, handleClose }) => {
       <Modal.Body>
         {message && <Alert variant="success">{message}</Alert>}
         {error && <Alert variant="danger">{error}</Alert>}
-        <img src={product.image} alt={product.name} className="product-image" />
+        
+        {/* Display product image */}
+        <div className="product-images">
+          {product.images && product.images.length > 0 ? (
+            <img
+              src={product.images[currentImageIndex]}
+              alt={`product-image-${currentImageIndex}`}
+              className="product-image"
+            />
+          ) : (
+            <p>No images available for this product.</p>
+          )}
+        </div>
+
         <p>{product.description}</p>
         <p>Ksh {product.price}</p>
         <p>{product.category}</p>
@@ -188,6 +214,7 @@ const ProductModal = ({ product, show, handleClose }) => {
           setShowQrCode(false); 
           setShowMpesaInput(false); 
           setSellerOrderId(''); 
+          setMpesaNumber(''); 
         }}>
           Close
         </Button>
