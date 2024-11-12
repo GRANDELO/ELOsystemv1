@@ -71,7 +71,7 @@ const Withdrawal = () => {
     let csv = 'Username,Amount,Time,Balance\n';
     transactions.forEach(t => {
       const formattedTime = new Date(t.time).toLocaleString();
-      csv += `${t.username},${t.amount},${formattedTime},${t.balance ?? 'N/A'}\n`;
+      csv += `${t.username},${t.amount},${formattedTime},${t.balance}\n`;
     });
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     saveAs(blob, `${username}_transactions.csv`);

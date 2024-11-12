@@ -160,7 +160,7 @@ exports.getProductPerformanceByUsername = async (req, res) => {
     const { username } = req.params; // Get username from request parameters
 
     // Find all products with the specified username
-    const products = await ProductPerformance.find({ username });
+    const products = await ProductPerformance.find({ seller: username });
 
     if (products.length === 0) {
       return res.status(404).json({ message: 'No product performance records found for this user.' });
