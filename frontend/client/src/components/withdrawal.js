@@ -9,7 +9,7 @@ const Withdrawal = () => {
   const [amount, setAmount] = useState('');
   const [Phonenumber, setPhoneNumber] = useState('');
   const [transactions, setTransactions] = useState([]);
-  const username = getUsernameFromToken(); // Hardcoded username
+  const username = getUsernameFromToken(); // Retrieve username from token
 
   // Fetch withdrawals for the user when component loads
   useEffect(() => {
@@ -22,7 +22,7 @@ const Withdrawal = () => {
       }
     };
     fetchWithdrawals();
-  }, []);
+  }, [username]);
 
   // Handle withdrawal request submission
   const handleWithdraw = async (e) => {
@@ -48,13 +48,16 @@ const Withdrawal = () => {
       alert(response.data.message);
       
       // Update transactions list to include the new transaction
-      setTransactions(prev => [...prev, {
-        username,
-        amount: Number(amount),
-        time: new Date().toISOString(),
-        balance: response.data.newBalance,
-      }]);
-      
+      setTransactions(prev => [
+        ...prev, 
+        {
+          username,
+          amount: Number(amount),
+          time: new Date().toISOString(),
+          balance: response.data.newBalance ?? 'N/A' // Ensure balance is present, defaulting if unavailable
+        }
+      ]);
+
       // Clear input fields
       setPhoneNumber('');
       setAmount('');
@@ -67,7 +70,8 @@ const Withdrawal = () => {
   const downloadCSV = () => {
     let csv = 'Username,Amount,Time,Balance\n';
     transactions.forEach(t => {
-      csv += `${t.username},${t.amount},${new Date(t.time).toLocaleString()},${t.balance}\n`;
+      const formattedTime = new Date(t.time).toLocaleString();
+      csv += `${t.username},${t.amount},${formattedTime},${t.balance ?? 'N/A'}\n`;
     });
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     saveAs(blob, `${username}_transactions.csv`);

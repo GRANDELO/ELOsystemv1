@@ -22,17 +22,16 @@ exports.withdraw = async (req, res) => {
     // Deduct the withdrawal amount from the user's balance
     const resp = await b2cRequestHandler(amount, Phonenumber);
     console.log(resp);
-
-    user.amount -= amount;
-    const balance = user.amount;
-    await user.save();
     
+    user.amount -= amount;
+    await user.save();
+
     // Record the withdrawal
     const withdrawal = new Withdrawal({
       username: user.username,
       phonenumber: Phonenumber,
       amount: amount,
-      balance: balance,
+      balance: user.amount,
     });
     await withdrawal.save();
 

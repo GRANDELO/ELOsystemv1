@@ -20,16 +20,18 @@ const Login = () => {
       const trimmedCategory = category?.trim().toLowerCase(); // Add optional chaining for safety
       const storedUsername = getUsernameFromToken();
       sessionStorage.setItem('username', storedUsername);
-
     }
-  }, [token, navigate]); // Include navigate as a dependency
+  }, [token, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
 
     try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/auth/login', { username, password });
+      const response = await axios.post('https://elosystemv1.onrender.com/api/auth/login', {
+        username: username.trim(),
+        password,
+      });
       setMessage(response.data.message);
       sessionStorage.setItem('userToken', response.data.token);
       localStorage.setItem('token', response.data.token);
@@ -43,15 +45,7 @@ const Login = () => {
         navigate('/dashboard');
       } else {
         const currentpage = sessionStorage.getItem('currentpage');
-        if (currentpage)
-          {
-            navigate(currentpage);
-          }
-        else
-          {
-            navigate('/salespersonhome');
-          }
-        
+        navigate(currentpage ? currentpage : '/salespersonhome');
       }
     } catch (error) {
       if (error.response && error.response.data) {
@@ -89,7 +83,13 @@ const Login = () => {
           <div>
             <h2>Login</h2>
             <label>Username:</label>
-            <input type="text" value={username} placeholder="Enter your username" onChange={(e) => setUsername(e.target.value)} required/>
+            <input
+              type="text"
+              value={username}
+              placeholder="Enter your username"
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
 
             <label>Password:</label>
             <div className="password-container">
@@ -117,7 +117,13 @@ const Login = () => {
           <div>
             <h2>Recover password</h2>
             <label>Enter your username:</label>
-            <input type="text" value={username} placeholder="Enter your username" onChange={(e) => setUsername(e.target.value)} required/>
+            <input
+              type="text"
+              value={username}
+              placeholder="Enter your username"
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
             <button type="submit">Recover password</button>
             <button type="button" onClick={handleRecoverPassword}>Back</button>
           </div>
