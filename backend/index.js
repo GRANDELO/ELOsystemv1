@@ -8,8 +8,12 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const morgan = require('morgan');
 const path = require('path');
+const bodyParser = require('body-parser');
+
 require('dotenv').config();
 require('./worker');
+
+const pushnotificationRoutes = require('./routes/notificationRoutes');
 
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
@@ -78,6 +82,7 @@ app.use(morgan('dev'));
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(limiter);
+app.use(bodyParser.json());
 
 const port = process.env.PORT || 5000;
 mongoose.set('strictQuery', true);
@@ -107,6 +112,8 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/financials', financialsRoute);
 app.use('/api/coresell', coresellRoutes);
 app.use('/api/withdraw', withdrawRoutes);
+
+app.use('/api/not', pushnotificationRoutes);
 
 app.use((req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);
