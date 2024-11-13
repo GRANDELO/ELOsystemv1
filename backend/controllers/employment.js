@@ -78,12 +78,3 @@ exports.getDisabledUsers = async (req, res) => {
   }
 };
 
-// Show unverified users
-exports.getUnverifiedUsers = async (req, res) => {
-  try {
-    const unverifiedUsers = await User.find({ isVerified: false });
-    res.status(200).json(unverifiedUsers);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching unverified users', error });
-  }
-};
