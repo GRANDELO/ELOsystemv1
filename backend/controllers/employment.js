@@ -40,23 +40,7 @@ exports.undoDisableUser = async (req, res) => {
   }
 };
 
-// Show a graph of registration dates
-exports.getRegistrationDatesGraph = async (req, res) => {
-  try {
-    const users = await User.aggregate([
-      {
-        $group: {
-          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
-          count: { $sum: 1 }
-        }
-      },
-      { $sort: { _id: 1 } }
-    ]);
-    res.status(200).json({ graphData: users });
-  } catch (error) {
-    res.status(500).json({ message: 'Error generating registration graph', error });
-  }
-};
+
 
 // Show active users
 exports.getActiveUsers = async (req, res) => {

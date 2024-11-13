@@ -1,21 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const UserController = require('../controllers/employment');
+const employmentController = require('../controllers/employment');
 
 // Show all users
-router.get('/users', UserController.getAllUsers);
+router.get('/users', employmentController.getAllUsers);
 
 // Disable a user
-router.patch('/disable/:userId', UserController.disableUser);
+router.patch('/disable/:userId', employmentController.disableUser);
 
 // Undo disable a user
-router.patch('/undo-disable/:userId', UserController.undoDisableUser);
+router.patch('/undo-disable/:userId', employmentController.undoDisableUser);
 
 // Show active users
-router.get('/active', UserController.getActiveUsers);
+router.get('/active', employmentController.getActiveUsers);
 
 // Show disabled users
-router.get('/disabled', UserController.getDisabledUsers);
+router.get('/disabled', employmentController.getDisabledUsers);
 
 
 module.exports = router;
