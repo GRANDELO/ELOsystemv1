@@ -1,21 +1,25 @@
 const webPush = require('../utils/webPushConfig');
 const Subscription = require('../models/Subscription');
 
-// Subscribe user
+// Save subscription to database with username
 exports.subscribeUser = async (req, res) => {
     try {
-      const { endpoint, keys } = req.body;
-      if (!endpoint || !keys || !keys.p256dh || !keys.auth) {
-        return res.status(400).json({ message: 'Invalid subscription data' });
+      const { subscription, username } = req.body;
+      if (!subscription || !username) {
+        return res.status(400).json({ message: 'Subscription data or username missing' });
       }
   
-      const subscription = new Subscription({ endpoint, keys });
-      await subscription.save();
-      res.status(201).json({ message: 'Subscription saved.' });
+      const { endpoint, keys } = subscription;
+  
+      // Save subscription and username to the database
+      const newSubscription = new Subscription({ endpoint, keys, username });
+      await newSubscription.save();
+      res.status(201).json({ message: 'Subscription saved with username.' });
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
   };
+  
 // Unsubscribe user
 exports.unsubscribeUser = async (req, res) => {
     try {
@@ -58,3 +62,29 @@ exports.sendNotification = async (req, res) => {
     }
 };
 
+// Send notification to a specific user
+exports.sendNotificationToUser = async (req, res) => {
+    try {
+      const { username } = req.body;
+      const subscription = await Subscription.findOne({ username });
+  
+      if (!subscription) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      const payload = JSON.stringify({
+        title: req.body.title || 'New Notification',
+        body: req.body.body || 'Hello from your backend!',
+        icon: req.body.icon || '/icon.png',             // Default icon path
+        badge: req.body.badge || '/badge.png',          // Default badge path
+        url: req.body.url || '/',                       // URL to open when the notification is clicked
+        tag: req.body.tag || 'general-notification',    // Tag for grouping
+        renotify: req.body.renotify !== false           // Re-alert user if not specified as false
+    });
+  
+      await webPush.sendNotification(subscription, payload);
+      res.status(200).json({ message: `Notification sent to ${username}` });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  };

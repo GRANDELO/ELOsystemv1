@@ -12,4 +12,6 @@ router.post('/unsubscribe', pushNotificationController.unsubscribeUser);
 // Route to send push notifications to all subscribers
 router.post('/send-notification', pushNotificationController.sendNotification);
 
+router.post('/send-notification-to-user', pushNotificationController.sendNotificationToUser);
+
 module.exports = router;
