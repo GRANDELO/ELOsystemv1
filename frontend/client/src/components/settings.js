@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUsernameFromToken, getcategoryFromToken, getemailFromToken } from '../utils/auth';
+import PushNotification from './PushNotification';
 import './styles/setting.css';
 
 const Settings = () => {
@@ -166,6 +167,7 @@ const Settings = () => {
         {message && <p className="message">{message}</p>}
         {error && <p className="error">{error}</p>}
       </form>
+      <PushNotification/>
       <button className="logoutbutton" onClick={handleLogout}>Logout</button>
     </div>
   );

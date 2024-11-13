@@ -13,7 +13,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 require('./worker');
 
-const pushnotificationRoutes = require('./routes/notificationRoutes');
+const pushNotificationRoutes = require('./routes/pushNotifications');
 
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
@@ -113,7 +113,7 @@ app.use('/api/financials', financialsRoute);
 app.use('/api/coresell', coresellRoutes);
 app.use('/api/withdraw', withdrawRoutes);
 
-app.use('/api/not', pushnotificationRoutes);
+app.use('/api/pushnotifications', pushNotificationRoutes);
 
 app.use((req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);
