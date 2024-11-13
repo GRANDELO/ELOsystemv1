@@ -4,14 +4,18 @@ const Subscription = require('../models/Subscription');
 // Subscribe user
 exports.subscribeUser = async (req, res) => {
     try {
-        const subscription = new Subscription(req.body);
-        await subscription.save();
-        res.status(201).json({ message: 'Subscription saved.' });
+      const { endpoint, keys } = req.body;
+      if (!endpoint || !keys || !keys.p256dh || !keys.auth) {
+        return res.status(400).json({ message: 'Invalid subscription data' });
+      }
+  
+      const subscription = new Subscription({ endpoint, keys });
+      await subscription.save();
+      res.status(201).json({ message: 'Subscription saved.' });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+      res.status(500).json({ error: err.message });
     }
-};
-
+  };
 // Unsubscribe user
 exports.unsubscribeUser = async (req, res) => {
     try {
