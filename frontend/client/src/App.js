@@ -58,37 +58,72 @@ if ('serviceWorker' in navigator) {
 
 const publicVapidKey = 'BNK_K1aaB3ntQ_lInFtrXC01vHCZ4lLTCBS37fgOXMzbApF6Y5-mRQ2aIXXTzKpzdn_Rl9uARa8I5gCiz6kqWGE';
 
-async function subscribeUser() {
-    if ('serviceWorker' in navigator) {
-        const registration = await navigator.serviceWorker.ready;
-
-        // Subscribe to push notifications
-        const subscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
-        });
-
-        // Send subscription to backend
-        await axios.post('https://elosystemv1.onrender.com/api/not/subscribe', subscription);
-    }
+// Function to convert VAPID key to UInt8Array
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; i++) {
+      outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
 }
 
-// Helper function to convert VAPID key to UInt8Array
-function urlBase64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding)
-        .replace(/-/g, '+')
-        .replace(/_/g, '/');
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-    for (let i = 0; i < rawData.length; i++) {
-        outputArray[i] = rawData.charCodeAt(i);
-    }
-    return outputArray;
+// Function to handle subscription
+async function subscribeUser() {
+  if ('serviceWorker' in navigator) {
+      try {
+          // Get the service worker registration
+          const registration = await navigator.serviceWorker.ready;
+
+          // Check if there’s an existing subscription
+          let subscription = await registration.pushManager.getSubscription();
+
+          // If there's an existing subscription with a different key, unsubscribe first
+          if (subscription) {
+              const currentKey = subscription.options.applicationServerKey;
+              const newKey = urlBase64ToUint8Array(publicVapidKey);
+
+              // Check if the existing key matches the new one
+              if (!currentKey || currentKey.toString() !== newKey.toString()) {
+                  console.log('Existing subscription found with a different key. Unsubscribing...');
+                  await subscription.unsubscribe();
+                  subscription = null;
+              }
+          }
+
+          // If no subscription, create a new one
+          if (!subscription) {
+              subscription = await registration.pushManager.subscribe({
+                  userVisibleOnly: true,
+                  applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+              });
+              console.log('Subscribed successfully:', subscription);
+          }
+
+          // Send subscription to backend
+          await axios.post('https://elosystemv1.onrender.com/api/not/subscribe', subscription);
+          console.log('Subscription sent to backend');
+
+      } catch (error) {
+          // Handle specific errors with custom messages
+          if (error.message.includes('applicationServerKey')) {
+              console.error('Error: Subscription with a different applicationServerKey exists.');
+          } else if (error instanceof DOMException && error.name === 'AbortError') {
+              console.error('Subscription aborted:', error.message);
+          } else {
+              console.error('An unexpected error occurred:', error.message);
+          }
+      }
+  } else {
+      console.error('Service Worker or Push Manager is not supported in this browser.');
+  }
 }
 
 // Call this function to initiate subscription when a user agrees
 subscribeUser();
+
 
 
 
