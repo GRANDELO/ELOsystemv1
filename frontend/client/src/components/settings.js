@@ -1,8 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import PushNotification from '../PushNotification';
 import { getUsernameFromToken, getcategoryFromToken, getemailFromToken } from '../utils/auth';
-import PushNotification from './PushNotification';
 import './styles/setting.css';
 
 const Settings = () => {

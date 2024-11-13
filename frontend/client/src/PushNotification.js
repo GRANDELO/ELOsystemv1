@@ -6,6 +6,7 @@ const publicVapidKey = 'BNK_K1aaB3ntQ_lInFtrXC01vHCZ4lLTCBS37fgOXMzbApF6Y5-mRQ2a
 const PushNotification = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscription, setSubscription] = useState(null);
+  const [permissionRequested, setPermissionRequested] = useState(false);
 
   useEffect(() => {
     // Register service worker
@@ -26,17 +27,26 @@ const PushNotification = () => {
         })
         .catch(err => console.error('Service Worker registration failed:', err));
     }
-
-    // Request notification permission
-    Notification.requestPermission().then(permission => {
-      if (permission === 'granted') {
-        console.log('Notification permission granted');
-      } else {
-        console.log('Notification permission denied');
-      }
-    });
   }, []);
 
+  // Function to request notification permission from the user
+  const requestNotificationPermission = () => {
+    // Check if permission is already granted or denied
+    if (Notification.permission === 'default') {
+      // Show the notification permission prompt
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          console.log('Notification permission granted');
+          setPermissionRequested(true);
+        } else if (permission === 'denied') {
+          console.log('Notification permission denied');
+          setPermissionRequested(true);
+        }
+      });
+    }
+  };
+
+  // Function to subscribe the user to push notifications
   const subscribeUser = async () => {
     if ('serviceWorker' in navigator) {
       const registration = await navigator.serviceWorker.ready;
@@ -45,14 +55,16 @@ const PushNotification = () => {
         applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
       });
 
-      // Save subscription to backend
+      // Send subscription to backend to store it
       await axios.post('https://elosystemv1.onrender.com/api/pushnotifications/subscribe', newSubscription);
+
       setIsSubscribed(true);
       setSubscription(newSubscription);
       console.log('User is subscribed:', newSubscription);
     }
   };
 
+  // Function to unsubscribe the user from notifications
   const unsubscribeUser = async () => {
     if (subscription) {
       await axios.post('https://elosystemv1.onrender.com/api/pushnotifications/unsubscribe', { endpoint: subscription.endpoint });
@@ -66,7 +78,13 @@ const PushNotification = () => {
     <div>
       <h1>Push Notifications</h1>
       {!isSubscribed ? (
-        <button onClick={subscribeUser}>Subscribe to Notifications</button>
+        <>
+          <button onClick={requestNotificationPermission}>Allow Notifications</button>
+          {/* Once permission is granted, show the subscribe button */}
+          {permissionRequested && (
+            <button onClick={subscribeUser}>Subscribe to Notifications</button>
+          )}
+        </>
       ) : (
         <button onClick={unsubscribeUser}>Unsubscribe from Notifications</button>
       )}
