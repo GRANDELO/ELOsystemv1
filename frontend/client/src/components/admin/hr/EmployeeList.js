@@ -1,21 +1,25 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { getEmployees } from '../service/employeeService';
-import EmployeeCard from './EmployeeCard';
 
-const EmployeeList = () => {
+function EmployeeList() {
     const [employees, setEmployees] = useState([]);
 
     useEffect(() => {
-        getEmployees().then((response) => setEmployees(response.data));
+        axios.get('https://elosystemv1.onrender.com/api/employees')
+            .then(response => setEmployees(response.data))
+            .catch(error => console.error('Error fetching employees:', error));
     }, []);
 
     return (
-        <div className="employee-list">
-            {employees.map((employee) => (
-                <EmployeeCard key={employee._id} employee={employee} />
-            ))}
+        <div>
+            <h2>Employee List</h2>
+            <ul>
+                {employees.map(employee => (
+                    <li key={employee._id}>{employee.firstName} {employee.surname} - {employee.role}</li>
+                ))}
+            </ul>
         </div>
     );
-};
+}
 
 export default EmployeeList;

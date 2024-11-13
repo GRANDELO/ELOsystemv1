@@ -11,11 +11,10 @@ const employeeSchema = new mongoose.Schema({
     availabilityStatus: { type: String, default: 'available' },
     active: { type: Boolean, default: false },
     isDisabled: { type: Boolean, default: false },
-    lastLogin: { type: Date },
-    createdAt: { type: Date, default: Date.now }
+    dateJoined: { type: Date, default: Date.now },
+    lastModified: { type: Date, default: Date.now }
 });
 
-// Password hashing and workID generation (same as your code)
 employeeSchema.pre('save', async function (next) {
     if (!this.workID) {
         this.workID = `WORK-${Date.now()}`;

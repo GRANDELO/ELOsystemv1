@@ -1,44 +1,33 @@
-// src/components/CreateEmployee.js
+import axios from 'axios';
 import React, { useState } from 'react';
-import { addEmployee } from '../service/employeeService';
 
-const CreateEmployee = () => {
-  const [employeeData, setEmployeeData] = useState({ firstName: '', surname: '', password: '', eid: '', role: '' });
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
+function EmployeeForm({ refreshEmployees }) {
+    const [form, setForm] = useState({ firstName: '', surname: '', role: '', eid: '', password: '' });
 
-  const handleChange = (e) => {
-    setEmployeeData({ ...employeeData, [e.target.name]: e.target.value });
-  };
+    const handleChange = (e) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-    setSuccess(null);
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        axios.post('https://elosystemv1.onrender.com/api/employees', form)
+            .then(() => {
+                setForm({ firstName: '', surname: '', role: '', eid: '', password: '' });
+                refreshEmployees();
+            })
+            .catch(error => console.error('Error creating employee:', error));
+    };
 
-    try {
-      await addEmployee(employeeData);
-      setSuccess('Employee created successfully!');
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+    return (
+        <form onSubmit={handleSubmit}>
+            <input type="text" name="firstName" value={form.firstName} onChange={handleChange} placeholder="First Name" required />
+            <input type="text" name="surname" value={form.surname} onChange={handleChange} placeholder="Surname" required />
+            <input type="text" name="role" value={form.role} onChange={handleChange} placeholder="Role" required />
+            <input type="text" name="eid" value={form.eid} onChange={handleChange} placeholder="Employee ID" required />
+            <input type="password" name="password" value={form.password} onChange={handleChange} placeholder="Password" required />
+            <button type="submit">Add Employee</button>
+        </form>
+    );
+}
 
-  return (
-    <div>
-      <h2>Create Employee</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>{success}</p>}
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="firstName" placeholder="First Name" onChange={handleChange} required />
-        <input type="text" name="surname" placeholder="Surname" onChange={handleChange} required />
-        <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
-        <input type="text" name="eid" placeholder="EID" onChange={handleChange} required />
-        <input type="text" name="role" placeholder="Role" onChange={handleChange} required />
-        <button type="submit">Create Employee</button>
-      </form>
-    </div>
-  );
-};
-
-export default CreateEmployee;
+export default EmployeeForm;
