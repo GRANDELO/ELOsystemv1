@@ -1,10 +1,10 @@
+// routes/employeeRoutes.js
 const express = require('express');
+const { registerEmployee, login } = require('../controllers/employeeController');
 const router = express.Router();
-const employeeController = require('../controllers/employeeController');
 
-router.post('/employees', employeeController.createEmployee);
-router.get('/employees', employeeController.getEmployees);
-router.put('/employees/:id', employeeController.updateEmployee);
-router.delete('/employees/:id', employeeController.deleteEmployee);
+// POST request to register an employee
+router.post('/register', registerEmployee);
+router.post('/login', login);
 
 module.exports = router;
