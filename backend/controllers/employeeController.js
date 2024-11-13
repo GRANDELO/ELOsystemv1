@@ -64,15 +64,8 @@ const login = async (req, res) => {
     }
 };
 
-module.exports = { 
-    registerEmployee,
-    login
-};
-
-
-
 // Get all employees
-exports.getEmployees = async (req, res) => {
+const getEmployees = async (req, res) => {
     try {
         const employees = await Employee.find();
         res.status(200).json(employees);
@@ -82,7 +75,7 @@ exports.getEmployees = async (req, res) => {
 };
 
 // Add a new employee
-exports.addEmployee = async (req, res) => {
+const addEmployee = async (req, res) => {
     try {
         const employee = new Employee(req.body);
         await employee.save();
@@ -93,7 +86,7 @@ exports.addEmployee = async (req, res) => {
 };
 
 // Update employee details
-exports.updateEmployee = async (req, res) => {
+const updateEmployee = async (req, res) => {
     try {
         const employee = await Employee.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.status(200).json(employee);
@@ -103,7 +96,7 @@ exports.updateEmployee = async (req, res) => {
 };
 
 // Delete an employee
-exports.deleteEmployee = async (req, res) => {
+const deleteEmployee = async (req, res) => {
     try {
         await Employee.findByIdAndDelete(req.params.id);
         res.status(200).json({ message: 'Employee deleted' });
@@ -111,3 +104,16 @@ exports.deleteEmployee = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+module.exports = { 
+    registerEmployee,
+    login,
+    getEmployees,
+    addEmployee,
+    updateEmployee,
+    deleteEmployee
+};
+
+
+
+
