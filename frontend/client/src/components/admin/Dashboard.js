@@ -2,11 +2,11 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Reports from '../Reports';
-import Sales from '../Sales';
 import Users from '../User';
 import UserChart from '../UserChart';
 import Header from '../header';
 import '../styles/Dashboard.css';
+import Sales from './Sales';
 
 const Dashboard = () => {
     const [view, setView] = useState('summary');

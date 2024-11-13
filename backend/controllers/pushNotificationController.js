@@ -88,3 +88,31 @@ exports.sendNotificationToUser = async (req, res) => {
       res.status(500).json({ error: err.message });
     }
   };
+
+
+  /*
+  all users
+  '{
+    "title": "Custom Notification Title",
+    "body": "This is a more detailed notification body sent from the backend.",
+    "icon": "",
+    "badge": "",
+    "url": "https://grandelo.web.app/salespersonhome",
+    "tag": "custom-tag",
+    "renotify": true
+}'
+
+
+  single user
+  '{
+    "username": "kinyi", 
+    "title": "Custom personal Notification Title",
+    "body": "This is a more detailed notification body sent from the backend.",
+    "icon": "",
+    "badge": "",
+    "url": "https://grandelo.web.app/salespersonhome",
+    "tag": "custom-tag",
+    "renotify": true
+}'
+
+*/

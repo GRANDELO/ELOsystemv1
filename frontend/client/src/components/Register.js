@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './styles/styles.css';
 
 const Register = () => {
@@ -28,17 +28,26 @@ const Register = () => {
     e.preventDefault();
     setMessage('');
 
+    // Trim the form data before sending it
+    const trimmedFormData = {
+      fullName: formData.fullName.trim(),
+      email: formData.email.trim(),
+      password: formData.password.trim(),
+      confirmPassword: formData.confirmPassword.trim(),
+      phoneNumber: formData.phoneNumber.trim(),
+      username: formData.username.trim(),
+      dateOfBirth: formData.dateOfBirth.trim(),
+      gender: formData.gender.trim(),
+      category: formData.category.trim()
+    };
+
     try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/auth/register', formData);
+      const response = await axios.post('https://elosystemv1.onrender.com/api/auth/register', trimmedFormData);
       setMessage(response.data.message);
-      sessionStorage.setItem('email', formData.email);
+      sessionStorage.setItem('email', trimmedFormData.email);
       navigate('/verification');
     } catch (error) {
-      if (error.response && error.response.data) {
-        setMessage(error.response.data.message);
-      } else {
-        setMessage('An error occurred while processing your request.');
-      }
+      setMessage(error.response?.data?.message || 'An error occurred while processing your request.');
     }
   };
 
@@ -54,16 +63,16 @@ const Register = () => {
     const validateStep = () => {
       switch (currentStep) {
         case 1:
-          const fullNameValid = /^[a-zA-Z]{3,}$/.test(formData.fullName);
-          const emailValid = /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(formData.email);
-          const usernameValid = /^[a-zA-Z0-9_]{4,}$/.test(formData.username);
+          const fullNameValid = /^[a-zA-Z]{3,}$/.test(formData.fullName.trim());
+          const emailValid = /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(formData.email.trim());
+          const usernameValid = /^[a-zA-Z0-9_]{4,}$/.test(formData.username.trim());
           return fullNameValid && emailValid && usernameValid;
         case 2:
-          const passwordValid = formData.password.length >= 8 &&
-            /[A-Z]/.test(formData.password) &&
-            /[a-z]/.test(formData.password) &&
-            /[0-9]/.test(formData.password) &&
-            /[!@#$%^&*(),.?":{}|<>]/.test(formData.password);
+          const passwordValid = formData.password.trim().length >= 8 &&
+            /[A-Z]/.test(formData.password.trim()) &&
+            /[a-z]/.test(formData.password.trim()) &&
+            /[0-9]/.test(formData.password.trim()) &&
+            /[!@#$%^&*(),.?":{}|<>]/.test(formData.password.trim());
           return formData.phoneNumber && passwordValid && formData.password === formData.confirmPassword;
         case 3:
           return formData.dateOfBirth && formData.gender && formData.category;
@@ -214,8 +223,8 @@ const Register = () => {
             required
           >
             <option value="">Select category</option>
-            <option value="Seller">Seller</option>
-            <option value="Salesperson">Salesperson</option>
+            <option value="Seller">Own Business</option>
+            <option value="Salesperson">Personal Acount</option>
           </select>
 
           <button type="button" onClick={previousStep}>Back</button>
@@ -225,10 +234,8 @@ const Register = () => {
 
       </form>
       <div className="divmess">
-          {message && <p className="message">{message}</p>}
+          {message && <p>{message}</p>}
       </div>
-
-      <p>If you have an account <Link to="/">Login</Link></p>
     </div>
   );
 };

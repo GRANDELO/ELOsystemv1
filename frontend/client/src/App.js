@@ -20,7 +20,6 @@ import ProductList from './components/ProductsList';
 import ProtectedRoute from './components/ProtectRoute';
 import Register from './components/Register';
 import Reports from './components/Reports';
-import Sales from './components/Sales';
 import Success from './components/Success';
 import Users from './components/User';
 import UserChart from './components/UserChart';
@@ -28,6 +27,7 @@ import Verification from './components/Verification';
 
 import Dashboard from './components/admin/Dashboard';
 import Loginadm from './components/admin/Login';
+import Sales from './components/admin/Sales';
 import AdminDashboard from './components/admin/admindash/AdminDashboard';
 import Employies from './components/admin/employies';
 import Packingpage from './components/admin/packingpage';
