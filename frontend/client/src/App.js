@@ -29,6 +29,7 @@ import Dashboard from './components/admin/Dashboard';
 import Loginadm from './components/admin/Login';
 import AdminDashboard from './components/admin/admindash/AdminDashboard';
 import Employies from './components/admin/employies';
+import Hr from './components/admin/hr/hr';
 import Packingpage from './components/admin/packingpage';
 import Sales from './components/admin/sales/Sales';
 
@@ -140,6 +141,7 @@ const App = () => {
             <Route path="/productperfomance" element={<Productperfomance />} />
 
             <Route path="/employies" element={<Employies />} />
+            <Route path="/hr" element={<Hr />} />
             <Route path="/loginadm" element={<Loginadm />} />
             <Route path="/adminDashboard" element={<AdminDashboard />} />
 
