@@ -22,36 +22,44 @@ const groupByMonth = (transactions) => {
 // Controller for financial summary
 const financialsController = {
   async getFinancialSummary(req, res) {
-    const { month, year } = req.query; // Fetch filters from query params
-
+    const { year, month } = req.query;
     try {
-      const financials = await CompanyFinancials.findOne();
+      // Query financials data with optional date filters
+      const query = {};
+      if (year) query['createdAt'] = { $gte: new Date(`${year}-01-01`), $lt: new Date(`${parseInt(year) + 1}-01-01`) };
+      if (month) query['createdAt'] = { $gte: new Date(`${year}-${month}-01`), $lt: new Date(`${year}-${parseInt(month) + 1}-01`) };
+      
+      const financials = await CompanyFinancials.findOne(query);
       if (!financials) return res.status(404).json({ message: 'No financial data found' });
 
-      const filteredTransactions = financials.transactions.filter(transaction => {
-        const transactionYear = transaction.createdAt.getFullYear();
-        const transactionMonth = transaction.createdAt.getMonth() + 1; // JS months are 0-based
-        return (!year || transactionYear === parseInt(year)) && (!month || transactionMonth === parseInt(month));
-      });
-
-      const totalIncome = calculateTotal(filteredTransactions, 'income');
-      const totalExpenses = calculateTotal(filteredTransactions, 'expense');
+      const totalIncome = financials.transactions
+        .filter(transaction => transaction.transactionType === 'income')
+        .reduce((acc, transaction) => acc + transaction.amount, 0);
+      const totalExpenses = financials.transactions
+        .filter(transaction => transaction.transactionType === 'expense')
+        .reduce((acc, transaction) => acc + transaction.amount, 0);
       const netBalance = totalIncome - totalExpenses;
-      const monthlySales = groupByMonth(filteredTransactions);
 
-      const totalTransactions = filteredTransactions.length;
-      const avgIncome = totalIncome / (totalTransactions || 1);
-      const avgExpenses = totalExpenses / (totalTransactions || 1);
+      // Monthly Sales Breakdown
+      const monthlySales = financials.transactions.reduce((months, transaction) => {
+        const monthKey = `${transaction.createdAt.getFullYear()}-${transaction.createdAt.getMonth() + 1}`;
+        if (!months[monthKey]) months[monthKey] = { income: 0, expenses: 0 };
+        
+        if (transaction.transactionType === 'income') months[monthKey].income += transaction.amount;
+        else if (transaction.transactionType === 'expense') months[monthKey].expenses += transaction.amount;
+        
+        return months;
+      }, {});
 
       res.json({
         totalIncome,
         totalExpenses,
         netBalance,
         monthlySales,
-        totalTransactions,
-        avgIncome,
-        avgExpenses,
-        lastUpdated: financials.updatedAt,
+        totalTransactions: financials.transactions.length,
+        avgIncome: totalIncome / (financials.transactions.length || 1),
+        avgExpenses: totalExpenses / (financials.transactions.length || 1),
+        lastUpdated: financials.updatedAt
       });
       
     } catch (error) {

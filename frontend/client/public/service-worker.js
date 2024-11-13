@@ -3,7 +3,7 @@ self.addEventListener('push', function (event) {
 
     const options = {
         body: data.body || 'You have a new message!', // Default message if body is missing
-        icon: '/logo.ico',       //data.icon ||   // Customizable icon based on payload
+        icon: '/r16.ico',       //data.icon ||   // Customizable icon based on payload
         badge:  '/bell.png',    //data.badge ||  // Badge image
         actions: [
             { action: 'view', title: 'View', icon: '/images/view.png' }, // Add relevant actions
