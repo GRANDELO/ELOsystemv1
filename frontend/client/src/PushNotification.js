@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-
+import { getUsernameFromToken } from './utils/auth';
 const publicVapidKey = 'BNK_K1aaB3ntQ_lInFtrXC01vHCZ4lLTCBS37fgOXMzbApF6Y5-mRQ2aIXXTzKpzdn_Rl9uARa8I5gCiz6kqWGE';
 
 const PushNotification = () => {
@@ -9,6 +9,13 @@ const PushNotification = () => {
   const [permissionRequested, setPermissionRequested] = useState(false);
 
   useEffect(() => {
+    // Retrieve the username from session storage
+    const username = getUsernameFromToken();
+    if (!username) {
+      console.error('Username not found in session storage');
+      return;
+    }
+
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       navigator.serviceWorker.register('/service-worker.js')
         .then((registration) => {
@@ -40,14 +47,24 @@ const PushNotification = () => {
 
   const subscribeUser = async () => {
     try {
+      const username = sessionStorage.getItem('username');
+      if (!username) {
+        console.error('Username not found in session storage');
+        return;
+      }
+
       if ('serviceWorker' in navigator) {
         const registration = await navigator.serviceWorker.ready;
         const newSubscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
         });
-        
-        await axios.post('https://elosystemv1.onrender.com/api/pushnotifications/subscribe', newSubscription);
+
+        await axios.post('https://elosystemv1.onrender.com/api/pushnotifications/subscribe', {
+          subscription: newSubscription,
+          username,
+        });
+
         setIsSubscribed(true);
         setSubscription(newSubscription);
         console.log('User subscribed:', newSubscription);
