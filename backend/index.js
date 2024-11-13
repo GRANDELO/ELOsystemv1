@@ -18,6 +18,8 @@ const pushNotificationRoutes = require('./routes/pushNotifications');
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const userRoutes = require('./routes/userRoutes');
+const uemployeezRoutes = require('./routes/employee');
+
 const dashboardRoutes = require('./routes/dashboard');
 const newproductRoutes = require('./routes/newproductRoutes');
 const cartRoutes = require('./routes/cart');
@@ -97,6 +99,8 @@ mongoose
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/uemployeez', uemployeezRoutes);
+
 app.use('/api/dash', dashboardRoutes);
 app.use('/api', newproductRoutes);
 app.use('/api/cart', cartRoutes);
