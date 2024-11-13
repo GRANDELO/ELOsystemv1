@@ -6,7 +6,7 @@ import Users from '../User';
 import UserChart from '../UserChart';
 import Header from '../header';
 import '../styles/Dashboard.css';
-import Sales from './Sales';
+import Sales from './sales/Sales';
 
 const Dashboard = () => {
     const [view, setView] = useState('summary');

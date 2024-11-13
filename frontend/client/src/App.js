@@ -27,10 +27,10 @@ import Verification from './components/Verification';
 
 import Dashboard from './components/admin/Dashboard';
 import Loginadm from './components/admin/Login';
-import Sales from './components/admin/Sales';
 import AdminDashboard from './components/admin/admindash/AdminDashboard';
 import Employies from './components/admin/employies';
 import Packingpage from './components/admin/packingpage';
+import Sales from './components/admin/sales/Sales';
 
 
 import Coreordering from './components/coreordering';
