@@ -22,7 +22,6 @@ const AdminDashboard = () => {
     fetchUsers();
     fetchActiveUsers();
     fetchDisabledUsers();
-    fetchRegistrationGraph();
   }, []);
 
   const fetchUsers = async () => {
@@ -48,7 +47,7 @@ const AdminDashboard = () => {
 
   const fetchDisabledUsers = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/users/disabled');
+      const response = await axios.get('https://elosystemv1.onrender.com/api/employees/getdisabledemployee');
       setDisabledUsers(response.data);
       setError(null);
     } catch (error) {
@@ -56,15 +55,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const fetchRegistrationGraph = async () => {
-    try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/users/registration-graph');
-      setRegistrationData(response.data.graphData);
-      setError(null);
-    } catch (error) {
-      setError('Failed to fetch registration graph data');
-    }
-  };
+
 
   const disableUser = async (userId) => {
     try {
@@ -86,19 +77,20 @@ const AdminDashboard = () => {
 
   const exportCSV = () => {
     const csvData = users.map(user => ({
-      Name: user.fullName,
-      Email: user.email,
-      Status: user.isDisabled ? 'Disabled' : 'Active'
+
+      FirstName: user.firstName,
+      WorkID: user.workID,
+      Role: user.role
     }));
     const csvString = [
-      ["Name", "Email", "Status"],
-      ...csvData.map(item => [item.Name, item.Email, item.Status])
+      ["Name", "Work ID", "Role"],
+      ...csvData.map(item => [item.FirstName, item.WorkID, item.Role])
     ]
       .map(e => e.join(","))
       .join("\n");
 
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-    saveAs(blob, "user_data.csv");
+    saveAs(blob, "Employee_data.csv");
   };
 
   const indexOfLastUser = currentPage * usersPerPage;
@@ -115,7 +107,7 @@ const AdminDashboard = () => {
     const term = e.target.value.toLowerCase();
     setFilteredUsers(
       users.filter(user =>
-        user.fullName.toLowerCase().includes(term) || user.email.toLowerCase().includes(term)
+        user.role.toLowerCase().includes(term) || user.workID.toLowerCase().includes(term)
       )
     );
     setCurrentPage(1); // Reset to first page after search
@@ -227,8 +219,9 @@ const AdminDashboard = () => {
           <ul className="usal-user-list">
             {disabledUsers.map(user => (
               <li key={user._id} className="usal-user-item">
-                <p>Name: {user.fullName}</p>
-                <p>Email: {user.email}</p>
+                <p>First Name: {user.firstName}</p>
+                <p>Work ID: {user.workID}</p>
+                <p>Role: {user.role}</p>
               </li>
             ))}
           </ul>

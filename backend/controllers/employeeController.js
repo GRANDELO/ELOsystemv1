@@ -92,10 +92,41 @@ try {
 }
 };
 
+// Disable a user
+const disableEmployee = async (req, res) => {
+    const { userId } = req.params;
+    try {
+      const user = await Employee.findByIdAndUpdate(userId, { isDisabled: true }, { new: true });
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      res.status(200).json({ message: 'User disabled successfully', user });
+    } catch (error) {
+      res.status(500).json({ message: 'Error disabling user', error });
+    }
+  };
+  
+  // Undo disable a user
+const undoDisableEmployee = async (req, res) => {
+    const { userId } = req.params;
+    try {
+      const user = await Employee.findByIdAndUpdate(userId, { isDisabled: false }, { new: true });
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      res.status(200).json({ message: 'User reactivated successfully', user });
+    } catch (error) {
+      res.status(500).json({ message: 'Error reactivating user', error });
+    }
+  };
+
+
 module.exports = { 
     registerEmployee,
     login,
     getAllEmployees,
     getActiveEmployees,
-    getDisabledEmployee
+    getDisabledEmployee,
+    disableEmployee,
+    undoDisableEmployee
 };
