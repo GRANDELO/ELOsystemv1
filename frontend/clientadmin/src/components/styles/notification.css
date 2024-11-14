@@ -1,0 +1,68 @@
+/* Notifications container */
+.not-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  /* Header styling */
+  .not-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  /* Alert message */
+  .not-alert {
+    margin-bottom: 10px;
+  }
+  
+  /* Empty message styling */
+  .not-empty-message {
+    color: #888;
+    font-style: italic;
+  }
+  
+  /* Notification styling */
+  .not-notification {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  /* Read and unread notification styles */
+  .not-read {
+    background-color: #e9ecef;
+  }
+  
+  .not-unread {
+    background-color: #fff3cd;
+  }
+  
+  /* Notification message */
+  .not-message {
+    flex-grow: 1;
+    margin-right: 10px;
+  }
+  
+  /* Buttons */
+  .not-read-button,
+  .not-delete-button,
+  .not-toggle-button {
+    margin-left: 10px;
+  }
+  
+  .not-toggle-button {
+    font-weight: bold;
+    color: #007bff;
+  }
+  

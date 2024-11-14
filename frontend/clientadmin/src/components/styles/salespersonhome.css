@@ -1,0 +1,205 @@
+/* General Page Layout */
+.salesp-home {
+    display: flex;
+    min-width: 100vw;
+    flex-direction: column;
+    min-height: 100%;
+    font-family: 'Poppins', sans-serif; 
+    color: #333;
+    overflow-x: hidden;
+}
+
+.salesp-main {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between; /* Space between content and settings */
+    align-items: flex-start;
+}
+
+.salesp-home-intro {
+    flex-grow: 1;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    border-radius: 12px;
+    padding: 25px;
+    width: 70%;
+    max-width: 1200px;
+    margin: 20px 0;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Settings Section */
+.salesp-settings-section {
+    width: 25%;
+    background-color: #fff;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1); /* Modern shadow effect */
+    border-radius: 12px;
+    padding: 20px;
+    margin-left: 20px;
+    height: auto;
+    position: relative;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.salesp-settings-section.closed {
+    transform: translateX(100%);
+    opacity: 0;
+    visibility: hidden;
+}
+
+.salesp-toggle-settings {
+    position: absolute;
+    top: 10px;
+    right: -100px; /* Close button moved to edge */
+    font-weight: bolder;
+    font-size: xx-large;
+    background-color: transparent; /* No background */
+    color: #333; /* Neutral text color */
+    border: none; /* No border */
+    font-size: 1.5rem; /* Bigger font size */
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.salesp-toggle-settings:hover {
+    background: none;
+    color: #007bff; /* Slight color change on hover */
+    transform: scale(1.1); /* Slight scale on hover */
+}
+
+/* Footer */
+/* .salesp-home-footer {
+    max-width: 100%;
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin-top: auto;
+    font-size: 0.9rem;
+    border-top-left-radius: 12px; /* Softer corners */
+    /* border-top-right-radius: 12px;
+}
+
+.salesp-home-footer p {
+    margin: 5px 0;
+} */ 
+
+/* Floating Buttons */
+.salesp-floating-buttons {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.salesp-toggle-button {
+    background: none;
+    color: #0056b3;
+    border: none;
+    padding: 12px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.salesp-toggle-button:hover {
+    background: none;
+    transform: scale(1.1); /* A bit of interaction feedback */
+}
+
+/* Floating Cart */
+.salesp-floating-cart {
+    width: 300px;
+    max-height: 500px;
+    background-color: #fff;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+    border-radius: 12px;
+    margin-right: 10px;
+    overflow-y: auto;
+    z-index: 1000;
+    transition: all 0.3s ease-in-out;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.salesp-floating-cart.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .salesp-main {
+        flex-direction: column;
+    }
+
+    .salesp-home-intro, .salesp-settings-section {
+        width: 100%;
+        margin: 0;
+    }
+
+    .salesp-toggle-settings {
+        right: 10px;
+    }
+
+    .salesp-floating-buttons {
+        position: fixed;
+        top: 70%;
+        right: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+
+    .salesp-floating-cart {
+        width: 400px;
+    }
+    .salesp-floating-cart,
+    .salesp-settings-section,
+    .salesp-order-section {
+    /* Optional: add styling for better positioning and transitions */
+        position: fixed;
+        top: 0px;
+        right: 0px;
+        width: 400px;
+        max-height: 500px;
+        background-color: #ffffff;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+        border-radius: 12px;
+        padding: 20px;
+        overflow-y: auto;
+        z-index: 1000;
+        transition: all 0.3s ease-in-out;
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .salesp-floating-cart {
+        max-height: 60%;
+    }
+
+    .salesp-toggle-button {
+        padding: 10px;
+        font-size: 1.2rem;
+    }
+}
+
+/* salespersonhome.css */
+.salesp-settings-section,
+.salesp-order-section {
+  /* Optional: add styling for better positioning and transitions */
+  display: flex;
+  flex-direction: column;
+}
+
+.salesp-settings-section.closed,
+.salesp-order-section.closed {
+  display: none; /* Ensures sections are hidden when not visible */
+}

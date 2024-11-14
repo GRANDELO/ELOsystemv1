@@ -1,0 +1,81 @@
+/* src/Withdrawal.css */
+.witda-withdrawal {
+  text-align: center;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.wit-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.wit-form {
+  margin: 20px 0;
+}
+
+.witda-label {
+  display: block;
+  margin: 10px 0;
+  font-weight: bold;
+}
+
+.wit-input {
+  width: 60%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.witda-submit-btn {
+  padding: 8px 16px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.witda-submit-btn:hover {
+  background-color: #218838;
+}
+
+.witda-transaction-history {
+  margin-top: 40px;
+}
+
+.wit-subtitle {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.witda-download-btn {
+  padding: 6px 12px;
+  margin-bottom: 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.witda-download-btn:hover {
+  background-color: #0056b3;
+}
+
+.witda-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.witda-table th, .witda-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.witda-transaction-row:nth-child(even) {
+  background-color: #f9f9f9;
+}

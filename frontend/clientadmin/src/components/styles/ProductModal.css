@@ -1,0 +1,113 @@
+/* Custom CSS file (e.g., styles.css) */
+
+.custom-modal .modal-content {
+    background-color: #f8f9fa; /* Light background */
+    border-radius: 10px;
+    padding: 20px;
+    min-width: 500px;
+  }
+  
+  .custom-modal .modal-header {
+    background-color: #343a40;
+    color: #fff;
+    border-bottom: none;
+  }
+  
+  .custom-modal .modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .custom-modal .modal-footer {
+    border-top: none;
+  }
+  
+  .custom-modal img {
+    border-radius: 8px;
+    max-width: 200px;
+  }
+  
+  .custom-modal .btn-primary {
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+  
+  .custom-modal .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
+  /* Custom CSS file (styles.css) */
+
+/* Default styles for larger screens */
+.custom-modal .modal-content {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+  min-width: 500px; /* Large default width */
+}
+
+.custom-modal .modal-header {
+  background-color: #343a40;
+  color: #fff;
+  border-bottom: none;
+}
+
+.custom-modal .modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.custom-modal .modal-footer {
+  border-top: none;
+}
+
+.custom-modal img {
+  border-radius: 8px;
+  max-width: 200px;
+  width: 100%;
+  height: auto;
+}
+
+.custom-modal .btn-primary {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.custom-modal .btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+/* Responsive styles for screens smaller than 576px (phones) */
+@media (max-width: 576px) {
+  .custom-modal .modal-content {
+      min-width: 100%; /* Full width for smaller screens */
+      padding: 10px;
+      border-radius: 0; /* Remove border radius for full-width look */
+  }
+
+  .custom-modal .modal-header {
+      padding: 15px 10px;
+      font-size: 1.2rem;
+  }
+
+  .custom-modal .modal-title {
+      font-size: 1.2rem;
+  }
+
+  .custom-modal .modal-footer {
+      padding: 10px;
+  }
+
+  .custom-modal img {
+      max-width: 100%; /* Ensure images are responsive */
+      height: auto;
+      border-radius: 5px;
+  }
+
+  .custom-modal .btn-primary,
+  .custom-modal .btn-secondary {
+      width: 100%; /* Full width buttons on small screens */
+      margin-bottom: 5px;
+  }
+}

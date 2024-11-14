@@ -1,0 +1,96 @@
+/* Custom CSS for OrderingPage */
+.ordering-page {
+    padding: 20px;
+    max-width: 900px;
+    min-width: 370px;
+    margin: 0 auto;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+  }
+  
+  .ordering-page h1, .ordering-page h2, .ordering-page h3 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .ordering-page ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .ordering-page li {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+  
+  .ordering-page .total-price {
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0;
+  }
+  
+  .ordering-page form {
+    margin: 20px 0;
+  }
+  
+  .ordering-page .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .ordering-page .btn-primary {
+    display: block;
+    width: 100%;
+    font-size: 18px;
+    padding: 10px;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .ordering-page {
+      padding: 15px;
+      max-width: 100%;
+    }
+  
+    .ordering-page h1, .ordering-page h2, .ordering-page h3 {
+      font-size: 1.5rem;
+    }
+  
+    .ordering-page li {
+      font-size: 14px;
+    }
+  
+    .ordering-page .btn-primary {
+      font-size: 16px;
+      padding: 8px;
+    }
+  
+    .ordering-page .form-control {
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .ordering-page {
+      padding: 10px;
+    }
+  
+    .ordering-page h1, .ordering-page h2, .ordering-page h3 {
+      font-size: 1.2rem;
+    }
+  
+    .ordering-page li {
+      font-size: 12px;
+    }
+  
+    .ordering-page .btn-primary {
+      font-size: 14px;
+      padding: 6px;
+    }
+  
+    .ordering-page .form-control {
+      font-size: 12px;
+    }
+  }
+  

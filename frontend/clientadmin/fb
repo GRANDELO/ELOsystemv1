@@ -1,0 +1,6 @@
+#1/bin/bash
+export NODE_OPTIONS=--openssl-legacy-provider
+set NODE_OPTIONS=--openssl-legacy-provide
+npm run build
+firebase deploy
+

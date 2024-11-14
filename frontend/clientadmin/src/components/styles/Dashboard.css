@@ -1,0 +1,104 @@
+.dashboard-container {
+    padding: 2rem;
+    background-color: #f9f9f9;
+}
+
+.nav-button {
+    padding: 1rem;
+    margin-right: 1rem;
+    cursor: pointer;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    border-radius: 5px;
+    max-width: fit-content;
+}
+
+.nav-button.active {
+    background-color: #0b315f;
+}
+
+.content {
+    margin-top: 2rem;
+}
+
+.dashboard-metrics {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 2rem;
+}
+
+.metric {
+    text-align: center;
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.metric h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.metric p {
+    font-size: 2rem;
+    color: hsl(204, 100%, 30%);
+}
+
+.recent-activities {
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.recent-activities h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.recent-activities ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.recent-activities li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.recent-activities li:last-child {
+    border-bottom: none;
+}
+
+.quick-links {
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.quick-links h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.quick-links ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    justify-content: space-around;
+}
+
+.quick-links li {
+    padding: 0.5rem 1rem;
+}
+
+.quick-links a {
+    text-decoration: none;
+    color: hsl(204, 100%, 30%);
+    font-weight: bold;
+}

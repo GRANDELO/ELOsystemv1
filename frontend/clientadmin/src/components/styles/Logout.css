@@ -1,0 +1,20 @@
+.logout-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+  }
+  
+  .logout-container h1 {
+    font-size: 2em;
+    margin-bottom: 1em;
+  }
+  
+  .logout-container p {
+    font-size: 1.2em;
+  }
+  .loader{
+    width: 50px;
+  }

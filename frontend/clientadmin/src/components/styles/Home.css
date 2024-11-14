@@ -1,0 +1,122 @@
+/* General Styles for Home Page */
+.home {
+  display: flex;
+  flex-direction: column;
+  min-width: 100vw;
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif; 
+  color: #333;
+  overflow-x: hidden;
+}
+
+.home-main {
+  display: flex;
+  flex: 1;
+  padding: 20px;
+  gap: 20px;
+}
+
+.home-footer {
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* User Section */
+.home-user-section {
+  background-color: #0023501a;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 300px;
+  min-width: 250px;
+}
+
+.home-settings-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.home-settings-button:hover {
+  background-color: #0056b3;
+}
+
+/* Intro Section */
+.home-intro {
+  flex-grow: 1;
+  background-color: #0023501a;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.home-intro strong {
+  font-size: 1.5rem;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.home-show-section.active {
+  display: block;
+}
+
+/* Add Product Form */
+.home-add-product-form {
+  background-color: #f1f1f1;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Product Owner Section */
+.home-product-owner {
+  margin-top: 20px;
+}
+
+.home-product-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.home-product-card {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.home-product-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.home-product-card p {
+  font-size: 1rem;
+  color: #666;
+}
+
+.home-product-card h4 {
+  font-size: 1.1rem;
+  color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .home-main {
+    flex-direction: column;
+  }
+
+  .home-user-section {
+    max-width: 100%;
+  }
+}
