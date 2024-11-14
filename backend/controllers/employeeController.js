@@ -12,7 +12,7 @@ const registerEmployee = async (req, res) => {
         return res.status(401).json({ message: 'Eid exists' });
     }
     try {
-        const workID = eID;
+        const workID = eid;
         const employee = new Employee({ firstName, surname, workID, role, password });
         await employee.save();
         res.status(201).json({ message: 'Employee registered successfully', employee });
