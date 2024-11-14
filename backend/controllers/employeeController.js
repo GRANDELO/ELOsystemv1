@@ -128,7 +128,7 @@ const newrecoverPassword = async (req, res) => {
     const user = await Employee.findOne({ workID: username });
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found' + username });
     }
 
     const token = crypto.randomBytes(20).toString('hex');
