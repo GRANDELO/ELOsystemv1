@@ -11,7 +11,8 @@ const registerEmployee = async (req, res) => {
     if (user) {
         return res.status(401).json({ message: 'Work ID exists' });
     }
-    if (user.email === email) 
+    const euser = await Employee.findOne({ email });
+    if (euser) 
       {
       return res.status(401).json({ message: 'Email exists' });
       }
@@ -281,7 +282,7 @@ module.exports = {
     changepassword,
     newrecoverPassword,
     resetPassword,
-    
+
     getAllEmployees,
     getActiveEmployees,
     getDisabledEmployee,
