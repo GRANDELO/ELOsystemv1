@@ -2,16 +2,21 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Table } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import Header from '../header';
+import Footer from './Footer';
 import Setting from './settings';
+import './styles/packdev.css';
+
 const LogisticsPage = () => {
   const [unpackedOrders, setUnpackedOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [currentImageIndexes, setCurrentImageIndexes] = useState({});
   const navigate = useNavigate();
+
   const handleLogout = () => {
     navigate('/admnLogout');
-};
+  };
 
   const fetchUnpackedOrders = async () => {
     setLoading(true);
@@ -27,7 +32,6 @@ const LogisticsPage = () => {
     }
   };
 
-  // Function to mark an order as packed
   const markOrderAsPacked = async (orderId) => {
     try {
       await axios.patch(`https://elosystemv1.onrender.com/api/order2/${orderId}/packed`, { packed: true });
@@ -48,7 +52,6 @@ const LogisticsPage = () => {
         const newIndexes = { ...prevIndexes };
         unpackedOrders.forEach((order) => {
           order.products.forEach((product) => {
-            // Check if product.image is defined and is an array with at least one item
             if (product.image && Array.isArray(product.image) && product.image.length > 0) {
               const productKey = `${order.orderId}-${product.name}`;
               newIndexes[productKey] = ((newIndexes[productKey] || 0) + 1) % product.image.length;
@@ -63,15 +66,16 @@ const LogisticsPage = () => {
   }, [unpackedOrders]);
 
   return (
-    <div className="logistics-page">
-      <Setting/>
-      <h1>Unpacked Orders</h1>
+    <div className="logpg-container">
+      <Header/>
+      <Setting />
+      <h1 className="logpg-title">Unpacked Orders</h1>
 
-      {loading && <p>Loading...</p>}
-      {error && <Alert variant="danger">{error}</Alert>}
+      {loading && <p className="logpg-loading">Loading...</p>}
+      {error && <Alert variant="danger" className="logpg-error">{error}</Alert>}
 
       {!loading && unpackedOrders.length > 0 && (
-        <Table striped bordered hover>
+        <Table striped bordered hover className="logpg-table">
           <thead>
             <tr>
               <th>Order ID</th>
@@ -95,12 +99,12 @@ const LogisticsPage = () => {
                     <td>{product.name}</td>
                     <td>{product.category}</td>
                     <td>
-                      <div className="product-images">
+                      <div className="logpg-product-images">
                         {product.image && Array.isArray(product.image) && product.image.length > 0 ? (
                           <img
                             src={product.image[currentIndex]}
                             alt={`product-image-${currentIndex}`}
-                            className="ordcore-product-image"
+                            className="logpg-product-image"
                             style={{ width: '50px', height: '50px' }}
                           />
                         ) : (
@@ -111,7 +115,7 @@ const LogisticsPage = () => {
                     <td>{product.quantity}</td>
                     <td>{product.price !== undefined ? `Ksh ${product.price.toFixed(2)}` : 'Price not available'}</td>
                     <td>
-                      <Button variant="success" onClick={() => markOrderAsPacked(order.orderId)}>
+                      <Button variant="success" className="logpg-action-button" onClick={() => markOrderAsPacked(order.orderId)}>
                         Mark as Packed
                       </Button>
                     </td>
@@ -123,7 +127,9 @@ const LogisticsPage = () => {
         </Table>
       )}
 
-      {!loading && unpackedOrders.length === 0 && !error && <p>No unpacked items found.</p>}
+      {!loading && unpackedOrders.length === 0 && !error && <p className="logpg-no-orders">No unpacked items found.</p>}
+
+      <Footer/>
     </div>
   );
 };

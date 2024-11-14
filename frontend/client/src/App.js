@@ -19,22 +19,9 @@ import ProductForm from './components/ProductForm';
 import ProductList from './components/ProductsList';
 import ProtectedRoute from './components/ProtectRoute';
 import Register from './components/Register';
-import Reports from './components/Reports';
 import Success from './components/Success';
-import Users from './components/User';
-import UserChart from './components/UserChart';
 import Verification from './components/Verification';
 
-import Dashboard from './components/admin/Dashboard';
-import Loginadm from './components/admin/Login';
-import LogisticPage from './components/admin/Logistics';
-import AdminDashboard from './components/admin/admindash/AdminDashboard';
-import AdmnLogout from './components/admin/admnLogout';
-import Admpasswordreset from './components/admin/admpasswordreset';
-import Employies from './components/admin/hr/employies';
-import Hr from './components/admin/hr/hr';
-import Packingpage from './components/admin/packingpage';
-import Sales from './components/admin/sales/Sales';
 
 
 import Coreordering from './components/coreordering';
@@ -94,16 +81,9 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/success" element={<Success />} />
           <Route path="/coreorder" element={<Coreordering />} />
-          <Route path="/loginadm" element={<Loginadm />} />
 
           {/* Protected routes */}
           <Route element={<RequireAuth />} >
-            <Route path="/dashboard"
-              element={
-                <ProtectedRoute>
-                 <Dashboard />
-                </ProtectedRoute>
-                 } />
             <Route path="/verification" element={<Verification />} />
             <Route path="/home" 
               element={
@@ -122,10 +102,6 @@ const App = () => {
                   <Salespersonhome />
                 </ProtectedRoute>
                } />
-            <Route path="/userChart" element={<UserChart />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="/sales" element={<Sales />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/order" element={<Order />} />
 
@@ -138,19 +114,10 @@ const App = () => {
             <Route path="/paymentForm" element={<PaymentForm />} />
             <Route path="/imageList" element={<ImageList />} />
             <Route path="/imageUpload" element={<ImageUpload />} />
-            <Route path="/logistics" element={<LogisticPage />} />
             <Route path="/notification" element={<Notification />} />
             <Route path="/displayorder" element={<Displayorder />} />
             <Route path="/productperfomance" element={<Productperfomance />} />
 
-            <Route path="/employies" element={<Employies />} />
-            <Route path="/hr" element={<Hr />} />
-
-            <Route path="/adminDashboard" element={<AdminDashboard />} />
-            <Route path="/admnLogout" element={<AdmnLogout />} />
-            <Route path="/admpasswordreset" element={<Admpasswordreset />} />
-
-            <Route path="/packingpage" element={<Packingpage />} />
           </Route>
         </Routes>
       </div>

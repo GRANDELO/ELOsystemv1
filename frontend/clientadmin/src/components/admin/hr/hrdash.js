@@ -1,12 +1,12 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../styles/Dashboard.css';
+import '../styles/hr.css';
 import EmployeeList from './EmployeeList';
 import Employies from './employies';
 
 const Dashboard = () => {
-    const [view, setView] = useState('summary');
+    const [view, setView] = useState('users');
     const [totalUsers, setTotalUsers] = useState(0);
     const [activeUsers, setActiveUsers] = useState(0);
     const [recentActivities, setRecentActivities] = useState([]);
@@ -40,37 +40,24 @@ const Dashboard = () => {
     }, []);
 
     return (
-        <div className="dashboard-container">
-            <nav>
-                <button onClick={handleLogout}>Logout</button>
+        <div className="hralld-dashboard-container">
+            <nav className="hralld-nav">
                 <button
-                    className={`nav-button ${view === 'users' ? 'active' : ''}`}
+                    className={`hralld-nav-button ${view === 'users' ? 'active' : ''}`}
                     onClick={() => setView('users')}
                 >
                     Employees
                 </button>
                 <button
-                    className={`nav-button ${view === 'chart' ? 'active' : ''}`}
+                    className={`hralld-nav-button ${view === 'chart' ? 'active' : ''}`}
                     onClick={() => setView('chart')}
                 >
                     Register Employee
                 </button>
             </nav>
 
-            <div className="content">
-                {view === 'summary' && (
-                    <div>
-                        <div className="recent-activities">
-                            <h2>Recent Activities</h2>
-                            <ul>
-                                {recentActivities.map(activity => (
-                                    <li key={activity.id}>{activity.description}</li>
-                                ))}
-                            </ul>
-                        </div>
+            <div className="hralld-content">
 
-                    </div>
-                )}
                 {view === 'users' && <EmployeeList />}
                 {view === 'chart' && <Employies />}
             </div>

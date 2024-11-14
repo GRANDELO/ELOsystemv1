@@ -12,6 +12,7 @@ import UserChart from './components/UserChart';
 
 import Dashboard from './components/admin/Dashboard';
 import Loginadm from './components/admin/Login';
+import Logistics from './components/admin/Logistics';
 import AdmnLogout from './components/admin/admnLogout';
 import Admpasswordreset from './components/admin/admpasswordreset';
 import Employies from './components/admin/hr/employies';
@@ -83,7 +84,7 @@ const App = () => {
 
             <Route path="/employies" element={<Employies />} />
             <Route path="/hr" element={<Hr />} />
-
+            <Route path="/logistics" element={<Logistics />} />
 
             <Route path="/admnLogout" element={<AdmnLogout />} />
             <Route path="/admpasswordreset" element={<Admpasswordreset />} />

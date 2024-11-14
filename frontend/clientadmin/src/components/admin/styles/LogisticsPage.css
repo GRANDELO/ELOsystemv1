@@ -1,0 +1,114 @@
+/* Container styling for the logistics page */
+.logp-logistics-page {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  min-height: 100vh;
+}
+
+/* Header styling */
+.logp-logistics-page h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Loading and error messages */
+.logp-logistics-page p {
+  color: #666;
+}
+
+.logp-alert-danger {
+  color: #842029;
+  background-color: #f8d7da;
+  border-color: #f5c2c7;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+
+/* Table styling */
+.logp-table {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logp-table th, .logp-table td {
+  padding: 15px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.logp-table th {
+  background-color: #0066cc;
+  color: #fff;
+  font-weight: 600;
+}
+
+.logp-table tbody tr:nth-child(odd) {
+  background-color: #f2f2f2;
+}
+
+.logp-table tbody tr:hover {
+  background-color: #e6f7ff;
+}
+
+.logp-table td img {
+  width: 60px;
+  height: 60px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Button styling */
+.logp-button-success {
+  background-color: #28a745;
+  border: none;
+  color: #fff;
+  padding: 8px 15px;
+  font-size: 0.9em;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logp-button-success:hover {
+  background-color: #218838;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .logp-logistics-page {
+    padding: 10px;
+  }
+
+  .logp-logistics-page h1 {
+    font-size: 1.5em;
+  }
+
+  .logp-table th, .logp-table td {
+    padding: 10px;
+  }
+
+  .logp-table td img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .logp-button-success {
+    padding: 6px 12px;
+    font-size: 0.8em;
+  }
+}
+
+/* Custom styling for the "No images available" text */
+.logp-no-images {
+  color: #999;
+  font-size: 0.9em;
+  font-style: italic;
+}

@@ -1,0 +1,163 @@
+/* Container for the login component */
+.log-container {
+    max-width: 400px;
+    margin: 60px auto;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 78, 155, 0.374);
+    border: 1px solid #e3e3e3;
+}
+
+.log-heading {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+.log-label {
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 8px;
+    display: block;
+    font-size: 15px;
+}
+
+.log-input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    margin-bottom: 15px;
+}
+
+.log-input:focus {
+    border-color: #004cff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+.log-show-password-btn {
+    position: absolute;
+    top: 50%;
+    right: 40%;
+    background-color: transparent;
+    border: none;
+    color: #007bff;
+    font-size: 14px;
+    cursor: pointer;
+    margin-left: 8px;
+    outline: none;
+    transition: color 0.3s;
+}
+
+.log-show-password-btn:hover {
+    color: #b9b9b9;
+}
+
+.log-button,
+.log-secondary-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.log-button {
+    background-color: #007bff;
+}
+
+.log-button:hover {
+    background-color: #0056b3;
+}
+
+.log-secondary-button {
+    background-color: #6c757d;
+}
+
+.log-secondary-button:hover {
+    background-color: #5a6268;
+}
+
+.log-message {
+    text-align: center;
+    font-size: 14px;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 15px;
+}
+
+.log-message--success {
+    color: #28a745;
+    background-color: #e9f7ef;
+}
+
+.log-message--error {
+    color: #dc3545;
+    background-color: #f8d7da;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .log-container {
+        padding: 20px;
+        margin: 40px auto;
+    }
+    
+    .log-heading {
+        font-size: 22px;
+    }
+
+    .log-label {
+        font-size: 14px;
+    }
+
+    .log-input, 
+    .log-button, 
+    .log-secondary-button {
+        font-size: 15px;
+        padding: 10px;
+    }
+    .log-show-password-btn {
+        font-size: 12px;
+        top: 51%;
+        right: 25%;
+    }
+}
+
+@media (max-width: 480px) {
+    .log-container {
+        padding: 15px;
+        margin: 30px auto;
+    }
+
+    .log-heading {
+        font-size: 20px;
+    }
+
+    .log-label {
+        font-size: 13px;
+    }
+
+    .log-input, 
+    .log-button, 
+    .log-secondary-button {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .log-show-password-btn {
+        font-size: 12px;
+        right: 10%;
+    }
+}

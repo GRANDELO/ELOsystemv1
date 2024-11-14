@@ -1,0 +1,170 @@
+/* Main container styling */
+.saladmm-container {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #f4f7fb;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Header styling */
+.saladmm-header {
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1e3a8a;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #3b82f6;
+}
+
+/* Button styling */
+.saladmm-btn {
+    background-color: #3b82f6;
+    color: #ffffff;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.saladmm-btn:hover {
+    background-color: #2563eb;
+    transform: scale(1.05);
+}
+
+/* Section styling */
+.saladmm-section {
+    margin-top: 20px;
+    width: 100%;
+}
+
+/* Card container styling */
+.saladmm-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.saladmm-card {
+    background-color: #ffffff;
+    padding: 25px;
+    flex: 1 1 calc(33.33% - 20px);
+    margin: 10px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.saladmm-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Card header */
+.saladmm-card-header {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1e3a8a;
+    margin-bottom: 15px;
+}
+
+/* Card details */
+.saladmm-details {
+    font-size: 16px;
+    color: #4b5563;
+    margin-top: 10px;
+}
+
+/* Monthly sales section styling */
+.saladmm-monthly-sales {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
+}
+
+.saladmm-monthly-card {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 20px;
+    border-radius: 12px;
+    background-color: #f1f5f9;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.saladmm-monthly-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.saladmm-monthly-card-header {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e3a8a;
+    margin-bottom: 10px;
+}
+
+/* Highlighted amounts */
+.saladmm-amount {
+    font-size: 24px;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+.saladmm-positive {
+    color: #10b981; /* Positive values in green */
+}
+
+.saladmm-negative {
+    color: #ef4444; /* Negative values in red */
+}
+
+/* Export button styling */
+.saladmm-btn-export {
+    background-color: #9333ea;
+    color: #ffffff;
+    padding: 14px 28px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s, transform 0.3s;
+    border: none;
+}
+
+.saladmm-btn-export:hover {
+    background-color: #7e22ce;
+    transform: scale(1.05);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .saladmm-card-container {
+        flex-direction: column;
+    }
+
+    .saladmm-card,
+    .saladmm-monthly-sales {
+        width: 100%;
+    }
+
+    .saladmm-btn-export {
+        width: 100%;
+        margin-top: 20px;
+    }
+}

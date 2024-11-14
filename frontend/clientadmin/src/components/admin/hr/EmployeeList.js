@@ -2,20 +2,19 @@ import axios from 'axios';
 import { saveAs } from 'file-saver';
 import React, { useEffect, useState } from 'react';
 import Pagination from '../../Pagination';
-import '../../styles/Users.css';
+import '../styles/Users.css';
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [activeUsers, setActiveUsers] = useState([]);
   const [disabledUsers, setDisabledUsers] = useState([]);
-  const [registrationData, setRegistrationData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [activePage, setActivePage] = useState(1); // Track active user pagination
+  const [activePage, setActivePage] = useState(1);
   const [error, setError] = useState(null);
-  const [expandedUserId, setExpandedUserId] = useState(null); // Track which user's details are expanded
-  const [activeSection, setActiveSection] = useState('all'); // Tracks the active section
+  const [expandedUserId, setExpandedUserId] = useState(null);
+  const [activeSection, setActiveSection] = useState('all');
   const usersPerPage = 5;
 
   useEffect(() => {
@@ -55,8 +54,6 @@ const AdminDashboard = () => {
     }
   };
 
-
-
   const disableUser = async (userId) => {
     try {
       await axios.patch(`https://elosystemv1.onrender.com/api/employees/disable/${userId}`);
@@ -81,7 +78,6 @@ const AdminDashboard = () => {
 
   const exportCSV = () => {
     const csvData = users.map(user => ({
-
       FirstName: user.firstName,
       WorkID: user.workID,
       Role: user.role
@@ -101,7 +97,6 @@ const AdminDashboard = () => {
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
-  // Active users pagination
   const indexOfLastActiveUser = activePage * usersPerPage;
   const indexOfFirstActiveUser = indexOfLastActiveUser - usersPerPage;
   const currentActiveUsers = activeUsers.slice(indexOfFirstActiveUser, indexOfLastActiveUser);
@@ -114,68 +109,64 @@ const AdminDashboard = () => {
         user.role.toLowerCase().includes(term) || user.workID.toLowerCase().includes(term)
       )
     );
-    setCurrentPage(1); // Reset to first page after search
+    setCurrentPage(1);
   };
 
   return (
-    <div className="usal-dashboard">
-      <h1 className="usal-dashboard-title">Admin Dashboard</h1>
+    <div className="emlis-dashboard">
+      <h1 className="emlis-dashboard-title">Admin Dashboard</h1>
 
-      {error && <div className="usal-error-message">{error}</div>}
+      {error && <div className="emlis-error-message">{error}</div>}
 
-      <div className="usal-dashboard-controls">
+      <div className="emlis-dashboard-controls">
         <input
           type="text"
           value={searchTerm}
           onChange={handleSearch}
           placeholder="Search by name or email"
-          className="usal-search-input"
+          className="emlis-search-input"
         />
-        <button onClick={exportCSV} className="usal-btn usal-export-btn">Export CSV</button>
+        <button onClick={exportCSV} className="emlis-btn emlis-export-btn">Export CSV</button>
       </div>
 
-      {/* Section Control Buttons */}
-      <div className="usal-section-controls">
-        <button onClick={() => setActiveSection('all')} className="usal-btn">All Users</button>
-        <button onClick={() => setActiveSection('active')} className="usal-btn">Active Users</button>
-        <button onClick={() => setActiveSection('disabled')} className="usal-btn">Disabled Users</button>
+      <div className="emlis-section-controls">
+        <button onClick={() => setActiveSection('all')} className="emlis-btn">All Users</button>
+        <button onClick={() => setActiveSection('active')} className="emlis-btn">Active Users</button>
+        <button onClick={() => setActiveSection('disabled')} className="emlis-btn">Disabled Users</button>
       </div>
 
-      {/* User List with Pagination */}
       {activeSection === 'all' && (
-        <section className="usal-section">
-          <h2 className="usal-section-title">All Users</h2>
-          <ul className="usal-user-list">
+        <section className="emlis-section">
+          <h2 className="emlis-section-title">All Users</h2>
+          <ul className="emlis-user-list">
             {currentUsers.map(user => (
-              <li key={user._id} className="usal-user-item">
+              <li key={user._id} className="emlis-user-item">
                 <p>First Name: {user.firstName}</p>
                 <p>Work ID: {user.workID}</p>
                 <p>Role: {user.role}</p>
 
-                {/* Show 'More' button to expand user options */}
                 <button
                   onClick={() => setExpandedUserId(expandedUserId === user._id ? null : user._id)}
-                  className="usal-btn usal-btn-more"
+                  className="emlis-btn emlis-btn-more"
                 >
                   More
                 </button>
-                {/* Show additional user options if 'More' is clicked */}
                 {expandedUserId === user._id && (
-                  <div className="usal-user-options">
+                  <div className="emlis-user-options">
                     <p>Surname: {user.surname}</p>
-                    <p>Status: {user.active ? 'Active' : 'Not Active' } </p>
+                    <p>Status: {user.active ? 'Active' : 'Not Active'}</p>
                     <p>Availability Status: {user.availabilityStatus}</p>
 
                     <button
                       onClick={() => disableUser(user._id)}
-                      className="usal-btn usal-btn-disable"
+                      className="emlis-btn emlis-btn-disable"
                       disabled={user.isDisabled}
                     >
                       Disable
                     </button>
                     <button
                       onClick={() => undoDisableUser(user._id)}
-                      className="usal-btn usal-btn-enable"
+                      className="emlis-btn emlis-btn-enable"
                       disabled={!user.isDisabled}
                     >
                       Enable
@@ -194,13 +185,12 @@ const AdminDashboard = () => {
         </section>
       )}
 
-      {/* Active Users Section with Pagination */}
       {activeSection === 'active' && (
-        <section className="usal-section">
-          <h2 className="usal-section-title">Active Users</h2>
-          <ul className="usal-user-list">
+        <section className="emlis-section">
+          <h2 className="emlis-section-title">Active Users</h2>
+          <ul className="emlis-user-list">
             {currentActiveUsers.map(user => (
-              <li key={user._id} className="usal-user-item">
+              <li key={user._id} className="emlis-user-item">
                 <p>First Name: {user.firstName}</p>
                 <p>Work ID: {user.workID}</p>
                 <p>Role: {user.role}</p>
@@ -216,30 +206,27 @@ const AdminDashboard = () => {
         </section>
       )}
 
-      {/* Disabled Users Section */}
       {activeSection === 'disabled' && (
-        <section className="usal-section">
-          <h2 className="usal-section-title">Disabled Users</h2>
-          <ul className="usal-user-list">
+        <section className="emlis-section">
+          <h2 className="emlis-section-title">Disabled Users</h2>
+          <ul className="emlis-user-list">
             {disabledUsers.map(user => (
-              <li key={user._id} className="usal-user-item">
+              <li key={user._id} className="emlis-user-item">
                 <p>First Name: {user.firstName}</p>
                 <p>Work ID: {user.workID}</p>
                 <p>Role: {user.role}</p>
                 <button
-                    onClick={() => undoDisableUser(user._id)}
-                    className="usal-btn usal-btn-enable"
-                    disabled={!user.isDisabled}
+                  onClick={() => undoDisableUser(user._id)}
+                  className="emlis-btn emlis-btn-enable"
+                  disabled={!user.isDisabled}
                 >
-                    Enable
+                  Enable
                 </button>
               </li>
             ))}
           </ul>
-
         </section>
       )}
-
     </div>
   );
 };

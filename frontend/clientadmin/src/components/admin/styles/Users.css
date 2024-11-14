@@ -1,0 +1,161 @@
+/* Users.css */
+
+.emlis-dashboard {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f8f9fa;
+  }
+  
+  .emlis-dashboard-title {
+    font-size: 2em;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .emlis-error-message {
+    color: #e74c3c;
+    font-weight: bold;
+    margin: 15px 0;
+    text-align: center;
+  }
+  
+  .emlis-dashboard-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .emlis-search-input {
+    padding: 8px;
+    width: 60%;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .emlis-btn {
+    padding: 10px 15px;
+    font-size: 0.9em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .emlis-export-btn {
+    background-color: #2980b9;
+    color: white;
+  }
+  
+  .emlis-export-btn:hover {
+    background-color: #1c6ca1;
+  }
+  
+  .emlis-section-controls {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+  }
+  
+  .emlis-section-controls .emlis-btn {
+    margin: 0 10px;
+    background-color: #ecf0f1;
+    color: #34495e;
+  }
+  
+  .emlis-section-controls .emlis-btn:hover {
+    background-color: #bdc3c7;
+  }
+  
+  .emlis-section {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  
+  .emlis-section-title {
+    font-size: 1.5em;
+    color: #34495e;
+    margin-bottom: 15px;
+  }
+  
+  .emlis-user-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .emlis-user-item {
+    border-bottom: 1px solid #ecf0f1;
+    padding: 15px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .emlis-user-item:last-child {
+    border-bottom: none;
+  }
+  
+  .emlis-btn-more {
+    background-color: #3498db;
+    color: white;
+    font-size: 0.8em;
+  }
+  
+  .emlis-btn-more:hover {
+    background-color: #2980b9;
+  }
+  
+  .emlis-user-options {
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #f4f6f7;
+    margin-top: 10px;
+  }
+  
+  .emlis-btn-disable {
+    background-color: #e74c3c;
+    color: white;
+    margin-right: 10px;
+  }
+  
+  .emlis-btn-disable:hover {
+    background-color: #c0392b;
+  }
+  
+  .emlis-btn-enable {
+    background-color: #2ecc71;
+    color: white;
+  }
+  
+  .emlis-btn-enable:hover {
+    background-color: #27ae60;
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+  }
+  
+  .pagination a {
+    margin: 0 5px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #3498db;
+  }
+  
+  .pagination a.active {
+    background-color: #3498db;
+    color: white;
+  }
+  
+  .pagination a:hover:not(.active) {
+    background-color: #ddd;
+  }
+  

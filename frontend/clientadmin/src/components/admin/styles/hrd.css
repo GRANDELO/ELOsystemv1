@@ -1,0 +1,142 @@
+/* General Dashboard Container */
+.hrd-dash-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f4f7fb;
+}
+
+/* Header Section */
+.hrd-header {
+    background-color: #ffffff;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    margin-bottom: 24px;
+}
+
+/* Settings Section */
+.hrd-settings {
+    display: flex;
+    justify-content: flex-end;
+    background-color: #ffffff;
+    padding: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    margin-bottom: 24px;
+}
+
+/* Dashboard Main Sections */
+.hrd-summary, .hrd-users, .hrd-activities {
+    background-color: #ffffff;
+    padding: 24px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Hover effect to highlight sections */
+.hrd-summary:hover, .hrd-users:hover, .hrd-activities:hover {
+    transform: scale(1.03);
+}
+
+.hrd-summary h2, .hrd-users h2, .hrd-activities h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.hrd-summary p, .hrd-users p, .hrd-activities p {
+    font-size: 1.1rem;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* Activity List Styling */
+.hrd-activities-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hrd-activity-item {
+    padding: 15px;
+    background-color: #fafafa;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.hrd-activity-item:hover {
+    background-color: #e9e9e9;
+}
+
+.hrd-activity-item p {
+    font-size: 1rem;
+    color: #555;
+    margin: 0;
+}
+
+.hrd-activity-time {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+/* Financial Summary Section */
+.hrd-financial-summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.hrd-financial-item {
+    background-color: #ffffff;
+    padding: 24px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    flex: 1;
+}
+
+.hrd-financial-item h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.hrd-financial-item p {
+    font-size: 1.1rem;
+    color: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .hrd-financial-summary {
+        flex-direction: column;
+    }
+
+    .hrd-summary, .hrd-users, .hrd-activities {
+        padding: 20px;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hrd-dash-container {
+        padding: 10px;
+    }
+
+    .hrd-summary, .hrd-users, .hrd-activities {
+        padding: 15px;
+        margin-bottom: 12px;
+    }
+
+    .hrd-activity-item {
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+}

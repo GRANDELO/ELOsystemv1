@@ -2,9 +2,11 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../header';
-import '../../styles/Dashboard.css';
+import Footer from '../Footer';
 import Setting from '../settings';
+import '../styles/hrd.css';
 import Hrdash from './hrdash';
+
 const Dashboard = () => {
     const [view, setView] = useState('summary');
     const [totalUsers, setTotalUsers] = useState(0);
@@ -40,10 +42,11 @@ const Dashboard = () => {
     }, []);
 
     return (
-        <div className="dashboard-container">
-            <Header/>
-            <Setting/>
-            <Hrdash/>
+        <div className="hrd-dash-container">
+            <Header />
+            <Setting />
+            <Hrdash />
+            <Footer/>
         </div>
     );
 };

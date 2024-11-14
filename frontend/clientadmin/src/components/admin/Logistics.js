@@ -1,20 +1,23 @@
-// In src/pages/LogisticsPage.js
 import axios from 'axios';
-import React, { useState } from 'react';
-import { Alert, Button, Form, Table } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Alert, Button, Table } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import Footer from './Footer';
 import Setting from './settings';
+import './styles/LogisticsPage.css';
 
 const LogisticsPage = () => {
-  const [eid, setEid] = useState('');
+  const eid = sessionStorage.getItem('eid'); // Retrieve the EID from session storage
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
   const handleLogout = () => {
     navigate('/admnLogout');
   };
 
+  // Fetch orders for the specific delivery person
   const fetchOrders = async (deliveryEid) => {
     setLoading(true);
     setError('');
@@ -29,14 +32,14 @@ const LogisticsPage = () => {
     }
   };
 
+  // Update the status of the order to 'In Process'
   const updateOrderStatus = async (orderId) => {
     try {
-      // Send request to update the order status
       const response = await axios.patch(`https://elosystemv1.onrender.com/api/orders/${orderId}/status`, {
         isDeliveryInProcess: true,
       });
 
-      // Update order status in the UI
+      // Update the order's status in the local state
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
           order._id === orderId ? { ...order, isDeliveryInProcess: true } : order
@@ -48,6 +51,7 @@ const LogisticsPage = () => {
     }
   };
 
+  // Handle the form submission to search orders by EID
   const handleSearch = (e) => {
     e.preventDefault();
     if (eid) {
@@ -57,31 +61,23 @@ const LogisticsPage = () => {
     }
   };
 
-  return (
-    <div className="logistics-page">
-     <Setting/>
-      <h1>Logistics</h1>
-      <Form onSubmit={handleSearch} className="mb-4">
-        <Form.Group controlId="formEID">
-          <Form.Label>Enter Delivery Person Work ID</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter Work ID"
-            value={eid}
-            onChange={(e) => setEid(e.target.value)}
-            required
-          />
-        </Form.Group>
-        <Button variant="primary" type="submit">
-          Search
-        </Button>
-      </Form>
+  // Fetch orders when the component mounts, if EID is available in session storage
+  useEffect(() => {
+    if (eid) {
+      fetchOrders(eid);
+    }
+  }, [eid]);
 
-      {loading && <p>Loading...</p>}
-      {error && <Alert variant="danger">{error}</Alert>}
+  return (
+    <div className="looog-logistics-page">
+      <Setting />
+      <h1 className="looog-page-title">Logistics</h1>
+
+      {loading && <p className="looog-loading-text">Loading...</p>}
+      {error && <Alert variant="danger" className="looog-error-alert">{error}</Alert>}
 
       {!loading && orders.length > 0 && (
-        <Table striped bordered hover>
+        <Table striped bordered hover className="looog-orders-table">
           <thead>
             <tr>
               <th>Order Ref</th>
@@ -117,6 +113,7 @@ const LogisticsPage = () => {
                     <Button
                       variant="warning"
                       onClick={() => updateOrderStatus(order._id)}
+                      className="looog-mark-in-process-btn"
                     >
                       Mark as In Process
                     </Button>
@@ -128,7 +125,10 @@ const LogisticsPage = () => {
         </Table>
       )}
 
-      {!loading && orders.length === 0 && !error && <p>No orders found for this delivery person.</p>}
+      {!loading && orders.length === 0 && !error && (
+        <p className="looog-no-orders-text">No orders found for this delivery person.</p>
+      )}
+      <Footer/>
     </div>
   );
 };

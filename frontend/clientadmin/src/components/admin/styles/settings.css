@@ -1,0 +1,154 @@
+/* General container for the settings page */
+.sept-settings-container {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f9fc;
+    padding: 30px 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    min-width: 100vw;
+  }
+  
+  /* Header section */
+  .sept-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .sept-header-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  .sept-header-subtitle {
+    font-size: 1rem;
+    color: #777;
+  }
+  
+  /* User information section */
+  .sept-userinfo {
+    margin-bottom: 20px;
+  }
+  
+  .sept-info-box {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 25px;
+  }
+  
+  .sept-info-box p {
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  .sept-info-box i {
+    color: #444;
+  }
+  .sept-save-btn{
+    background-color: #007BFF;
+  }
+  
+  /* Floating buttons with icons at the top-right without background */
+  .sept-toggle-btn,
+  .sept-logout-btn {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    background: none; 
+    color: #007BFF;  /* Icon color */
+    border: none;
+    border-radius: 50%;
+    padding: 15px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    z-index: 10;
+  }
+  
+  .sept-toggle-btn {
+    top: 80px; /* Adjusted to sit higher than save button */
+  }
+  
+  .sept-logout-btn {
+    top: 20px;
+  }
+  
+  /* Hover effect on floating buttons */
+  .sept-save-btn:hover,
+  .sept-toggle-btn:hover,
+  .sept-logout-btn:hover {
+    color: #0056b3;  /* Hover color */
+  }
+  
+  .sept-save-btn {
+    top: 60px;
+  }
+  
+  /* Password change form styling */
+  .sept-settings-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 15px;
+  }
+  
+  .sept-password-fields {
+    margin-bottom: 25px;
+  }
+  
+  .sept-label {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 8px;
+    display: block;
+  }
+  
+  .sept-input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 18px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #f8f9fc;
+  }
+  
+  .sept-input:focus {
+    border-color: #007BFF;
+    outline: none;
+  }
+  
+  /* Success and error messages */
+  .sept-success-message {
+    color: #28a745;
+    font-size: 1rem;
+    margin-top: 10px;
+  }
+  
+  .sept-error-message {
+    color: #dc3545;
+    font-size: 1rem;
+    margin-top: 10px;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 600px) {
+    .sept-settings-container {
+      padding: 20px 15px;
+    }
+  
+    .sept-save-btn,
+    .sept-logout-btn {
+      padding: 10px;
+    }
+  
+    .sept-input {
+      padding: 10px;
+    }
+  }
+  

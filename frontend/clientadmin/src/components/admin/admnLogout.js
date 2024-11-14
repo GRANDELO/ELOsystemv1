@@ -3,7 +3,8 @@ import { jwtDecode } from 'jwt-decode';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import loader from '../images/loader2.gif';
-import '../styles/Logout.css';
+import './styles/logout.css';
+
 const Logout = () => {
   const navigate = useNavigate();
   const [logoutMessage, setLogoutMessage] = useState('');
@@ -11,7 +12,7 @@ const Logout = () => {
   useEffect(() => {
     const performLogout = async () => {
       try {
-        const token = sessionStorage.getItem('userToken');
+        const token = sessionStorage.getItem('admintoken');
         const decodedToken = jwtDecode(token);
         const username = decodedToken?.username;
 
@@ -21,20 +22,19 @@ const Logout = () => {
           return;
         }
 
-        const response = await axios.post('https://elosystemv1.onrender.com/api/employees/logout', { username }, {
-
-        });
+        const response = await axios.post('https://elosystemv1.onrender.com/api/employees/logout', { username });
 
         // Clear the user token or session
-        sessionStorage.removeItem('userToken'); // or your token key
-        localStorage.removeItem('token');
-
+        sessionStorage.removeItem('admintoken'); // or your token key
+        localStorage.removeItem('admintoken');
+        sessionStorage.removeItem('firstName');
+        sessionStorage.removeItem('role');
+        sessionStorage.removeItem('eid');
         // Set the message from the backend
         setLogoutMessage(response.data.message);
 
         // Redirect to login page after a delay to show the message
         setTimeout(() => {
-          
           navigate('/loginadm');
         }, 3000);
       } catch (error) {
@@ -47,8 +47,9 @@ const Logout = () => {
   }, [navigate]);
 
   return (
-    <div className="logout-container">
-    <img className="loader"src={loader}/><p>{logoutMessage}</p> 
+    <div className="set-logout-container">
+      <img className="set-loader" src={loader} alt="Loading..." />
+      <p className="set-logout-message">{logoutMessage}</p>
     </div>
   );
 };

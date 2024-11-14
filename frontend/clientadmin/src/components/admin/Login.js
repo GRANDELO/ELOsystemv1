@@ -1,7 +1,7 @@
-// src/components/Login.js
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './styles/login.css';
 
 function Login() {
     const navigate = useNavigate();
@@ -10,7 +10,7 @@ function Login() {
         password: '',
     });
     const [message, setMessage] = useState('');
-    const [recoverPassword, setRecoverPassword] = useState(false); // To toggle between login and recover password views
+    const [recoverPassword, setRecoverPassword] = useState(false); // Toggle between login and recover password views
     const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
@@ -23,11 +23,9 @@ function Login() {
             await handleRecoverPassword(e);
             return;
         }
-
         try {
             const response = await axios.post('https://elosystemv1.onrender.com/api/employees/login', formData);
             setMessage(`Login successful! Welcome, ${response.data.name}`);
-
             sessionStorage.setItem('firstName', response.data.name);
             sessionStorage.setItem('role', response.data.role);
             sessionStorage.setItem('eid', response.data.workID);
@@ -69,57 +67,71 @@ function Login() {
     };
 
     return (
-        <div>
+        <div className="log-container">
+            <h2 className="log-heading">{recoverPassword ? 'Recover Password' : 'Login'}</h2>
             <form onSubmit={handleSubmit}>
                 {!recoverPassword ? (
                     <>
-                        <label>
+                        <label className="log-label">
                             Work ID:
-                            <input type="text" name="eid" value={formData.eid} onChange={handleChange} required />
+                            <input
+                                type="text"
+                                name="eid"
+                                value={formData.eid}
+                                onChange={handleChange}
+                                className="log-input"
+                                required
+                            />
                         </label>
                         <br />
 
-                        <label>
+                        <label className="log-label">
                             Password:
                             <input
                                 type={showPassword ? 'text' : 'password'}
                                 name="password"
                                 value={formData.password}
                                 onChange={handleChange}
+                                className="log-input"
                                 required
                             />
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
+                                className="log-show-password-btn"
                             >
                                 {showPassword ? 'Hide' : 'Show'}
                             </button>
                         </label>
                         <br />
 
-                        <button type="submit">Login</button>
-                        <button type="button" onClick={toggleRecoverPassword}>Forgot Password?</button>
+                        <button type="submit" className="log-button">Login</button>
+                        <button type="button" onClick={toggleRecoverPassword} className="log-secondary-button">Forgot Password?</button>
                     </>
                 ) : (
                     <>
-                        <h2>Recover Password</h2>
-                        <label>
+                        <label className="log-label">
                             Enter your Work ID:
                             <input
                                 type="text"
                                 name="eid"
                                 value={formData.eid}
                                 onChange={handleChange}
+                                className="log-input"
                                 required
                             />
                         </label>
                         <br />
-                        <button type="submit">Send Recovery Email</button>
-                        <button type="button" onClick={toggleRecoverPassword}>Back to Login</button>
+                        <button type="submit" className="log-button">Send Recovery Email</button>
+                        <button type="button" onClick={toggleRecoverPassword} className="log-secondary-button">Back to Login</button>
                     </>
                 )}
             </form>
-            {message && <p>{message}</p>}
+            {message && (
+                <p className={`log-message ${message.includes('Error') ? 'log-message--error' : 'log-message--success'}`}>
+                    {message}
+                </p>
+            )}
         </div>
     );
 }

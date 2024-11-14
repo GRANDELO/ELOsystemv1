@@ -1,0 +1,107 @@
+/* Main container */
+.logpg-container {
+  margin: 0 auto;
+  background-color: #f9fafb;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Title styling */
+.logpg-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e40af;
+  margin-bottom: 30px;
+  text-align: center;
+  border-bottom: 2px solid #3b82f6;
+  padding-bottom: 15px;
+}
+
+/* Loading and error styling */
+.logpg-loading, .logpg-no-orders {
+  font-size: 18px;
+  font-weight: 500;
+  color: #6b7280;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.logpg-error {
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Table styling */
+.logpg-table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+.logpg-table thead th {
+  background-color: #3b82f6;
+  color: #ffffff;
+  font-weight: 600;
+  text-align: center;
+  padding: 15px;
+  border: 1px solid #ddd;
+}
+
+.logpg-table tbody td {
+  text-align: center;
+  padding: 12px;
+  border: 1px solid #ddd;
+}
+
+.logpg-table tbody tr:nth-child(even) {
+  background-color: #f3f4f6;
+}
+
+/* Product image styling */
+.logpg-product-images {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logpg-product-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+/* Action button styling */
+.logpg-action-button {
+  background-color: #10b981;
+  border: none;
+  color: #ffffff;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.logpg-action-button:hover {
+  background-color: #059669;
+  transform: translateY(-2px);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .logpg-container {
+      padding: 20px;
+  }
+
+  .logpg-title {
+      font-size: 24px;
+  }
+
+  .logpg-table thead th, .logpg-table tbody td {
+      padding: 10px;
+  }
+}
