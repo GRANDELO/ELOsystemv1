@@ -83,9 +83,19 @@ const getActiveEmployees = async (req, res) => {
     }
   };
 
+const getDisabledEmployee = async (req, res) => {
+try {
+    const disabledEmployee = await Employee.find({ isDisabled: true });
+    res.status(200).json(disabledEmployee);
+} catch (error) {
+    res.status(500).json({ message: 'Error fetching disabled users', error });
+}
+};
+
 module.exports = { 
     registerEmployee,
     login,
     getAllEmployees,
-    getActiveEmployees
+    getActiveEmployees,
+    getDisabledEmployee
 };

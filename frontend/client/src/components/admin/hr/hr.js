@@ -38,7 +38,7 @@ const AdminDashboard = () => {
 
   const fetchActiveUsers = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/users/active');
+      const response = await axios.get('https://elosystemv1.onrender.com/api/employees/getactiveemployees');
       setActiveUsers(response.data);
       setError(null);
     } catch (error) {
