@@ -82,7 +82,7 @@ exports.getOrder = async (req, res) => {
   const { eid } = req.params; 
 
   try {
-    const deliveryPerson = await Employee.findOne({ eid, role: 'delivery' });
+    const deliveryPerson = await Employee.findOne({ workID: eid, role: 'delivery' });
     if (!deliveryPerson) {
       return res.status(404).json({ message: 'Delivery person not found' });
     }

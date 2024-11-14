@@ -14,8 +14,6 @@ const LogisticsPage = () => {
     try {
       const response = await axios.get('https://elosystemv1.onrender.com/api/order2/unpacked');
       setUnpackedOrders(response.data);
-
-      console.log(response.data); // Ensure the data structure matches expectations
     } catch (err) {
       console.error('Failed to fetch unpacked orders:', err);
       setError(err.response?.data?.message || 'Failed to fetch unpacked orders');
@@ -45,9 +43,10 @@ const LogisticsPage = () => {
         const newIndexes = { ...prevIndexes };
         unpackedOrders.forEach((order) => {
           order.products.forEach((product) => {
-            if (product.images && product.images.length > 0) {
+            // Check if product.image is defined and is an array with at least one item
+            if (product.image && Array.isArray(product.image) && product.image.length > 0) {
               const productKey = `${order.orderId}-${product.name}`;
-              newIndexes[productKey] = (newIndexes[productKey] + 1) % product.images.length || 0;
+              newIndexes[productKey] = ((newIndexes[productKey] || 0) + 1) % product.image.length;
             }
           });
         });
@@ -91,9 +90,9 @@ const LogisticsPage = () => {
                     <td>{product.category}</td>
                     <td>
                       <div className="product-images">
-                        {product.images && product.images.length > 0 ? (
+                        {product.image && Array.isArray(product.image) && product.image.length > 0 ? (
                           <img
-                            src={product.images[currentIndex]}
+                            src={product.image[currentIndex]}
                             alt={`product-image-${currentIndex}`}
                             className="ordcore-product-image"
                             style={{ width: '50px', height: '50px' }}

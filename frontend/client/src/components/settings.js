@@ -76,8 +76,8 @@ const Settings = () => {
   const handleSaveEmail = async () => {
     setError(null);
     setMessage(null);
-    if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(newEmail)) {
-      setError('Please enter a valid Gmail address (e.g., yourname@gmail.com).');
+    if (!/^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/.test(newEmail)) {
+      setError('Please enter a valid email address (e.g., yourname@gmail.com).');
       return;
     } else {
       try {

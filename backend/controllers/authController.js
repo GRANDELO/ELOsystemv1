@@ -114,7 +114,6 @@ const registerUser = async (req, res) => {
   }
 };
 
-
 const login = async (req, res) => {
   const { username, password } = req.body;
 
@@ -167,7 +166,6 @@ const login = async (req, res) => {
     res.status(500).json({ message: 'Error logging in', error });
   }
 };
-
 
 const verifyUser = async (req, res) => {
   const { email, verificationCode } = req.body;

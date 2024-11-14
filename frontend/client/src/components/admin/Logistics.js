@@ -57,10 +57,10 @@ const LogisticsPage = () => {
       <h1>Logistics</h1>
       <Form onSubmit={handleSearch} className="mb-4">
         <Form.Group controlId="formEID">
-          <Form.Label>Enter Delivery Person EID</Form.Label>
+          <Form.Label>Enter Delivery Person Work ID</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Enter EID"
+            placeholder="Enter Work ID"
             value={eid}
             onChange={(e) => setEid(e.target.value)}
             required
