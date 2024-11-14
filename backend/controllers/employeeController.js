@@ -207,7 +207,7 @@ const resetPassword = async (req, res) => {
     }
 
     if (user.passwordRecoveryToken !== verificationCode) {
-      return res.status(400).json({ message: 'Invalid token' + verificationCode + ' ' + user.passwordRecoveryToken });
+      return res.status(400).json({ message: 'Invalid token' });
     }
 
     if (moment().isAfter(user.tokenExpiry)) {
