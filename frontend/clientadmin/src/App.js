@@ -12,7 +12,6 @@ import UserChart from './components/UserChart';
 
 import Dashboard from './components/admin/Dashboard';
 import Loginadm from './components/admin/Login';
-import AdminDashboard from './components/admin/admindash/AdminDashboard';
 import AdmnLogout from './components/admin/admnLogout';
 import Admpasswordreset from './components/admin/admpasswordreset';
 import Employies from './components/admin/hr/employies';
@@ -85,7 +84,7 @@ const App = () => {
             <Route path="/employies" element={<Employies />} />
             <Route path="/hr" element={<Hr />} />
 
-            <Route path="/adminDashboard" element={<AdminDashboard />} />
+
             <Route path="/admnLogout" element={<AdmnLogout />} />
             <Route path="/admpasswordreset" element={<Admpasswordreset />} />
 

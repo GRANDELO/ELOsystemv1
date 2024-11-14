@@ -44,7 +44,7 @@ if (!fs.existsSync(uploadDir)) {
 
 const app = express();
 
-
+app.set('trust proxy', true);
 const allowedOrigins = ['https://grandelo.web.app','https://bazelinkadmin.web.app' ,'http://localhost:3000'];
 const corsOptions = {
   origin: function (origin, callback) {
