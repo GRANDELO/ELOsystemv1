@@ -6,15 +6,16 @@ const LogisticsPage = () => {
   const [unpackedOrders, setUnpackedOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [currentImageIndexes, setCurrentImageIndexes] = useState({});
 
-  // Function to fetch unpacked orders with their products
   const fetchUnpackedOrders = async () => {
     setLoading(true);
     setError('');
     try {
       const response = await axios.get('https://elosystemv1.onrender.com/api/order2/unpacked');
       setUnpackedOrders(response.data);
-      console.log(response.data); // Data structure: [{ orderId, products }]
+
+      console.log(response.data); // Ensure the data structure matches expectations
     } catch (err) {
       console.error('Failed to fetch unpacked orders:', err);
       setError(err.response?.data?.message || 'Failed to fetch unpacked orders');
@@ -26,23 +27,36 @@ const LogisticsPage = () => {
   // Function to mark an order as packed
   const markOrderAsPacked = async (orderId) => {
     try {
-      await axios.patch(`https://elosystemv1.onrender.com/api/order2/${orderId}/packed`, {
-        packed: true,
-      });
-      // Update UI after marking as packed
-      setUnpackedOrders((prevOrders) =>
-        prevOrders.filter((order) => order.orderId !== orderId) // Remove packed order from the list
-      );
+      await axios.patch(`https://elosystemv1.onrender.com/api/order2/${orderId}/packed`, { packed: true });
+      setUnpackedOrders((prevOrders) => prevOrders.filter((order) => order.orderId !== orderId));
     } catch (err) {
       console.error('Failed to update order status:', err);
       setError('Failed to update order status');
     }
   };
 
-  // Fetch unpacked orders on component mount
   useEffect(() => {
     fetchUnpackedOrders();
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndexes((prevIndexes) => {
+        const newIndexes = { ...prevIndexes };
+        unpackedOrders.forEach((order) => {
+          order.products.forEach((product) => {
+            if (product.images && product.images.length > 0) {
+              const productKey = `${order.orderId}-${product.name}`;
+              newIndexes[productKey] = (newIndexes[productKey] + 1) % product.images.length || 0;
+            }
+          });
+        });
+        return newIndexes;
+      });
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [unpackedOrders]);
 
   return (
     <div className="logistics-page">
@@ -67,29 +81,32 @@ const LogisticsPage = () => {
           <tbody>
             {unpackedOrders.map((order) =>
               order.products.map((product) => {
-                console.log(`Product Details:`, product); // Log each product
+                const productKey = `${order.orderId}-${product.name}`;
+                const currentIndex = currentImageIndexes[productKey] || 0;
 
                 return (
-                  <tr key={`${order.orderId}-${product.name}`}>
+                  <tr key={productKey}>
                     <td>{order.orderId}</td>
                     <td>{product.name}</td>
                     <td>{product.category}</td>
                     <td>
-                      <img src={product.image} alt={product.name} style={{ width: '50px', height: '50px' }} />
+                      <div className="product-images">
+                        {product.images && product.images.length > 0 ? (
+                          <img
+                            src={product.images[currentIndex]}
+                            alt={`product-image-${currentIndex}`}
+                            className="ordcore-product-image"
+                            style={{ width: '50px', height: '50px' }}
+                          />
+                        ) : (
+                          <p>No images available for this product.</p>
+                        )}
+                      </div>
                     </td>
                     <td>{product.quantity}</td>
+                    <td>{product.price !== undefined ? `Ksh ${product.price.toFixed(2)}` : 'Price not available'}</td>
                     <td>
-                      {product.price !== undefined ? (
-                        `Ksh ${product.price.toFixed(2)}`
-                      ) : (
-                        'Price not available' // Default message if price is undefined
-                      )}
-                    </td>
-                    <td>
-                      <Button
-                        variant="success"
-                        onClick={() => markOrderAsPacked(order.orderId)}
-                      >
+                      <Button variant="success" onClick={() => markOrderAsPacked(order.orderId)}>
                         Mark as Packed
                       </Button>
                     </td>

@@ -28,7 +28,7 @@ import Verification from './components/Verification';
 import Dashboard from './components/admin/Dashboard';
 import Loginadm from './components/admin/Login';
 import AdminDashboard from './components/admin/admindash/AdminDashboard';
-import Employies from './components/admin/employies';
+import Employies from './components/admin/hr/employies';
 import Hr from './components/admin/hr/hr';
 import Packingpage from './components/admin/packingpage';
 import Sales from './components/admin/sales/Sales';

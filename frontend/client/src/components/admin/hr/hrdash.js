@@ -1,9 +1,9 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../../header';
 import '../../styles/Dashboard.css';
-import Hrdash from './hrdash';
+import EmployeeList from './EmployeeList';
+import Employies from './employies';
 
 const Dashboard = () => {
     const [view, setView] = useState('summary');
@@ -41,8 +41,39 @@ const Dashboard = () => {
 
     return (
         <div className="dashboard-container">
-            <Header/>
-            <Hrdash/>
+            <nav>
+                <button onClick={handleLogout}>Logout</button>
+                <button
+                    className={`nav-button ${view === 'users' ? 'active' : ''}`}
+                    onClick={() => setView('users')}
+                >
+                    Employees
+                </button>
+                <button
+                    className={`nav-button ${view === 'chart' ? 'active' : ''}`}
+                    onClick={() => setView('chart')}
+                >
+                    Register Employee
+                </button>
+            </nav>
+
+            <div className="content">
+                {view === 'summary' && (
+                    <div>
+                        <div className="recent-activities">
+                            <h2>Recent Activities</h2>
+                            <ul>
+                                {recentActivities.map(activity => (
+                                    <li key={activity.id}>{activity.description}</li>
+                                ))}
+                            </ul>
+                        </div>
+
+                    </div>
+                )}
+                {view === 'users' && <EmployeeList />}
+                {view === 'chart' && <Employies />}
+            </div>
         </div>
     );
 };

@@ -159,7 +159,7 @@ exports.getUnpackedOrderProducts = async (req, res) => {
       productMap[product._id] = { // Use product._id instead of productId
         name: product.name,
         category: product.category,
-        image: product.image,
+        image: product.images,
         price: product.price,
       };
     });

@@ -6,6 +6,7 @@ import Users from '../User';
 import UserChart from '../UserChart';
 import Header from '../header';
 import '../styles/Dashboard.css';
+import HR from './hr/hrdash';
 import Sales from './sales/Sales';
 
 const Dashboard = () => {
@@ -72,6 +73,12 @@ const Dashboard = () => {
                     Sales
                 </button>
                 <button
+                    className={`nav-button ${view === 'HR' ? 'active' : ''}`}
+                    onClick={() => setView('HR')}
+                >
+                    HR
+                </button>
+                <button
                     className={`nav-button ${view === 'reports' ? 'active' : ''}`}
                     onClick={() => setView('reports')}
                 >
@@ -112,6 +119,7 @@ const Dashboard = () => {
                                 <li><a href="/users">Users</a></li>
                                 <li><a href="/sales">Sales</a></li>
                                 <li><a href="/reports">Reports</a></li>
+                                <li><a href="/hr">HR</a></li>
                             </ul>
                         </div>
                     </div>
@@ -119,6 +127,7 @@ const Dashboard = () => {
                 {view === 'users' && <Users />}
                 {view === 'chart' && <UserChart />}
                 {view === 'sales' && <Sales />}
+                {view === 'HR' && <HR />}
                 {view === 'reports' && <Reports />}
             </div>
         </div>
