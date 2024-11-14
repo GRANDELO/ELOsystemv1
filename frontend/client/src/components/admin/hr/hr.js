@@ -59,7 +59,7 @@ const AdminDashboard = () => {
 
   const disableUser = async (userId) => {
     try {
-      await axios.patch(`https://elosystemv1.onrender.com/api/users/disable/${userId}`);
+      await axios.patch(`https://elosystemv1.onrender.com/api/employees/disable/${userId}`);
       fetchUsers();
     } catch (error) {
       setError('Failed to disable user');
@@ -68,7 +68,7 @@ const AdminDashboard = () => {
 
   const undoDisableUser = async (userId) => {
     try {
-      await axios.patch(`https://elosystemv1.onrender.com/api/users/undo-disable/${userId}`);
+      await axios.patch(`https://elosystemv1.onrender.com/api/employees/undodisable/${userId}`);
       fetchUsers();
     } catch (error) {
       setError('Failed to enable user');

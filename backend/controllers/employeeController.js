@@ -7,7 +7,7 @@ require('dotenv').config();
 const registerEmployee = async (req, res) => {
     const { firstName, surname, eid, role, password } = req.body;
 
-    const user = await Employee.findOne({ eid });
+    const user = await Employee.findOne({ workID: eid });
     if (user) {
         return res.status(401).json({ message: 'Eid exists' });
     }
