@@ -35,7 +35,7 @@ const Logout = () => {
 
         // Redirect to login page after a delay to show the message
         setTimeout(() => {
-          navigate('/loginadm');
+          navigate('/');
         }, 3000);
       } catch (error) {
         console.error('Error logging out:', error);
