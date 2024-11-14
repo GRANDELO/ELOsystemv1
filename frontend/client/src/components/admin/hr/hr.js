@@ -27,7 +27,7 @@ const AdminDashboard = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com//api/uemployeez/users');
+      const response = await axios.get('https://elosystemv1.onrender.com/api/employees');
       setUsers(response.data);
       setFilteredUsers(response.data);
       setError(null);
@@ -152,8 +152,10 @@ const AdminDashboard = () => {
           <ul className="usal-user-list">
             {currentUsers.map(user => (
               <li key={user._id} className="usal-user-item">
-                <p>Name: {user.fullName}</p>
-                <p>Email: {user.email}</p>
+                <p>First Name: {user.firstName}</p>
+                <p>Work ID: {user.workID}</p>
+                <p>Role: {user.role}</p>
+
                 {/* Show 'More' button to expand user options */}
                 <button
                   onClick={() => setExpandedUserId(expandedUserId === user._id ? null : user._id)}
@@ -164,7 +166,10 @@ const AdminDashboard = () => {
                 {/* Show additional user options if 'More' is clicked */}
                 {expandedUserId === user._id && (
                   <div className="usal-user-options">
-                    <p>Status: {user.isDisabled ? 'Disabled' : 'Active'}</p>
+                    <p>Surname: {user.surname}</p>
+                    <p>Status: {user.active}</p>
+                    <p>Availability Status: {user.availabilityStatus}</p>
+
                     <button
                       onClick={() => disableUser(user._id)}
                       className="usal-btn usal-btn-disable"
@@ -200,8 +205,9 @@ const AdminDashboard = () => {
           <ul className="usal-user-list">
             {currentActiveUsers.map(user => (
               <li key={user._id} className="usal-user-item">
-                <p>Name: {user.fullName}</p>
-                <p>Email: {user.email}</p>
+                <p>First Name: {user.firstName}</p>
+                <p>Work ID: {user.workID}</p>
+                <p>Role: {user.role}</p>
               </li>
             ))}
           </ul>

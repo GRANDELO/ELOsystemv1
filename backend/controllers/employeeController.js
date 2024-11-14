@@ -74,8 +74,18 @@ const getAllEmployees = async (req, res) => {
     }
   };
 
+const getActiveEmployees = async (req, res) => {
+    try {
+      const activeEmployee = await Employee.find({ active: true });
+      res.status(200).json(activeEmployee);
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching active employee', error });
+    }
+  };
+
 module.exports = { 
     registerEmployee,
     login,
-    getAllEmployees
+    getAllEmployees,
+    getActiveEmployees
 };
