@@ -22,7 +22,7 @@ const registerEmployee = async (req, res) => {
       }
     try {
         const workID = eid;
-        const employee = new Employee({ firstName, surname, email, workID, role, password });
+        const employee = new Employee({ firstName, surname, email, workID, role, password, resetPasswordToken: undefined, resetPasswordExpires: undefined });
         await employee.save();
         res.status(201).json({ message: 'Employee registered successfully', employee });
     } catch (error) {

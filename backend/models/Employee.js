@@ -11,6 +11,8 @@ const employeeSchema = new mongoose.Schema({
     availabilityStatus: { type: String, default: 'available' },
     active: { type: Boolean, default: false },
     isDisabled: { type: Boolean, default: false },
+    passwordRecoveryToken: { type: String, default: undefined },
+    tokenExpiry: { type: Date, default: undefined },
     dateJoined: { type: Date, default: Date.now },
     lastModified: { type: Date, default: Date.now }
 });
