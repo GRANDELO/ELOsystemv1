@@ -43,6 +43,10 @@ if (!fs.existsSync(uploadDir)) {
 
 
 const app = express();
+app.set('trust proxy', 'loopback, 35.160.120.126');
+app.set('trust proxy', 'loopback, 44.233.151.27');
+app.set('trust proxy', 'loopback, 34.211.200.85');
+
 
 const allowedOrigins = ['https://grandelo.web.app', 'http://localhost:3000'];
 const corsOptions = {

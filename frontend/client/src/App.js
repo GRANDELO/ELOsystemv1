@@ -94,7 +94,7 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/success" element={<Success />} />
           <Route path="/coreorder" element={<Coreordering />} />
-
+          <Route path="/loginadm" element={<Loginadm />} />
 
           {/* Protected routes */}
           <Route element={<RequireAuth />} >
@@ -145,7 +145,7 @@ const App = () => {
 
             <Route path="/employies" element={<Employies />} />
             <Route path="/hr" element={<Hr />} />
-            <Route path="/loginadm" element={<Loginadm />} />
+
             <Route path="/adminDashboard" element={<AdminDashboard />} />
             <Route path="/admnLogout" element={<AdmnLogout />} />
             <Route path="/admpasswordreset" element={<Admpasswordreset />} />

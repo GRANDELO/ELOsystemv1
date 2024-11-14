@@ -56,7 +56,7 @@ function Login() {
     const handleRecoverPassword = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('https://elosystemv1.onrender.com/api/auth/recoverpassword', { username: formData.eid });
+            const response = await axios.post('https://elosystemv1.onrender.com/api/employees/recoverpassword', { username: formData.eid });
             setMessage(response.data.message);
         } catch (error) {
             setMessage(error.response?.data.message || 'An error occurred while processing your request.');
