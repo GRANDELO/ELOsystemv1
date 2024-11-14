@@ -2,6 +2,10 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Employee = require('../models/Employee');
 require('dotenv').config();
+const moment = require('moment');
+const crypto = require('crypto');
+const sendEmail = require('../services/emailService');
+require('dotenv').config();
 
 // Register a new employee
 const registerEmployee = async (req, res) => {
@@ -128,7 +132,9 @@ const newrecoverPassword = async (req, res) => {
     const user = await Employee.findOne({ workID: username });
 
     if (!user) {
+      console.log(`user not found `+ username );
       return res.status(404).json({ message: 'User not found' + username });
+      
     }
 
     const token = crypto.randomBytes(20).toString('hex');
