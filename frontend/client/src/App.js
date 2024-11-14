@@ -29,10 +29,13 @@ import Dashboard from './components/admin/Dashboard';
 import Loginadm from './components/admin/Login';
 import LogisticPage from './components/admin/Logistics';
 import AdminDashboard from './components/admin/admindash/AdminDashboard';
+import AdmnLogout from './components/admin/admnLogout';
+import Admpasswordreset from './components/admin/admpasswordreset';
 import Employies from './components/admin/hr/employies';
 import Hr from './components/admin/hr/hr';
 import Packingpage from './components/admin/packingpage';
 import Sales from './components/admin/sales/Sales';
+
 
 import Coreordering from './components/coreordering';
 import Displayorder from './components/displayorder';
@@ -144,6 +147,8 @@ const App = () => {
             <Route path="/hr" element={<Hr />} />
             <Route path="/loginadm" element={<Loginadm />} />
             <Route path="/adminDashboard" element={<AdminDashboard />} />
+            <Route path="/admnLogout" element={<AdmnLogout />} />
+            <Route path="/admpasswordreset" element={<Admpasswordreset />} />
 
             <Route path="/packingpage" element={<Packingpage />} />
           </Route>

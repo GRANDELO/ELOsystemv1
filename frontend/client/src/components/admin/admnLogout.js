@@ -2,8 +2,8 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import loader from './images/loader2.gif';
-import './styles/Logout.css';
+import loader from '../images/loader2.gif';
+import '../styles/Logout.css';
 const Logout = () => {
   const navigate = useNavigate();
   const [logoutMessage, setLogoutMessage] = useState('');
@@ -21,7 +21,7 @@ const Logout = () => {
           return;
         }
 
-        const response = await axios.post('https://elosystemv1.onrender.com/api/auth/logout', { username }, {
+        const response = await axios.post('https://elosystemv1.onrender.com/api/employees/logout', { username }, {
 
         });
 
@@ -35,7 +35,7 @@ const Logout = () => {
         // Redirect to login page after a delay to show the message
         setTimeout(() => {
           
-          navigate('/');
+          navigate('/loginadm');
         }, 3000);
       } catch (error) {
         console.error('Error logging out:', error);

@@ -1,12 +1,17 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Table } from 'react-bootstrap';
-
+import { useNavigate } from 'react-router-dom';
+import Setting from './settings';
 const LogisticsPage = () => {
   const [unpackedOrders, setUnpackedOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [currentImageIndexes, setCurrentImageIndexes] = useState({});
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    navigate('/admnLogout');
+};
 
   const fetchUnpackedOrders = async () => {
     setLoading(true);
@@ -59,6 +64,7 @@ const LogisticsPage = () => {
 
   return (
     <div className="logistics-page">
+      <Setting/>
       <h1>Unpacked Orders</h1>
 
       {loading && <p>Loading...</p>}

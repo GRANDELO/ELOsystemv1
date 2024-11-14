@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../header';
 import '../../styles/Dashboard.css';
+import Setting from '../settings';
 import Hrdash from './hrdash';
-
 const Dashboard = () => {
     const [view, setView] = useState('summary');
     const [totalUsers, setTotalUsers] = useState(0);
@@ -42,6 +42,7 @@ const Dashboard = () => {
     return (
         <div className="dashboard-container">
             <Header/>
+            <Setting/>
             <Hrdash/>
         </div>
     );

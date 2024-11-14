@@ -93,10 +93,10 @@ const logout = async (req, res) => {
 };
 
 const changepassword = async (req, res) => {
-  const { email, newPassword } = req.body;
+  const { workID, newPassword } = req.body;
 
   try {
-    const user = await Employee.findOne({ email });
+    const user = await Employee.findOne({ workID });
     if (!user) {
       return res.status(404).json({ message: 'Employee not found' });
     }
@@ -121,6 +121,7 @@ const changepassword = async (req, res) => {
   }
 };
 
+
 const newrecoverPassword = async (req, res) => {
   try {
     const { username } = req.body;
@@ -143,7 +144,7 @@ const newrecoverPassword = async (req, res) => {
     
     Password Reset Token: ${user.passwordRecoveryToken}
     
-    Alternatively, you can reset your password by following this link: https://grandelo.web.app/reset-password
+    Alternatively, you can reset your password by following this link: https://grandelo.web.app/admpasswordreset
     
     This token is valid for 1 hour. If you did not request a password reset, please ignore this message.
     
@@ -164,7 +165,7 @@ const newrecoverPassword = async (req, res) => {
         </p>
       </div>
       <p style="text-align: center;">
-        <a href="https://grandelo.web.app/reset-password" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+        <a href="https://grandelo.web.app/admpasswordreset" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
           Reset Your Password
         </a>
       </p>

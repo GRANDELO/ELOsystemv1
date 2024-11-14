@@ -7,7 +7,8 @@ import UserChart from '../UserChart';
 import Header from '../header';
 import '../styles/Dashboard.css';
 import HR from './hr/hrdash';
-import Sales from './sales/Sales';
+import Sales from './sales/Salespg';
+import Setting from './settings';
 
 const Dashboard = () => {
     const [view, setView] = useState('summary');
@@ -18,7 +19,7 @@ const Dashboard = () => {
     const [summary, setSummary] = useState(null);
 
     const handleLogout = () => {
-        navigate('/logout');
+        navigate('/admnLogout');
     };
 
     useEffect(() => {
@@ -46,6 +47,7 @@ const Dashboard = () => {
     return (
         <div className="dashboard-container">
             <Header/>
+            <Setting/>
             <nav>
                 <button onClick={handleLogout}>Logout</button>
                 <button

@@ -1,14 +1,19 @@
 // In src/pages/LogisticsPage.js
-
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Alert, Button, Form, Table } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import Setting from './settings';
 
 const LogisticsPage = () => {
   const [eid, setEid] = useState('');
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    navigate('/admnLogout');
+  };
 
   const fetchOrders = async (deliveryEid) => {
     setLoading(true);
@@ -54,6 +59,7 @@ const LogisticsPage = () => {
 
   return (
     <div className="logistics-page">
+     <Setting/>
       <h1>Logistics</h1>
       <Form onSubmit={handleSearch} className="mb-4">
         <Form.Group controlId="formEID">

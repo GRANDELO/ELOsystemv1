@@ -30,7 +30,7 @@ function Login() {
 
             sessionStorage.setItem('firstName', response.data.name);
             sessionStorage.setItem('role', response.data.role);
-            sessionStorage.setItem('eid', response.data.eid);
+            sessionStorage.setItem('eid', response.data.workID);
             sessionStorage.setItem('admintoken', response.data.token);
             localStorage.setItem('admintoken', response.data.token);
 

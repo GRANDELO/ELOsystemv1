@@ -1,4 +1,11 @@
 import axios from 'axios';
+import { saveAs } from 'file-saver';
+import React, { useEffect, useState } from 'react';
+import { Line } from 'react-chartjs-2';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import '../../styles/sales.css';
+
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -9,15 +16,7 @@ import {
   Title,
   Tooltip,
 } from 'chart.js';
-import { saveAs } from 'file-saver';
-import React, { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import { useNavigate } from 'react-router-dom';
-import Header from '../../header';
-import '../../styles/sales.css';
-import Setting from '../settings';
+
 // Register chart.js components
 ChartJS.register(
   CategoryScale,
@@ -36,7 +35,6 @@ const FinancialSummary = () => {
   const [filters, setFilters] = useState({ month: '', year: '' });
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [visibleSection, setVisibleSection] = useState('summary'); // Track which section is visible
-  const navigate = useNavigate();
 
   // Fetch financial summary data
   useEffect(() => {
@@ -110,10 +108,6 @@ const FinancialSummary = () => {
     saveAs(blob, `Financial_Summary_${selectedDate.getFullYear()}_${selectedDate.getMonth() + 1}.json`);
   };
 
-  const handleLogout = () => {
-      navigate('/admnLogout');
-  };
-
   // Helper function to render summary cards
   const renderSummaryCard = (title, amount, isNetBalance = false) => (
     <div className="sal-card">
@@ -130,8 +124,6 @@ const FinancialSummary = () => {
 
   return (
     <div className="sal-container">
-            <Header/>
-            <Setting/>
       <h2 className="sal-header">Financial Summary</h2>
       {/*<button onClick={() => setVisibleSection('filters')}>Filters</button>*/}
       <button onClick={() => setVisibleSection('summary')}>Summary Cards</button>
