@@ -45,7 +45,7 @@ if (!fs.existsSync(uploadDir)) {
 const app = express();
 
 
-const allowedOrigins = ['https://grandelo.web.app', 'http://localhost:3000'];
+const allowedOrigins = ['https://grandelo.web.app','https://bazelinkadmin.web.app' ,'http://localhost:3000'];
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)

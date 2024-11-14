@@ -4,7 +4,6 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { io } from 'socket.io-client';
 
 import RequireAuth from './RequireAuth'; // Import the authentication check component
-import ImageUpload from './components/ImageUpload';
 
 import ProtectedRoute from './components/ProtectRoute';
 import Reports from './components/Reports';
@@ -13,7 +12,6 @@ import UserChart from './components/UserChart';
 
 import Dashboard from './components/admin/Dashboard';
 import Loginadm from './components/admin/Login';
-import LogisticPage from './components/admin/Logistics';
 import AdminDashboard from './components/admin/admindash/AdminDashboard';
 import AdmnLogout from './components/admin/admnLogout';
 import Admpasswordreset from './components/admin/admpasswordreset';
@@ -77,13 +75,13 @@ const App = () => {
                 </ProtectedRoute>
                  } />
 
+
+
             <Route path="/userChart" element={<UserChart />} />
             <Route path="/users" element={<Users />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/sales" element={<Sales />} />
 
-            <Route path="/imageUpload" element={<ImageUpload />} />
-            <Route path="/logistics" element={<LogisticPage />} />
             <Route path="/employies" element={<Employies />} />
             <Route path="/hr" element={<Hr />} />
 
