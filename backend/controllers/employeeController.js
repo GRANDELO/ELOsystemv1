@@ -12,7 +12,8 @@ const registerEmployee = async (req, res) => {
         return res.status(401).json({ message: 'Eid exists' });
     }
     try {
-        const employee = new Employee({ firstName, surname, eid, role, password });
+        const workID = eID;
+        const employee = new Employee({ firstName, surname, workID, role, password });
         await employee.save();
         res.status(201).json({ message: 'Employee registered successfully', employee });
     } catch (error) {
@@ -27,7 +28,7 @@ const login = async (req, res) => {
     const { eid, password } = req.body;
   
     try {
-        const user = await Employee.findOne({ eid });
+        const user = await Employee.findOne({ workID: eid });
         if (!user) {
             return res.status(401).json({ message: 'Invalid EID' });
         }
@@ -64,7 +65,17 @@ const login = async (req, res) => {
     }
 };
 
+const getAllEmployees = async (req, res) => {
+    try {
+      const employee = await Employee.find();
+      res.status(200).json(employee);
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching Employee', error });
+    }
+  };
+
 module.exports = { 
     registerEmployee,
-    login
+    login,
+    getAllEmployees
 };

@@ -38,7 +38,7 @@ const AdminDashboard = () => {
 
   const fetchActiveUsers = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/uemployeez/active');
+      const response = await axios.get('https://elosystemv1.onrender.com/api/users/active');
       setActiveUsers(response.data);
       setError(null);
     } catch (error) {
@@ -48,7 +48,7 @@ const AdminDashboard = () => {
 
   const fetchDisabledUsers = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/uemployeez/disabled');
+      const response = await axios.get('https://elosystemv1.onrender.com/api/users/disabled');
       setDisabledUsers(response.data);
       setError(null);
     } catch (error) {
@@ -58,7 +58,7 @@ const AdminDashboard = () => {
 
   const fetchRegistrationGraph = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/uemployeez/registration-graph');
+      const response = await axios.get('https://elosystemv1.onrender.com/api/users/registration-graph');
       setRegistrationData(response.data.graphData);
       setError(null);
     } catch (error) {
