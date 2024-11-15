@@ -14,7 +14,7 @@ const RequireAuth = () => {
                 sessionStorage.setItem('admintoken', token);
             }
     }
-
+    console.log("i was here" + isAuthenticated);
   return isAuthenticated ? <Outlet /> : <Navigate to="/" replace />;
 };
 

@@ -1,80 +1,81 @@
 import axios from 'axios';
+import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from 'chart.js';
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-import './styles/Users.css'; // Make sure to include necessary styles
+import '../styles/Users.css';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const RegistrationGraphPage = () => {
   const [registrationData, setRegistrationData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [timeRange, setTimeRange] = useState('months'); // Default time range is months
+  const [timeRange, setTimeRange] = useState('months');
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
   const [error, setError] = useState(null);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
-  // Fetch the graph data based on the selected time range
+  // Fetch registration data
   const fetchRegistrationGraph = async () => {
     try {
       const response = await axios.get('https://elosystemv1.onrender.com/api/users/registration-graph');
       setRegistrationData(response.data.graphData);
-      filterData(response.data.graphData); // Filter the data immediately after fetching
+      console.log("Fetched data:", response.data.graphData); // Debugging line
       setError(null);
     } catch (error) {
+      console.error(error);
       setError('Failed to fetch registration graph data');
     }
   };
 
-  // Function to filter data based on selected time range
-  const filterData = (data) => {
+  // Filter data based on the selected time range
+  const filterData = () => {
     const now = new Date();
     let filtered = [];
-    let startDate = '';
-    let endDate = '';
+    let start = '';
+    let end = '';
 
     if (timeRange === 'days') {
-      // Filter data for the past 7 days
-      startDate = new Date();
-      startDate.setDate(now.getDate() - 7); // 7 days ago
-      endDate = now;
+      start = new Date(now.setDate(now.getDate() - 7));
+      end = new Date();
     } else if (timeRange === 'months') {
-      // Filter data for the past month
-      startDate = new Date();
-      startDate.setMonth(now.getMonth() - 1); // 1 month ago
-      endDate = now;
+      start = new Date(now.setMonth(now.getMonth() - 1));
+      end = new Date();
     } else if (timeRange === 'years') {
-      // Filter data for the past year
-      startDate = new Date();
-      startDate.setFullYear(now.getFullYear() - 1); // 1 year ago
-      endDate = now;
+      start = new Date(now.setFullYear(now.getFullYear() - 1));
+      end = new Date();
     } else if (timeRange === 'custom' && customStartDate && customEndDate) {
-      // Filter data for custom date range
-      startDate = new Date(customStartDate);
-      endDate = new Date(customEndDate);
+      start = new Date(customStartDate);
+      end = new Date(customEndDate);
     }
 
-    // Filter the data based on the calculated time range
-    filtered = data.filter((item) => {
+    filtered = registrationData.filter((item) => {
       const itemDate = new Date(item._id);
-      return itemDate >= startDate && itemDate <= endDate;
+      return itemDate >= start && itemDate <= end;
     });
 
-    setStartDate(startDate.toLocaleDateString());
-    setEndDate(endDate.toLocaleDateString());
+    setStartDate(start.toLocaleDateString());
+    setEndDate(end.toLocaleDateString());
     setFilteredData(filtered);
+    console.log("Filtered data:", filtered); // Debugging line
   };
 
-  // Fetch the data when the component mounts or when timeRange changes
+  // Fetch data initially and when dependencies change
   useEffect(() => {
-    fetchRegistrationGraph();
+    const fetchDataAndFilter = async () => {
+      await fetchRegistrationGraph(); // Ensure data is fetched first
+      filterData();                   // Filter data based on updated registrationData
+    };
+    fetchDataAndFilter();
   }, [timeRange, customStartDate, customEndDate]);
 
   const chartData = {
-    labels: filteredData.map((item) => item._id),
+    labels: filteredData.map((item) => item._id || "N/A"),
     datasets: [
       {
         label: 'Registrations',
-        data: filteredData.map((item) => item.count),
+        data: filteredData.map((item) => item.count || 0),
         backgroundColor: 'rgba(75,192,192,0.4)',
         borderColor: 'rgba(75,192,192,1)',
       },
@@ -92,10 +93,7 @@ const RegistrationGraphPage = () => {
         <select
           id="time-range"
           value={timeRange}
-          onChange={(e) => {
-            setTimeRange(e.target.value);
-            filterData(registrationData); // Re-filter data when time range changes
-          }}
+          onChange={(e) => setTimeRange(e.target.value)}
           className="usal-select"
         >
           <option value="days">Last 7 Days</option>
@@ -105,7 +103,6 @@ const RegistrationGraphPage = () => {
         </select>
       </div>
 
-      {/* Custom Date Range Selection */}
       {timeRange === 'custom' && (
         <div className="usal-custom-range">
           <label htmlFor="start-date" className="usal-label">Start Date: </label>
@@ -127,16 +124,18 @@ const RegistrationGraphPage = () => {
         </div>
       )}
 
-      {/* Display the start and end dates */}
       <div className="usal-date-range">
         <p>Start Date: {startDate}</p>
         <p>End Date: {endDate}</p>
       </div>
 
-      {/* Registration Graph */}
       <section className="usal-section">
         <div className="usal-chart">
-          <Bar data={chartData} />
+          {filteredData.length > 0 ? (
+            <Bar data={chartData} />
+          ) : (
+            <p>No data available to display.</p>
+          )}
         </div>
       </section>
     </div>

@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUsernameFromToken } from '../utils/auth';
-import BGvideo from './images/topvid.mp4';
-import './styles/header.css';
+import { getUsernameFromToken } from '../../utils/auth';
+import BGvideo from '../images/topvid.mp4';
+import '../styles/header.css';
 
 const Header = () => {
   const navigate = useNavigate();

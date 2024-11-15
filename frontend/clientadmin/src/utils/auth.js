@@ -2,7 +2,7 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
 export const getUsernameFromToken = () => {
-  const token = sessionStorage.getItem('userToken');
+  const token = sessionStorage.getItem('admintoken');
   if (!token) return null;
   
   try {
@@ -14,18 +14,18 @@ export const getUsernameFromToken = () => {
   }
 };
 export const getToken = () => {
-  return localStorage.getItem('token');
+  return localStorage.getItem('admintoken');
 };
 
 export const removeToken = () => {
-  localStorage.removeItem('token');
+  localStorage.removeItem('admintoken');
 };
 
 export const isAuthenticated = () => {
   return !!getToken();
 };
 export const getemailFromToken = () => {
-  const token = sessionStorage.getItem('userToken');
+  const token = sessionStorage.getItem('admintoken');
   if (!token) return null;
   
   try {
@@ -51,7 +51,7 @@ export const getcategoryFromToken = () => {
 
 export const logout = async () => {
   try {
-    const token = sessionStorage.getItem('userToken');
+    const token = sessionStorage.getItem('admintoken');
     const username = getUsernameFromToken();
 
     if (!token || !username) {

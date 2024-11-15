@@ -1,7 +1,7 @@
 import React from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
-import Header from '../../header';
 import Footer from '../Footer';
+import Header from '../header';
 import Setting from '../settings';
 import '../styles/salmn.css';
 import Salespg from './Salespg';

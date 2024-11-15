@@ -8,7 +8,7 @@ import RequireAuth from './RequireAuth'; // Import the authentication check comp
 import ProtectedRoute from './components/ProtectRoute';
 import Reports from './components/Reports';
 import Users from './components/User';
-import UserChart from './components/UserChart';
+import UserChart from './components/admin/UserChart';
 
 import Dashboard from './components/admin/Dashboard';
 import Loginadm from './components/admin/Login';
@@ -19,7 +19,6 @@ import Employies from './components/admin/hr/employies';
 import Hr from './components/admin/hr/hr';
 import Packingpage from './components/admin/packingpage';
 import Sales from './components/admin/sales/Sales';
-
 
 
 import './main.css';
@@ -73,9 +72,6 @@ const App = () => {
                  <Dashboard />
                 </ProtectedRoute>
                  } />
-
-
-
             <Route path="/userChart" element={<UserChart />} />
             <Route path="/users" element={<Users />} />
             <Route path="/reports" element={<Reports />} />
