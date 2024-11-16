@@ -156,6 +156,35 @@ io.on('connection', (socket) => {
   });
 });
 
+const shutdown = () => {
+  server.close(() => {
+      console.log('Server is shutting down gracefully.');
+      mongoose.connection.close(false, () => {
+          console.log('MongoDB connection closed.');
+          process.exit(0);
+      });
+  });
+
+  // Force shutdown if the above doesn't work within 10 seconds
+  setTimeout(() => {
+      console.error('Forcing server shutdown...');
+      process.exit(1);
+  }, 10000);
+};
+
+process.on('SIGTERM', shutdown);  // Handle SIGTERM for graceful shutdown
+process.on('SIGINT', shutdown);   // Handle Ctrl+C shutdown
+
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    uptime: process.uptime(),
+    memoryUsage: process.memoryUsage(),
+    activeWebSockets: io.engine.clientsCount,  // Number of active WebSocket clients
+});
+});
+
+
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });

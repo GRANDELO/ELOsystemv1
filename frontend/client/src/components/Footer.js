@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showScroll, setShowScroll] = useState(false);
 
   const socialLinks = [
     { name: 'Facebook', url: 'https://facebook.com' },
     { name: 'Twitter', url: 'https://twitter.com' },
-    { name: 'LinkedIn', url: 'https://linkedin.com' },
+    { name: 'Tiktok', url: 'https://Tiktok.com' },
     { name: 'Instagram', url: 'https://instagram.com' },
   ];
 
@@ -22,6 +23,19 @@ const Footer = () => {
       console.log('Subscribed with email:', email);
     }
   };
+   
+  useEffect(() => {
+    const checkScrollTop = () => {
+      setShowScroll(window.scrollY > 200);
+    };
+  
+    window.addEventListener('scroll', checkScrollTop);
+    return () => window.removeEventListener('scroll', checkScrollTop);
+  }, []);
+  
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <footer style={styles.footerContainer}>
@@ -29,9 +43,9 @@ const Footer = () => {
         {/* Section 1: Company Information */}
         <div style={styles.section}>
           <h4>About Us</h4>
-          <p>Grandelo, Nairobi</p>
-          <p>Email: grandeloltd1@gmail.com</p>
-          <p>Phone: +254 799169720</p>
+          <p>Bazelink, Nairobi</p>
+          <p>Email: Bazelink.ltd@gmail.com</p>
+          <p>Phone: +254 105858451 </p>
         </div>
 
         {/* Section 2: Quick Links */}
@@ -52,6 +66,7 @@ const Footer = () => {
             {socialLinks.map((link, index) => (
               <li key={index}>
                 <a href={link.url} target="_blank" rel="noopener noreferrer" aria-label={`Follow us on ${link.name}`}>
+                <i className={`fab fa-${link.name.toLowerCase()}`} style={styles.icon}></i>
                   {link.name}
                 </a>
               </li>
@@ -73,12 +88,17 @@ const Footer = () => {
             />
             <button type="submit" style={styles.button}>Subscribe</button>
           </form>
-          {isSubmitted && <p style={styles.successMessage}>Thank you for subscribing!</p>}
+          {isSubmitted && <p style={styles.successMessage}  aria-live="polite">Thank you for subscribing!</p>}
         </div>
+        {showScroll && (
+      <button onClick={scrollToTop} style={styles.scrollTopButton}>
+        back at the top ↑
+      </button>
+    )}
       </div>
 
       <div style={styles.footerBottom}>
-        <p>&copy; {currentYear} Grandelo Inc. All Rights Reserved.</p>
+        <p>&copy; {currentYear} BAZELINK Inc. All Rights Reserved.| Powered by <a href="https://bazelink.com" style={styles.link}>Bazelink</a></p>
       </div>
     </footer>
   );
@@ -99,6 +119,18 @@ const styles = {
     flexWrap: 'wrap',
     gap: '20px',
   },
+  '@media (min-width: 768px)': {
+  footerContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+},
+
+icon: {
+  fontSize: '20px',
+  color: '#fff',
+},
+
   section: {
     flex: '1 1 200px',
     margin: '10px',
@@ -139,7 +171,13 @@ const styles = {
     border: 'none',
     borderRadius: '5px',
     cursor: 'pointer',
+    transition: 'background-color 0.3s ease',
   },
+
+  buttonHover: {
+    backgroundColor: '#666',
+  },
+
   successMessage: {
     color: '#4CAF50',
     fontSize: '14px',
@@ -148,3 +186,4 @@ const styles = {
 };
 
 export default Footer;
+
