@@ -2,8 +2,8 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Table } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import Header from '../header';
 import Footer from './Footer';
+import Header from './header';
 import Setting from './settings';
 import './styles/packdev.css';
 
