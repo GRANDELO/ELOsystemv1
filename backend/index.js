@@ -83,7 +83,6 @@ const limiter = rateLimit({
 });
 
 //for form protection
-/*
 app.use(
   csurf({
     cookie: {
@@ -92,7 +91,6 @@ app.use(
       secure: process.env.NODE_ENV === 'production', // Send cookie only on HTTPS
     },
   }));
-
 
 //Escape and encode outputs to prevent malicious scripts from running
 app.use(xssClean());
@@ -120,7 +118,6 @@ const logger = winston.createLogger({
   ],
 });
 //environment variable checker
-
 const envSchema = Joi.object({
   MONGO_URI: Joi.string().required(),
   PORT: Joi.number().default(5000),
@@ -139,7 +136,6 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-*/
 
 
 const port = process.env.PORT || 5000;
