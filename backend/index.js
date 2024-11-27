@@ -82,15 +82,14 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again after 15 minutes',
 });
 
-//for form protection
+/*for form protection
 app.use(
   csurf({
     cookie: {
-      httpOnly: true,
       sameSite: 'Strict', //prevent CSRF via cross-origin requests
       secure: process.env.NODE_ENV === 'production', // Send cookie only on HTTPS
     },
-  }));
+  }));*/
 
 //Escape and encode outputs to prevent malicious scripts from running
 app.use(xssClean());
@@ -127,14 +126,14 @@ const { error } = envSchema.validate(process.env);
 if (error) throw new Error(`Environment validation error: ${error.message}`);
 
 //Redirect all traffic to HTTPS in production
-if (process.env.NODE_ENV === 'production') {
+/*if (process.env.NODE_ENV === 'production') {
   app.use((req, res, next) => {
     if (req.headers['x-forwarded-proto'] !== 'https') {
       return res.redirect(`https://${req.headers.host}${req.url}`);
     }
     next();
   });
-}
+}*/
 
 
 

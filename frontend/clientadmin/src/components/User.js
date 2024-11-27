@@ -2,6 +2,7 @@ import axios from 'axios';
 import { saveAs } from 'file-saver';
 import React, { useEffect, useState } from 'react';
 import Pagination from './Pagination';
+import LogsViewer from './log'
 import './styles/Users.css';
 
 const AdminDashboard = () => {
@@ -192,6 +193,11 @@ const AdminDashboard = () => {
           />
         </section>
       )}
+      {/*logs view */}
+      <section>
+        <LogsViewer/>
+      </section>
+      
 
       {/* Active Users Section with Pagination */}
       {activeSection === 'active' && (
@@ -227,6 +233,7 @@ const AdminDashboard = () => {
             ))}
           </ul>
         </section>
+        
       )}
 
     </div>

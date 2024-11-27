@@ -25,8 +25,9 @@
     "web-push": "^3.6.7"
   },
   "scripts": {
-    "start": "concurrently \"npm run backend\" \"npm run client\"",
+    "start": "concurrently \"npm run backend\" \"npm run client\" \"npm run clientadmin\" ",
     "backend": "nodemon backend/index.js",
-    "client": "npm start"
+    "client": "npm start",
+    "clientadmin": "npm start"
   }
 }
