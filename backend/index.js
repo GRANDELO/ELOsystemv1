@@ -81,7 +81,7 @@ const limiter = rateLimit({
   max: 100,
   message: 'Too many requests from this IP, please try again after 15 minutes',
 });
-
+/*
 //for form protection
 app.use(
   csurf({
@@ -94,11 +94,15 @@ app.use(
 
 //Escape and encode outputs to prevent malicious scripts from running
 app.use(xssClean());
+*/
+
 app.use(morgan('dev'));
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(limiter);
 app.use(bodyParser.json());
+
+/*
 app.use((req, res, next) => {
   req.body = mongoSanitize(req.body);
   req.query = mongoSanitize(req.query);
@@ -135,7 +139,7 @@ if (process.env.NODE_ENV === 'production') {
     next();
   });
 }
-
+*/
 
 
 const port = process.env.PORT || 5000;
@@ -201,6 +205,7 @@ const io = socketIo(server, {
   reconnectionDelay: 2000,
 });
 
+/*
 io.of('/secure').use((socket, next) => {
   const token = socket.handshake.auth.token;
   if (isValidToken(token)) {
@@ -209,7 +214,7 @@ io.of('/secure').use((socket, next) => {
     next(new Error('Authentication error'));
   }
 });
-
+*/
 
 io.on('connection', (socket) => {
   console.log("New client connected");
