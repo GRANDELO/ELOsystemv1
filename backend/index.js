@@ -10,7 +10,7 @@ const morgan = require('morgan');
 const path = require('path');
 const bodyParser = require('body-parser');
 const Joi = require('joi');
-const csurf = require('csurf');
+//const csurf = require('csurf');
 const mongoSanitize = require('mongo-sanitize');
 const xssClean = require('xss-clean');
 const winston = require('winston');
@@ -82,22 +82,27 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again after 15 minutes',
 });
 
-/*for form protection
+//for form protection
+/*
 app.use(
   csurf({
     cookie: {
       sameSite: 'Strict', //prevent CSRF via cross-origin requests
       secure: process.env.NODE_ENV === 'production', // Send cookie only on HTTPS
     },
-  }));*/
-
+  }));
+*/
 //Escape and encode outputs to prevent malicious scripts from running
 app.use(xssClean());
+
+
 app.use(morgan('dev'));
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(limiter);
 app.use(bodyParser.json());
+
+
 app.use((req, res, next) => {
   req.body = mongoSanitize(req.body);
   req.query = mongoSanitize(req.query);
@@ -126,14 +131,14 @@ const { error } = envSchema.validate(process.env);
 if (error) throw new Error(`Environment validation error: ${error.message}`);
 
 //Redirect all traffic to HTTPS in production
-/*if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production') {
   app.use((req, res, next) => {
     if (req.headers['x-forwarded-proto'] !== 'https') {
       return res.redirect(`https://${req.headers.host}${req.url}`);
     }
     next();
   });
-}*/
+}
 
 
 
@@ -199,6 +204,7 @@ const io = socketIo(server, {
   reconnectionAttempts: 5,
   reconnectionDelay: 2000,
 });
+
 
 io.of('/secure').use((socket, next) => {
   const token = socket.handshake.auth.token;
