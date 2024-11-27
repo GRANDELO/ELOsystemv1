@@ -1,0 +1,86 @@
+/* ShopSettings Component Styles */
+.shop-settings {
+    background-color: #ffffff;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 600px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .shop-settings h2 {
+    font-size: 1.8rem;
+    color: #333333;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .shop-settings .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .shop-settings label {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #555555;
+    display: block;
+    margin-bottom: 8px;
+  }
+  
+  .shop-settings input,
+  .shop-settings select {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  .shop-settings input:focus,
+  .shop-settings select:focus {
+    border-color: #007bff;
+  }
+  
+  .shop-settings input[type="file"] {
+    border: none;
+    padding: 0;
+  }
+  
+  .save-settings-button {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .save-settings-button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .shop-settings {
+      padding: 15px;
+      margin: 10px;
+    }
+  
+    .shop-settings h2 {
+      font-size: 1.5rem;
+    }
+  
+    .save-settings-button {
+      font-size: 1rem;
+      padding: 10px;
+    }
+  }
+  

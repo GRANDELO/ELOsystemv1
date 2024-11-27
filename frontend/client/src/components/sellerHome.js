@@ -4,6 +4,8 @@ import ProductList from './ProductsList';
 import Header from './header';
 import Productowner from './productowner';
 import Settings from './settings';
+import ShopSettings from './shopSettings';
+
 const Seller = () => {
   const [refresh, setRefresh] = useState(false);
 
@@ -23,6 +25,10 @@ const Seller = () => {
           <ProductForm refreshProducts={refreshProducts} />
           <ProductList key={refresh} />
           <Productowner/>
+          <ShopSettings />
+        </section>
+        <section className="shop-settings-section">
+          <ShopSettings />
         </section>
       </main>
     </div>

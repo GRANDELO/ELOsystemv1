@@ -9,6 +9,8 @@ import Notifications from './notification'; // Import Notifications component
 import Productowner from './productowner';
 import Productperfomance from './productperfomance';
 import Settings from './settings';
+import ShopSettings from './shopSettings';
+import Footer from './Footer';
 import './styles/Home.css';
 import Withdrawal from './withdrawal';
 
@@ -18,6 +20,7 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [isNotificationsVisible, setIsNotificationsVisible] = useState(false);
+  const [isShopSettingsVisible, setIsShopSettingsVisible] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(0); // Placeholder for unread notifications
   const username = getUsernameFromToken();
 
@@ -32,12 +35,20 @@ const Home = () => {
   const toggleSettings = () => {
     setIsSettingsVisible(!isSettingsVisible);
     setIsNotificationsVisible(false); // Hide notifications when settings is toggled
+    setIsShopSettingsVisible(false);
   };
 
   const toggleNotifications = () => {
     setIsNotificationsVisible(!isNotificationsVisible);
     setIsSettingsVisible(false); // Hide settings when notifications is toggled
     setUnreadNotifications(0); // Reset unread count on open
+    setIsShopSettingsVisible(false);
+  };
+
+  const toggleShopSettings = () => {
+    setIsShopSettingsVisible(!isShopSettingsVisible);
+    setIsSettingsVisible(false);
+    setIsNotificationsVisible(false);
   };
 
   const fetchUnreadNotifications = async () => {
@@ -85,6 +96,12 @@ const Home = () => {
             <Notifications />
           </section>
         )}
+          {/* Shop Settings Section */}
+         {isShopSettingsVisible && (
+          <section className="home-shop-settings-section">
+            <ShopSettings />
+          </section>
+        )}
 
         {/* Introduction Section */}
         <section className="home-intro">
@@ -110,6 +127,10 @@ const Home = () => {
               onClick={() => toggleSection('product-performance')}
             >
               View Performance
+            </button>
+            <button className={`home-settings-button ${activeSection === 'shop setting' ? 'active' : ''}`}
+              onClick={() => toggleShopSettings('shop settings')}>
+                shop settings
             </button>
           </div>
 
@@ -153,14 +174,12 @@ const Home = () => {
           )}
         </button>
       </div>
-
-      {/* Footer */}
-      <footer className="home-footer">
-        <p>Contact us: grandeloltd1@gmail.com</p>
-        <p>&copy; 2024 Grandelo. All rights reserved.</p>
-      </footer>
+     < Footer/>
+    
+      
     </div>
   );
 };
 
 export default Home;
+

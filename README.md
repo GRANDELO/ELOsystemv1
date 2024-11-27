@@ -1,6 +1,6 @@
-Grandelo  Platform
+Bazelink Platform
 
-Welcome to Grandelo! This README provides an overview of our e-commerce platform, including setup instructions, key features, and guidelines for contributing to the project.
+Welcome to Bazelink! This README provides an overview of our e-commerce platform, including setup instructions, key features, and guidelines for contributing to the project.
 
 Table of Contents
 
@@ -16,7 +16,7 @@ Table of Contents
 
 Introduction
 
-Grandelo is a cutting-edge e-commerce platform designed to provide a seamless shopping experience for users. Our platform supports a wide range of features, including product browsing, secure checkout, and order management. Whether you're a customer looking for the best deals or a seller wanting to reach a broader audience, Grandelo has you covered.
+Bazelink is a cutting-edge e-commerce platform designed to provide a seamless shopping experience for users. Our platform supports a wide range of features, including product browsing, secure checkout, and order management. Whether you're a customer looking for the best deals or a seller wanting to reach a broader audience, Grandelo has you covered.
 
 Features
 
@@ -34,7 +34,7 @@ Technology Stack
 -Backend: Node.js, Express
 -Database: MongoDB
 -Authentication: JWT (JSON Web Tokens)
--Payment Gateway: --
+-Payment Gateway: Mpesa stk push--
 -Hosting: --
 
 Getting Started
@@ -72,4 +72,4 @@ Contact
 
 For any questions or feedback, please contact us at grandelo.sup2@gmail.com.
 
-Thank you for using Grandelo
+Thank you for using Bazelink

@@ -2,6 +2,7 @@ const express = require('express');
 const { registerUser, login, verifyUser, updateEmail, resendVerificationCode, newrecoverPassword, resetPassword, changeusername, changepassword, changephonenumber, changeemail, logout} = require('../controllers/authController');
 const router = express.Router();
 
+
 router.post('/register', registerUser);
 router.post('/login', login);
 router.post('/verify', verifyUser)
