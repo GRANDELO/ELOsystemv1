@@ -7,6 +7,8 @@ import RequireAuth from './RequireAuth'; // Import the authentication check comp
 import ImageList from './components/ImageList';
 import ImageUpload from './components/ImageUpload';
 import Login from './components/Login';
+import Set from './components/set';
+
 
 import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
@@ -81,7 +83,9 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/success" element={<Success />} />
           <Route path="/coreorder" element={<Coreordering />} />
-
+          <Route path="/set" element={<Set />} />
+          <Route path="/testHome" element={<Home />} />
+          
           {/* Protected routes */}
           <Route element={<RequireAuth />} >
             <Route path="/verification" element={<Verification />} />

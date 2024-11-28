@@ -29,6 +29,20 @@ const productSchema = new mongoose.Schema({
     unique: true,
     required: true,
   },
+  discount: { 
+    type: Boolean, 
+    default: false 
+  },
+  discountpersentage:
+  {
+    type: Number, 
+    default: undefined 
+  },
+  lable:
+  {
+    type: String,
+    default: undefined
+  },
   quantity: {
     type: Number,
     required: true,

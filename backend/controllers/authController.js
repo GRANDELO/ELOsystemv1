@@ -88,6 +88,8 @@ const registerUser = async (req, res) => {
     // Create new user with conditional amount field
     const formattedDateOfBirth = moment(dateOfBirth).format('YYYY-MM-DD');
     const userAmount = category === 'Seller' ? 0 : undefined;
+    const userbackgroundUrl = category === 'https://storage.googleapis.com/grandelo.appspot.com/1732717512234-Untitled design.png' ? 0 : undefined;
+    const userlogoUrl = category === 'https://storage.googleapis.com/grandelo.appspot.com/1732717512225-Ícone de perfil de usuário em estilo plano Ilustração em vetor avatar membro em fundo isolado Conceito de negócio de sinal de permissão humana _ Vetor Premium.jpeg' ? 0 : undefined;
 
     user = new User({
       fullName,
@@ -104,6 +106,8 @@ const registerUser = async (req, res) => {
       resetPasswordToken: undefined,
       resetPasswordExpires: undefined,
       amount: userAmount,
+      backgroundUrl: userbackgroundUrl,
+      logoUrl: userlogoUrl,
     });
     await user.save();
 

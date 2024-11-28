@@ -27,17 +27,21 @@ const ProductModal = ({ product, show, handleClose }) => {
       return;
     }
 
-    // Basic validation for price to ensure it is a number
+    // Basic validation for specific fields
     if (updatedField === 'price' && isNaN(updatedValue)) {
       setError('Price must be a number.');
+      return;
+    }
+    if (updatedField === 'discountPercentage' && (isNaN(updatedValue) || updatedValue < 0 || updatedValue > 100)) {
+      setError('Discount percentage must be a number between 0 and 100.');
       return;
     }
 
     try {
       // Sending the updated field and value to the backend
       const response = await axios.patch(`https://elosystemv1.onrender.com/api/products/${product._id}`, {
-        field: updatedField,  // Sending field name
-        value: updatedValue,  // Sending new value
+        field: updatedField,
+        value: updatedValue,
       });
 
       setMessage(response.data.message);
@@ -63,10 +67,14 @@ const ProductModal = ({ product, show, handleClose }) => {
   if (!product) return null;
 
   return (
-    <Modal 
-      className="custom-modal" 
-      show={show} 
-      onHide={() => { handleClose(); setMessage(''); setError(''); }}
+    <Modal
+      className="custom-modal"
+      show={show}
+      onHide={() => {
+        handleClose();
+        setMessage('');
+        setError('');
+      }}
     >
       <Modal.Header closeButton>
         <Modal.Title>{product.name}</Modal.Title>
@@ -74,7 +82,7 @@ const ProductModal = ({ product, show, handleClose }) => {
       <Modal.Body>
         {message && <Alert variant="success">{message}</Alert>}
         {error && <Alert variant="danger">{error}</Alert>}
-        
+
         {/* Display product images */}
         <div className="product-images">
           {product.images && product.images.length > 0 ? (
@@ -104,14 +112,48 @@ const ProductModal = ({ product, show, handleClose }) => {
             <option value="description">Description</option>
             <option value="price">Price</option>
             <option value="quantity">Quantity</option>
+            <option value="discount">Discount</option>
+            <option value="discountPercentage">Discount Percentage</option>
+            <option value="label">Label</option>
           </Form.Select>
           <Form.Label className="mt-2">New Value</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter new value"
-            value={updatedValue}
-            onChange={(e) => setUpdatedValue(e.target.value)}
-          />
+          {/* Conditional Input Field Rendering */}
+          {updatedField === 'discount' ? (
+            <Form.Select
+              value={updatedValue}
+              onChange={(e) => setUpdatedValue(e.target.value)}
+            >
+              <option value="">Select discount option</option>
+              <option value="true">True</option>
+              <option value="false">False</option>
+            </Form.Select>
+          ) : updatedField === 'label' ? (
+            <Form.Select
+              value={updatedValue}
+              onChange={(e) => setUpdatedValue(e.target.value)}
+            >
+              <option value="">Select label</option>
+              <option value="clearance">Clearance</option>
+              <option value="discount">Discount</option>
+              <option value="new arrival">New Arrival</option>
+            </Form.Select>
+          ) : updatedField === 'discountPercentage' ? (
+            <Form.Control
+              type="number"
+              placeholder="Enter discount percentage"
+              value={updatedValue}
+              onChange={(e) => setUpdatedValue(e.target.value)}
+              min="0"
+              max="100"
+            />
+          ) : (
+            <Form.Control
+              type="text"
+              placeholder="Enter new value"
+              value={updatedValue}
+              onChange={(e) => setUpdatedValue(e.target.value)}
+            />
+          )}
         </Form.Group>
       </Modal.Body>
       <Modal.Footer>
@@ -121,7 +163,14 @@ const ProductModal = ({ product, show, handleClose }) => {
         <Button variant="primary" onClick={handleUpdate}>
           Update Product
         </Button>
-        <Button variant="secondary" onClick={() => { handleClose(); setMessage(''); setError(''); }}>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            handleClose();
+            setMessage('');
+            setError('');
+          }}
+        >
           Close
         </Button>
       </Modal.Footer>

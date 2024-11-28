@@ -54,6 +54,9 @@ exports.createProduct = async (req, res) => {
       price,
       username,
       productId,
+      discount: undefined,
+      discountpersentage: undefined,
+      lable: undefined,
       quantity,
       images: imageUrls,  // Store array of image URLs
     });
@@ -96,7 +99,7 @@ exports.updateProduct = async (req, res) => {
 
   try {
     // Check if the field is allowed to be updated
-    const allowedFields = ['name', 'description', 'price', 'quantity'];
+    const allowedFields = ['name', 'description', 'price', 'quantity', 'discount', 'discountpersentage', 'lable'];
     if (!allowedFields.includes(field)) {
       return res.status(400).json({ message: `Invalid field name provided: ${field}.` });
     }
@@ -118,7 +121,6 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
-
 // Delete a product
 exports.deleteProduct = async (req, res) => {
   const { productId } = req.params;
@@ -136,7 +138,6 @@ exports.deleteProduct = async (req, res) => {
     res.status(500).json({ message: 'Server error while deleting product.' });
   }
 };
-
 
 // Serve image from Firebase Storage
 exports.getImage = async (req, res) => {

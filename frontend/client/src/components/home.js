@@ -4,7 +4,7 @@ import { FaBell, FaCog } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { getUsernameFromToken } from '../utils/auth';
 import NewProductForm from './NewProductForm';
-import Header from './header';
+import Header from './headersell';
 import Notifications from './notification'; // Import Notifications component
 import Productowner from './productowner';
 import Productperfomance from './productperfomance';
