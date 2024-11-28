@@ -113,8 +113,8 @@ const ProductModal = ({ product, show, handleClose }) => {
             <option value="price">Price</option>
             <option value="quantity">Quantity</option>
             <option value="discount">Discount</option>
-            <option value="discountPercentage">Discount Percentage</option>
-            <option value="label">Label</option>
+            <option value="discountpersentage">Discount Percentage</option>
+            <option value="lable">Label</option>
           </Form.Select>
           <Form.Label className="mt-2">New Value</Form.Label>
           {/* Conditional Input Field Rendering */}
