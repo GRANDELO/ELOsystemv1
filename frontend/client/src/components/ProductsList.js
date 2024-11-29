@@ -59,15 +59,36 @@ const ProductList = () => {
         <div key={category} className="product-category">
           <h2>{category}</h2>
           <div className="product-cards">
-            {categorizedProducts[category].map(product => (
-              <div key={product._id} className="product-card">
-                <img src={product.image} alt={product.name} />
-                <h3>{product.name}</h3>
-                <p>{product.description}</p>
-                <h4>ksh {product.price}</h4>
-                <a href={`/products/${product._id}`} className="view-details-link">View Details</a>
-              </div>
-            ))}
+            {categorizedProducts[category].map(product => {
+              const hasDiscount = product.discount === true;
+              const discountAmount = hasDiscount ? (product.price * product.discountpersentage) / 100 : 0;
+              const newPrice = hasDiscount ? product.price - discountAmount : product.price;
+
+              return (
+                <div key={product._id} className="product-card">
+                  <img src={product.image} alt={product.name} />
+                  <h3>{product.name}</h3>
+                  <p>{product.description}</p>
+                  {product.lable && <span className={`product-badge label-badge`}>{product.lable}</span>}
+                  <div className="product-prices">
+                    {hasDiscount ? (
+                      <>
+                        <h4 className="old-price">
+                          <s>Ksh {product.price.toFixed(2)}</s>
+                        </h4>
+                        <h4 className="new-price">Ksh {newPrice.toFixed(2)}</h4>
+                        <p className="discount-amount">
+                          Save Ksh {discountAmount.toFixed(2)} ({product.discountpersentage}% off)
+                        </p>
+                      </>
+                    ) : (
+                      <h4>Ksh {product.price}</h4>
+                    )}
+                  </div>
+                  <a href={`/products/${product._id}`} className="view-details-link">View Details</a>
+                </div>
+              );
+            })}
           </div>
         </div>
       ))}

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { QRCodeCanvas } from 'qrcode.react';
-import React, { useEffect, useState } from 'react'; // Import useEffect
+import React, { useEffect, useState } from 'react'; 
 import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { useCart } from '../contexts/CartContext';
 import { getUsernameFromToken } from '../utils/auth';
@@ -18,14 +18,14 @@ const ProductModal = ({ product, show, handleClose }) => {
   const username = getUsernameFromToken();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Function to update the image index periodically
+  // Handle the image index change every 4 seconds if product has multiple images
   useEffect(() => {
     if (product?.images?.length > 1) {
       const intervalId = setInterval(() => {
         setCurrentImageIndex((prevIndex) => (prevIndex + 1) % product.images.length);
       }, 4000); // Change every 4 seconds
 
-      return () => clearInterval(intervalId); // Cleanup interval on component unmount or product change
+      return () => clearInterval(intervalId); // Cleanup on component unmount or product change
     }
   }, [product]);
 
@@ -118,14 +118,28 @@ const ProductModal = ({ product, show, handleClose }) => {
 
   if (!product) return null;
 
+  // Helper function to calculate price after discount
+  const calculateDiscountedPrice = (product) => {
+    const discountAmount = product.discount
+      ? (product.price * product.discountpersentage) / 100
+      : 0;
+    const discountedPrice = product.discount ? product.price - discountAmount : product.price;
+    return {
+      discountedPrice: discountedPrice.toFixed(2),
+      discountAmount: discountAmount.toFixed(2),
+    };
+  };
+
+  const { discountedPrice, discountAmount } = calculateDiscountedPrice(product);
+
   return (
     <Modal 
       className="custom-modal" 
       show={show} 
       onHide={() => { 
         handleClose(); 
-        setMessage(''); 
-        setError(''); 
+        setMessage('');
+        setError('');
         setShowQrCode(false); 
         setShowMpesaInput(false); 
         setSellerOrderId(''); // Reset sellerOrderId on close
@@ -141,7 +155,7 @@ const ProductModal = ({ product, show, handleClose }) => {
         
         {/* Display product image */}
         <div className="product-images">
-          {product.images && product.images.length > 0 ? (
+          {product?.images?.length > 0 ? (
             <img
               src={product.images[currentImageIndex]}
               alt={`product-image-${currentImageIndex}`}
@@ -153,9 +167,26 @@ const ProductModal = ({ product, show, handleClose }) => {
         </div>
 
         <p>{product.description}</p>
-        <p>Ksh {product.price}</p>
+        
         <p>{product.category}</p>
-
+        {product.lable && <span className={`product-badge label-badge`}>{product.lable}</span>}
+        
+        <div className="product-prices">
+          {product.discount ? (
+            <>
+              <h4 className="old-price">
+                <s>Ksh {product.price.toFixed(2)}</s>
+              </h4>
+              <h4 className="new-price">Ksh {discountedPrice}</h4>
+              <p className="discount-amount">
+                Save Ksh {discountAmount} ({product.discountpersentage}% off)
+              </p>
+            </>
+          ) : (
+            <h4>Ksh {product.price.toFixed(2)}</h4>
+          )}
+        </div>
+        
         {/* Quantity input */}
         <Form.Group controlId="productQuantity" className="mt-3">
           <Form.Label>Quantity</Form.Label>
@@ -200,22 +231,17 @@ const ProductModal = ({ product, show, handleClose }) => {
             <Button variant="primary" className="mt-3" onClick={downloadQRCode}>
               Download QR Code
             </Button>
-            <Button variant="secondary" className="mt-3" onClick={downloadProductInfo}>
-              Download Product Info
-            </Button>
           </div>
         )}
+
+        <div className="mt-4">
+          <Button variant="primary" onClick={downloadProductInfo}>
+            Download Product Info
+          </Button>
+        </div>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={() => { 
-          handleClose(); 
-          setMessage(''); 
-          setError(''); 
-          setShowQrCode(false); 
-          setShowMpesaInput(false); 
-          setSellerOrderId(''); 
-          setMpesaNumber(''); 
-        }}>
+        <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
         <Button variant="primary" onClick={handleAddToCart}>

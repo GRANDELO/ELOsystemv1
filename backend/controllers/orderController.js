@@ -227,7 +227,7 @@ exports.deliverypatcher = async (req, res) => {
 
 exports.getUnpa = async (req, res) => {
   const totalAmount = 80; // Sample total amount for the order
-  const orderNumber = '7ae2e825-d8d0-494f-a266-052690b51d7d'; // Sample order number
+  const orderNumber = 'c52e5793-a814-4087-aaf3-32365273769c'; // Sample order number
 
   // Sample products array with the new field structure
   const products = [
@@ -280,6 +280,8 @@ exports.sendOrderReceiptEmail = async (orderNumber) => {
         category: product.category,
         price: product.price,
         username: product.username, // Include seller info
+        discount: product.discount,
+        discountpersentage: product.discountpersentage,
       };
     });
 
@@ -389,6 +391,8 @@ const sendOrderReceiptEmail = async (orderNumber) => {
         category: product.category,
         price: product.price,
         username: product.username, // Include seller info
+        discount: product.discount,
+        discountpersentage: product.discountpersentage,
       };
     });
 
@@ -474,7 +478,7 @@ Bazelink`;
   }
 };
 
-const TransactionLedgerfuc = async ( products, orderNumber) => {
+const TransactionLedgerfuc = async (products, orderNumber) => {
   const order = await Order.findOne({ orderNumber });
   const sellerOrderId = order ? order.sellerOrderId : undefined;
   const coreseller = sellerOrderId ? await CoreSellOrder.findOne({ sellerOrderId }) : null;
@@ -488,10 +492,16 @@ const TransactionLedgerfuc = async ( products, orderNumber) => {
   const earningsData = {};
 
   for (const product of products) {
-    const { username, price, quantity } = product;
-    const sellerEarnings = price * quantity * sellerPercentage;
-    const coSellerEarnings = sellerOrderId ? price * quantity * coSellerPercentage : 0;
-    const companyEarnings = price * quantity * companyPercentage;
+    const { username, price, quantity, discount, discountpersentage } = product;
+
+    // Check for discount and calculate the effective price
+    const effectivePrice = discount && discount.isActive
+      ? price * (1 - (discountpersentage / 100)) // Apply percentage discount
+      : price;
+
+    const sellerEarnings = effectivePrice * quantity * sellerPercentage;
+    const coSellerEarnings = sellerOrderId ? effectivePrice * quantity * coSellerPercentage : 0;
+    const companyEarnings = effectivePrice * quantity * companyPercentage;
 
     if (!earningsData[username]) {
       earningsData[username] = { sellerEarnings: 0, coSellerEarnings: 0, companyEarnings: 0 };
@@ -563,6 +573,7 @@ const TransactionLedgerfuc = async ( products, orderNumber) => {
   const message = `Sales processed successfully for order ${orderNumber}. Total company earnings: $${totalCompanyEarnings.toFixed(2)}`;
   return { message };
 };
+
 
 
 

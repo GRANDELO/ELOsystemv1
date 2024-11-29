@@ -114,6 +114,11 @@ const NewProductList = () => {
             const currentImageIndex = imageIndexes[product._id] || 0; // Get current image index
             const imageSrc = product.images && product.images.length > 0 ? product.images[currentImageIndex] : null;
 
+            // Calculate discount and new price if discount is true
+            const hasDiscount = product.discount === true;
+            const discountAmount = hasDiscount ? (product.price * product.discountpersentage) / 100 : 0;
+            const newPrice = hasDiscount ? product.price - discountAmount : product.price;
+
             return (
               <div key={product._id} className="product-card">
                 <div className="product-image-wrapper">
@@ -122,12 +127,26 @@ const NewProductList = () => {
                   ) : (
                     <p>No images available for this product.</p>
                   )}
-                  {product.isNew && <span className="product-badge new-badge">New</span>}
-                  {product.isOnSale && <span className="product-badge sale-badge">Sale</span>}
+                  
                 </div>
                 <h3>{product.name}</h3>
                 <p>{product.description}</p>
-                <h4>Ksh {product.price}</h4>
+                {product.lable && <span className={`product-badge label-badge`}>{product.lable}</span>}
+                <div className="product-prices">
+                  {hasDiscount ? (
+                    <>
+                      <h4 className="old-price">
+                        <s>Ksh {product.price.toFixed(2)}</s>
+                      </h4>
+                      <h4 className="new-price">Ksh {newPrice.toFixed(2)}</h4>
+                      <p className="discount-amount">
+                        Save Ksh {discountAmount.toFixed(2)} ({product.discountpersentage}% off)
+                      </p>
+                    </>
+                  ) : (
+                    <h4>Ksh {product.price}</h4>
+                  )}
+                </div>
                 <p>In stock {product.quantity}</p>
                 <button className="view-details-btn" onClick={() => handleProductClick(product)}>
                   View Details

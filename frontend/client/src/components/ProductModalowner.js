@@ -65,6 +65,19 @@ const ProductModal = ({ product, show, handleClose }) => {
   };
 
   if (!product) return null;
+  // Helper function to calculate price after discount
+  const calculateDiscountedPrice = (product) => {
+    const discountAmount = product.discount
+      ? (product.price * product.discountpersentage) / 100
+      : 0;
+    const discountedPrice = product.discount ? product.price - discountAmount : product.price;
+    return {
+      discountedPrice: discountedPrice.toFixed(2),
+      discountAmount: discountAmount.toFixed(2),
+    };
+  };
+
+  const { discountedPrice, discountAmount } = calculateDiscountedPrice(product);
 
   return (
     <Modal
@@ -97,8 +110,24 @@ const ProductModal = ({ product, show, handleClose }) => {
         </div>
 
         <p>{product.description}</p>
-        <p>Ksh {product.price}</p>
         <p>{product.category}</p>
+        {product.lable && <span className={`product-badge label-badge`}>{product.lable}</span>}
+        
+        <div className="product-prices">
+          {product.discount ? (
+            <>
+              <h4 className="old-price">
+                <s>Ksh {product.price.toFixed(2)}</s>
+              </h4>
+              <h4 className="new-price">Ksh {discountedPrice}</h4>
+              <p className="discount-amount">
+                Save Ksh {discountAmount} ({product.discountpersentage}% off)
+              </p>
+            </>
+          ) : (
+            <h4>Ksh {product.price.toFixed(2)}</h4>
+          )}
+        </div>
 
         {/* Update Field Selection */}
         <Form.Group className="mt-3">
@@ -127,17 +156,17 @@ const ProductModal = ({ product, show, handleClose }) => {
               <option value="true">True</option>
               <option value="false">False</option>
             </Form.Select>
-          ) : updatedField === 'label' ? (
+          ) : updatedField === 'lable' ? (
             <Form.Select
               value={updatedValue}
               onChange={(e) => setUpdatedValue(e.target.value)}
             >
               <option value="">Select label</option>
-              <option value="clearance">Clearance</option>
-              <option value="discount">Discount</option>
-              <option value="new arrival">New Arrival</option>
+              <option value="CLEARANCE">Clearance</option>
+              <option value="DISCOUNT">Discount</option>
+              <option value="NEW ARRIVAL">New Arrival</option>
             </Form.Select>
-          ) : updatedField === 'discountPercentage' ? (
+          ) : updatedField === 'discountpersentage' ? (
             <Form.Control
               type="number"
               placeholder="Enter discount percentage"

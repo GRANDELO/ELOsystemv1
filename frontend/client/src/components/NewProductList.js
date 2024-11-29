@@ -89,6 +89,18 @@ const NewProductList = () => {
 
   const filteredProducts = filterAndSortProducts();
 
+  // Helper function to calculate price after discount
+  const calculateDiscountedPrice = (product) => {
+    const discountAmount = product.discount
+      ? (product.price * product.discountpersentage) / 100
+      : 0;
+    const discountedPrice = product.discount ? product.price - discountAmount : product.price;
+    return {
+      discountedPrice: discountedPrice.toFixed(2),
+      discountAmount: discountAmount.toFixed(2),
+    };
+  };
+
   return (
     <div className="product-list">
       <header className="product-list-header">
@@ -106,6 +118,7 @@ const NewProductList = () => {
           filteredProducts.map((product) => {
             const currentImageIndex = imageIndexes[product._id] || 0;
             const imageSrc = product.images ? product.images[currentImageIndex] : product.image;
+            const { discountedPrice, discountAmount } = calculateDiscountedPrice(product);
 
             return (
               <div key={product._id} className="product-card">
@@ -116,7 +129,22 @@ const NewProductList = () => {
                 </div>
                 <h3>{product.name}</h3>
                 <p>{product.description}</p>
-                <h4>Ksh {product.price}</h4>
+                {product.lable && <span className={`product-badge label-badge`}>{product.lable}</span>}
+                <div className="product-prices">
+                  {product.discount ? (
+                    <>
+                      <h4 className="old-price">
+                        <s>Ksh {product.price.toFixed(2)}</s>
+                      </h4>
+                      <h4 className="new-price">Ksh {discountedPrice}</h4>
+                      <p className="discount-amount">
+                        Save Ksh {discountAmount} ({product.discountpersentage}% off)
+                      </p>
+                    </>
+                  ) : (
+                    <h4>Ksh {product.price.toFixed(2)}</h4>
+                  )}
+                </div>
                 <button className="view-details-btn" onClick={() => handleProductClick(product)}>
                   View Details
                 </button>

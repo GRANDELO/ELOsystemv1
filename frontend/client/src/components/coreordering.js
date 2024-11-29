@@ -80,6 +80,32 @@ const OrderingPage = () => {
     setMpesaPhoneNumberError(!phoneNumberPattern.test(phoneNumber) ? 'Please enter a valid 12-digit phone number starting with 2547 or 2541.' : '');
   };
 
+  const calculateDiscountedPrice = () => {
+    if (product.discount) {
+      const discountPercentage = product.discountpersentage || 0;
+      const discountedPrice = product.price - (product.price * discountPercentage) / 100;
+      return {
+        discountedPrice,
+        savedAmount: product.price - discountedPrice,
+      };
+    }
+    return { discountedPrice: product.price, savedAmount: 0 };
+  };
+
+  const handleClearCart = async () => {
+    try {
+      setMessage('');
+      setError('');
+      const clearResponse = await axios.post('https://elosystemv1.onrender.com/api/cart/cart/clear', 
+        { username }
+      );
+      setMessage(clearResponse.data.message);
+    } catch (err) {
+      console.error('Failed to clear cart:', err);
+      setError(err.response?.data?.message || 'Failed to clear cart');
+    }
+  };
+
   const handleTownChange = (e) => {
     const selectedTown = e.target.value;
     setSelectedTown(selectedTown);
@@ -102,21 +128,54 @@ const OrderingPage = () => {
       setError('Please complete the form.');
       return;
     }
+    const orderReference = uuidv4(); 
+    const { discountedPrice } = calculateDiscountedPrice();
     try {
       const orderDetails = {
         items: [{ productId, quantity: 1 }],
-        totalPrice: product.price,
+        totalPrice: discountedPrice,
         paymentMethod,
         destination: `${selectedTown}, ${selectedArea}`,
         orderDate: new Date().toISOString(),
         username,
         mpesaPhoneNumber: paymentMethod === 'mpesa' ? mpesaPhoneNumber : undefined,
-        orderReference: uuidv4(),
+        orderReference: orderReference,
         sellerOrderId,
       };
       const response = await axios.post('https://elosystemv1.onrender.com/api/orders', orderDetails);
       setMessage(response.data.message);
-      setTimeout(() => navigate('/salespersonhome'), 3000);
+
+      if (paymentMethod === 'mpesa') 
+        {
+            const payload = 
+            {
+                phone: mpesaPhoneNumber,
+                amount: discountedPrice.toFixed(0),
+                orderReference: orderReference
+            };
+
+            try {
+                const response = await axios.post('https://elosystemv1.onrender.com/api/mpesa/lipa', payload, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                setMessage('Payment initiated successfully!');
+                handleClearCart();
+                setTimeout(() => {
+                  navigate('/salespersonhome');
+                }, 3000);
+            } catch (error) {
+                setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
+                console.error('Error:', error);
+            }
+      }else{
+        await handleClearCart();
+        setTimeout(() => {
+          navigate('/salespersonhome');
+        }, 3000);
+      }
+
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to submit order.');
     }
@@ -124,6 +183,7 @@ const OrderingPage = () => {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <Alert variant="danger">{error}</Alert>;
+  const { discountedPrice, savedAmount } = calculateDiscountedPrice();
 
   return (
     <div className="ordcore-ordering-page">
@@ -134,7 +194,7 @@ const OrderingPage = () => {
         </Alert>
       )}
       {message && <Alert variant="success" className="ordcore-message">{message}</Alert>}
-      <h2 className="ordcore-total-price">Total Price: Ksh {product?.price.toFixed(2)}</h2>
+      <h2 className="ordcore-total-price">Total Price: Ksh {discountedPrice.toFixed(2)}</h2>
 
       {product && (
         <div className="ordcore-product-details">
@@ -150,7 +210,16 @@ const OrderingPage = () => {
               <p>No images available for this product.</p>
             )}
           </div>
-          <p className="ordcore-product-price">Price: Ksh {product.price}</p>
+          {product.discount && (
+            <>
+              <p className="ordcore-original-price">
+                Original Price: <del>Ksh {product.price.toFixed(2)}</del>
+              </p>
+              <p className="ordcore-product-price">Price: Ksh {discountedPrice.toFixed(2)}</p>
+
+              <p className="ordcore-saved-amount">You Save: Ksh {savedAmount.toFixed(2)}</p>
+            </>
+          )}
           <p className="ordcore-product-description">{product.description}</p>
         </div>
       )}

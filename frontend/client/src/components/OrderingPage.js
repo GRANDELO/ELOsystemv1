@@ -114,9 +114,17 @@ const OrderingPage = () => {
       const orderDetails = {
         items: cart.map(item => ({
           productId: item.product._id,
-          quantity: item.quantity
+          quantity: item.quantity,
+          price: item.product.discount 
+            ? item.product.price * (1 - item.product.discountpersentage / 100) // Apply discount if exists
+            : item.product.price
         })),
-        totalPrice: cart.reduce((total, item) => total + item.product.price * item.quantity, 0),
+        totalPrice: cart.reduce((total, item) => {
+          const price = item.product.discount
+            ? item.product.price * (1 - item.product.discountpersentage / 100)
+            : item.product.price;
+          return total + price * item.quantity;
+        }, 0),
         paymentMethod,
         destination: `${selectedTown}, ${selectedArea}`,
         orderDate: new Date().toISOString(),
@@ -169,7 +177,12 @@ const OrderingPage = () => {
     }
   };
 
-  const totalPrice = cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
+  const totalPrice = cart.reduce((total, item) => {
+    const price = item.product.discount
+      ?   item.product.price * (1 - item.product.discountpersentage / 100)
+      : item.product.price;
+    return total + price * item.quantity;
+  }, 0);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <Alert variant="danger">{error}</Alert>;
@@ -185,11 +198,16 @@ const OrderingPage = () => {
         <h3>Cart Items</h3>
         <ul>
           {cart.length > 0 ? (
-            cart.map((item) => (
-              <li key={item.product._id}>
-                {item.product.name} - Ksh {item.product.price} x {item.quantity}
-              </li>
-            ))
+            cart.map((item) => {
+              const price = item.product.discount
+                ? item.product.price * (1 - item.product.discountpersentage / 100)
+                : item.product.price;
+              return (
+                <li key={item.product._id}>
+                  {item.product.name} - Ksh {price.toFixed(2)} x {item.quantity}
+                </li>
+              );
+            })
           ) : (
             <p>No items in cart.</p>
           )}
@@ -253,17 +271,18 @@ const OrderingPage = () => {
               type="text"
               value={mpesaPhoneNumber}
               onChange={handleMpesaPhoneNumberChange}
-              placeholder="2547XXXXXXXX"
+              isInvalid={mpesaPhoneNumberError !== ''}
             />
-            {mpesaPhoneNumberError && <Alert variant="danger">{mpesaPhoneNumberError}</Alert>}
+            <Form.Control.Feedback type="invalid">
+              {mpesaPhoneNumberError}
+            </Form.Control.Feedback>
           </Form.Group>
         )}
-
-        {/* Submit Order Button */}
-        <Button variant="primary" onClick={handleSubmitOrder}>
-          Submit Order
-        </Button>
       </Form>
+
+      {/* Submit Order Button */}
+      <Button onClick={handleSubmitOrder}>Submit Order</Button>
+
     </div>
   );
 };
