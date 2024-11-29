@@ -495,7 +495,7 @@ const TransactionLedgerfuc = async (products, orderNumber) => {
     const { username, price, quantity, discount, discountpersentage } = product;
 
     // Check for discount and calculate the effective price
-    const effectivePrice = discount && discount.isActive
+    const effectivePrice = discount
       ? price * (1 - (discountpersentage / 100)) // Apply percentage discount
       : price;
 
