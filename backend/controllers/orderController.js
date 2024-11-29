@@ -498,7 +498,8 @@ const TransactionLedgerfuc = async (products, orderNumber) => {
     const effectivePrice = discount
       ? price * (1 - (discountpersentage / 100)) // Apply percentage discount
       : price;
-
+      
+      console.log(effectivePrice);
     const sellerEarnings = effectivePrice * quantity * sellerPercentage;
     const coSellerEarnings = sellerOrderId ? effectivePrice * quantity * coSellerPercentage : 0;
     const companyEarnings = effectivePrice * quantity * companyPercentage;
