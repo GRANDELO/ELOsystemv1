@@ -14,7 +14,17 @@
     text-align: center;
   }
   
+  .product-card  .old-price{
+    color: red;
+  }
 
+  .product-card .new-price{
+    color: green;
+  }
+
+  .product-card .discount-amount{
+    color:#343a40;
+  }
   
   .product-card h3 {
     font-size: 1.2em;
@@ -32,7 +42,6 @@
   
   .product-card .old-price {
     text-decoration: line-through;
-    color: #888;
     margin-left: 10px;
   }
   .product-list {

@@ -13,6 +13,17 @@
     border-bottom: none;
   }
   
+  .old-price{
+    color: red;
+  }
+
+  .new-price{
+    color: green;
+  }
+
+  .discount-amount{
+    color:#343a40;
+  }
   .custom-modal .modal-title {
     font-size: 1.5rem;
     font-weight: bold;

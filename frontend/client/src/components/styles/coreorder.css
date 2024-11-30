@@ -8,6 +8,17 @@
   justify-content: center;
   padding: 20px;
 }
+.ordcore-original-price{
+  color: red;
+}
+
+.ordcore-saved-amount{
+  color: green;
+}
+
+.ordcore-product-price{
+  color: rgb(11, 152, 11);
+}
 
 /* Container Styling */
 .ordcore-ordering-page {

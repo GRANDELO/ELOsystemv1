@@ -210,16 +210,26 @@ const OrderingPage = () => {
               <p>No images available for this product.</p>
             )}
           </div>
-          {product.discount && (
+          {product.discount ? (
             <>
               <p className="ordcore-original-price">
                 Original Price: <del>Ksh {product.price.toFixed(2)}</del>
               </p>
-              <p className="ordcore-product-price">Price: Ksh {discountedPrice.toFixed(2)}</p>
-
-              <p className="ordcore-saved-amount">You Save: Ksh {savedAmount.toFixed(2)}</p>
+              <p className="ordcore-product-price">
+                Price: Ksh {discountedPrice.toFixed(2)}
+              </p>
+              <p className="ordcore-saved-amount">
+                You Save: Ksh {savedAmount.toFixed(2)}
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="ordcore-product-price">
+                Price: Ksh {product.price.toFixed(2)}
+              </p>
             </>
           )}
+
           <p className="ordcore-product-description">{product.description}</p>
         </div>
       )}

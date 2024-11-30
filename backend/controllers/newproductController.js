@@ -27,29 +27,6 @@ async function uploadFile(file) {
   });
 }
 
-exports.createNewProduct = async (req, res) => {
-  try {
-    const { name, category, subCategory, description, price, username, quantity } = req.body;
-    const image = req.file ? await uploadFile(req.file) : null;
-    const productId = uuidv4();
-    const newProduct = new Product({
-      name,
-      category,
-      subCategory,
-      description,
-      price,
-      username,
-      productId,
-      quantity,
-      image,
-    });
-
-    await newProduct.save();
-    res.status(201).json({ product: newProduct });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
 
 exports.getNewProducts = async (req, res) => {
   try {

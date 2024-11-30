@@ -17,6 +17,17 @@
     list-style: none;
     padding: 0;
   }
+  .old-price{
+    color: red;
+  }
+
+  .new-price{
+    color: green;
+  }
+
+  .discount-amount{
+    color:#343a40;
+  }
   
   .ordering-page li {
     display: flex;

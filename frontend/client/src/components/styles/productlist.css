@@ -116,6 +116,18 @@
     display: none;
   }
   
+  .old-price{
+    color: red;
+  }
+
+  .new-price{
+    color: green;
+  }
+
+  .discount-amount{
+    color:#343a40;
+  }
+  
   .product-card {
     background-color: #fff;
     border-radius: 10px;

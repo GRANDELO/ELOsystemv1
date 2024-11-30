@@ -85,10 +85,11 @@ const App = () => {
           <Route path="/coreorder" element={<Coreordering />} />
           <Route path="/set" element={<Set />} />
           <Route path="/testHome" element={<Home />} />
+          <Route path="/verification" element={<Verification />} />
           
           {/* Protected routes */}
           <Route element={<RequireAuth />} >
-            <Route path="/verification" element={<Verification />} />
+
             <Route path="/home" 
               element={
                 <ProtectedRoute>
