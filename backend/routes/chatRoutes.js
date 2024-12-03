@@ -3,6 +3,7 @@ const chatController = require('../controllers/chatController');
 
 const router = express.Router();
 
+router.get('/', chatController.getchats);
 // Create a new chat
 router.post('/create', chatController.createChat);
 

@@ -1,6 +1,16 @@
 const Chat = require('../models/Chat');
 const { v4: uuidv4 } = require('uuid');
 // Create Chat
+
+exports.getchats = async (req, res) => {
+    try {
+        const Chats = await Chat.find(); // Fetch all products from the database
+        res.json({ Chats });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+}
+
 exports.createChat = async (req, res) => {
   try {
     const { usernames } = req.body;
