@@ -38,6 +38,9 @@ import Salespersonhome from './components/salespersonhome';
 import Seller from './components/sellerHome';
 import Upload from './components/upload';
 
+import ChatList from "./components/ChatList";
+import ChatDetails from "./components/ChatDetails";
+
 import './main.css';
 
 const socket = io('https://elosystemv1.onrender.com');
@@ -86,7 +89,9 @@ const App = () => {
           <Route path="/set" element={<Set />} />
           <Route path="/testHome" element={<Home />} />
           <Route path="/verification" element={<Verification />} />
-          
+
+          <Route path="/chatall" element={<ChatList />} />
+          <Route path="/chat/:chatId" element={<ChatDetails />} />
           {/* Protected routes */}
           <Route element={<RequireAuth />} >
 
