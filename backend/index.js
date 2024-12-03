@@ -36,6 +36,7 @@ const notificationRoutes = require('./routes/notifications');
 const financialsRoute = require('./routes/financials');
 const coresellRoutes = require('./routes/coresell');
 const withdrawRoutes = require('./routes/withdrawRoutes');
+const chatRoutes = require('./routes/chatRoutes');
 
 const uploadDir = path.join(__dirname, 'uploads');
 
@@ -175,6 +176,8 @@ app.use('/api/financials', financialsRoute);
 app.use('/api/coresell', coresellRoutes);
 app.use('/api/withdraw', withdrawRoutes);
 app.use('/api/pushnotifications', pushNotificationRoutes);
+app.use('/api/chat', chatRoutes);
+
 
 app.use((req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);
