@@ -39,13 +39,31 @@ async function uploadFiles(files) {
 // Create product with multiple images
 exports.createProduct = async (req, res) => {
   try {
-    const { name, category, subCategory, description, price, username, quantity } = req.body;
+    const {
+      name,
+      category,
+      subCategory,
+      description,
+      price,
+      username,
+      quantity,
+      type,
+      collaborators, // Expect an array of collaborators
+    } = req.body;
 
     // Upload multiple images if available
-    const imageUrls = req.files && req.files.length > 0 ? await uploadFiles(req.files) : [];
+    const imageUrls =
+      req.files && req.files.length > 0 ? await uploadFiles(req.files) : [];
     console.log("Uploaded images:", imageUrls);
 
     const productId = uuidv4();
+
+    // Check the type and set collaborators accordingly
+    const collaboratorData =
+      type === "collaborator" && collaborators
+        ? collaborators
+        : undefined;
+
     const newProduct = new Product({
       name,
       category,
@@ -55,16 +73,18 @@ exports.createProduct = async (req, res) => {
       username,
       productId,
       discount: undefined,
-      discountpersentage: undefined,
-      lable: undefined,
+      discountPercentage: undefined,
+      label: undefined,
       quantity,
-      images: imageUrls,  // Store array of image URLs
+      images: imageUrls, // Store array of image URLs
+      type,
+      collaborators: collaboratorData, // Set collaborators if type is "collaborator"
     });
 
     await newProduct.save();
     res.status(201).json({ product: newProduct });
   } catch (error) {
-    console.error('Error in createProduct:', error);
+    console.error("Error in createProduct:", error);
     res.status(500).json({ error: error.message });
   }
 };
