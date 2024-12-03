@@ -3,28 +3,32 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 const ChatList = () => {
-  const [chats, setChats] = useState([]);
-  const [users, setUsers] = useState([]); // List of users to start a chat with
-  const [selectedUser, setSelectedUser] = useState(""); // The user selected for a new chat
+  const [chats, setChats] = useState([]); // Initialize as an array
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState("");
 
-  // Fetch existing chats
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/chats"); // Replace with your API endpoint
-        setChats(response.data);
+        const response = await axios.get("https://elosystemv1.onrender.com/api/chat/");
+        if (Array.isArray(response.data)) {
+          setChats(response.data);
+        } else {
+          console.error("Unexpected data format:", response.data);
+          setChats([]);
+        }
       } catch (error) {
         console.error("Error fetching chats:", error);
+        setChats([]);
       }
     };
     fetchChats();
   }, []);
 
-  // Fetch users to start a chat with
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/users"); // Replace with your API endpoint
+        const response = await axios.get("https://elosystemv1.onrender.com/api/users/users");
         setUsers(response.data);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -33,7 +37,6 @@ const ChatList = () => {
     fetchUsers();
   }, []);
 
-  // Function to create a new chat
   const startNewChat = async () => {
     if (!selectedUser) {
       alert("Please select a user to start a chat.");
@@ -41,11 +44,11 @@ const ChatList = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/chats/create", {
-        usernames: ["YourUsername", selectedUser], // Replace "YourUsername" with the current user's username
+      const response = await axios.post("https://elosystemv1.onrender.com/api/chat/create", {
+        usernames: ["YourUsername", selectedUser],
       });
-      setChats((prevChats) => [...prevChats, response.data]); // Add the new chat to the chat list
-      setSelectedUser(""); // Clear the selected user
+      setChats((prevChats) => (Array.isArray(prevChats) ? [...prevChats, response.data] : [response.data]));
+      setSelectedUser("");
     } catch (error) {
       console.error("Error creating a new chat:", error);
     }
