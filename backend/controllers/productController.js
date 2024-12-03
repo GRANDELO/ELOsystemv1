@@ -37,10 +37,6 @@ async function uploadFiles(files) {
 
 // Create product
 // Create product with multiple images
-
-const Product = require("../models/Product"); // Adjust the path to your Product model
-const uploadFiles = require("../utils/uploadFiles"); // Adjust the path to your file upload utility
-
 exports.createProduct = async (req, res) => {
   try {
     const {
