@@ -5,7 +5,11 @@ const { v4: uuidv4 } = require('uuid');
 exports.getchats = async (req, res) => {
     try {
         const Chats = await Chat.find(); // Fetch all products from the database
-        res.json({ Chats });
+        if (!Chats) {
+          return res.status(400).json({ message: 'Chats not found' });
+        }
+        console.log(Chats);
+        res.status(201).json({ Chats });
       } catch (error) {
         res.status(500).json({ error: error.message });
       }
