@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import { getUsernameFromToken } from '../utils/auth';
 const ProductPage = ({ productId }) => {
   const [reviews, setReviews] = useState([]);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
-  const [user, setUser] = useState(null); // You can set the user state if you implement user authentication
-
+  const user = getUsernameFromToken();
   // Fetch reviews for the product
   useEffect(() => {
     const fetchReviews = async () => {
@@ -31,7 +30,7 @@ const ProductPage = ({ productId }) => {
     try {
       await axios.post("https://elosystemv1.onrender.com/api/review/add", {
         productId,
-        userId: user._id, // Get user ID from your authentication system
+        userId: user, // Get user ID from your authentication system
         rating,
         comment,
       });

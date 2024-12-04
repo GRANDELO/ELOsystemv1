@@ -10,8 +10,12 @@ const router = express.Router();
 router.post("/add", async (req, res) => {
   const { productId, userId, rating, comment } = req.body;
   
+  const user = User.findOne({username: userid});
+  if(!user){
+    res.status(404).json({ message: "The user doesn't exist." });
+  }
   try {
-    const review = new Review({ productId, userId, rating, comment });
+    const review = new Review({ productId, user: user._id, rating, comment });
     await review.save();
 
     // Update product average rating
