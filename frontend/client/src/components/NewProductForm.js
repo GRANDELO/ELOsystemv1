@@ -120,7 +120,9 @@ const NewProductForm = () => {
     description: '',
     username: lusername,
     quantity: '',
-    images: [], // Change to array to hold multiple images
+    images: [], // Array for multiple images
+    type: '',
+    collaborators: [], // Array for collaborators
   });
 
   const [subCategories, setSubCategories] = useState([]);
@@ -141,6 +143,11 @@ const NewProductForm = () => {
     if (name === 'images') {
       // Set selected files in state
       setNewProduct({ ...newProduct, images: Array.from(files) });
+    } else if (name.startsWith('collaborators')) {
+      const index = parseInt(name.split('-')[1], 10);
+      const updatedCollaborators = [...newProduct.collaborators];
+      updatedCollaborators[index] = { ...updatedCollaborators[index], amount: parseFloat(value) || 0 };
+      setNewProduct({ ...newProduct, collaborators: updatedCollaborators });
     } else {
       setNewProduct({ ...newProduct, [name]: value });
     }
@@ -169,20 +176,31 @@ const NewProductForm = () => {
     fileInputRef.current.click();
   };
 
+  const addCollaborator = () => {
+    setNewProduct({
+      ...newProduct,
+      collaborators: [...newProduct.collaborators, { username: '', amount: 0 }],
+    });
+  };
+
+  const removeCollaborator = (index) => {
+    const updatedCollaborators = newProduct.collaborators.filter((_, i) => i !== index);
+    setNewProduct({ ...newProduct, collaborators: updatedCollaborators });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append('name', newProduct.name);
-    formData.append('category', newProduct.category);
-    formData.append('subCategory', newProduct.subCategory);
-    formData.append('price', newProduct.price);
-    formData.append('description', newProduct.description);
-    formData.append('username', newProduct.username);
-    formData.append('quantity', newProduct.quantity);
-
-    // Append each image to the FormData
-    newProduct.images.forEach((image) => {
-      formData.append('images', image);
+    Object.keys(newProduct).forEach((key) => {
+      if (key === 'images') {
+        newProduct.images.forEach((image) => {
+          formData.append('images', image);
+        });
+      } else if (key === 'collaborators') {
+        formData.append(key, JSON.stringify(newProduct.collaborators));
+      } else {
+        formData.append(key, newProduct[key]);
+      }
     });
 
     try {
@@ -249,6 +267,48 @@ const NewProductForm = () => {
         value={newProduct.quantity}
         onChange={handleChange}
       />
+      <select name="type" value={newProduct.type} onChange={handleChange}
+      >
+        <option value="product">Product</option>
+      </select>
+
+      {newProduct.type === 'collaborator' && (
+        <div>
+          <h4>Collaborators</h4>
+          {newProduct.collaborators.map((collaborator, index) => (
+            <div key={index}>
+              <input
+                type="text"
+                name={`collaborators-${index}`}
+                placeholder="Collaborator Username"
+                value={collaborator.username}
+                onChange={(e) =>
+                  setNewProduct({
+                    ...newProduct,
+                    collaborators: newProduct.collaborators.map((c, i) =>
+                      i === index ? { ...c, username: e.target.value } : c
+                    ),
+                  })
+                }
+              />
+              <input
+                type="number"
+                name={`amount-${index}`}
+                placeholder="Amount"
+                value={collaborator.amount}
+                onChange={handleChange}
+              />
+              <button type="button" onClick={() => removeCollaborator(index)}>
+                Remove
+              </button>
+            </div>
+          ))}
+          <button type="button" onClick={addCollaborator}>
+            Add Collaborator
+          </button>
+        </div>
+      )}
+
       <label>
         Images:
         <input
@@ -257,7 +317,7 @@ const NewProductForm = () => {
           onChange={handleChange}
           ref={fileInputRef}
           style={{ display: 'none' }}
-          multiple // Allow multiple images
+          multiple
         />
         <div
           className={`drop-zone ${dragging ? 'dragging' : ''}`}
