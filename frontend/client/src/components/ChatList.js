@@ -4,64 +4,46 @@ import { Link } from "react-router-dom";
 
 const ChatList = () => {
   const [chats, setChats] = useState([]);
-  const [users, setUsers] = useState([]); // List of users to start a chat with
-  const [selectedUser, setSelectedUser] = useState(""); // The user selected for a new chat
+  const [loading, setLoading] = useState(true); // For loading state
+  const [error, setError] = useState(null);
 
   // Fetch existing chats
   useEffect(() => {
     const fetchChats = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        const response = await axios.get("https://elosystemv1.onrender.com/api/chat/allchats"); // Replace with your API endpoint
-        // Ensure response data is an array before setting it
-        setChats(Array.response.data ? response.data : []);
-      } catch (error) {
-        console.error("Error fetching chats:", error);
-        setChats([]); // Set to empty array on error
+        const response = await axios.get("https://elosystemv1.onrender.com/api/chat/allchats");
+        if (Array.isArray(response.data)) {
+          setChats(response.data); // Ensure data is an array
+        } else {
+          setError("Invalid data received from the server");
+        }
+      } catch (err) {
+        setError("Failed to fetch chats. Please try again.");
+        console.error("Error fetching chats:", err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchChats();
   }, []);
 
-  // Fetch users to start a chat with
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get("https://elosystemv1.onrender.com/api/users/users"); // Replace with your API endpoint
-        setUsers(Array.isArray(response.data) ? response.data : []); // Ensure response is an array
-      } catch (error) {
-        console.error("Error fetching users:", error);
-        setUsers([]); // Set to empty array on error
-      }
-    };
-    fetchUsers();
-  }, []);
+  if (loading) {
+    return <p>Loading chats...</p>;
+  }
 
-  // Function to create a new chat
-  const startNewChat = async () => {
-    if (!selectedUser) {
-      alert("Please select a user to start a chat.");
-      return;
-    }
-
-    try {
-      const response = await axios.post("https://elosystemv1.onrender.com/api/chat/create", {
-        usernames: ["YourUsername", selectedUser], // Replace "YourUsername" with the current user's username
-      });
-      setChats((prevChats) => [...prevChats, response.data]); // Add the new chat to the chat list
-      setSelectedUser(""); // Clear the selected user
-    } catch (error) {
-      console.error("Error creating a new chat:", error);
-    }
-  };
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   return (
     <div style={{ padding: "20px" }}>
       <h1>Chats</h1>
       <ul>
-        {/* Safeguard: Only map if chats is an array */}
-        {Array.isArray(chats) && chats.length > 0 ? (
+        {chats.length > 0 ? (
           chats.map((chat) => (
-            <li key={chat._id} style={{ margin: "10px 0" }}>
+            <li key={chat.chatId} style={{ margin: "10px 0" }}>
               <Link to={`/chat/${chat.chatId}`} style={{ textDecoration: "none" }}>
                 <div
                   style={{
@@ -76,7 +58,7 @@ const ChatList = () => {
                   <span>{chat.chatId}</span>
                   <span>
                     Participants:{" "}
-                    {Array.isArray(chat.usernames)
+                    {chat.usernames && chat.usernames.length > 0
                       ? chat.usernames.join(", ")
                       : "No participants"}
                   </span>
@@ -88,25 +70,6 @@ const ChatList = () => {
           <li>No chats available</li>
         )}
       </ul>
-
-      <hr style={{ margin: "20px 0" }} />
-
-      <h2>Start a New Chat</h2>
-      <select
-        value={selectedUser}
-        onChange={(e) => setSelectedUser(e.target.value)}
-        style={{ padding: "10px", marginRight: "10px", width: "200px" }}
-      >
-        <option value="">Select a user</option>
-        {users.map((user) => (
-          <option key={user.username} value={user.username}>
-            {user.username}
-          </option>
-        ))}
-      </select>
-      <button onClick={startNewChat} style={{ padding: "10px 20px" }}>
-        Start Chat
-      </button>
     </div>
   );
 };

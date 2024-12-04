@@ -2,17 +2,18 @@ const Chat = require('../models/Chat');
 const { v4: uuidv4 } = require('uuid');
 // Create Chat
 
-exports.getchats = async (req, res) => {
+exports.getChats = async (req, res) => {
   try {
-    const chats = await Chat.find();
-    if (!chats.length) {
-      return res.status(404).json({ message: 'No chats found' });
+    const chats = await Chat.find({}, { chatId: 1, usernames: 1 }).lean(); // Fetch only relevant fields
+    if (!chats || chats.length === 0) {
+      return res.status(404).json({ message: "No chats found" });
     }
-    res.status(200).json(chats);
+    res.status(200).json(chats); // Directly send an array of chats
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Failed to fetch chats", details: error.message });
   }
 };
+
 
 exports.createChat = async (req, res) => {
   try {
