@@ -5,7 +5,7 @@ const ProductPage = ({ productId }) => {
   const [reviews, setReviews] = useState([]);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
-  const user = getUsernameFromToken();
+  const user = "Teekay";//getUsernameFromToken();
   // Fetch reviews for the product
   useEffect(() => {
     const fetchReviews = async () => {
@@ -45,11 +45,6 @@ const ProductPage = ({ productId }) => {
 
   return (
     <div>
-      <h1>Product Name</h1>
-
-      {/* Display the product's average rating */}
-      <h3>Average Rating: </h3>
-
       {/* Display reviews */}
       <div>
         <h2>Reviews</h2>

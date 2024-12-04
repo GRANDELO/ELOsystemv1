@@ -10,7 +10,7 @@ const router = express.Router();
 router.post("/add", async (req, res) => {
   const { productId, userId, rating, comment } = req.body;
   
-  const user = User.findOne({username: userid});
+  const user = User.findOne({username: userId});
   if(!user){
     res.status(404).json({ message: "The user doesn't exist." });
   }

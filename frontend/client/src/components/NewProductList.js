@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ProductModal from './ProductModal';
+import Review from './review';
 import axiosInstance from './axiosInstance';
 import './styles/NewProductList.css';
 
@@ -145,6 +146,9 @@ const NewProductList = () => {
                     <h4>Ksh {product.price.toFixed(2)}</h4>
                   )}
                 </div>
+                <Review
+                product={product}
+                />
                 <button className="view-details-btn" onClick={() => handleProductClick(product)}>
                   View Details
                 </button>
