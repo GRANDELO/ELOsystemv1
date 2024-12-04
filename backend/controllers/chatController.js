@@ -2,7 +2,7 @@ const Chat = require('../models/Chat');
 const { v4: uuidv4 } = require('uuid');
 // Create Chat
 
-exports.getChats = async (req, res) => {
+exports.getchats = async (req, res) => {
   try {
     const chats = await Chat.find({}, { chatId: 1, usernames: 1 }).lean(); // Fetch only relevant fields
     if (!chats || chats.length === 0) {
