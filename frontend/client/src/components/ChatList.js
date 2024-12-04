@@ -13,7 +13,7 @@ const ChatList = () => {
       try {
         const response = await axios.get("https://elosystemv1.onrender.com/api/chat/allchats"); // Replace with your API endpoint
         // Ensure response data is an array before setting it
-        setChats(Array.isArray(response.data) ? response.data : []);
+        setChats(Array.response.data ? response.data : []);
       } catch (error) {
         console.error("Error fetching chats:", error);
         setChats([]); // Set to empty array on error

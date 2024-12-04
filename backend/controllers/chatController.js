@@ -3,17 +3,16 @@ const { v4: uuidv4 } = require('uuid');
 // Create Chat
 
 exports.getchats = async (req, res) => {
-    try {
-        const Chats = await Chat.find(); // Fetch all products from the database
-        if (!Chats) {
-          return res.status(400).json({ message: 'Chats not found' });
-        }
-        console.log(Chats);
-        res.status(201).json({ Chats });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
-}
+  try {
+    const chats = await Chat.find();
+    if (!chats.length) {
+      return res.status(404).json({ message: 'No chats found' });
+    }
+    res.status(200).json(chats);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 exports.createChat = async (req, res) => {
   try {
