@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+// Assuming you already have the Review model
+const Review = require('./Review'); // Import the Review model
+
 const productSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
@@ -24,6 +27,12 @@ const productSchema = new mongoose.Schema(
       ], 
       default: undefined 
     }, // New field
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Review', // Reference to the Review model
+      }
+    ], // New field to store reviews
   },
   { timestamps: true }
 );
