@@ -22,14 +22,14 @@ router.post("/add", async (req, res) => {
       await review.save();
   
       // Fetch all reviews for the product
-      const reviews = await Review.find({ productId });
+      //const reviews = await Review.find({ productId });
   
       // Calculate average rating
-      const avgRating =
-        reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
+      //const avgRating =
+       // reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
   
       // Update product rating
-      await Product.findByIdAndUpdate(productId, { rating: avgRating });
+      //await Product.findByIdAndUpdate(productId, { rating: avgRating });
   
       res.status(201).json({ message: "Review added successfully!", review });
     } catch (err) {
