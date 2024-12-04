@@ -147,7 +147,7 @@ const NewProductList = () => {
                   )}
                 </div>
                 <Review
-                product={product}
+                product={product._id}
                 />
                 <button className="view-details-btn" onClick={() => handleProductClick(product)}>
                   View Details

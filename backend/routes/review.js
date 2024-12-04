@@ -21,7 +21,7 @@ router.post("/add", async (req, res) => {
     // Update product average rating
     const reviews = await Review.find({ productId });
     const avgRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
-    await Product.findByIdAndUpdate(productId, { rating: avgRating });
+    //await Product.findByIdAndUpdate(productId, { rating: avgRating });
 
     res.status(201).json({ message: "Review added successfully!", review });
   } catch (err) {
