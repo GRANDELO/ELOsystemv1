@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 
 exports.getchats = async (req, res) => {
   try {
-    const chats = await Chat.find({}, { chatId: 1, usernames: 1 }).lean(); // Fetch only relevant fields
+    const chats = await Chat.find({}).lean(); // Fetch only relevant fields
     if (!chats || chats.length === 0) {
       return res.status(404).json({ message: "No chats found" });
     }

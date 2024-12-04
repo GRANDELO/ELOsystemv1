@@ -6,21 +6,26 @@ const ChatList = () => {
   const [chats, setChats] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState("");
-
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true); // For loading state
   // Fetch existing chats
   useEffect(() => {
     const fetchChats = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const response = await axios.get("https://elosystemv1.onrender.com/api/chat/allchats");
-        if (response.data && Array.isArray(response.data)) {
-          setChats(response.data); // Set the chats if response is valid
+        if (Array.isArray(response.data)) {
+          setChats(response.data); // Ensure data is an array
         } else {
-          console.error("Invalid response format for chats:", response.data);
-          setChats([]); // Clear chats if response is invalid
+          setError("Invalid data received from the server");
         }
-      } catch (error) {
-        console.error("Error fetching chats:", error);
-        setChats([]); // Clear chats if there's an error
+      } catch (err) {
+        setError("Failed to fetch chats. Please try again.");
+        alert(err);
+        console.error("Error fetching chats:", err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchChats();
@@ -66,13 +71,22 @@ const ChatList = () => {
     }
   };
 
+  if (loading) {
+    return <p>Loading chats...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
+
+
   return (
     <div style={{ padding: "20px" }}>
       <h1>Chats</h1>
       <ul>
         {chats.length > 0 ? (
           chats.map((chat) => (
-            <li key={chat._id} style={{ margin: "10px 0" }}>
+            <li key={chat.chatId} style={{ margin: "10px 0" }}>
               <Link to={`/chat/${chat.chatId}`} style={{ textDecoration: "none" }}>
                 <div
                   style={{
@@ -87,7 +101,7 @@ const ChatList = () => {
                   <span>{chat.chatId}</span>
                   <span>
                     Participants:{" "}
-                    {Array.isArray(chat.usernames)
+                    {chat.usernames && chat.usernames.length > 0
                       ? chat.usernames.join(", ")
                       : "No participants"}
                   </span>
