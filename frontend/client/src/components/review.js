@@ -11,7 +11,7 @@ const ProductPage = ({ productId }) => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await axios.get(`https://yourapi.com/api/review/${productId}`);
+        const response = await axios.get(`https://elosystemv1.onrender.com/api/review/${productId}`);
         setReviews(response.data);
       } catch (err) {
         console.error("Error fetching reviews:", err);
@@ -29,7 +29,7 @@ const ProductPage = ({ productId }) => {
     }
 
     try {
-      await axios.post("https://yourapi.com/api/review/add", {
+      await axios.post("https://elosystemv1.onrender.com/api/review/add", {
         productId,
         userId: user._id, // Get user ID from your authentication system
         rating,
@@ -49,7 +49,7 @@ const ProductPage = ({ productId }) => {
       <h1>Product Name</h1>
 
       {/* Display the product's average rating */}
-      <h3>Average Rating: 4.5/5</h3>
+      <h3>Average Rating: </h3>
 
       {/* Display reviews */}
       <div>

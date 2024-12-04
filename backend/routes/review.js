@@ -2,7 +2,7 @@
 
 const express = require("express");
 const Review = require("../models/Review");
-const Product = require("../models/Product");
+const Product = require("../models/oProduct");
 const User = require("../models/User");
 const router = express.Router();
 

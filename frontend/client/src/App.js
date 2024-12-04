@@ -8,7 +8,7 @@ import ImageList from './components/ImageList';
 import ImageUpload from './components/ImageUpload';
 import Login from './components/Login';
 import Set from './components/set';
-
+import Review from './components/review';
 
 import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
@@ -89,6 +89,7 @@ const App = () => {
           <Route path="/set" element={<Set />} />
           <Route path="/testHome" element={<Home />} />
           <Route path="/verification" element={<Verification />} />
+          <Route path="/review" element={<Review />} />
 
           <Route path="/chatall" element={<ChatList />} />
           <Route path="/chat/:chatId" element={<ChatDetails />} />
