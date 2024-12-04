@@ -49,7 +49,10 @@ const ProductPage = ({ productId }) => {
       setReviews(response.data);
     } catch (err) {
       console.error("Error adding review:", err);
-      console.log(err.error);
+      
+      if (err.response && err.response.data) {
+        console.log(err.response.data.error);
+      } 
       alert("Failed to add review.");
     }
   };
