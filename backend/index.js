@@ -37,6 +37,7 @@ const financialsRoute = require('./routes/financials');
 const coresellRoutes = require('./routes/coresell');
 const withdrawRoutes = require('./routes/withdrawRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const reviewRoutes = require("./routes/review");
 
 const uploadDir = path.join(__dirname, 'uploads');
 
@@ -177,6 +178,7 @@ app.use('/api/coresell', coresellRoutes);
 app.use('/api/withdraw', withdrawRoutes);
 app.use('/api/pushnotifications', pushNotificationRoutes);
 app.use('/api/chat', chatRoutes);
+app.use("/api/review", reviewRoutes);
 
 
 app.use((req, res, next) => {
