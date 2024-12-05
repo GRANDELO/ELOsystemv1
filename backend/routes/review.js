@@ -64,11 +64,6 @@ router.put("/edit/:reviewId", async (req, res) => {
         
       }
       // Check if the logged-in user is the author of the review
-      console.log(review.user.toString())
-      if (review.user.toString() !== currentUser) {
-        console.log("Unauthorized action")
-        return res.status(403).json({ message: "Unauthorized action" });
-      }
       console.log("almost saving")
       const updatedReview = await Review.findByIdAndUpdate(
         req.params.reviewId,
