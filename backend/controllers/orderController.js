@@ -387,6 +387,7 @@ const sendOrderReceiptEmail = async (orderNumber) => {
     const productMap = {};
     products.forEach(product => {
       productMap[product._id] = {
+        productid: product._id,
         name: product.name,
         category: product.category,
         price: product.price,
@@ -435,7 +436,7 @@ const sendOrderReceiptEmail = async (orderNumber) => {
     ${formattedProducts
       .map(
         (product) =>
-          `https://grandelo.web.app/review?productId=${product._id}`
+          `https://grandelo.web.app/review?productId=${productid}`
       )
       .join('\n')}
     
@@ -465,7 +466,7 @@ const sendOrderReceiptEmail = async (orderNumber) => {
           <li style="margin-bottom: 15px;">
             <strong>${product.name}</strong> (Category: ${product.category}) x${product.quantity} @ ${product.price} each
             <div style="text-align: center; margin-top: 10px;">
-              <a href="https://grandelo.web.app/review?productId=${product._id}" 
+              <a href="https://grandelo.web.app/review?productId=${productid}" 
                  style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px;">
                 Review this product
               </a>
@@ -606,9 +607,6 @@ const TransactionLedgerfuc = async (products, orderNumber) => {
   return { message };
 };
 
-
-
-
 const notifyOutOfStockAndDelete = async () => {
   try {
     // Fetch all products with zero or negative stock
@@ -671,7 +669,6 @@ Bazelink Team`;
     console.error('Failed to process out-of-stock products:', error);
   }
 };
-
 
 const updateProductPerformance = async (productId, productName, seller, saleDate) => {
   try {
