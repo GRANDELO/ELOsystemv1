@@ -52,6 +52,10 @@ router.get("/:productId", async (req, res) => {
 // Update a review
 router.put("/edit/:reviewId", async (req, res) => {
     const { rating, comment } = req.body;
+    console.log("rating")
+    console.log(rating)
+    console.log("comment")
+    console.log(comment)
     try {
       const review = await Review.findById(req.params.reviewId);
       if (!review) {

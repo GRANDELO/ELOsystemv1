@@ -6,6 +6,7 @@ import { useCart } from '../contexts/CartContext';
 import { getUsernameFromToken } from '../utils/auth';
 import './styles/ProductModal.css';
 import ReviewList from "./ReviewList";
+import AddEditReview from "./AddEditReview";
 
 const ProductModal = ({ product, show, handleClose }) => {
   const { dispatch } = useCart();
@@ -21,6 +22,13 @@ const ProductModal = ({ product, show, handleClose }) => {
   const [editingReview, setEditingReview] = useState(null);
   const [refreshReviews, setRefreshReviews] = useState(false);
   
+  const [reviews, setReviews] = useState([]);
+  const [reviewToEdit, setReviewToEdit] = useState(null);
+  const currentUser = getUsernameFromToken(); // Replace with getUsernameFromToken();
+
+
+
+ 
   // Handle the image index change every 4 seconds if product has multiple images
   useEffect(() => {
     if (product?.images?.length > 1) {
@@ -133,26 +141,30 @@ const ProductModal = ({ product, show, handleClose }) => {
     };
   };
 
-  const handleReviewAction = (action, data) => {
-    if (action === "edit") {
-      setEditingReview(data); // Pass review data to edit
-    } else if (action === "delete") {
-      handleDeleteReview(data); // Pass review ID to delete
+  const handleReviewAction = (action, review) => {
+    if (action === 'edit') {
+      setReviewToEdit(review); // Open edit form with review details
+    } else if (action === 'delete') {
+      handleDeleteReview(review._id);
     }
   };
 
   const handleDeleteReview = async (reviewId) => {
     try {
-      await axios.delete(
-        `https://elosystemv1.onrender.com/api/review/delete/${reviewId}`
-      );
-      alert("Review deleted successfully!");
-      setRefreshReviews((prev) => !prev); // Trigger refresh
+      await axios.delete(`https://elosystemv1.onrender.com/api/review/delete/${reviewId}`);
+      alert('Review deleted successfully!');
+      setRefreshReviews((prev) => !prev);
     } catch (err) {
-      console.error("Error deleting review:", err);
-      alert("Failed to delete review.");
+      console.error('Error deleting review:', err);
+      alert('Failed to delete review.');
     }
   };
+
+  const handleReviewActionComplete = () => {
+    setReviewToEdit(null); // Reset after edit
+    setRefreshReviews((prev) => !prev);
+  };
+  
 
   const { discountedPrice, discountAmount } = calculateDiscountedPrice(product);
 
@@ -213,8 +225,14 @@ const ProductModal = ({ product, show, handleClose }) => {
         </div>
         
         <ReviewList
-            productId={product._id} 
-            onReviewAction={handleReviewAction} 
+          productId={product._id} 
+          onReviewAction={handleReviewAction} 
+        />
+         <AddEditReview
+                productId={product._id}
+                reviewToEdit={reviewToEdit}
+                currentUser={currentUser}
+                onReviewActionComplete={handleReviewActionComplete}
          />
 
         {/* Quantity input */}
