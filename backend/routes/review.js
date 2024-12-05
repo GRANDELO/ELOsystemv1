@@ -51,7 +51,7 @@ router.get("/:productId", async (req, res) => {
   
 // Update a review
 router.put("/edit/:reviewId", async (req, res) => {
-    const { rating, comment } = req.body;
+    const { rating, comment, currentUser } = req.body;
     console.log("rating")
     console.log(rating)
     console.log("comment")
@@ -64,7 +64,7 @@ router.put("/edit/:reviewId", async (req, res) => {
         
       }
       // Check if the logged-in user is the author of the review
-      if (review.user.toString() !== req.userId) {
+      if (review.user.toString() !== currentUser) {
         console.log("Unauthorized action")
         return res.status(403).json({ message: "Unauthorized action" });
       }

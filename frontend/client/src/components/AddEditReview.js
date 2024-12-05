@@ -17,7 +17,7 @@ const AddEditReview = ({
         // Edit review
         await axios.put(
           `https://elosystemv1.onrender.com/api/review/edit/${reviewToEdit._id}`,
-          { rating, comment }
+          { rating, comment, currentUser}
         );
         alert("Review updated successfully!");
       } else {

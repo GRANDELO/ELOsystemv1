@@ -239,6 +239,7 @@ const ProductModal = ({ product, show, handleClose }) => {
       <AddEditReview
         productId={product._id}
         reviewToEdit={editingReview}
+        currentUser={currentUser}
         onReviewActionComplete={handleReviewActionComplete}
       />
          <AddEditReview
