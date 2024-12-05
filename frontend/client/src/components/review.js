@@ -1,96 +1,86 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { getUsernameFromToken } from "../utils/auth";
-
-const ProductPage = ({ productId }) => {
+import AddEditReview from "./AddEditReview";
+import { useLocation, useNavigate } from "react-router-dom";
+import Prodectrev from "./NewProductDetail";
+const ProductPage = () => {
   const [reviews, setReviews] = useState([]);
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
-  const user = "Teekay"; // Replace with getUsernameFromToken();
+  const [reviewToEdit, setReviewToEdit] = useState(null);
+  const [refreshReviews, setRefreshReviews] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  // Fetch reviews for the product
+  // Extract query parameters
+  const queryParams = new URLSearchParams(location.search);
+  const productId = queryParams.get("productId");
+
+  const currentUser = getUsernameFromToken(); // Replace with your actual function
+
   useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const response = await axios.get(
-          `https://elosystemv1.onrender.com/api/review/${productId}`
-        );
-        setReviews(response.data);
-      } catch (err) {
-        console.error("Error fetching reviews:", err);
-      }
-    };
-
-    fetchReviews();
-  }, [productId]);
-
-  // Add a review
-  const handleAddReview = async () => {
-    if (!user) {
-      alert("Please log in to add a review.");
-      return;
+    if (!currentUser) {
+      alert("You have to sign in to complete the order.");
+      sessionStorage.setItem('currentpage', `review?productId=${productId}`);
+      const interval = setInterval(() => {
+        navigate("/");
+      }, 3000); // Change the image every 3 seconds
+      return () => clearInterval(interval);
     }
 
-    try {
-      await axios.post("https://elosystemv1.onrender.com/api/review/add", {
-        productId,
-        userId: user,
-        rating,
-        comment,
-      });
-      setRating(0);
-      setComment("");
-      alert("Review added!");
+    if (productId) {
+      const fetchReviews = async () => {
+        try {
+          const response = await axios.get(
+            `https://elosystemv1.onrender.com/api/review/product/${productId}`
+          );
+          setReviews(response.data);
+        } catch (error) {
+          console.error("Error fetching reviews:", error);
+        }
+      };
+      fetchReviews();
+    }
+  }, [currentUser, navigate, productId, refreshReviews]);
 
-      // Refresh reviews
-      const response = await axios.get(
-        `https://elosystemv1.onrender.com/api/review/${productId}`
+  const handleReviewActionComplete = () => {
+    setReviewToEdit(null); // Clear editing state
+    setRefreshReviews((prev) => !prev); // Trigger refresh
+  };
+
+  const handleEditClick = (review) => {
+    setReviewToEdit(review);
+  };
+
+  const handleDeleteClick = async (reviewId) => {
+    try {
+      await axios.delete(
+        `https://elosystemv1.onrender.com/api/review/delete/${reviewId}`
       );
-      setReviews(response.data);
-    } catch (err) {
-      console.error("Error adding review:", err);
-      
-      if (err.response && err.response.data) {
-        console.log(err.response.data.error);
-      } 
-      alert("Failed to add review.");
+      alert("Review deleted successfully!");
+      setRefreshReviews((prev) => !prev); // Trigger refresh
+    } catch (error) {
+      console.error("Error deleting review:", error);
+      alert("Failed to delete review.");
     }
   };
 
+  if (!currentUser) {
+    return null; // Avoid rendering if user is not logged in
+  }
+
   return (
     <div>
-      {/* Display reviews */}
-      <div>
-        <h2>Reviews</h2>
-        {reviews.length === 0 ? (
-          <p>No reviews yet.</p>
-        ) : (
-          reviews.map((review) => (
-            <div key={review._id}>
-              <h4>{review.user.username}</h4>
-              <p>Rating: {review.rating}</p>
-              <p>{review.comment}</p>
-            </div>
-          ))
-        )}
-      </div>
-
-      {/* Add a review */}
-      <h2>Add a Review</h2>
-      <select onChange={(e) => setRating(Number(e.target.value))} value={rating}>
-        <option value={0}>Select Rating</option>
-        {[1, 2, 3, 4, 5].map((star) => (
-          <option key={star} value={star}>
-            {star} Star{star > 1 && "s"}
-          </option>
-        ))}
-      </select>
-      <textarea
-        placeholder="Write your review"
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
+      <h1>Product Reviews</h1>
+      {/* Add/Edit Review Form */}
+      <Prodectrev
+        id={productId}
       />
-      <button onClick={handleAddReview}>Submit Review</button>
+      <AddEditReview
+        productId={productId}
+        reviewToEdit={reviewToEdit}
+        currentUser={currentUser}
+        onReviewActionComplete={handleReviewActionComplete}
+      />
     </div>
   );
 };

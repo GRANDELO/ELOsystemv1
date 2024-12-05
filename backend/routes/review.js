@@ -22,14 +22,14 @@ router.post("/add", async (req, res) => {
       await review.save();
   
       // Fetch all reviews for the product
-      //const reviews = await Review.find({ productId });
+      const reviews = await Review.find({ productId });
   
       // Calculate average rating
-      //const avgRating =
-       // reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
+      const avgRating =
+        reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
   
       // Update product rating
-      //await Product.findByIdAndUpdate(productId, { rating: avgRating });
+      await Product.findByIdAndUpdate(productId, { rating: avgRating });
   
       res.status(201).json({ message: "Review added successfully!", review });
     } catch (err) {
@@ -51,19 +51,27 @@ router.get("/:productId", async (req, res) => {
   
 // Update a review
 router.put("/edit/:reviewId", async (req, res) => {
-  const { rating, comment } = req.body;
-  try {
-    const updatedReview = await Review.findByIdAndUpdate(
-      req.params.reviewId,
-      { rating, comment },
-      { new: true }
-    );
-    res.status(200).json(updatedReview);
-  } catch (err) {
-    res.status(500).json({ message: "Error updating review", error: err.message });
-  }
-});
-
+    const { rating, comment } = req.body;
+    try {
+      const review = await Review.findById(req.params.reviewId);
+      if (!review) {
+        return res.status(404).json({ message: "Review not found" });
+      }
+      // Check if the logged-in user is the author of the review
+      if (review.user.toString() !== req.userId) {
+        return res.status(403).json({ message: "Unauthorized action" });
+      }
+      const updatedReview = await Review.findByIdAndUpdate(
+        req.params.reviewId,
+        { rating, comment },
+        { new: true }
+      );
+      res.status(200).json(updatedReview);
+    } catch (err) {
+      res.status(500).json({ message: "Error updating review", error: err.message });
+    }
+  });
+  
 // Delete a review
 router.delete("/delete/:reviewId", async (req, res) => {
   try {

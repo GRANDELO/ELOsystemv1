@@ -385,6 +385,7 @@ const newrecoverPassword = async (req, res) => {
           Reset Your Password
         </a>
       </p>
+
       <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
         This token is valid for 1 hour. If you did not request a password reset, please disregard this email.
       </p>
