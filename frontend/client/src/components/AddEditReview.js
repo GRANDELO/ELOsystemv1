@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import './styles/AddEditReview.css'; // Import the CSS file
 
 const AddEditReview = ({
   productId,
@@ -23,7 +24,7 @@ const AddEditReview = ({
         // Add review
         await axios.post("https://elosystemv1.onrender.com/api/review/add", {
           productId,
-          userId: currentUser, // Use dynamic user ID
+          userId: currentUser,
           rating,
           comment,
         });
@@ -37,30 +38,30 @@ const AddEditReview = ({
   };
 
   return (
-    <div>
-      <h2>{reviewToEdit ? "Edit Review" : "Add a Review"}</h2>
-      {/* Rating with stars */}
-      <div>
+    <div className="aerevp-container">
+      <h2 className="aerevp-title">
+        {reviewToEdit ? "Edit Your Review" : "Add a New Review"}
+      </h2>
+      <div className="aerevp-rating-container">
         {[1, 2, 3, 4, 5].map((star) => (
           <span
             key={star}
             onClick={() => setRating(star)}
-            style={{
-              cursor: "pointer",
-              fontSize: "24px",
-              color: star <= rating ? "gold" : "gray",
-            }}
+            className={`aerevp-star ${
+              star <= rating ? "aerevp-star-active" : ""
+            }`}
           >
             ★
           </span>
         ))}
       </div>
       <textarea
-        placeholder="Write your review"
+        className="aerevp-textarea"
+        placeholder="Write your review here..."
         value={comment}
         onChange={(e) => setComment(e.target.value)}
       />
-      <button onClick={handleSubmit}>
+      <button className="aerevp-button" onClick={handleSubmit}>
         {reviewToEdit ? "Update Review" : "Submit Review"}
       </button>
     </div>

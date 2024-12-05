@@ -1,0 +1,90 @@
+/* ProductPage Styles */
+.revp-container {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f9f9f9;
+    color: #333;
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .revp-header {
+    text-align: center;
+    color: #1d4ed8;
+    margin-bottom: 20px;
+  }
+  
+  .revp-add-edit-container {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #ffffff;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+  }
+  
+  .revp-review-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .revp-review-item {
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: #ffffff;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    position: relative;
+  }
+  
+  .revp-review-item:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .revp-review-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  .revp-review-content {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #555;
+  }
+  
+  .revp-review-author {
+    font-size: 14px;
+    color: #888;
+  }
+  
+  .revp-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  .revp-button {
+    font-size: 14px;
+    padding: 8px 12px;
+    color: #fff;
+    background-color: #1d4ed8;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .revp-button:hover {
+    background-color: #174ab0;
+  }
+  
+  .revp-delete-button {
+    background-color: #d11a2a;
+  }
+  
+  .revp-delete-button:hover {
+    background-color: #b11824;
+  }
+  

@@ -5,6 +5,7 @@ import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { useCart } from '../contexts/CartContext';
 import { getUsernameFromToken } from '../utils/auth';
 import './styles/ProductModal.css';
+import ReviewList from "./ReviewList";
 
 const ProductModal = ({ product, show, handleClose }) => {
   const { dispatch } = useCart();
@@ -17,7 +18,9 @@ const ProductModal = ({ product, show, handleClose }) => {
   const [sellerOrderId, setSellerOrderId] = useState('');
   const username = getUsernameFromToken();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
+  const [editingReview, setEditingReview] = useState(null);
+  const [refreshReviews, setRefreshReviews] = useState(false);
+  
   // Handle the image index change every 4 seconds if product has multiple images
   useEffect(() => {
     if (product?.images?.length > 1) {
@@ -130,6 +133,27 @@ const ProductModal = ({ product, show, handleClose }) => {
     };
   };
 
+  const handleReviewAction = (action, data) => {
+    if (action === "edit") {
+      setEditingReview(data); // Pass review data to edit
+    } else if (action === "delete") {
+      handleDeleteReview(data); // Pass review ID to delete
+    }
+  };
+
+  const handleDeleteReview = async (reviewId) => {
+    try {
+      await axios.delete(
+        `https://elosystemv1.onrender.com/api/review/delete/${reviewId}`
+      );
+      alert("Review deleted successfully!");
+      setRefreshReviews((prev) => !prev); // Trigger refresh
+    } catch (err) {
+      console.error("Error deleting review:", err);
+      alert("Failed to delete review.");
+    }
+  };
+
   const { discountedPrice, discountAmount } = calculateDiscountedPrice(product);
 
   return (
@@ -184,9 +208,15 @@ const ProductModal = ({ product, show, handleClose }) => {
             </>
           ) : (
             <h4>Ksh {product.price.toFixed(2)}</h4>
+
           )}
         </div>
         
+        <ReviewList
+            productId={product._id} 
+            onReviewAction={handleReviewAction} 
+         />
+
         {/* Quantity input */}
         <Form.Group controlId="productQuantity" className="mt-3">
           <Form.Label>Quantity</Form.Label>
@@ -197,9 +227,9 @@ const ProductModal = ({ product, show, handleClose }) => {
             onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
           />
         </Form.Group>
-
-        {/* Core Sell Button */}
-        <Button variant="warning" className="mt-3" onClick={handleCoreSellButtonClick}>
+        {product.price.toFixed(2) > 500 ? (
+          <div>
+                    <Button variant="warning" className="mt-3" onClick={handleCoreSellButtonClick}>
           Core Sell
         </Button>
 
@@ -239,6 +269,10 @@ const ProductModal = ({ product, show, handleClose }) => {
             Download Product Info
           </Button>
         </div>
+          </div>
+        ):( '')}
+        {/* Core Sell Button */}
+
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>

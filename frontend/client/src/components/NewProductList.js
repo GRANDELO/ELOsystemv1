@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ProductModal from './ProductModal';
-import Review from './review';
 import axiosInstance from './axiosInstance';
-import ReviewList from "./ReviewList";
-import AddEditReview from "./AddEditReview";
-import axios from 'axios';
-import { getUsernameFromToken } from '../utils/auth';
 
 import './styles/NewProductList.css';
 
@@ -17,12 +12,6 @@ const NewProductList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [imageIndexes, setImageIndexes] = useState({});
-  const [editingReview, setEditingReview] = useState(null);
-  const [refreshReviews, setRefreshReviews] = useState(false);
-  
-  const [reviews, setReviews] = useState([]);
-  const [reviewToEdit, setReviewToEdit] = useState(null);
-  const currentUser = getUsernameFromToken(); // Replace with getUsernameFromToken();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -74,31 +63,8 @@ const NewProductList = () => {
     setSearchTerm(event.target.value);
   };
 
-  const handleReviewAction = (action, data) => {
-    if (action === "edit") {
-      setEditingReview(data); // Pass review data to edit
-    } else if (action === "delete") {
-      handleDeleteReview(data); // Pass review ID to delete
-    }
-  };
 
-  const handleDeleteReview = async (reviewId) => {
-    try {
-      await axios.delete(
-        `https://elosystemv1.onrender.com/api/review/delete/${reviewId}`
-      );
-      alert("Review deleted successfully!");
-      setRefreshReviews((prev) => !prev); // Trigger refresh
-    } catch (err) {
-      console.error("Error deleting review:", err);
-      alert("Failed to delete review.");
-    }
-  };
 
-  const handleReviewActionComplete = () => {
-    setEditingReview(null);
-    setRefreshReviews((prev) => !prev); // Trigger refresh
-  };
   
   const filterAndSortProducts = () => {
     return products
@@ -187,19 +153,7 @@ const NewProductList = () => {
                     <h4>Ksh {product.price.toFixed(2)}</h4>
                   )}
                 </div>
-                <ReviewList
-                    productId={product._id} 
-                    onReviewAction={handleReviewAction} 
-                 />
-                <AddEditReview
-                        productId={product._id}
-                        reviewToEdit={reviewToEdit}
-                        currentUser={currentUser}
-                        onReviewActionComplete={handleReviewActionComplete}
-                />
-                {/*<Review
-                productId={product._id}
-                />*/}
+
                 <button className="view-details-btn" onClick={() => handleProductClick(product)}>
                   View Details
                 </button>

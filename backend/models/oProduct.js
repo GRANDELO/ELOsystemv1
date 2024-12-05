@@ -14,7 +14,7 @@ const productSchema = new mongoose.Schema(
     productId: { type: String, unique: true, required: true },
     discount: { type: Boolean, default: false },
     discountpersentage: { type: Number, default: undefined },
-    label: { type: String, default: undefined },
+    lable: { type: String, default: undefined },
     quantity: { type: Number, required: true },
     images: [String],
     type: { type: String, default: undefined }, // New field
