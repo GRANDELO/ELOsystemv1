@@ -19,13 +19,13 @@ const ProductModal = ({ product, show, handleClose }) => {
   const [sellerOrderId, setSellerOrderId] = useState('');
   const username = getUsernameFromToken();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [editingReview, setEditingReview] = useState(null);
-  const [refreshReviews, setRefreshReviews] = useState(false);
-  
+
   const [reviews, setReviews] = useState([]);
   const [reviewToEdit, setReviewToEdit] = useState(null);
   const currentUser = getUsernameFromToken(); // Replace with getUsernameFromToken();
 
+  const [editingReview, setEditingReview] = useState(null);
+  const [refreshReviews, setRefreshReviews] = useState(false);
 
 
  
@@ -141,30 +141,31 @@ const ProductModal = ({ product, show, handleClose }) => {
     };
   };
 
-  const handleReviewAction = (action, review) => {
-    if (action === 'edit') {
-      setReviewToEdit(review); // Open edit form with review details
-    } else if (action === 'delete') {
-      handleDeleteReview(review._id);
+  const handleReviewAction = (action, data) => {
+    if (action === "edit") {
+      setEditingReview(data); // Pass review data to edit
+    } else if (action === "delete") {
+      handleDeleteReview(data); // Pass review ID to delete
     }
   };
 
   const handleDeleteReview = async (reviewId) => {
     try {
-      await axios.delete(`https://elosystemv1.onrender.com/api/review/delete/${reviewId}`);
-      alert('Review deleted successfully!');
-      setRefreshReviews((prev) => !prev);
+      await axios.delete(
+        `https://elosystemv1.onrender.com/api/review/delete/${reviewId}`
+      );
+      alert("Review deleted successfully!");
+      setRefreshReviews((prev) => !prev); // Trigger refresh
     } catch (err) {
-      console.error('Error deleting review:', err);
-      alert('Failed to delete review.');
+      console.error("Error deleting review:", err);
+      alert("Failed to delete review.");
     }
   };
 
   const handleReviewActionComplete = () => {
-    setReviewToEdit(null); // Reset after edit
-    setRefreshReviews((prev) => !prev);
+    setEditingReview(null);
+    setRefreshReviews((prev) => !prev); // Trigger refresh
   };
-  
 
   const { discountedPrice, discountAmount } = calculateDiscountedPrice(product);
 
@@ -223,18 +224,29 @@ const ProductModal = ({ product, show, handleClose }) => {
 
           )}
         </div>
-        
+        {/*}
         <ReviewList
-          productId={product._id} 
-          onReviewAction={handleReviewAction} 
+          reviews={reviews}
+          currentUser={currentUser}
         />
          <AddEditReview
                 productId={product._id}
                 reviewToEdit={reviewToEdit}
                 currentUser={currentUser}
                 onReviewActionComplete={handleReviewActionComplete}
+         />*/}
+      <ReviewList productId={product._id} onReviewAction={handleReviewAction} />
+      <AddEditReview
+        productId={product._id}
+        reviewToEdit={editingReview}
+        onReviewActionComplete={handleReviewActionComplete}
+      />
+         <AddEditReview
+                productId={product._id}
+                reviewToEdit={reviewToEdit}
+                currentUser={currentUser}
+                onReviewActionComplete={handleReviewActionComplete}
          />
-
         {/* Quantity input */}
         <Form.Group controlId="productQuantity" className="mt-3">
           <Form.Label>Quantity</Form.Label>

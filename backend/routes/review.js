@@ -59,17 +59,22 @@ router.put("/edit/:reviewId", async (req, res) => {
     try {
       const review = await Review.findById(req.params.reviewId);
       if (!review) {
+        console.log("Review not found")
         return res.status(404).json({ message: "Review not found" });
+        
       }
       // Check if the logged-in user is the author of the review
       if (review.user.toString() !== req.userId) {
+        console.log("Unauthorized action")
         return res.status(403).json({ message: "Unauthorized action" });
       }
+      console.log("almost saving")
       const updatedReview = await Review.findByIdAndUpdate(
         req.params.reviewId,
         { rating, comment },
         { new: true }
       );
+      console.log("saved saving")
       res.status(200).json(updatedReview);
     } catch (err) {
       res.status(500).json({ message: "Error updating review", error: err.message });
