@@ -224,30 +224,16 @@ const ProductModal = ({ product, show, handleClose }) => {
 
           )}
         </div>
-        {/*}
-        <ReviewList
-          reviews={reviews}
-          currentUser={currentUser}
-        />
-         <AddEditReview
-                productId={product._id}
-                reviewToEdit={reviewToEdit}
-                currentUser={currentUser}
-                onReviewActionComplete={handleReviewActionComplete}
-         />*/}
       <ReviewList productId={product._id} onReviewAction={handleReviewAction} />
-      <AddEditReview
-        productId={product._id}
-        reviewToEdit={editingReview}
-        currentUser={currentUser}
-        onReviewActionComplete={handleReviewActionComplete}
-      />
-         <AddEditReview
-                productId={product._id}
-                reviewToEdit={reviewToEdit}
-                currentUser={currentUser}
-                onReviewActionComplete={handleReviewActionComplete}
-         />
+      {editingReview ? (
+        <AddEditReview
+          productId={product._id}
+          reviewToEdit={editingReview}
+          currentUser={currentUser}
+          onReviewActionComplete={handleReviewActionComplete}
+        />
+      ):( "")}
+
         {/* Quantity input */}
         <Form.Group controlId="productQuantity" className="mt-3">
           <Form.Label>Quantity</Form.Label>

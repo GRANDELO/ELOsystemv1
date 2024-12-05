@@ -51,26 +51,23 @@ router.get("/:productId", async (req, res) => {
   
 // Update a review
 router.put("/edit/:reviewId", async (req, res) => {
-    const { rating, comment, currentUser } = req.body;
-    console.log("rating")
-    console.log(rating)
-    console.log("comment")
-    console.log(comment)
+    const { rating, comment } = req.body;
+
     try {
       const review = await Review.findById(req.params.reviewId);
       if (!review) {
-        console.log("Review not found")
+
         return res.status(404).json({ message: "Review not found" });
         
       }
       // Check if the logged-in user is the author of the review
-      console.log("almost saving")
+
       const updatedReview = await Review.findByIdAndUpdate(
         req.params.reviewId,
         { rating, comment },
         { new: true }
       );
-      console.log("saved saving")
+
       res.status(200).json(updatedReview);
     } catch (err) {
       res.status(500).json({ message: "Error updating review", error: err.message });

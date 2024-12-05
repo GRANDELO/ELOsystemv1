@@ -136,7 +136,6 @@ const NewProductList = () => {
                   {product.isOnSale && <span className="product-badge sale-badge">Sale</span>}
                 </div>
                 <h3>{product.name}</h3>
-                <p>{product.description}</p>
                 {product.lable && <span className={`product-badge label-badge`}>{product.lable}</span>}
                 <div className="product-prices">
                   {product.discount ? (
