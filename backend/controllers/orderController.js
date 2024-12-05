@@ -392,7 +392,7 @@ const sendOrderReceiptEmail = async (orderNumber) => {
         price: product.price,
         username: product.username, // Include seller info
         discount: product.discount,
-        discountpersentage: product.discountpersentage,
+        discountpersentage: product.discountPercentage,
       };
     });
 
