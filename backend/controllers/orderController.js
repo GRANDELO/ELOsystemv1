@@ -255,7 +255,6 @@ exports.getUnpa = async (req, res) => {
 };
 
 
-
 exports.sendOrderReceiptEmail = async (orderNumber) => {
   try {
     // Fetch the order by order number
@@ -276,12 +275,13 @@ exports.sendOrderReceiptEmail = async (orderNumber) => {
     const productMap = {};
     products.forEach(product => {
       productMap[product._id] = {
+        productid: product._id,
         name: product.name,
         category: product.category,
         price: product.price,
         username: product.username, // Include seller info
         discount: product.discount,
-        discountpersentage: product.discountpersentage,
+        discountpersentage: product.discountPercentage,
       };
     });
 
@@ -308,52 +308,73 @@ exports.sendOrderReceiptEmail = async (orderNumber) => {
     const subject = "Receipt for - " + order.orderNumber;
     const receiptMessage = `Dear ${user.username},
 
-Thank you for shopping with Bazelink! Here is the receipt for your recent purchase.
-
-Order Number: ${order.orderNumber}
-
-Products Ordered:
-${formattedProducts.map(product => `- ${product.name} (Category: ${product.category}) x${product.quantity} @ ${product.price} each`).join('\n')}
-
-Total Amount Paid: ${order.totalPrice}
-Payment Method: ${order.paymentMethod}
-
-Best regards,
-Bazelink`;
-
+    Thank you for shopping with Bazelink! Here is the receipt for your recent purchase.
+    
+    Order Number: ${order.orderNumber}
+    
+    Products Ordered:
+    ${formattedProducts
+      .map(
+        (product) =>
+          `- ${product.name} (Category: ${product.category}) x${product.quantity} @ ${product.price} each`
+      )
+      .join('\n')}
+    
+    Feel free to leave a review on the product:
+    ${formattedProducts
+      .map(
+        (product) =>
+          `https://grandelo.web.app/review?productId=${productid}`
+      )
+      .join('\n')}
+    
+    Total Amount Paid: ${order.totalPrice}
+    Payment Method: ${order.paymentMethod}
+    
+    Best regards,
+    Bazelink`;
+    
     const htmlReceiptMessage = `
-<div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
-  <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
-    Order Receipt - Bazelink
-  </h2>
-  <p style="font-size: 16px; color: #555;">
-    Dear ${user.username},<br>
-    Thank you for your purchase! Here are the details for your order.
-  </p>
-  <p style="font-size: 16px; color: #555;">
-    <strong>Order Number:</strong> ${order.orderNumber}<br>
-  </p>
-  <h3 style="color: #1d4ed8; margin-top: 20px;">Products Ordered:</h3>
-  <ul style="font-size: 16px; color: #555;">
-    ${formattedProducts.map(product => `
-      <li>
-        ${product.name} (Category: ${product.category}) x${product.quantity} @ ${product.price} each
-      </li>
-    `).join('')}
-  </ul>
-  <p style="font-size: 16px; color: #555; margin-top: 20px;">
-    <strong>Total Amount Paid:</strong> ${order.totalPrice}<br>
-    <strong>Payment Method:</strong> ${order.paymentMethod}<br>
-    <strong>User:</strong> ${user.username}
-  </p>
-  <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
-    We hope to serve you again soon!
-  </p>
-  <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
-    Best regards,<br> Bazelink Support Team
-  </p>
-</div>
-`;
+    <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
+      <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
+        Order Receipt - Bazelink
+      </h2>
+      <p style="font-size: 16px; color: #555;">
+        Dear ${user.username},<br>
+        Thank you for your purchase! Here are the details for your order.
+      </p>
+      <p style="font-size: 16px; color: #555;">
+        <strong>Order Number:</strong> ${order.orderNumber}<br>
+      </p>
+      <h3 style="color: #1d4ed8; margin-top: 20px;">Products Ordered:</h3>
+      <ul style="font-size: 16px; color: #555; list-style-type: none; padding: 0;">
+        ${formattedProducts
+          .map(
+            (product) => `
+          <li style="margin-bottom: 15px;">
+            <strong>${product.name}</strong> (Category: ${product.category}) x${product.quantity} @ ${product.price} each
+            <div style="text-align: center; margin-top: 10px;">
+              <a href="https://grandelo.web.app/review?productId=${productid}" 
+                 style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px;">
+                Review this product
+              </a>
+            </div>
+          </li>`
+          )
+          .join('')}
+      </ul>
+      <p style="font-size: 16px; color: #555; margin-top: 20px;">
+        <strong>Total Amount Paid:</strong> ${order.totalPrice}<br>
+        <strong>Payment Method:</strong> ${order.paymentMethod}<br>
+      </p>
+      <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
+        We hope to serve you again soon!
+      </p>
+      <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
+        Best regards,<br> Bazelink Support Team
+      </p>
+    </div>
+    `;
 
     await sendEmail(user.email, subject, receiptMessage, htmlReceiptMessage);
     console.log('Receipt email sent successfully');
