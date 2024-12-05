@@ -13,7 +13,7 @@ const productSchema = new mongoose.Schema(
     username: { type: String, required: true },
     productId: { type: String, unique: true, required: true },
     discount: { type: Boolean, default: false },
-    discountPercentage: { type: Number, default: undefined },
+    discountpersentage: { type: Number, default: undefined },
     label: { type: String, default: undefined },
     quantity: { type: Number, required: true },
     images: [String],
