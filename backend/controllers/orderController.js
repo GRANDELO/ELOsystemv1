@@ -514,7 +514,17 @@ const TransactionLedgerfuc = async (products, orderNumber) => {
 
   for (const product of products) {
     const { username, price, quantity, discount, discountpersentage } = product;
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
     console.log(discount);
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+    console.log(price);
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+    console.log(username);
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+    console.log(quantity);
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+    console.log(discountpersentage);
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
     // Check for discount and calculate the effective price
     const effectivePrice = discount
       ? price * (1 - (discountpersentage / 100)) // Apply percentage discount
