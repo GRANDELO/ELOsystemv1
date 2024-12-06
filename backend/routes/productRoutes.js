@@ -6,8 +6,9 @@ const productController = require('../controllers/productController');
 router.get('/performance/:username', productController.getProductPerformanceByUsername);
 router.post('/products', upload.array('images', 6), productController.createProduct);
 
-router.post('/updateshopbackgroundUrl', upload.array('images', 6), productController.updateshopbackgroundUrl);
-router.post('/updateshoplogoUrl', upload.array('images', 6), productController.updateshoplogoUrl);
+// Route to handle uploading of logo and background images
+router.post('/updateshoplogoUrl', upload.single('logo'), upload.array('background'), productController.updateshoplogoUrl);
+
 
 router.get('/products', productController.getAllProducts);
 router.get('/images/:filename', productController.getImage);
