@@ -27,7 +27,11 @@ const Logout = () => {
 
         // Clear the user token or session
         sessionStorage.removeItem('userToken'); // or your token key
+        sessionStorage.removeItem('amount'); 
         localStorage.removeItem('token');
+        localStorage.removeItem('apptoken');
+        localStorage.removeItem('appcat');
+        
 
         // Set the message from the backend
         setLogoutMessage(response.data.message);

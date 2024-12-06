@@ -23,4 +23,5 @@ router.get('/disabled', UserController.getDisabledUsers);
 // Show unverified users
 router.get('/unverified', UserController.getUnverifiedUsers);
 
+
 module.exports = router;

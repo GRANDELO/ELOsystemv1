@@ -1,205 +1,168 @@
-/* General Page Layout */
-.salesp-home {
+/* General Styles */
+.home {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
     display: flex;
-    min-width: 100vw;
     flex-direction: column;
-    min-height: 100%;
-    font-family: 'Poppins', sans-serif; 
-    color: #333;
-    overflow-x: hidden;
-}
-
-.salesp-main {
-    flex: 1;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between; /* Space between content and settings */
-    align-items: flex-start;
-}
-
-.salesp-home-intro {
+    min-height: 100vh;
+  }
+  
+  .home-main {
     flex-grow: 1;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1); /* Softer shadow */
-    border-radius: 12px;
-    padding: 25px;
-    width: 70%;
-    max-width: 1200px;
-    margin: 20px 0;
-    transition: transform 0.3s ease-in-out;
-}
-
-/* Settings Section */
-.salesp-settings-section {
-    width: 25%;
-    background-color: #fff;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1); /* Modern shadow effect */
-    border-radius: 12px;
     padding: 20px;
-    margin-left: 20px;
-    height: auto;
-    position: relative;
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-}
-
-.salesp-settings-section.closed {
-    transform: translateX(100%);
-    opacity: 0;
-    visibility: hidden;
-}
-
-.salesp-toggle-settings {
-    position: absolute;
-    top: 10px;
-    right: -100px; /* Close button moved to edge */
-    font-weight: bolder;
-    font-size: xx-large;
-    background-color: transparent; /* No background */
-    color: #333; /* Neutral text color */
-    border: none; /* No border */
-    font-size: 1.5rem; /* Bigger font size */
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.salesp-toggle-settings:hover {
-    background: none;
-    color: #007bff; /* Slight color change on hover */
-    transform: scale(1.1); /* Slight scale on hover */
-}
-
-/* Footer */
-/* .salesp-home-footer {
-    max-width: 100%;
-    background-color: #333;
+  }
+  
+  .home-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .home-toggle-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .home-settings-button {
+    background-color: #007bff;
     color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .home-settings-button.active {
+    background-color: #0056b3;
+  }
+  
+  .home-settings-button:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Sections */
+  .home-show-section {
     padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .home-settings-section,
+  .home-notifications-section,
+  .home-shop-settings-section {
+    display: none;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  .home-settings-section.active,
+  .home-notifications-section.active,
+  .home-shop-settings-section.active {
+    display: block;
+  }
+  
+  /* Loading Container */
+  .home-loading-container {
     text-align: center;
-    margin-top: auto;
-    font-size: 0.9rem;
-    border-top-left-radius: 12px; /* Softer corners */
-    /* border-top-right-radius: 12px;
-}
-
-.salesp-home-footer p {
-    margin: 5px 0;
-} */ 
-
-/* Floating Buttons */
-.salesp-floating-buttons {
+    font-size: 18px;
+    color: #333;
+  }
+  
+  /* Floating Action Buttons */
+  .salesp-floating-buttons {
     position: fixed;
-    top: 20px;
+    bottom: 20px;
     right: 20px;
     display: flex;
     flex-direction: column;
     gap: 15px;
-}
-
-.salesp-toggle-button {
-    background: none;
-    color: #0056b3;
+    z-index: 1001;
+  }
+  
+  .salesp-toggle-button {
+    width: 60px;
+    height: 60px;
     border: none;
-    padding: 12px;
     border-radius: 50%;
-    font-size: 1.5rem;
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 26px;
     cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-}
-
-.salesp-toggle-button:hover {
-    background: none;
-    transform: scale(1.1); /* A bit of interaction feedback */
-}
-
-/* Floating Cart */
-.salesp-floating-cart {
-    width: 300px;
-    max-height: 500px;
-    background-color: #fff;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow */
-    border-radius: 12px;
-    margin-right: 10px;
-    overflow-y: auto;
-    z-index: 1000;
-    transition: all 0.3s ease-in-out;
-    opacity: 0;
-    visibility: hidden;
-}
-
-.salesp-floating-cart.show {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .salesp-main {
-        flex-direction: column;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  }
+  
+  .salesp-toggle-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  }
+  
+  .salesp-toggle-button .icon {
+    font-size: 26px;
+  }
+  
+  /* Notification Badge */
+  .salesp-notification-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ff0000;
+    color: white;
+    border-radius: 50%;
+    font-size: 12px;
+    padding: 5px;
+  }
+  
+  /* Footer */
+  footer {
+    padding: 20px;
+    background-color: #333;
+    color: white;
+    text-align: center;
+  }
+  
+  footer a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+  }
+  
+  footer a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Mobile Responsiveness */
+  @media (max-width: 768px) {
+    .home-toggle-buttons {
+      flex-direction: column;
     }
-
-    .salesp-home-intro, .salesp-settings-section {
-        width: 100%;
-        margin: 0;
-    }
-
-    .salesp-toggle-settings {
-        right: 10px;
-    }
-
-    .salesp-floating-buttons {
-        position: fixed;
-        top: 70%;
-        right: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-
-    .salesp-floating-cart {
-        width: 400px;
-    }
-    .salesp-floating-cart,
-    .salesp-settings-section,
-    .salesp-order-section {
-    /* Optional: add styling for better positioning and transitions */
-        position: fixed;
-        top: 0px;
-        right: 0px;
-        width: 400px;
-        max-height: 500px;
-        background-color: #ffffff;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow */
-        border-radius: 12px;
-        padding: 20px;
-        overflow-y: auto;
-        z-index: 1000;
-        transition: all 0.3s ease-in-out;
-        display: flex;
-        flex-direction: column;
-    }
-}
-
-@media (max-width: 480px) {
-    .salesp-floating-cart {
-        max-height: 60%;
-    }
-
+  
     .salesp-toggle-button {
-        padding: 10px;
-        font-size: 1.2rem;
+      width: 50px;
+      height: 50px;
+      font-size: 20px;
     }
-}
-
-/* salespersonhome.css */
-.salesp-settings-section,
-.salesp-order-section {
-  /* Optional: add styling for better positioning and transitions */
-  display: flex;
-  flex-direction: column;
-}
-
-.salesp-settings-section.closed,
-.salesp-order-section.closed {
-  display: none; /* Ensures sections are hidden when not visible */
-}
+  }
+  
+  @media (max-width: 480px) {
+    .salesp-floating-buttons {
+      bottom: 15px;
+      right: 15px;
+      gap: 10px;
+    }
+  
+    .salesp-toggle-button {
+      width: 45px;
+      height: 45px;
+      font-size: 18px;
+    }
+  }
+  

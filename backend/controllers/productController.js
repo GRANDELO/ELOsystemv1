@@ -3,6 +3,7 @@ const { bucket } = require('../config/firebase');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const ProductPerformance = require('../models/ProductPerformance');
+const User = require('../models/User');
 
 // Upload a file to Firebase Storage
 // Function to upload multiple files
@@ -88,7 +89,6 @@ exports.createProduct = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 
 //get all items
 exports.getAllProducts = async (req, res) => {
@@ -195,5 +195,52 @@ exports.getProductPerformanceByUsername = async (req, res) => {
   } catch (error) {
     console.error('Error fetching product performance:', error);
     return res.status(500).json({ message: 'Failed to fetch product performance' });
+  }
+};
+
+
+exports.updateshopbackgroundUrl = async (req, res) => {
+  try {
+    const {
+      username,
+    } = req.body;
+
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const imageUrls =
+      req.files && req.files.length > 0 ? await uploadFiles(req.files) : [];
+    console.log("Uploaded images:", imageUrls);
+
+    user.backgroundUrl = imageUrls;
+    await user.save();
+    res.status(201).json({ message: 'Updated'});
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.updateshoplogoUrl = async (req, res) => {
+  try {
+    const {
+      username,
+    } = req.body;
+
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const imageUrls =
+      req.files && req.files.length > 0 ? await uploadFiles(req.files) : [];
+    console.log("Uploaded images:", imageUrls);
+
+    user.logoUrl = imageUrls;
+    await user.save();
+    res.status(201).json({ message: 'Updated'});
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };

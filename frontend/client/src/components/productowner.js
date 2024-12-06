@@ -95,6 +95,17 @@ const NewProductList = () => {
 
   const filteredProducts = filterAndSortProducts();
 
+  const calculateDiscountedPrice = (product) => {
+    const discountAmount = product.discount
+      ? (product.price * product.discountpersentage) / 100
+      : 0;
+    const discountedPrice = product.discount ? product.price - discountAmount : product.price;
+    return {
+      discountedPrice: discountedPrice.toFixed(2),
+      discountAmount: discountAmount.toFixed(2),
+    };
+  };
+  
   return (
     <div className="product-list">
       <header className="product-list-header">
@@ -107,59 +118,50 @@ const NewProductList = () => {
         />
       </header>
 
-      {/* Display products in a single grid */}
       <div className="product-cards">
         {filteredProducts.length > 0 ? (
           filteredProducts.map((product) => {
-            const currentImageIndex = imageIndexes[product._id] || 0; // Get current image index
-            const imageSrc = product.images && product.images.length > 0 ? product.images[currentImageIndex] : null;
-
-            // Calculate discount and new price if discount is true
-            const hasDiscount = product.discount === true;
-            const discountAmount = hasDiscount ? (product.price * product.discountpersentage) / 100 : 0;
-            const newPrice = hasDiscount ? product.price - discountAmount : product.price;
+            const currentImageIndex = imageIndexes[product._id] || 0;
+            const imageSrc = product.images ? product.images[currentImageIndex] : product.image;
+            const { discountedPrice, discountAmount } = calculateDiscountedPrice(product);
 
             return (
-              <div key={product._id} className="product-card">
+              <div
+                key={product._id}
+                className="product-card"
+                onClick={() => handleProductClick(product)} // Make the whole card clickable
+              >
                 <div className="product-image-wrapper">
-                  {imageSrc ? (
-                    <img src={imageSrc} alt={product.name} className="product-image" />
-                  ) : (
-                    <p>No images available for this product.</p>
-                  )}
-                  
+                  <img src={imageSrc} alt={product.name} className="product-image" />
+                  {product.isNew && <span className="product-badge new-badge">New</span>}
+                  {product.isOnSale && <span className="product-badge sale-badge">Sale</span>}
                 </div>
                 <h3>{product.name}</h3>
-                <p>{product.description}</p>
                 {product.lable && <span className={`product-badge label-badge`}>{product.lable}</span>}
                 <div className="product-prices">
-                  {hasDiscount ? (
+                  {product.discount ? (
                     <>
                       <h4 className="old-price">
                         <s>Ksh {product.price.toFixed(2)}</s>
                       </h4>
-                      <h4 className="new-price">Ksh {newPrice.toFixed(2)}</h4>
+                      <h4 className="new-price">Ksh {discountedPrice}</h4>
                       <p className="discount-amount">
-                        Save Ksh {discountAmount.toFixed(2)} ({product.discountpersentage}% off)
+                        Save Ksh {discountAmount} ({product.discountpersentage}% off)
                       </p>
                     </>
                   ) : (
-                    <h4>Ksh {product.price}</h4>
+                    <h4>Ksh {product.price.toFixed(2)}</h4>
                   )}
                 </div>
-                <p>In stock {product.quantity}</p>
-                <button className="view-details-btn" onClick={() => handleProductClick(product)}>
-                  View Details
-                </button>
+                <h3>In stock {product.quantity}</h3>
               </div>
             );
           })
         ) : (
-          <p>No products found for {username}</p>
+          <p>No products found</p>
         )}
       </div>
 
-      {/* Modal for selected product */}
       {selectedProduct && (
         <ProductModal
           product={selectedProduct}

@@ -27,8 +27,25 @@ const ProductModal = ({ product, show, handleClose }) => {
   const [editingReview, setEditingReview] = useState(null);
   const [refreshReviews, setRefreshReviews] = useState(false);
 
-
- 
+  useEffect(() => {
+    const handlePopState = () => {
+      handleClose(); // Close the modal when the back button is pressed
+    };
+  
+    if (show) {
+      window.history.pushState({ modal: true }, ""); // Push a state into the history
+    }
+  
+    window.addEventListener("popstate", handlePopState);
+  
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      if (show) {
+        window.history.replaceState({}, ""); // Reset the history state
+      }
+    };
+  }, [show, handleClose]);
+  
   // Handle the image index change every 4 seconds if product has multiple images
   useEffect(() => {
     if (product?.images?.length > 1) {
@@ -170,126 +187,121 @@ const ProductModal = ({ product, show, handleClose }) => {
   const { discountedPrice, discountAmount } = calculateDiscountedPrice(product);
 
   return (
-    <Modal 
-      className="custom-modal" 
-      show={show} 
-      onHide={() => { 
-        handleClose(); 
+    <Modal
+      className="custom-modal"
+      show={show}
+      onHide={() => {
+        handleClose();
         setMessage('');
         setError('');
-        setShowQrCode(false); 
-        setShowMpesaInput(false); 
-        setSellerOrderId(''); // Reset sellerOrderId on close
-        setMpesaNumber(''); // Reset MPesa number on modal close
+        setShowQrCode(false);
+        setShowMpesaInput(false);
+        setSellerOrderId('');
+        setMpesaNumber('');
       }}
     >
       <Modal.Header closeButton>
-        <Modal.Title>{product.name}</Modal.Title>
+        <Modal.Title className="modal-title">{product.name}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {message && <Alert variant="success">{message}</Alert>}
         {error && <Alert variant="danger">{error}</Alert>}
-        
-        {/* Display product image */}
-        <div className="product-images">
-          {product?.images?.length > 0 ? (
-            <img
-              src={product.images[currentImageIndex]}
-              alt={`product-image-${currentImageIndex}`}
-              className="product-image"
-            />
-          ) : (
-            <p>No images available for this product.</p>
-          )}
-        </div>
 
-        <p>{product.description}</p>
-        
-        <p>{product.category}</p>
-        {product.lable && <span className={`product-badge label-badge`}>{product.lable}</span>}
-        
-        <div className="product-prices">
-          {product.discount ? (
-            <>
-              <h4 className="old-price">
-                <s>Ksh {product.price.toFixed(2)}</s>
-              </h4>
-              <h4 className="new-price">Ksh {discountedPrice}</h4>
-              <p className="discount-amount">
-                Save Ksh {discountAmount} ({product.discountpersentage}% off)
-              </p>
-            </>
-          ) : (
-            <h4>Ksh {product.price.toFixed(2)}</h4>
-
-          )}
-        </div>
-      <ReviewList productId={product._id} onReviewAction={handleReviewAction} />
-      {editingReview ? (
-        <AddEditReview
-          productId={product._id}
-          reviewToEdit={editingReview}
-          currentUser={currentUser}
-          onReviewActionComplete={handleReviewActionComplete}
-        />
-      ):( "")}
-
-        {/* Quantity input */}
-        <Form.Group controlId="productQuantity" className="mt-3">
-          <Form.Label>Quantity</Form.Label>
-          <Form.Control
-            type="number"
-            min="1"
-            value={quantity}
-            onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
-          />
-        </Form.Group>
-        {product.price.toFixed(2) > 500 ? (
-          <div>
-                    <Button variant="warning" className="mt-3" onClick={handleCoreSellButtonClick}>
-          Core Sell
-        </Button>
-
-        {/* MPesa Number input for Core Sell */}
-        {showMpesaInput && (
-          <>
-            <Form.Group controlId="mpesaNumber" className="mt-3">
-              <Form.Label>MPesa Number</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter your MPesa number"
-                value={mpesaNumber}
-                onChange={(e) => setMpesaNumber(e.target.value)}
+        <div className="product-details-container">
+          {/* Product Image Section */}
+          <div className="product-image-container">
+            {product?.images?.length > 0 ? (
+              <img
+                src={product.images[currentImageIndex]}
+                alt={`product-image-${currentImageIndex}`}
+                className="product-image"
               />
-            </Form.Group>
-            <Button variant="success" className="mt-3" onClick={handleCoreSell}>
-              Confirm Core Sell
-            </Button>
-          </>
-        )}
-
-        {showQrCode && sellerOrderId && (
-          <div className="qr-section mt-4">
-            <QRCodeCanvas
-              id="qrCode"
-              value={`https://grandelo.web.app/coreorder?sellerOrderId=${sellerOrderId}&productId=${product._id}`}
-              size={150}
-            />
-            <Button variant="primary" className="mt-3" onClick={downloadQRCode}>
-              Download QR Code
-            </Button>
+            ) : (
+              <p className="no-image-text">No images available for this product.</p>
+            )}
           </div>
-        )}
 
-        <div className="mt-4">
-          <Button variant="primary" onClick={downloadProductInfo}>
-            Download Product Info
-          </Button>
+          {/* Product Info Section */}
+          <div className="product-info">
+            <p className="product-description">{product.description}</p>
+            <p className="product-category">Category: {product.category}</p>
+            {product.label && <span className="product-badge">{product.label}</span>}
+
+            <div className="product-prices">
+              {product.discount ? (
+                <>
+                  <p className="old-price">
+                    <s>Ksh {product.price.toFixed(2)}</s>
+                  </p>
+                  <p className="new-price">Ksh {discountedPrice}</p>
+                  <p className="discount-info">
+                    Save Ksh {discountAmount} ({product.discountpersentage}% off)
+                  </p>
+                </>
+              ) : (
+                <p className="new-price">Ksh {product.price.toFixed(2)}</p>
+              )}
+            </div>
+          </div>
         </div>
-          </div>
-        ):( '')}
-        {/* Core Sell Button */}
 
+        {/* Review Section */}
+        <ReviewList productId={product._id} onReviewAction={handleReviewAction} />
+        {editingReview ? (
+          <AddEditReview
+            productId={product._id}
+            reviewToEdit={editingReview}
+            currentUser={currentUser}
+            onReviewActionComplete={handleReviewActionComplete}
+          />
+        ) : null}
+
+        {/* Quantity and Core Sell */}
+        <div className="product-actions">
+          <Form.Group controlId="productQuantity">
+            <Form.Label>Quantity</Form.Label>
+            <Form.Control
+              type="number"
+              min="1"
+              value={quantity}
+              onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
+            />
+          </Form.Group>
+
+          {product.price > 500 && (
+            <div className="core-sell-section">
+              <Button variant="warning" onClick={handleCoreSellButtonClick}>
+                Core Sell
+              </Button>
+              {showMpesaInput && (
+                <Form.Group controlId="mpesaNumber">
+                  <Form.Label>MPesa Number</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter MPesa number"
+                    value={mpesaNumber}
+                    onChange={(e) => setMpesaNumber(e.target.value)}
+                  />
+                  <Button variant="success" onClick={handleCoreSell}>
+                    Confirm Core Sell
+                  </Button>
+                </Form.Group>
+              )}
+              {showQrCode && sellerOrderId && (
+                <div className="qr-section">
+                  <QRCodeCanvas
+                    id="qrCode"
+                    value={`https://grandelo.web.app/coreorder?sellerOrderId=${sellerOrderId}&productId=${product._id}`}
+                    size={150}
+                  />
+                  <Button variant="primary" onClick={downloadQRCode}>
+                    Download QR Code
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>

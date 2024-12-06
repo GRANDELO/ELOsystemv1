@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import './styles/ProductModal.css';
+import ReviewList from "./ReviewList";
 
 const ProductModal = ({ product, show, handleClose }) => {
   const [message, setMessage] = useState('');
@@ -9,7 +10,31 @@ const ProductModal = ({ product, show, handleClose }) => {
   const [updatedField, setUpdatedField] = useState('');
   const [updatedValue, setUpdatedValue] = useState('');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [reviews, setReviews] = useState([]);
+  const [reviewToEdit, setReviewToEdit] = useState(null);
 
+  const [editingReview, setEditingReview] = useState(null);
+  const [refreshReviews, setRefreshReviews] = useState(false);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      handleClose(); // Close the modal when the back button is pressed
+    };
+  
+    if (show) {
+      window.history.pushState({ modal: true }, ""); // Push a state into the history
+    }
+  
+    window.addEventListener("popstate", handlePopState);
+  
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      if (show) {
+        window.history.replaceState({}, ""); // Reset the history state
+      }
+    };
+  }, [show, handleClose]);
+  
   // Function to update the image index periodically
   useEffect(() => {
     if (product?.images?.length > 1) {
@@ -77,6 +102,33 @@ const ProductModal = ({ product, show, handleClose }) => {
     };
   };
 
+  const handleReviewAction = (action, data) => {
+    if (action === "edit") {
+      setEditingReview(data); // Pass review data to edit
+    } else if (action === "delete") {
+      handleDeleteReview(data); // Pass review ID to delete
+    }
+  };
+
+  const handleDeleteReview = async (reviewId) => {
+    try {
+      await axios.delete(
+        `https://elosystemv1.onrender.com/api/review/delete/${reviewId}`
+      );
+      alert("Review deleted successfully!");
+      setRefreshReviews((prev) => !prev); // Trigger refresh
+    } catch (err) {
+      console.error("Error deleting review:", err);
+      alert("Failed to delete review.");
+    }
+  };
+
+  const handleReviewActionComplete = () => {
+    setEditingReview(null);
+    setRefreshReviews((prev) => !prev); // Trigger refresh
+  };
+
+
   const { discountedPrice, discountAmount } = calculateDiscountedPrice(product);
 
   return (
@@ -128,7 +180,7 @@ const ProductModal = ({ product, show, handleClose }) => {
             <h4>Ksh {product.price.toFixed(2)}</h4>
           )}
         </div>
-
+        <ReviewList productId={product._id} onReviewAction={handleReviewAction} />
         {/* Update Field Selection */}
         <Form.Group className="mt-3">
           <Form.Label>Field to Update</Form.Label>

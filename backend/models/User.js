@@ -18,8 +18,8 @@ const UserSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   active: { type: Boolean, default: false },
   amount: { type: Number, default: undefined},
-  backgroundUrl: { type: String, default: undefined },
-  logoUrl: { type: String, default: undefined },
+  backgroundUrl: { type: [String], default: undefined },
+  logoUrl: { type: [String], default: undefined },
 
 }, { timestamps: true });
 

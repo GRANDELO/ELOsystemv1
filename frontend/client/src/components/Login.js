@@ -12,6 +12,38 @@ const Login = () => {
   const [recoverpassword, setRecoverPassword] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
+  const apptoken = localStorage.getItem('apptoken');
+  const appcat = localStorage.getItem('appcat');
+
+  useEffect(() => {
+    // If apptoken is set, use it to set the token and navigate based on the app category
+    if (apptoken) {
+      localStorage.setItem('token', apptoken);
+      if (appcat) {
+        switch (appcat.trim().toLowerCase()) {
+          case 'seller':
+            sessionStorage.setItem('username', getUsernameFromToken());
+            navigate('/home');
+            break;
+          case 'admin':
+            navigate('/dashboard');
+            break;
+          default:
+            navigate('/salespersonhome');
+            break;
+        }
+      }
+    }
+
+    // If token exists, store user data and determine navigation
+    if (token) {
+      sessionStorage.setItem('userToken', token);
+      const category = getcategoryFromToken();
+      const trimmedCategory = category?.trim().toLowerCase(); // Add optional chaining for safety
+      const storedUsername = getUsernameFromToken();
+      sessionStorage.setItem('username', storedUsername);
+    }
+  }, [apptoken, appcat, token, navigate]);
 
   useEffect(() => {
     if (token) {
@@ -36,6 +68,8 @@ const Login = () => {
       sessionStorage.setItem('userToken', response.data.token);
       localStorage.setItem('token', response.data.token);
       sessionStorage.setItem('amount', response.data.amount);
+      localStorage.setItem('apptoken', response.data.token);
+      localStorage.setItem('appcat', response.data.category.trim().toLowerCase());
 
       const category = response.data.category.trim().toLowerCase();
       if (category === 'seller') {

@@ -63,9 +63,6 @@ const NewProductList = () => {
     setSearchTerm(event.target.value);
   };
 
-
-
-  
   const filterAndSortProducts = () => {
     return products
       .filter((product) =>
@@ -82,8 +79,6 @@ const NewProductList = () => {
         return aMatch === bMatch ? 0 : aMatch ? -1 : 1;
       });
   };
-
-
 
   if (loading)
     return (
@@ -107,8 +102,6 @@ const NewProductList = () => {
     };
   };
 
-  
-
   return (
     <div className="product-list">
       <header className="product-list-header">
@@ -129,7 +122,11 @@ const NewProductList = () => {
             const { discountedPrice, discountAmount } = calculateDiscountedPrice(product);
 
             return (
-              <div key={product._id} className="product-card">
+              <div
+                key={product._id}
+                className="product-card"
+                onClick={() => handleProductClick(product)} // Make the whole card clickable
+              >
                 <div className="product-image-wrapper">
                   <img src={imageSrc} alt={product.name} className="product-image" />
                   {product.isNew && <span className="product-badge new-badge">New</span>}
@@ -152,10 +149,6 @@ const NewProductList = () => {
                     <h4>Ksh {product.price.toFixed(2)}</h4>
                   )}
                 </div>
-
-                <button className="view-details-btn" onClick={() => handleProductClick(product)}>
-                  View Details
-                </button>
               </div>
             );
           })

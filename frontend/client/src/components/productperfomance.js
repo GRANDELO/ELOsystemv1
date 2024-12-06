@@ -11,7 +11,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { getUsernameFromToken } from '../utils/auth';
-
+import './styles/productpefomance.css'
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const BarChart = () => {
@@ -27,7 +27,7 @@ const BarChart = () => {
         const response = await axios.get(`https://elosystemv1.onrender.com/api/performance/${username}`);
         setProductData(response.data);
       } catch (err) {
-        setError("No products sold for "+ username);
+        setError("No products sold for " + username);
         console.error(err);
       } finally {
         setLoading(false);
@@ -37,8 +37,8 @@ const BarChart = () => {
     fetchProductPerformance();
   }, [username]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  if (loading) return <p className="loading-text">Loading...</p>;
+  if (error) return <p className="error-text">{error}</p>;
 
   // Prepare data for the main bar chart
   const labels = productData.map(product => product.productName || "Unnamed Product");
@@ -123,14 +123,14 @@ const BarChart = () => {
       setSelectedProduct(productData[chartIndex]);
     }
   };
-  
+
   return (
-    <div style={{ maxWidth: "600px", margin: "0 auto" }}>
+    <div className="chart-container">
       <Bar data={data} options={{ ...options, onClick: handleChartClick }} />
       
       {selectedProduct && (
-        <div style={{ marginTop: "20px" }}>
-          <h3>Monthly Sales for {selectedProduct.productName || "Unnamed Product"}</h3>
+        <div className="selected-product">
+          <h3 className="product-title">Monthly Sales for {selectedProduct.productName || "Unnamed Product"}</h3>
           <MonthlySalesChart saleDates={selectedProduct.saleDates} />
         </div>
       )}
@@ -235,8 +235,8 @@ const MonthlySalesChart = ({ saleDates }) => {
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: "20px" }}>
+    <div className="monthly-sales-container">
+      <div className="month-year-selector">
         <label htmlFor="year">Select Year:</label>
         <select 
           id="year" 

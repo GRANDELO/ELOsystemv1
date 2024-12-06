@@ -6,6 +6,9 @@ const productController = require('../controllers/productController');
 router.get('/performance/:username', productController.getProductPerformanceByUsername);
 router.post('/products', upload.array('images', 6), productController.createProduct);
 
+router.post('/updateshopbackgroundUrl', upload.array('images', 6), productController.updateshopbackgroundUrl);
+router.post('/updateshoplogoUrl', upload.array('images', 6), productController.updateshoplogoUrl);
+
 router.get('/products', productController.getAllProducts);
 router.get('/images/:filename', productController.getImage);
 router.get('/products/:id', productController.getNewProductById);
