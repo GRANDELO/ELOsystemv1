@@ -201,36 +201,40 @@ exports.getProductPerformanceByUsername = async (req, res) => {
 
 exports.updateshoplogoUrl = async (req, res) => {
   try {
+    const { username } = req.body;
 
-    const {
-      username
-    } = req.body;
-    console.log("hereeee");
+    console.log("Processing request for:", username);
+
     const user = await User.findOne({ username });
     if (!user) {
-      console.log("hUser not foundereeee");
       return res.status(404).json({ message: 'User not found' });
-      
     }
 
-    const logoUrl = req.file ? await uploadFiles([req.file]) : null;
-    const backgroundUrl = req.file ? await uploadFiles(req.files) : null;
+    // Extract logo and background files
+    const logoFile = req.files.logo ? req.files.logo[0] : null;
+    const backgroundFile = req.files.background ? req.files.background[0] : null;
 
-    // You can store the URLs in a database or wherever needed
+    const logoUrl = logoFile ? await uploadFiles([logoFile]) : null;
+    const backgroundUrl = backgroundFile ? await uploadFiles([backgroundFile]) : null;
+
     console.log("Uploaded logo image URL:", logoUrl);
     console.log("Uploaded background image URL:", backgroundUrl);
 
-
-    user.backgroundUrl = backgroundUrl;
+    // Update user with uploaded URLs
     user.logoUrl = logoUrl;
+    user.backgroundUrl = backgroundUrl;
+
     await user.save();
-    // Respond with the uploaded URLs
+
     return res.status(200).json({
-      message: 'Images uploaded successfully'
+      message: 'Images uploaded successfully',
+      logoUrl,
+      backgroundUrl,
     });
   } catch (error) {
     console.error('Error uploading images:', error);
     return res.status(500).json({ message: 'Error uploading images', error: error.message });
   }
 };
+
 

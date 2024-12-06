@@ -7,9 +7,15 @@ router.get('/performance/:username', productController.getProductPerformanceByUs
 router.post('/products', upload.array('images', 6), productController.createProduct);
 
 // Route to handle uploading of logo and background images
-router.post('/updateshoplogoUrl', upload.single('logo'), upload.single('background'), productController.updateshoplogoUrl);
-
-
+router.post(
+    '/updateshoplogoUrl',
+    upload.fields([
+      { name: 'logo', maxCount: 1 },
+      { name: 'background', maxCount: 1 },
+    ]),
+    productController.updateshoplogoUrl
+  );
+  
 router.get('/products', productController.getAllProducts);
 router.get('/images/:filename', productController.getImage);
 router.get('/products/:id', productController.getNewProductById);

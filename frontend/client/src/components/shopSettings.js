@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { getUsernameFromToken} from '../utils/auth';
+import { getUsernameFromToken } from '../utils/auth'; // Assume this retrieves the username from a token
 
 const UploadShopLogo = () => {
   const username = getUsernameFromToken();
@@ -8,34 +8,34 @@ const UploadShopLogo = () => {
   const [background, setBackground] = useState(null);
   const [message, setMessage] = useState('');
 
-  const handleLogoChange = (e) => {
-    setLogo(e.target.files[0]);
-  };
-
-  const handleBackgroundChange = (e) => {
-    setBackground(e.target.files[0]);
-  };
+  const handleLogoChange = (e) => setLogo(e.target.files[0]);
+  const handleBackgroundChange = (e) => setBackground(e.target.files[0]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!username || !logo || !background) {
-      setMessage('Please fill in all fields and upload both images.');
+    if (!logo || !background) {
+      setMessage('Please upload both logo and background images.');
       return;
     }
 
     const formData = new FormData();
     formData.append('username', username);
-    formData.append('logo', logo); // Logo image
-    formData.append('background', background); // Background image
+    formData.append('logo', logo); // Attach logo
+    formData.append('background', background); // Attach background
 
     try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/updateshoplogoUrl', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axios.post(
+        'https://elosystemv1.onrender.com/api/updateshoplogoUrl',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
       setMessage(response.data.message || 'Images uploaded successfully.');
+      console.log('Response:', response.data);
     } catch (error) {
       console.error('Error uploading images:', error);
       setMessage('Error uploading images.');
