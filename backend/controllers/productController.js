@@ -203,26 +203,19 @@ exports.updateshoplogoUrl = async (req, res) => {
   try {
     const { username } = req.body;
 
-    console.log("Processing request for:", username);
-
     const user = await User.findOne({ username });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Extract logo and background files
-    const logoFile = req.files.logo ? req.files.logo[0] : null;
-    const backgroundFile = req.files.background ? req.files.background[0] : null;
+    const logoUrlArray = req.file ? await uploadFiles([req.file]) : null;
+    const backgroundUrlArray = req.files ? await uploadFiles(req.files) : null;
 
-    const logoUrl = logoFile ? await uploadFiles([logoFile]) : null;
-    const backgroundUrl = backgroundFile ? await uploadFiles([backgroundFile]) : null;
+    const logoUrl = Array.isArray(logoUrlArray) ? logoUrlArray[0] : null;
+    const backgroundUrl = Array.isArray(backgroundUrlArray) ? backgroundUrlArray[0] : null;
 
-    console.log("Uploaded logo image URL:", logoUrl);
-    console.log("Uploaded background image URL:", backgroundUrl);
-
-    // Update user with uploaded URLs
-    user.logoUrl = logoUrl;
-    user.backgroundUrl = backgroundUrl;
+    if (logoUrl) user.logoUrl = logoUrl;
+    if (backgroundUrl) user.backgroundUrl = backgroundUrl;
 
     await user.save();
 
@@ -236,5 +229,6 @@ exports.updateshoplogoUrl = async (req, res) => {
     return res.status(500).json({ message: 'Error uploading images', error: error.message });
   }
 };
+
 
 

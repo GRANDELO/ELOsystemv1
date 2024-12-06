@@ -106,8 +106,8 @@ const registerUser = async (req, res) => {
       resetPasswordToken: undefined,
       resetPasswordExpires: undefined,
       amount: userAmount,
-      backgroundUrl: userbackgroundUrl,
-      logoUrl: userlogoUrl,
+      backgroundUrl: " ",
+      logoUrl: " ",
     });
     await user.save();
 
