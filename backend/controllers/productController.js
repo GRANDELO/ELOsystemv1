@@ -205,9 +205,12 @@ exports.updateshoplogoUrl = async (req, res) => {
     const {
       username
     } = req.body;
+    console.log("hereeee");
     const user = await User.findOne({ username });
     if (!user) {
+      console.log("hUser not foundereeee");
       return res.status(404).json({ message: 'User not found' });
+      
     }
 
     const logoUrl = req.file ? await uploadFiles([req.file]) : null;
