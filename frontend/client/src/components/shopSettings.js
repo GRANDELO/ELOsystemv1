@@ -1,74 +1,64 @@
 import React, { useState } from 'react';
-import './styles/Shop.css'; // Include a separate CSS file for styling
+import axios from 'axios';
+import { getUsernameFromToken} from '../utils/auth';
 
-const ShopSettings = () => {
-  const [shopName, setShopName] = useState('');
+const UploadShopLogo = () => {
+  const username = getUsernameFromToken();
   const [logo, setLogo] = useState(null);
-  const [banner, setBanner] = useState(null);
-  const [theme, setTheme] = useState('Default');
+  const [background, setBackground] = useState(null);
+  const [message, setMessage] = useState('');
 
-  const handleLogoChange = (e) => setLogo(e.target.files[0]);
-  const handleBannerChange = (e) => setBanner(e.target.files[0]);
-  const handleThemeChange = (e) => setTheme(e.target.value);
+  const handleLogoChange = (e) => {
+    setLogo(e.target.files[0]);
+  };
 
-  const handleSaveSettings = () => {
-    // Logic to send the data to your backend via an API request
-    console.log('Shop Settings Saved:', {
-      shopName,
-      logo,
-      banner,
-      theme,
-    });
+  const handleBackgroundChange = (e) => {
+    setBackground(e.target.files[0]);
+  };
 
-    alert('Shop settings saved successfully!');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!username || !logo || !background) {
+      setMessage('Please fill in all fields and upload both images.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('logo', logo); // Logo image
+    formData.append('background', background); // Background image
+
+    try {
+      const response = await axios.post('https://elosystemv1.onrender.com/api/updateshoplogoUrl', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      setMessage(response.data.message || 'Images uploaded successfully.');
+    } catch (error) {
+      console.error('Error uploading images:', error);
+      setMessage('Error uploading images.');
+    }
   };
 
   return (
-    <div className="shop-settings">
-      <h2>Shop Settings</h2>
-      <form>
-        {/* Shop Name */}
-        <div className="form-group">
-          <label htmlFor="shopName">Shop Name:</label>
-          <input
-            id="shopName"
-            type="text"
-            value={shopName}
-            onChange={(e) => setShopName(e.target.value)}
-            placeholder="Enter your shop name"
-            required
-          />
+    <div>
+      <h2>Upload Shop Logo and Background</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Logo:</label>
+          <input type="file" onChange={handleLogoChange} accept="image/*" required />
         </div>
-
-        {/* Logo Upload */}
-        <div className="form-group">
-          <label htmlFor="shopLogo">Upload Logo:</label>
-          <input id="shopLogo" type="file" accept="image/*" onChange={handleLogoChange} />
+        <div>
+          <label>Background:</label>
+          <input type="file" onChange={handleBackgroundChange} accept="image/*" required />
         </div>
-
-        {/* Banner Upload */}
-        <div className="form-group">
-          <label htmlFor="shopBanner">Upload Banner:</label>
-          <input id="shopBanner" type="file" accept="image/*" onChange={handleBannerChange}  required/>
-        </div>
-
-        {/* Theme Selection */}
-        <div className="form-group">
-          <label htmlFor="shopTheme">Select Theme:</label>
-          <select id="shopTheme" value={theme} onChange={handleThemeChange}>
-            <option value="Default">Default</option>
-            <option value="Dark">Dark</option>
-            <option value="Light">Light</option>
-            <option value="Colorful">Colorful</option>
-          </select>
-        </div>
-
-        <button type="button" onClick={handleSaveSettings} className="save-settings-button">
-          Save Settings
-        </button>
+        <button type="submit">Upload</button>
       </form>
+      {message && <p>{message}</p>}
     </div>
   );
 };
 
-export default ShopSettings;
+export default UploadShopLogo;

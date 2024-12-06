@@ -114,6 +114,7 @@ const Home = () => {
         <section className={`home-settings-section ${uiState.settings ? 'active' : ''}`}>
           <Withdrawal />
           <Settings />
+          <ShopSettings />
         </section>
 
         {/* Notifications Section */}
