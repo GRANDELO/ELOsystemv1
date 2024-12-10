@@ -1,0 +1,186 @@
+/* General Styling */
+.ordcore-ordering-page {
+  font-family: Arial, sans-serif;
+  background-color: #f4f7fb;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+}
+.ordcore-original-price{
+  color: red;
+}
+
+.ordcore-saved-amount{
+  color: green;
+}
+
+.ordcore-product-price{
+  color: rgb(11, 152, 11);
+}
+
+/* Container Styling */
+.ordcore-ordering-page {
+  max-width: 700px;
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px 30px;
+}
+
+/* Heading */
+.ordcore-heading {
+  text-align: center;
+  color: #333;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+/* Alert Styling */
+.ordcore-alert {
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.ordcore-message {
+  color: #28a745;
+  text-align: center;
+}
+
+/* Total Price */
+.ordcore-total-price {
+  text-align: center;
+  color: #e63946;
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin-top: 1rem;
+}
+
+/* Product Details Styling */
+.ordcore-product-details {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f7f9fc;
+  border: 1px solid #e5e9f2;
+  text-align: center;
+}
+
+.ordcore-product-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #2a9d8f;
+  margin-bottom: 10px;
+}
+
+.ordcore-product-image {
+  max-width: 100%;
+  height: auto;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+.ordcore-product-price {
+  color: #333;
+  font-size: 1.2rem;
+  margin: 10px 0;
+  font-weight: 600;
+}
+
+.ordcore-product-description {
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* Form Group Styling */
+.ordcore-form-group {
+  margin-top: 1.5rem;
+}
+
+.ordcore-select, .ordcore-form-control, .ordcore-phone-number {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+  transition: border-color 0.3s ease;
+}
+
+.ordcore-select:focus, .ordcore-form-control:focus, .ordcore-phone-number:focus {
+  outline: none;
+  border-color: #2a9d8f;
+}
+
+/* Radio Button Styling */
+.ordcore-radio-label {
+  display: block;
+  margin-top: 10px;
+  font-weight: 500;
+  font-size: 1rem;
+  color: #333;
+}
+
+.ordcore-radio-label input {
+  margin-right: 8px;
+}
+
+/* Mpesa Phone Number Error Styling */
+.ordcore-form-control.is-invalid {
+  border-color: #e63946;
+}
+
+.ordcore-form-control .ordcore-phone-number {
+  color: #e63946;
+}
+
+/* Button Styling */
+.ordcore-submit-btn {
+  display: block;
+  width: 100%;
+  background-color: #2a9d8f;
+  color: #fff;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.ordcore-submit-btn:hover {
+  background-color: #21867a;
+}
+
+.ordcore-submit-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .ordcore-ordering-page {
+    padding: 15px;
+  }
+
+  .ordcore-heading {
+    font-size: 1.8rem;
+  }
+
+  .ordcore-total-price {
+    font-size: 1.3rem;
+  }
+
+  .ordcore-product-name {
+    font-size: 1.2rem;
+  }
+
+  .ordcore-product-price, .ordcore-submit-btn {
+    font-size: 0.95rem;
+  }
+}

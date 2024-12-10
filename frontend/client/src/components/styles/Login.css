@@ -100,7 +100,19 @@
   @media (max-width: 768px) {
     .container {
       padding: 1.5rem;
-      max-width: 95%;
+    }
+    .container {
+      background-color: rgba(0, 78, 155, 0.227);
+      border-radius: 0px;
+      min-width: 100vw;
+      min-height: 100vh;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center; 
+    }
+    .container:hover {
+      transform: none;
     }
   
     input, button {

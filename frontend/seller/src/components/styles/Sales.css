@@ -1,0 +1,31 @@
+.sales-container {
+    padding: 2rem;
+    background-color: #f9f9f9;
+}
+
+.recent-sales {
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+}
+
+.recent-sales h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.recent-sales ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.recent-sales li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.recent-sales li:last-child {
+    border-bottom: none;
+}

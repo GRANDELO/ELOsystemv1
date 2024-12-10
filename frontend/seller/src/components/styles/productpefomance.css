@@ -1,0 +1,134 @@
+/* Body */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f4f8;
+  }
+  
+  /* Container for the Chart */
+  .chart-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  /* Loading and Error Messages */
+  .loading-text,
+  .error-text {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #4f5b66;
+    margin-top: 20px;
+  }
+  
+  .error-text {
+    color: #e74c3c;
+  }
+  
+  .selected-product {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .product-title {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .monthly-sales-container {
+    padding: 30px;
+    background-color: #ffffff;
+    margin-top: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .month-year-selector {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+  }
+  
+  select {
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background-color: #f7f7f7;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  
+  select:hover {
+    background-color: #f1f1f1;
+  }
+  
+  select:focus {
+    border-color: #4caf50;
+    background-color: #e8f5e9;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.2);
+  }
+  
+  /* Chart Styling */
+  canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  
+  /* Gradient Background for Bars */
+  .chartjs-render-monitor {
+    border-radius: 8px !important;
+  }
+  
+  /* Hover Effects for Product Selection */
+  .product-container {
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .product-container:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Customizing the Header */
+  .chart-container h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 25px;
+    color: #34495e;
+  }
+  
+  /* Mobile-Friendly Adjustments */
+  @media screen and (max-width: 768px) {
+    .chart-container {
+      padding: 20px;
+    }
+  
+    .monthly-sales-container,
+    .selected-product {
+      margin-top: 15px;
+      padding: 15px;
+    }
+  
+    .month-year-selector {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    select {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  }
+  

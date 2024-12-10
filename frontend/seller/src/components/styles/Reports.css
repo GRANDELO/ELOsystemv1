@@ -1,0 +1,42 @@
+.reports-container {
+    padding: 2rem;
+    background-color: #f9f9f9;
+}
+
+.report-options {
+    margin-bottom: 2rem;
+}
+
+.report-options label {
+    margin-right: 1rem;
+}
+
+.report-options select {
+    padding: 0.5rem;
+    margin-right: 1rem;
+}
+
+.report-options button {
+    padding: 0.5rem 1rem;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.report-data {
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.report-data h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.report-data pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}

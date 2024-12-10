@@ -1,0 +1,84 @@
+.chart-container {
+    width: 90%;
+    margin: 0 auto;
+    text-align: center;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.chart-container h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.filters {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    gap: 1rem;
+}
+
+.filters .react-select__control {
+    width: 100%;
+    max-width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: none;
+}
+
+.filters .react-select__control:hover {
+    border-color: #006398;
+}
+
+.filters .react-datepicker-wrapper {
+    width: 100%;
+    max-width: 200px;
+}
+
+.filters .react-datepicker__input-container input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.filters .react-datepicker__input-container input:focus {
+    border-color: #006398;
+    outline: none;
+}
+
+.chart-container .chart-wrapper {
+    width: 100%;
+    height: 400px;
+}
+
+@media (max-width: 768px) {
+    .filters {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .filters .react-select__control,
+    .filters .react-datepicker-wrapper {
+        max-width: none;
+        width: 100%;
+    }
+
+    .chart-container {
+        padding: 1rem;
+    }
+
+    .chart-container h1 {
+        font-size: 1.5rem;
+    }
+
+    .chart-container .chart-wrapper {
+        height: 300px;
+    }
+}

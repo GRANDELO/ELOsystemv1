@@ -1,0 +1,32 @@
+body {
+  margin: 0;
+  max-width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+body, html {
+  position: relative;
+  min-height: 100vh;
+  width: 100%; /* Adjusted from min-width to width */
+  background-image: url('./components/images/bg6.jpeg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden; /* Prevents horizontal scrolling */
+}
+
+/* Optional: Add this to ensure the flex container doesn't force extra width */
+* {
+  box-sizing: border-box;
+}

@@ -1,0 +1,155 @@
+
+
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+@media (max-width: 480px) {
+  .formsep
+    {
+      display: flex;
+      flex-direction: column;
+    }
+    .container {
+      padding: 15px;
+      margin: 10px;
+      max-width: 350px;
+
+    }
+  
+    h2 {
+      font-size: 20px;
+    }
+  
+    .label {
+      font-size: 12px;
+    }
+  
+    input, select {
+      font-size: 14px;
+    }
+  
+    button {
+      font-size: 14px;
+    }
+  
+    .message {
+      font-size: 12px;
+      
+    }
+  }
+
+label {
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+input, select {
+  padding: 10px;
+  margin: 10px 0;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+
+button {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+
+.message{
+  margin-top: 20px;
+  font-size: 18px;
+  color: green;
+}
+
+.error {
+  margin-top: 20px;
+  font-size: 18px;
+  color: red;
+}
+
+
+a {
+  color: #007BFF;
+  text-decoration: none;
+  margin-top: 20px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.password-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.password-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  padding-right: 40px;
+}
+
+.toggle-password {
+  position: absolute;
+  background: none;
+  color: #555;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  outline: none;
+  width: 0px;
+  height: 0px;
+  left: 70%;
+  top: 3%;
+}
+.toggle-password:hover
+{
+  background: none;
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  outline: none;
+  left: 70%;
+  top: 3%;
+}
+
+.toggle-password:focus {
+  outline: none;
+}

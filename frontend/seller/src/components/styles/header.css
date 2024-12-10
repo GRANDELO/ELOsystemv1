@@ -1,0 +1,157 @@
+/* Main container */
+.hdr-container {
+    position: relative;
+    width: 100%;
+    height: 40vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #00366d;
+  }
+  
+  /* Header section */
+  .hdr-header {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    color: #ffffff;
+    text-align: center;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.5); /* Adds slight darkness */
+    border-radius: 10px;
+    backdrop-filter: blur(10px); /* Enhanced blur effect for a more glassy look */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  }
+  
+  /* Background video styling */
+  .hdr-bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    opacity: 0.8;
+    filter: brightness(0.6); /* Dim the video slightly for readability */
+  }
+  
+  /* Content in header */
+  .hdr-content {
+    position: relative;
+    z-index: 3;
+    max-width: 80%;
+    max-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.173) 0%,
+      rgba(0, 0, 0, 0.161) 100%
+    ); /* Light gradient overlay */
+    border-radius: 15px;
+  }
+  
+  /* Title styling */
+  .hdr-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #fff;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8); /* Adds a shadow for better contrast */
+    letter-spacing: 1.5px;
+    animation: fadeInDown 1.2s ease-in-out;
+  }
+  
+  /* Subtitle styling */
+  .hdr-subtitle {
+    font-size: 1.4rem;
+    margin-bottom: 2rem;
+    color: #d1d1d1;
+    letter-spacing: 1.2px;
+    animation: fadeInUp 1.5s ease-in-out;
+  }
+  
+  /* Button styling */
+  .hdr-button {
+    padding: 0.8rem 2.2rem;
+    font-size: 1rem;
+    color: #ffffff;
+    background: linear-gradient(135deg, #4a90e2, #357ABD);
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 5px 15px rgba(74, 144, 226, 0.5);
+  }
+  
+  .hdr-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(74, 144, 226, 0.8);
+  }
+  
+  /* Animations */
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsive styling */
+  @media (max-width: 768px) {
+    .hdr-title {
+      font-size: 2.5rem;
+    }
+    .hdr-content {
+    max-height: 250px;
+    max-width: 70%;
+    }
+    .hdr-subtitle {
+      font-size: 1.2rem;
+    }
+  
+    .hdr-button {
+      padding: 0.6rem 1.8rem;
+      font-size: 0.9rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .hdr-title {
+      font-size: 2rem;
+    }
+  
+    .hdr-subtitle {
+      font-size: 1rem;
+    }
+  
+    .hdr-button {
+      padding: 0.5rem 1.5rem;
+      font-size: 0.8rem;
+    }
+  }
+  
