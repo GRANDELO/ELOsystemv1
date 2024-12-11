@@ -117,27 +117,22 @@ const NewProductForm = () => {
     category: '',
     subCategory: '',
     price: '',
-    description: {
-      model: '',
-      make: '',
-      yearOfManufacture: '',
-      specifications: [],
-      pdescription: '',
-      features: [],
-      technicalDetails: {},
-      tags: [],
-      dimensions: {
-        height: '',
-        width: '',
-        depth: '',
-        weight: '',
-      },
-      manufacturerDetails: {
-        name: '',
-        contactInfo: '',
-      },
-      warranty: '',
+    description: "",
+    yearOfManufacture: '',
+    specifications: [],
+    features: [],
+    technicalDetails: {},
+    dimensions: {
+      height: '',
+      width: '',
+      depth: '',
+      weight: '',
     },
+    manufacturerDetails: {
+      name: '',
+      contactInfo: '',
+    },
+    warranty: '',
     username: lusername,
     quantity: '',
     images: [],
@@ -301,43 +296,30 @@ const NewProductForm = () => {
         onChange={handleChange}
       ></textarea>
 
-      <input
-        type="text"
-        name="description.model"
-        placeholder="Model"
-        value={newProduct.description.model}
-        onChange={handleChange}
-      />
-      <input
-        type="text"
-        name="description.make"
-        placeholder="Make"
-        value={newProduct.description.make}
-        onChange={handleChange}
-      />
+
       <input
         type="number"
-        name="description.yearOfManufacture"
+        name="yearOfManufacture"
         placeholder="Year of Manufacture"
         min="1900"
         max="2100"
-        value={newProduct.description.yearOfManufacture}
+        value={newProduct.yearOfManufacture}
         onChange={handleChange}
       />
 
       <h4>Specifications</h4>
-      {newProduct.description.specifications.map((spec, index) => (
+      {newProduct.specifications.map((spec, index) => (
         <div key={index}>
           <input
             type="text"
-            name={`description.specifications-${index}-key`}
+            name={`specifications-${index}-key`}
             placeholder="Key"
             value={spec.key}
             onChange={handleChange}
           />
           <input
             type="text"
-            name={`description.specifications-${index}-value`}
+            name={`specifications-${index}-value`}
             placeholder="Value"
             value={spec.value}
             onChange={handleChange}
@@ -353,56 +335,55 @@ const NewProductForm = () => {
 
       <input
         type="number"
-        name="description.dimensions.height"
+        name="dimensions.height"
         placeholder="Height (cm)"
         value={newProduct.description.dimensions.height}
         onChange={handleChange}
       />
       <input
         type="number"
-        name="description.dimensions.width"
+        name="dimensions.width"
         placeholder="Width (cm)"
-        value={newProduct.description.dimensions.width}
+        value={newProduct.dimensions.width}
         onChange={handleChange}
       />
       <input
         type="number"
-        name="description.dimensions.depth"
+        name="dimensions.depth"
         placeholder="Depth (cm)"
-        value={newProduct.description.dimensions.depth}
+        value={newProduct.dimensions.depth}
         onChange={handleChange}
       />
       <input
         type="number"
-        name="description.dimensions.weight"
+        name="dimensions.weight"
         placeholder="Weight (kg)"
-        value={newProduct.description.dimensions.weight}
+        value={newProduct.dimensions.weight}
         onChange={handleChange}
       />
 
       <input
         type="text"
-        name="description.manufacturerDetails.name"
+        name="manufacturerDetails.name"
         placeholder="Manufacturer Name"
-        value={newProduct.description.manufacturerDetails.name}
+        value={newProduct.manufacturerDetails.name}
         onChange={handleChange}
       />
       <input
         type="text"
-        name="description.manufacturerDetails.contactInfo"
+        name="manufacturerDetails.contactInfo"
         placeholder="Manufacturer Contact Info"
-        value={newProduct.description.manufacturerDetails.contactInfo}
+        value={newProduct.manufacturerDetails.contactInfo}
         onChange={handleChange}
       />
 
       <input
         type="text"
-        name="description.warranty"
+        name="warranty"
         placeholder="Warranty"
-        value={newProduct.description.warranty}
+        value={newProduct.warranty}
         onChange={handleChange}
       />
-
       <input
         type="number"
         name="quantity"

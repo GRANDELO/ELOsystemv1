@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema(
     name: { type: String, required: true },
     category: { type: String, required: true },
     subCategory: { type: String },
-    description: { type: String, required: true },
+    description: { type: String, required: true, trim: true, maxlength: 5000 },
     price: { type: Number, required: true },
     username: { type: String, required: true },
     productId: { type: String, unique: true, required: true },
@@ -17,6 +17,31 @@ const productSchema = new mongoose.Schema(
     lable: { type: String, default: undefined },
     quantity: { type: Number, required: true },
     images: [String],
+    yearOfManufacture: { type: Number, min: 1900, max: new Date().getFullYear(), default: undefined },
+    specifications: [
+      { key: { type: String }, value: { type: String } }
+    ],
+    features: { type: [String], default: []  },// List of unique selling points or highlights 
+    technicalDetails: { type: Map, of: String, default: {} }, // Key-value pairs for advanced technical details
+    dimensions: { 
+      type: {
+        height: { type: Number, default: null },
+        width: { type: Number, default: null },
+        depth: { type: Number, default: null },
+        weight: { type: Number, default: null }
+      },
+      default: null 
+    },
+    manufacturerDetails: { 
+      type: {
+        name: { type: String },
+        contactInfo: { type: String }
+      },
+      default: null 
+    },
+    warranty: { type: String, default: null }, // Warranty info
+
+
     type: { type: String, default: undefined }, // New field
     collaborators: { 
       type: [
@@ -26,7 +51,7 @@ const productSchema = new mongoose.Schema(
         },
       ], 
       default: undefined 
-    }, // New field
+    },
     reviews: [
       {
         type: mongoose.Schema.Types.ObjectId,

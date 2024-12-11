@@ -49,6 +49,14 @@ exports.createProduct = async (req, res) => {
       username,
       quantity,
       type,
+      yearOfManufacture,
+      specifications,
+      features,
+      technicalDetails,
+      dimensions,
+      manufacturerDetails,
+      returnPolicy,
+      warranty,
       collaborators, // Expect an array of collaborators
     } = req.body;
 
@@ -80,6 +88,13 @@ exports.createProduct = async (req, res) => {
       images: imageUrls, // Store array of image URLs
       type,
       collaborators: collaboratorData, // Set collaborators if type is "collaborator"
+      yearOfManufacture,
+      specifications,
+      features,
+      technicalDetails,
+      dimensions,
+      manufacturerDetails,
+      warranty,
     });
 
     await newProduct.save();
