@@ -117,19 +117,7 @@ const NewProductForm = () => {
     category: '',
     subCategory: '',
     price: '',
-    description: {
-      model: '',
-      make: '',
-      yearOfManufacture: '',
-      specifications: [{ key: '', value: '' }],
-      pdescription: '',
-      features: [''],
-      technicalDetails: {},
-      tags: [''],
-      dimensions: { height: '', width: '', depth: '', weight: '' },
-      manufacturerDetails: { name: '', contactInfo: '' },
-      warranty: '',
-    },
+    description: '',
     username: lusername,
     quantity: '',
     images: [], // Array for multiple images
@@ -151,52 +139,18 @@ const NewProductForm = () => {
   }, [newProduct.category]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-  
-    // Check if the name contains a dot notation (e.g., 'description.dimensions.height')
-    if (name.includes('.')) {
-      const keys = name.split('.');  // Split the name into keys
-      setNewProduct((prevProduct) => {
-        let updatedProduct = { ...prevProduct };
-        let current = updatedProduct;
-  
-        // Traverse the keys and update the value at the right depth
-        keys.forEach((key, index) => {
-          if (index === keys.length - 1) {
-            current[key] = value;
-          } else {
-            current = current[key] = { ...current[key] }; // Ensure we don't overwrite the entire object
-          }
-        });
-  
-        return updatedProduct;
-      });
+    const { name, value, files } = e.target;
+    if (name === 'images') {
+      // Set selected files in state
+      setNewProduct({ ...newProduct, images: Array.from(files) });
+    } else if (name.startsWith('collaborators')) {
+      const index = parseInt(name.split('-')[1], 10);
+      const updatedCollaborators = [...newProduct.collaborators];
+      updatedCollaborators[index] = { ...updatedCollaborators[index], amount: parseFloat(value) || 0 };
+      setNewProduct({ ...newProduct, collaborators: updatedCollaborators });
     } else {
-      // For non-nested fields, just update normally
-      setNewProduct((prevProduct) => ({
-        ...prevProduct,
-        [name]: value,
-      }));
+      setNewProduct({ ...newProduct, [name]: value });
     }
-  };
-  
-
-  const handleAddField = (field) => {
-    setNewProduct((prev) => ({
-      ...prev,
-      description: {
-        ...prev.description,
-        [field]: [...prev.description[field], ''],
-      },
-    }));
-  };
-
-  const handleRemoveField = (field, index) => {
-    const updatedArray = newProduct.description[field].filter((_, i) => i !== index);
-    setNewProduct((prev) => ({
-      ...prev,
-      description: { ...prev.description, [field]: updatedArray },
-    }));
   };
 
   const handleDrop = (e) => {
@@ -299,180 +253,12 @@ const NewProductForm = () => {
         value={newProduct.price}
         onChange={handleChange}
       />
-
-      <fieldset>
-        <legend>Description</legend>
-        <label>
-          Model:
-          <input
-            type="text"
-            name="description.model"
-            value={newProduct.description.model}
-            onChange={handleChange}
-          />
-        </label>
-        <label>
-          Make:
-          <input
-            type="text"
-            name="description.make"
-            value={newProduct.description.make}
-            onChange={handleChange}
-          />
-        </label>
-        <label>
-          Year of Manufacture:
-          <input
-            type="text"
-            name="description.yearOfManufacture"
-            value={newProduct.description.yearOfManufacture}
-            onChange={handleChange}
-          />
-        </label>
-        <fieldset>
-          <legend>Specifications</legend>
-          {newProduct.description.specifications.map((spec, index) => (
-            <div key={index}>
-              <input
-                type="text"
-                name={`description.specifications.${index}.key`}
-                placeholder="Key"
-                value={spec.key}
-                onChange={handleChange}
-              />
-              <input
-                type="text"
-                name={`description.specifications.${index}.value`}
-                placeholder="Value"
-                value={spec.value}
-                onChange={handleChange}
-              />
-              <button type="button" onClick={() => handleRemoveField('specifications', index)}>
-                Remove
-              </button>
-            </div>
-          ))}
-          <button type="button" onClick={() => handleAddField('specifications')}>
-            Add Specification
-          </button>
-        </fieldset>
-        <label>
-          Product Description:
-          <textarea
-            name="description.pdescription"
-            value={newProduct.description.pdescription}
-            onChange={handleChange}
-          ></textarea>
-        </label>
-        <label>
-          Features:
-          {newProduct.description.features.map((feature, index) => (
-            <div key={index}>
-              <input
-                type="text"
-                name={`description.features.${index}`}
-                value={feature}
-                onChange={handleChange}
-              />
-              <button type="button" onClick={() => handleRemoveField('features', index)}>
-                Remove
-              </button>
-            </div>
-          ))}
-          <button type="button" onClick={() => handleAddField('features')}>
-            Add Feature
-          </button>
-        </label>
-        <label>
-          Tags:
-          {newProduct.description.tags.map((tag, index) => (
-            <div key={index}>
-              <input
-                type="text"
-                name={`description.tags.${index}`}
-                value={tag}
-                onChange={handleChange}
-              />
-              <button type="button" onClick={() => handleRemoveField('tags', index)}>
-                Remove
-              </button>
-            </div>
-          ))}
-          <button type="button" onClick={() => handleAddField('tags')}>
-            Add Tag
-          </button>
-        </label>
-        <fieldset>
-          <legend>Dimensions</legend>
-          <label>
-            Height:
-            <input
-              type="text"
-              name="description.dimensions.height"
-              value={newProduct.description.dimensions.height}
-              onChange={handleChange}
-            />
-          </label>
-          <label>
-            Width:
-            <input
-              type="text"
-              name="description.dimensions.width"
-              value={newProduct.description.dimensions.width}
-              onChange={handleChange}
-            />
-          </label>
-          <label>
-            Depth:
-            <input
-              type="text"
-              name="description.dimensions.depth"
-              value={newProduct.description.dimensions.depth}
-              onChange={handleChange}
-            />
-          </label>
-          <label>
-            Weight:
-            <input
-              type="text"
-              name="description.dimensions.weight"
-              value={newProduct.description.dimensions.weight}
-              onChange={handleChange}
-            />
-          </label>
-        </fieldset>
-        <fieldset>
-          <legend>Manufacturer Details</legend>
-          <label>
-            Name:
-            <input
-              type="text"
-              name="description.manufacturerDetails.name"
-              value={newProduct.description.manufacturerDetails.name}
-              onChange={handleChange}
-            />
-          </label>
-          <label>
-            Contact Info:
-            <input
-              type="text"
-              name="description.manufacturerDetails.contactInfo"
-              value={newProduct.description.manufacturerDetails.contactInfo}
-              onChange={handleChange}
-            />
-          </label>
-        </fieldset>
-        <label>
-          Warranty:
-          <input
-            type="text"
-            name="description.warranty"
-            value={newProduct.description.warranty}
-            onChange={handleChange}
-          />
-        </label>
-      </fieldset>
-
+      <textarea
+        name="description"
+        placeholder="Description"
+        value={newProduct.description}
+        onChange={handleChange}
+      ></textarea>
       <input
         type="number"
         name="quantity"
@@ -481,62 +267,72 @@ const NewProductForm = () => {
         value={newProduct.quantity}
         onChange={handleChange}
       />
-
-      <div
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        style={{
-          border: '2px dashed #ccc',
-          padding: '20px',
-          cursor: 'pointer',
-          backgroundColor: dragging ? '#f0f0f0' : 'transparent',
-        }}
+      <select name="type" value={newProduct.type} onChange={handleChange}
       >
-        <button type="button" onClick={handleClick}>
-          Upload Images
-        </button>
+        <option value="product">Product</option>
+      </select>
+
+      {newProduct.type === 'collaborator' && (
+        <div>
+          <h4>Collaborators</h4>
+          {newProduct.collaborators.map((collaborator, index) => (
+            <div key={index}>
+              <input
+                type="text"
+                name={`collaborators-${index}`}
+                placeholder="Collaborator Username"
+                value={collaborator.username}
+                onChange={(e) =>
+                  setNewProduct({
+                    ...newProduct,
+                    collaborators: newProduct.collaborators.map((c, i) =>
+                      i === index ? { ...c, username: e.target.value } : c
+                    ),
+                  })
+                }
+              />
+              <input
+                type="number"
+                name={`amount-${index}`}
+                placeholder="Amount"
+                value={collaborator.amount}
+                onChange={handleChange}
+              />
+              <button type="button" onClick={() => removeCollaborator(index)}>
+                Remove
+              </button>
+            </div>
+          ))}
+          <button type="button" onClick={addCollaborator}>
+            Add Collaborator
+          </button>
+        </div>
+      )}
+
+      <label>
+        Images:
         <input
-          ref={fileInputRef}
           type="file"
           name="images"
-          accept="image/*"
-          multiple
           onChange={handleChange}
+          ref={fileInputRef}
           style={{ display: 'none' }}
+          multiple
         />
-        <p>{newProduct.images.length} images selected</p>
-      </div>
+        <div
+          className={`drop-zone ${dragging ? 'dragging' : ''}`}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onClick={handleClick}
+        >
+          {newProduct.images.length > 0
+            ? newProduct.images.map((image) => image.name).join(', ')
+            : 'Drag and drop images or click to select'}
+        </div>
+      </label>
 
-      <fieldset>
-        <legend>Collaborators</legend>
-        {newProduct.collaborators.map((collaborator, index) => (
-          <div key={index}>
-            <input
-              type="text"
-              name={`collaborators-${index}`}
-              placeholder="Collaborator username"
-              value={collaborator.username}
-              onChange={(e) => handleChange(e)}
-            />
-            <input
-              type="number"
-              name={`collaborators-${index}-amount`}
-              value={collaborator.amount}
-              onChange={(e) => handleChange(e)}
-            />
-            <button type="button" onClick={() => removeCollaborator(index)}>
-              Remove Collaborator
-            </button>
-          </div>
-        ))}
-        <button type="button" onClick={addCollaborator}>
-          Add Collaborator
-        </button>
-      </fieldset>
-
-      <button type="submit">Submit Product</button>
-
+      <button type="submit">Create New Product</button>
       {message && <p>{message}</p>}
     </form>
   );

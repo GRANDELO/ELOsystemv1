@@ -1,94 +1,92 @@
-const ProductSchema = new mongoose.Schema({
-    model: { type: String, required: true, trim: true },
-    make: { type: String, required: true, trim: true },
-    yearOfManufacture: { 
-      type: Number, 
-      required: true, 
-      min: 1900, 
-      max: new Date().getFullYear() 
-    },
-    specifications: [
-      { key: { type: String }, value: { type: String } } // Dynamic key-value pairs
+const mongoose = require('mongoose');
+
+// Assuming you already have the Review model
+const Review = require('./Review'); // Import the Review model
+
+const productSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    category: { type: String, required: true },
+    subCategory: { type: String },
+    description: [
+      {
+        model: { type: String, required: true, trim: true },
+        make: { type: String, required: true, trim: true },
+        yearOfManufacture: { 
+          type: Number, 
+          required: true, 
+          min: 1900, 
+          max: new Date().getFullYear() 
+        },
+        specifications: [
+          { key: { type: String }, value: { type: String } } // Dynamic key-value pairs
+        ],
+        pdescription: { 
+          type: String, 
+          required: true, 
+          trim: true, 
+          maxlength: 5000 // Longer descriptions for advanced use cases
+        },
+        features: { 
+          type: [String], 
+          default: [] // List of unique selling points or highlights 
+        },
+        technicalDetails: { 
+          type: Map, 
+          of: String, 
+          default: {} // Key-value pairs for advanced technical details
+        },
+
+        tags: { type: [String], default: [] },
+        dimensions: { 
+          type: {
+            height: { type: Number, default: null },
+            width: { type: Number, default: null },
+            depth: { type: Number, default: null },
+            weight: { type: Number, default: null }
+          },
+          default: null 
+        },
+        manufacturerDetails: { 
+          type: {
+            name: { type: String },
+            contactInfo: { type: String }
+          },
+          default: null 
+        },
+        warranty: { type: String, default: null },
+      }
     ],
-    description: { 
-      type: String, 
-      required: true, 
-      trim: true, 
-      maxlength: 5000 // Longer descriptions for advanced use cases
-    },
-    features: { 
-      type: [String], 
-      default: [] // List of unique selling points or highlights 
-    },
-    technicalDetails: { 
-      type: Map, 
-      of: String, 
-      default: {} // Key-value pairs for advanced technical details
-    },
-    category: { type: String, required: true }, // Product category
-    subCategory: { type: String, default: null }, // Optional sub-category
-    tags: { type: [String], default: [] }, // Keywords for SEO and search filters
-    price: { type: Number, required: true, min: 0 },
-    discount: { 
-      type: {
-        amount: { type: Number, min: 0, default: 0 }, 
-        type: { type: String, enum: ['percentage', 'fixed'], default: 'fixed' }
-      }, 
-      default: null 
-    },
-    stock: { type: Number, required: true, min: 0 }, // Inventory count
-    dimensions: { 
-      type: {
-        height: { type: Number, default: null },
-        width: { type: Number, default: null },
-        depth: { type: Number, default: null },
-        weight: { type: Number, default: null }
-      },
-      default: null 
-    },
-    images: { type: [String], default: [] }, // URLs to product images
-    videos: { type: [String], default: [] }, // URLs to product videos
-    manufacturerDetails: { 
-      type: {
-        name: { type: String },
-        contactInfo: { type: String }
-      },
-      default: null 
-    },
-    ratings: { 
-      type: {
-        average: { type: Number, default: 0 },
-        count: { type: Number, default: 0 }
-      },
-      default: null 
-    },
-    reviews: { 
+    price: { type: Number, required: true },
+    username: { type: String, required: true },
+    productId: { type: String, unique: true, required: true },
+    discount: { type: Boolean, default: false },
+    discountpersentage: { type: Number, default: undefined },
+    lable: { type: String, default: undefined },
+    quantity: { type: Number, required: true },
+    images: [String],
+    type: { type: String, default: undefined }, // New field
+    collaborators: { 
       type: [
         {
-          userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-          comment: { type: String },
-          rating: { type: Number, min: 1, max: 5 },
-          date: { type: Date, default: Date.now }
-        }
+          username: { type: String }, // Collaborator's username
+          amount: { type: Number },  // Money to be paid to the collaborator
+        },
       ], 
-      default: []
-    },
-    availability: { 
-      type: String, 
-      enum: ['in stock', 'out of stock', 'pre-order'], 
-      default: 'in stock' 
-    },
-    returnPolicy: { type: String, default: 'No returns' }, // Text for policy details
-    warranty: { type: String, default: null }, // Warranty info
-    sellerDetails: { 
-      type: {
-        name: { type: String },
-        contact: { type: String },
-        location: { type: String }
-      },
-      default: null 
-    },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }
-  });
-  
+      default: undefined 
+    }, // New field
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Review', // Reference to the Review model
+      }
+    ], // New field to store reviews
+  },
+  { timestamps: true }
+);
+
+const Product = mongoose.model('Product', productSchema);
+
+module.exports = Product;
+
+
