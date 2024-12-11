@@ -56,21 +56,17 @@ exports.createProduct = async (req, res) => {
       dimensions,
       manufacturerDetails,
       warranty,
-      collaborators,
+      collaborators, // Expect an array of collaborators
     } = req.body;
-
-    // Parse fields that should be objects/arrays if they are strings
-    const parsedSpecifications = typeof specifications === 'string' ? JSON.parse(specifications) : specifications;
-    const parsedTechnicalDetails = typeof technicalDetails === 'string' ? JSON.parse(technicalDetails) : technicalDetails;
-    const parsedDimensions = typeof dimensions === 'string' ? JSON.parse(dimensions) : dimensions;
-    const parsedManufacturerDetails = typeof manufacturerDetails === 'string' ? JSON.parse(manufacturerDetails) : manufacturerDetails;
-
+    console.log(specifications);
+    // Upload multiple images if available
     const imageUrls =
       req.files && req.files.length > 0 ? await uploadFiles(req.files) : [];
     console.log("Uploaded images:", imageUrls);
 
     const productId = uuidv4();
 
+    // Check the type and set collaborators accordingly
     const collaboratorData =
       type === "collaborator" && collaborators
         ? collaborators
@@ -88,15 +84,15 @@ exports.createProduct = async (req, res) => {
       discountPercentage: undefined,
       label: undefined,
       quantity,
-      images: imageUrls,
+      images: imageUrls, // Store array of image URLs
       type,
-      collaborators: collaboratorData,
+      collaborators: collaboratorData, // Set collaborators if type is "collaborator"
       yearOfManufacture,
-      specifications: parsedSpecifications,
+      specifications,
       features,
-      technicalDetails: parsedTechnicalDetails,
-      dimensions: parsedDimensions,
-      manufacturerDetails: parsedManufacturerDetails,
+      technicalDetails,
+      dimensions,
+      manufacturerDetails,
       warranty,
     });
 
@@ -107,7 +103,6 @@ exports.createProduct = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 
 //get all items
 exports.getAllProducts = async (req, res) => {
