@@ -112,14 +112,15 @@ const categories = [
 const NewProductForm = () => {
   const lusername = getUsernameFromToken();
   const fileInputRef = useRef(null);
+
   const [newProduct, setNewProduct] = useState({
     name: '',
     category: '',
     subCategory: '',
     price: '',
-    description: "",
+    description: "", // Changed to a simple string
     yearOfManufacture: '',
-    specifications: [],
+    specifications: [], // Independent specifications
     features: [],
     technicalDetails: {},
     dimensions: {
@@ -139,7 +140,7 @@ const NewProductForm = () => {
     type: '',
     collaborators: [],
   });
-
+  
   const [subCategories, setSubCategories] = useState([]);
   const [dragging, setDragging] = useState(false);
   const [message, setMessage] = useState('');
@@ -155,58 +156,63 @@ const NewProductForm = () => {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-
+  
     if (name === 'images') {
-      setNewProduct({ ...newProduct, images: Array.from(files) });
-    } else if (name.startsWith('description.specifications')) {
+      const newImages = Array.from(files);
+      if (newProduct.images.length + newImages.length > 6) {
+        setMessage('You can only upload a maximum of 6 images.');
+        return;
+      }
+      setNewProduct({ ...newProduct, images: [...newProduct.images, ...newImages] });
+    } else if (name.includes('.')) {
+      const [parentKey, childKey] = name.split('.');
+      setNewProduct({
+        ...newProduct,
+        [parentKey]: {
+          ...newProduct[parentKey],
+          [childKey]: value,
+        },
+      });
+    } else if (name.startsWith('specifications')) {
       const index = parseInt(name.split('-')[1], 10);
       const keyOrValue = name.split('-')[2];
-      const updatedSpecifications = [...newProduct.description.specifications];
+      const updatedSpecifications = [...newProduct.specifications];
       updatedSpecifications[index] = {
         ...updatedSpecifications[index],
         [keyOrValue]: value,
       };
-      setNewProduct({
-        ...newProduct,
-        description: { ...newProduct.description, specifications: updatedSpecifications },
-      });
-    } else if (name.startsWith('description.')) {
-      const field = name.split('.')[1];
-      setNewProduct({
-        ...newProduct,
-        description: { ...newProduct.description, [field]: value },
-      });
+      setNewProduct({ ...newProduct, specifications: updatedSpecifications });
     } else {
       setNewProduct({ ...newProduct, [name]: value });
     }
   };
+  
 
-  const addSpecification = () => {
-    setNewProduct({
-      ...newProduct,
-      description: {
-        ...newProduct.description,
-        specifications: [...newProduct.description.specifications, { key: '', value: '' }],
-      },
-    });
-  };
+const handleDrop = (e) => {
+  e.preventDefault();
+  setDragging(false);
+  const files = Array.from(e.dataTransfer.files);
+  if (newProduct.images.length + files.length > 6) {
+    setMessage('You can only upload a maximum of 6 images.');
+    return;
+  }
+  setNewProduct({ ...newProduct, images: [...newProduct.images, ...files] });
+};
 
-  const removeSpecification = (index) => {
-    const updatedSpecifications = newProduct.description.specifications.filter((_, i) => i !== index);
-    setNewProduct({
-      ...newProduct,
-      description: { ...newProduct.description, specifications: updatedSpecifications },
-    });
-  };
+  
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setDragging(false);
-    const files = Array.from(e.dataTransfer.files);
-    if (files.length > 0) {
-      setNewProduct({ ...newProduct, images: files });
-    }
-  };
+const addSpecification = () => {
+  setNewProduct({
+    ...newProduct,
+    specifications: [...newProduct.specifications, { key: '', value: '' }],
+  });
+};
+
+const removeSpecification = (index) => {
+  const updatedSpecifications = newProduct.specifications.filter((_, i) => i !== index);
+  setNewProduct({ ...newProduct, specifications: updatedSpecifications });
+};
+
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -230,26 +236,25 @@ const NewProductForm = () => {
         newProduct.images.forEach((image) => {
           formData.append('images', image);
         });
-      } else if (key === 'collaborators') {
-        formData.append(key, JSON.stringify(newProduct.collaborators));
-      } else if (key === 'description') {
-        formData.append(key, JSON.stringify(newProduct.description));
+      } else if (key === 'specifications' || key === 'collaborators') {
+        formData.append(key, JSON.stringify(newProduct[key]));
       } else {
         formData.append(key, newProduct[key]);
       }
     });
-
+  
     try {
       const res = await axios.post('https://elosystemv1.onrender.com/api/products', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      console.log('NewProduct created:', res.data);
+      console.log('New Product created:', res.data);
       setMessage('Product created successfully');
     } catch (err) {
       console.error(err);
       setMessage('Error creating product');
     }
   };
+  
 
   return (
     <form onSubmit={handleSubmit}>
@@ -337,7 +342,7 @@ const NewProductForm = () => {
         type="number"
         name="dimensions.height"
         placeholder="Height (cm)"
-        value={newProduct.description.dimensions.height}
+        value={newProduct.dimensions.height}
         onChange={handleChange}
       />
       <input
@@ -411,9 +416,10 @@ const NewProductForm = () => {
           onClick={handleClick}
         >
           {newProduct.images.length > 0
-            ? newProduct.images.map((image) => image.name).join(', ')
-            : 'Drag and drop images or click to select'}
+            ? `${newProduct.images.length}/6 images selected: ${newProduct.images.map((image) => image.name).join(', ')}`
+            : 'Drag and drop images or click to select (max 6)'}
         </div>
+
       </label>
 
       <button type="submit">Create New Product</button>
