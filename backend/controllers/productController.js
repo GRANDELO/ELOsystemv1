@@ -59,20 +59,21 @@ exports.createProduct = async (req, res) => {
       collaborators, // Expect an array of collaborators
     } = req.body;
 
-    console.log("Received specifications:", specifications);
-
-    // Parse specifications if they are sent as a JSON string
-    const parsedSpecifications = Array.isArray(specifications)
-      ? specifications
-      : JSON.parse(specifications || "[]");
-
-    // Validate that specifications are in the correct format
-    const validatedSpecifications = parsedSpecifications.map((spec) => {
-      if (spec.key && spec.value) {
-        return { key: spec.key, value: spec.value };
+    // Parse specifications if they are sent as a string
+    let parsedSpecifications;
+    if (typeof specifications === "string") {
+      try {
+        parsedSpecifications = JSON.parse(specifications);
+      } catch (err) {
+        throw new Error("Invalid specifications format. Must be valid JSON.");
       }
-      throw new Error("Invalid specification format: Each specification must have a key and a value.");
-    });
+    } else if (Array.isArray(specifications)) {
+      parsedSpecifications = specifications; // Already an array
+    } else {
+      throw new Error("Specifications must be a valid JSON array.");
+    }
+
+    console.log("Parsed specifications:", parsedSpecifications);
 
     // Upload multiple images if available
     const imageUrls =
@@ -81,11 +82,8 @@ exports.createProduct = async (req, res) => {
 
     const productId = uuidv4();
 
-    // Check the type and set collaborators accordingly
     const collaboratorData =
-      type === "collaborator" && collaborators
-        ? JSON.parse(collaborators)
-        : undefined;
+      type === "collaborator" && collaborators ? collaborators : undefined;
 
     const newProduct = new Product({
       name,
@@ -99,15 +97,15 @@ exports.createProduct = async (req, res) => {
       discountPercentage: undefined,
       label: undefined,
       quantity,
-      images: imageUrls, // Store array of image URLs
+      images: imageUrls,
       type,
-      collaborators: collaboratorData, // Set collaborators if type is "collaborator"
+      collaborators: collaboratorData,
       yearOfManufacture,
-      specifications: validatedSpecifications, // Ensure specifications are properly stored
+      specifications: parsedSpecifications, // Store parsed specifications
       features,
-      technicalDetails: technicalDetails ? JSON.parse(technicalDetails) : {},
-      dimensions: dimensions ? JSON.parse(dimensions) : null,
-      manufacturerDetails: manufacturerDetails ? JSON.parse(manufacturerDetails) : null,
+      technicalDetails,
+      dimensions,
+      manufacturerDetails,
       warranty,
     });
 
@@ -118,6 +116,7 @@ exports.createProduct = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 //get all items
 exports.getAllProducts = async (req, res) => {
