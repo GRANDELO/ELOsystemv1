@@ -58,7 +58,22 @@ exports.createProduct = async (req, res) => {
       warranty,
       collaborators, // Expect an array of collaborators
     } = req.body;
-    console.log(specifications);
+
+    console.log("Received specifications:", specifications);
+
+    // Parse specifications if they are sent as a JSON string
+    const parsedSpecifications = Array.isArray(specifications)
+      ? specifications
+      : JSON.parse(specifications || "[]");
+
+    // Validate that specifications are in the correct format
+    const validatedSpecifications = parsedSpecifications.map((spec) => {
+      if (spec.key && spec.value) {
+        return { key: spec.key, value: spec.value };
+      }
+      throw new Error("Invalid specification format: Each specification must have a key and a value.");
+    });
+
     // Upload multiple images if available
     const imageUrls =
       req.files && req.files.length > 0 ? await uploadFiles(req.files) : [];
@@ -69,7 +84,7 @@ exports.createProduct = async (req, res) => {
     // Check the type and set collaborators accordingly
     const collaboratorData =
       type === "collaborator" && collaborators
-        ? collaborators
+        ? JSON.parse(collaborators)
         : undefined;
 
     const newProduct = new Product({
@@ -88,11 +103,11 @@ exports.createProduct = async (req, res) => {
       type,
       collaborators: collaboratorData, // Set collaborators if type is "collaborator"
       yearOfManufacture,
-      specifications,
+      specifications: validatedSpecifications, // Ensure specifications are properly stored
       features,
-      technicalDetails,
-      dimensions,
-      manufacturerDetails,
+      technicalDetails: technicalDetails ? JSON.parse(technicalDetails) : {},
+      dimensions: dimensions ? JSON.parse(dimensions) : null,
+      manufacturerDetails: manufacturerDetails ? JSON.parse(manufacturerDetails) : null,
       warranty,
     });
 

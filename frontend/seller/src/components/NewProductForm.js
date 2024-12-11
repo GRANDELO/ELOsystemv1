@@ -120,7 +120,7 @@ const NewProductForm = () => {
     price: '',
     description: "", // Changed to a simple string
     yearOfManufacture: '',
-    specifications: [], // Independent specifications
+    specifications: [{key: '' , value: ''}], // Independent specifications
     features: [],
     technicalDetails: {},
     dimensions: {
@@ -227,17 +227,24 @@ const removeSpecification = (index) => {
     e.stopPropagation();
     fileInputRef.current.click();
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
+  
+    // Serialize the data properly
     Object.keys(newProduct).forEach((key) => {
       if (key === 'images') {
         newProduct.images.forEach((image) => {
           formData.append('images', image);
         });
-      } else if (key === 'specifications' || key === 'collaborators') {
+      } else if (key === 'specifications') {
+        // Ensure specifications is sent as a JSON array
+        formData.append(key, JSON.stringify(newProduct.specifications));
+      } else if (key === 'technicalDetails' || key === 'dimensions') {
+        // Ensure these are sent as JSON objects
         formData.append(key, JSON.stringify(newProduct[key]));
+      } else if (key === 'collaborators') {
+        formData.append(key, JSON.stringify(newProduct.collaborators));
       } else {
         formData.append(key, newProduct[key]);
       }
@@ -250,10 +257,11 @@ const removeSpecification = (index) => {
       console.log('New Product created:', res.data);
       setMessage('Product created successfully');
     } catch (err) {
-      console.error(err);
+      console.error('Error in createProduct:', err);
       setMessage('Error creating product');
     }
   };
+  
   
 
   return (

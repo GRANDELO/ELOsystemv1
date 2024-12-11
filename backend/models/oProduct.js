@@ -19,7 +19,10 @@ const productSchema = new mongoose.Schema(
     images: [String],
     yearOfManufacture: { type: Number, min: 1900, max: new Date().getFullYear(), default: undefined },
     specifications: [
-      { key: { type: String }, value: { type: String } }
+      {
+        key: { type: String, required: true },
+        value: { type: String, required: true },
+      },
     ],
     features: { type: [String], default: []  },// List of unique selling points or highlights 
     technicalDetails: { type: Map, of: String, default: {} }, // Key-value pairs for advanced technical details
