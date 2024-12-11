@@ -237,14 +237,8 @@ const removeSpecification = (index) => {
         newProduct.images.forEach((image) => {
           formData.append('images', image);
         });
-      } else if (key === 'specifications') {
-        // Ensure specifications is sent as a JSON array
-        formData.append(key, JSON.stringify(newProduct.specifications));
-      } else if (key === 'technicalDetails' || key === 'dimensions') {
-        // Ensure these are sent as JSON objects
-        formData.append(key, JSON.stringify(newProduct[key]));
-      } else if (key === 'collaborators') {
-        formData.append(key, JSON.stringify(newProduct.collaborators));
+      } else if (key === 'specifications' || key === 'technicalDetails' || key === 'dimensions' || key === 'collaborators') {
+        formData.append(key, JSON.stringify(newProduct[key])); // Serialize arrays/objects to JSON
       } else {
         formData.append(key, newProduct[key]);
       }
@@ -257,10 +251,11 @@ const removeSpecification = (index) => {
       console.log('New Product created:', res.data);
       setMessage('Product created successfully');
     } catch (err) {
-      console.error('Error in createProduct:', err);
+      console.error('Error in createProduct:', err.response?.data || err.message);
       setMessage('Error creating product');
     }
   };
+  
   
   
 

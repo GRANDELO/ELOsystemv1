@@ -59,6 +59,8 @@ exports.createProduct = async (req, res) => {
       collaborators,
     } = req.body;
 
+    console.log(req.body);
+
     // Parse specifications if they are strings
     const parsedSpecifications =
       typeof specifications === "string" ? JSON.parse(specifications) : specifications;
