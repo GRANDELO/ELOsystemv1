@@ -49,47 +49,19 @@ exports.createProduct = async (req, res) => {
       username,
       quantity,
       type,
-      yearOfManufacture,
-      specifications,
-      features,
-      technicalDetails,
-      dimensions,
-      manufacturerDetails,
-      warranty,
       collaborators,
     } = req.body;
 
-    // Log incoming data for debugging
-    console.log(req.body);
 
-    // Ensure required fields are present
-    if (!name || !category || !description || !price || !username || !quantity) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
-
-    // Parse specifications if they are strings
-    const parsedSpecifications = specifications && typeof specifications === "string" ? JSON.parse(specifications) : specifications;
-
-    // Parse technicalDetails if it is a string
-    const parsedTechnicalDetails = technicalDetails && typeof technicalDetails === "string" ? JSON.parse(technicalDetails) : technicalDetails;
-
-    // Parse dimensions if it is a string
-    const parsedDimensions = dimensions && typeof dimensions === "string" ? JSON.parse(dimensions) : dimensions;
-
-    // Parse manufacturerDetails if it is a string
-    const parsedManufacturerDetails = manufacturerDetails && typeof manufacturerDetails === "string" ? JSON.parse(manufacturerDetails) : manufacturerDetails;
-
-    // Ensure collaborators is an array if it’s provided
-    const parsedCollaborators = collaborators && Array.isArray(collaborators) ? collaborators : [];
-
-    // Upload images if available
-    const imageUrls = req.files && req.files.length > 0 ? await uploadFiles(req.files) : [];
+    const imageUrls =
+      req.files && req.files.length > 0 ? await uploadFiles(req.files) : [];
     console.log("Uploaded images:", imageUrls);
 
-    // Generate productId (UUID or another strategy)
     const productId = uuidv4();
 
-    // Create new product document
+    const collaboratorData =
+      type === "collaborator" && collaborators ? collaborators : undefined;
+
     const newProduct = new Product({
       name,
       category,
@@ -104,20 +76,11 @@ exports.createProduct = async (req, res) => {
       quantity,
       images: imageUrls,
       type,
-      collaborators: parsedCollaborators,
-      yearOfManufacture,
-      specifications: parsedSpecifications,
-      features: features || [], // Default to empty array if not provided
-      technicalDetails: parsedTechnicalDetails, // Parsed as Map
-      dimensions: parsedDimensions, // Parsed as Object
-      manufacturerDetails: parsedManufacturerDetails, // Parsed as Object
-      warranty,
+      collaborators: collaboratorData,
+
     });
 
-    // Save the new product to the database
     await newProduct.save();
-
-    // Return the created product
     res.status(201).json({ product: newProduct });
   } catch (error) {
     console.error("Error in createProduct:", error);

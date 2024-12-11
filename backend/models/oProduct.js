@@ -17,33 +17,6 @@ const productSchema = new mongoose.Schema(
     lable: { type: String, default: undefined },
     quantity: { type: Number, required: true },
     images: [String],
-    yearOfManufacture: { type: Number, min: 1900, max: new Date().getFullYear(), default: undefined },
-    specifications: [
-      {
-        key: { type: String, required: true },
-        value: { type: String, required: true },
-      },
-    ],
-    features: { type: [String], default: []  },// List of unique selling points or highlights 
-    technicalDetails: { type: Map, of: String, default: {} }, // Key-value pairs for advanced technical details
-    dimensions: { 
-      type: {
-        height: { type: Number, default: null },
-        width: { type: Number, default: null },
-        depth: { type: Number, default: null },
-        weight: { type: Number, default: null }
-      },
-      default: null 
-    },
-    manufacturerDetails: { 
-      type: {
-        name: { type: String },
-        contactInfo: { type: String }
-      },
-      default: null 
-    },
-    warranty: { type: String, default: null }, // Warranty info
-
 
     type: { type: String, default: undefined }, // New field
     collaborators: { 
