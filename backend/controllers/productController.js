@@ -56,24 +56,24 @@ exports.createProduct = async (req, res) => {
       dimensions,
       manufacturerDetails,
       warranty,
-      collaborators, // Expect an array of collaborators
+      collaborators,
     } = req.body;
 
-    // Parse specifications if they are sent as a string
-    let parsedSpecifications;
-    if (typeof specifications === "string") {
-      try {
-        parsedSpecifications = JSON.parse(specifications);
-      } catch (err) {
-        throw new Error("Invalid specifications format. Must be valid JSON.");
-      }
-    } else if (Array.isArray(specifications)) {
-      parsedSpecifications = specifications; // Already an array
-    } else {
-      throw new Error("Specifications must be a valid JSON array.");
-    }
+    // Parse specifications if they are strings
+    const parsedSpecifications =
+      typeof specifications === "string" ? JSON.parse(specifications) : specifications;
 
-    console.log("Parsed specifications:", parsedSpecifications);
+    // Parse technicalDetails if it is a string
+    const parsedTechnicalDetails =
+      typeof technicalDetails === "string" ? JSON.parse(technicalDetails) : technicalDetails;
+
+    // Parse dimensions if it is a string
+    const parsedDimensions =
+      typeof dimensions === "string" ? JSON.parse(dimensions) : dimensions;
+
+    // Parse manufacturerDetails if it is a string
+    const parsedManufacturerDetails =
+      typeof manufacturerDetails === "string" ? JSON.parse(manufacturerDetails) : manufacturerDetails;
 
     // Upload multiple images if available
     const imageUrls =
@@ -101,11 +101,11 @@ exports.createProduct = async (req, res) => {
       type,
       collaborators: collaboratorData,
       yearOfManufacture,
-      specifications: parsedSpecifications, // Store parsed specifications
+      specifications: parsedSpecifications,
       features,
-      technicalDetails,
-      dimensions,
-      manufacturerDetails,
+      technicalDetails: parsedTechnicalDetails, // Parsed as Map
+      dimensions: parsedDimensions, // Parsed as Object
+      manufacturerDetails: parsedManufacturerDetails, // Parsed as Object
       warranty,
     });
 
@@ -116,6 +116,7 @@ exports.createProduct = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 
 //get all items
