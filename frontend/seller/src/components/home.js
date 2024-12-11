@@ -18,6 +18,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('product-list');
   const [loading, setLoading] = useState(false);
+  const [setnavop, setsetnavop] = useState(false);
   const [uiState, setUiState] = useState({
     settings: false,
     notifications: false,
@@ -28,6 +29,7 @@ const Home = () => {
 
   // Toggle visibility for sections
   const toggleVisibility = (section) => {
+    setsetnavop(!setnavop)
     setUiState((prev) => ({
       settings: section === 'settings' ? !prev.settings : false,
       notifications: section === 'notifications' ? !prev.notifications : false,
@@ -35,6 +37,15 @@ const Home = () => {
     }));
 
     if (section === 'notifications') setUnreadNotifications(0); // Reset unread count
+  };
+
+  // Close all floating sections
+  const closeAllFloatingSections = () => {
+    setUiState({
+      settings: false,
+      notifications: false,
+      shopSettings: false,
+    });
   };
 
   // Fetch unread notifications
@@ -66,15 +77,31 @@ const Home = () => {
     }
   }, [activeSection]);
 
+  // Handle back button press
+  useEffect(() => {
+    const handlePopState = () => {
+      if (uiState.settings || uiState.notifications || uiState.shopSettings) {
+        closeAllFloatingSections();
+        return;
+      }
+      navigate(-1); // If no floating sections are open, navigate back
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [uiState, navigate]);
+
   return (
     <div className="home">
       <Header />
 
       <main className="home-main">
-        {/* Settings Section */}
-
-      {/* Main Content */}
-        <section className="home-intro">
+        {/* Main Content */}
+        
+        {!setnavop ? (
+          <section className="home-intro">
           <div className="home-toggle-buttons">
             <button
               className={`home-settings-button ${activeSection === 'product-list' ? 'active' : ''}`}
@@ -110,26 +137,39 @@ const Home = () => {
             )}
           </div>
         </section>
+
+        ) : (
+
         <div>
-        <section className={`home-settings-section ${uiState.settings ? 'active' : ''}`}>
-          <Withdrawal />
-          <Settings />
-          <ShopSettings />
-        </section>
+          <section className={`home-settings-section ${uiState.settings ? 'active' : ''}`}>
+            <div>
+            <Withdrawal />
+            </div>
+            
+            <div>
+            <Settings />
+            </div>
+            
+            <div>
+            <ShopSettings />
+            </div>
+            
+          </section>
 
-        {/* Notifications Section */}
-        <section className={`home-notifications-section ${uiState.notifications ? 'active' : ''}`}>
-          <Notifications />
-        </section>
+          {/* Notifications Section */}
+          <section className={`home-notifications-section ${uiState.notifications ? 'active' : ''}`}>
+            <Notifications />
+          </section>
 
-        {/* Shop Settings Section */}
-        <section className={`home-shop-settings-section ${uiState.shopSettings ? 'active' : ''}`}>
-          <ShopSettings />
-        </section>
+          {/* Shop Settings Section */}
+          <section className={`home-shop-settings-section ${uiState.shopSettings ? 'active' : ''}`}>
+            <ShopSettings />
+          </section>
         </div>
+        )
 
-
-
+        }
+        
       </main>
 
       {/* Floating Action Buttons (Mobile Only) */}

@@ -1,19 +1,46 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import axiosInstance from './axiosInstance';
-import './styles/ProductForm.css';
-import ProductList from './ProductsList';
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import axiosInstance from './axiosInstance'; // Replace with your Axios setup
+import Dropzone from 'react-dropzone';
+
 const ProductForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
+  const [images, setImages] = useState([]);
+
+  const handleDrop = (acceptedFiles) => {
+    setImages((prevImages) => [...prevImages, ...acceptedFiles.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }))]);
+  };
+
+  const handleRemoveImage = (index) => {
+    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+  };
+
+
   const [formData, setFormData] = useState({
     name: '',
-    description: '',
     price: '',
     category: '',
     image: null,
+    description: {
+      model: '',
+      make: '',
+      yearOfManufacture: '',
+      specifications: [{ key: '', value: '' }],
+      pdescription: '',
+      features: [''],
+      technicalDetails: {},
+      tags: [''],
+      dimensions: { height: '', width: '', depth: '', weight: '' },
+      manufacturerDetails: { name: '', contactInfo: '' },
+      warranty: '',
+    },
   });
+
   const [dragging, setDragging] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -35,35 +62,47 @@ const ProductForm = () => {
   }, [id]);
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === 'image') {
-      setFormData({ ...formData, [name]: files[0] });
+    const { name, value } = e.target;
+    const [parent, child, index] = name.split('.');
+    if (parent === 'description') {
+      if (index !== undefined) {
+        const updatedArray = [...formData.description[child]];
+        updatedArray[index] = value;
+        setFormData({
+          ...formData,
+          description: { ...formData.description, [child]: updatedArray },
+        });
+      } else {
+        setFormData({
+          ...formData,
+          description: { ...formData.description, [child]: value },
+        });
+      }
     } else {
       setFormData({ ...formData, [name]: value });
     }
   };
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setDragging(false);
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      setFormData({ ...formData, image: files[0] });
-    }
+  const handleFileChange = (e) => {
+    setFormData({ ...formData, image: e.target.files[0] });
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setDragging(true);
+  const handleAddField = (field) => {
+    setFormData((prev) => ({
+      ...prev,
+      description: {
+        ...prev.description,
+        [field]: [...prev.description[field], ''],
+      },
+    }));
   };
 
-  const handleDragLeave = () => {
-    setDragging(false);
-  };
-
-  const handleClick = (e) => {
-    e.stopPropagation(); // Prevents the second click
-    fileInputRef.current.click();
+  const handleRemoveField = (field, index) => {
+    const updatedArray = formData.description[field].filter((_, i) => i !== index);
+    setFormData((prev) => ({
+      ...prev,
+      description: { ...prev.description, [field]: updatedArray },
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -71,16 +110,16 @@ const ProductForm = () => {
     const token = sessionStorage.getItem('userToken');
     const formDataToSend = new FormData();
     formDataToSend.append('name', formData.name);
-    formDataToSend.append('description', formData.description);
     formDataToSend.append('price', formData.price);
     formDataToSend.append('category', formData.category);
+    formDataToSend.append('description', JSON.stringify(formData.description));
     if (formData.image) {
       formDataToSend.append('image', formData.image);
     }
-  
+
     try {
       if (id) {
-        await axiosInstance.put(`products/products/${id}`, formDataToSend, {
+        await axiosInstance.put(`/products/products/${id}`, formDataToSend, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${token}`,
@@ -103,45 +142,17 @@ const ProductForm = () => {
     }
   };
 
-  const handleDelete = async () => {
-    const token = sessionStorage.getItem('userToken');
-    try {
-      await axiosInstance.delete(`/products/products/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setMessage('Product deleted successfully');
-      navigate('/home');
-    } catch (error) {
-      console.error('Error deleting product:', error.message);
-      setMessage(`Error deleting product: ${error.message}`);
-    }
-  };
-
   return (
-    <div className="product-form-container">
-      <form onSubmit={handleSubmit}>
-        <label>
-          Name:
-          <input type="text" name="name" value={formData.name} onChange={handleChange} required />
-        </label>
-        <label>
-          Description:
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            rows="4"
-            cols="50"
-            placeholder="Enter the description here..."
-            required
-            style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
-          />
-        </label>
-        <label>
-          Price:
-          <input type="number" name="price" value={formData.price} onChange={handleChange} required />
-        </label>
-        <label>
+    <form onSubmit={handleSubmit}>
+      <label>
+        Name:
+        <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+      </label>
+      <label>
+        Price:
+        <input type="number" name="price" value={formData.price} onChange={handleChange} required />
+      </label>
+      <label>
           Category:
           <select id="category" name="category" value={formData.category} onChange={handleChange} required >
             {/* Category options */}
@@ -219,33 +230,203 @@ const ProductForm = () => {
             </optgroup>
           </select>
         </label>
+      <fieldset>
+        <legend>Description</legend>
         <label>
-          Image:
+          Model:
           <input
-            type="file"
-            name="image"
+            type="text"
+            name="description.model"
+            value={formData.description.model}
             onChange={handleChange}
-            ref={fileInputRef}
-            style={{ display: 'none' }}
           />
-          <div
-            className={`drop-zone ${dragging ? 'dragging' : ''}`}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            onClick={handleClick}
-          >
-            {formData.image ? formData.image.name : 'Drag and drop an image or click to select'}
-          </div>
         </label>
-        <button type="submit">{id ? 'Update' : 'Submit'}</button>
-        {id && <button type="button" onClick={handleDelete}>Delete</button>}
-        {message && <p>{message}</p>}
-      </form>
-      <div>
-        < ProductList/>
+        <label>
+          Make:
+          <input
+            type="text"
+            name="description.make"
+            value={formData.description.make}
+            onChange={handleChange}
+          />
+        </label>
+        <label>
+          Year of Manufacture:
+          <input
+            type="text"
+            name="description.yearOfManufacture"
+            value={formData.description.yearOfManufacture}
+            onChange={handleChange}
+          />
+        </label>
+        <fieldset>
+          <legend>Specifications</legend>
+          {formData.description.specifications.map((spec, index) => (
+            <div key={index}>
+              <input
+                type="text"
+                name={`description.specifications.${index}.key`}
+                placeholder="Key"
+                value={spec.key}
+                onChange={handleChange}
+              />
+              <input
+                type="text"
+                name={`description.specifications.${index}.value`}
+                placeholder="Value"
+                value={spec.value}
+                onChange={handleChange}
+              />
+              <button type="button" onClick={() => handleRemoveField('specifications', index)}>
+                Remove
+              </button>
+            </div>
+          ))}
+          <button type="button" onClick={() => handleAddField('specifications')}>
+            Add Specification
+          </button>
+        </fieldset>
+        <label>
+          Product Description:
+          <textarea
+            name="description.pdescription"
+            value={formData.description.pdescription}
+            onChange={handleChange}
+          ></textarea>
+        </label>
+        <label>
+          Features:
+          {formData.description.features.map((feature, index) => (
+            <div key={index}>
+              <input
+                type="text"
+                name={`description.features.${index}`}
+                value={feature}
+                onChange={handleChange}
+              />
+              <button type="button" onClick={() => handleRemoveField('features', index)}>
+                Remove
+              </button>
+            </div>
+          ))}
+          <button type="button" onClick={() => handleAddField('features')}>
+            Add Feature
+          </button>
+        </label>
+        <label>
+          Tags:
+          {formData.description.tags.map((tag, index) => (
+            <div key={index}>
+              <input
+                type="text"
+                name={`description.tags.${index}`}
+                value={tag}
+                onChange={handleChange}
+              />
+              <button type="button" onClick={() => handleRemoveField('tags', index)}>
+                Remove
+              </button>
+            </div>
+          ))}
+          <button type="button" onClick={() => handleAddField('tags')}>
+            Add Tag
+          </button>
+        </label>
+        <fieldset>
+          <legend>Dimensions</legend>
+          <label>
+            Height:
+            <input
+              type="text"
+              name="description.dimensions.height"
+              value={formData.description.dimensions.height}
+              onChange={handleChange}
+            />
+          </label>
+          <label>
+            Width:
+            <input
+              type="text"
+              name="description.dimensions.width"
+              value={formData.description.dimensions.width}
+              onChange={handleChange}
+            />
+          </label>
+          <label>
+            Depth:
+            <input
+              type="text"
+              name="description.dimensions.depth"
+              value={formData.description.dimensions.depth}
+              onChange={handleChange}
+            />
+          </label>
+          <label>
+            Weight:
+            <input
+              type="text"
+              name="description.dimensions.weight"
+              value={formData.description.dimensions.weight}
+              onChange={handleChange}
+            />
+          </label>
+        </fieldset>
+        <fieldset>
+          <legend>Manufacturer Details</legend>
+          <label>
+            Name:
+            <input
+              type="text"
+              name="description.manufacturerDetails.name"
+              value={formData.description.manufacturerDetails.name}
+              onChange={handleChange}
+            />
+          </label>
+          <label>
+            Contact Info:
+            <input
+              type="text"
+              name="description.manufacturerDetails.contactInfo"
+              value={formData.description.manufacturerDetails.contactInfo}
+              onChange={handleChange}
+            />
+          </label>
+        </fieldset>
+        <label>
+          Warranty:
+          <input
+            type="text"
+            name="description.warranty"
+            value={formData.description.warranty}
+            onChange={handleChange}
+          />
+        </label>
+      </fieldset>
+      <div className="image-upload">
+        <label>Upload Images</label>
+        <Dropzone onDrop={handleDrop} accept="image/*" multiple>
+          {({ getRootProps, getInputProps }) => (
+            <div {...getRootProps()} className="dropzone">
+              <input {...getInputProps()} />
+              <p>Drag & drop images here, or click to select files</p>
+            </div>
+          )}
+        </Dropzone>
+
+        <div className="image-preview">
+          {images.map((image, index) => (
+            <div key={index} className="preview">
+              <img src={image.preview} alt={`preview ${index}`} />
+              <button type="button" onClick={() => handleRemoveImage(index)}>
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+      <button type="submit">Submit</button>
+      {message && <p>{message}</p>}
+    </form>
   );
 };
 
