@@ -29,15 +29,28 @@ const Home = () => {
 
   // Toggle visibility for sections
   const toggleVisibility = (section) => {
-    setsetnavop(!setnavop)
-    setUiState((prev) => ({
-      settings: section === 'settings' ? !prev.settings : false,
-      notifications: section === 'notifications' ? !prev.notifications : false,
-      shopSettings: section === 'shopSettings' ? !prev.shopSettings : false,
-    }));
-
-    if (section === 'notifications') setUnreadNotifications(0); // Reset unread count
+    setUiState((prev) => {
+      const newState = {
+        settings: section === 'settings' ? !prev.settings : false,
+        notifications: section === 'notifications' ? !prev.notifications : false,
+        shopSettings: section === 'shopSettings' ? !prev.shopSettings : false,
+      };
+  
+      // Determine if all sections are hidden
+      const isAnySectionVisible = newState.settings || newState.notifications || newState.shopSettings;
+      
+      // Update the state of setnavop based on visibility
+      setsetnavop(isAnySectionVisible);
+  
+      // Reset unread notifications if notifications section is toggled on
+      if (section === 'notifications' && newState.notifications) {
+        setUnreadNotifications(0); // Reset unread count
+      }
+  
+      return newState;
+    });
   };
+  
 
   // Close all floating sections
   const closeAllFloatingSections = () => {

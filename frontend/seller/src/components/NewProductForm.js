@@ -117,12 +117,32 @@ const NewProductForm = () => {
     category: '',
     subCategory: '',
     price: '',
-    description: '',
+    description: {
+      model: '',
+      make: '',
+      yearOfManufacture: '',
+      specifications: [],
+      pdescription: '',
+      features: [],
+      technicalDetails: {},
+      tags: [],
+      dimensions: {
+        height: '',
+        width: '',
+        depth: '',
+        weight: '',
+      },
+      manufacturerDetails: {
+        name: '',
+        contactInfo: '',
+      },
+      warranty: '',
+    },
     username: lusername,
     quantity: '',
-    images: [], // Array for multiple images
+    images: [],
     type: '',
-    collaborators: [], // Array for collaborators
+    collaborators: [],
   });
 
   const [subCategories, setSubCategories] = useState([]);
@@ -140,17 +160,48 @@ const NewProductForm = () => {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+
     if (name === 'images') {
-      // Set selected files in state
       setNewProduct({ ...newProduct, images: Array.from(files) });
-    } else if (name.startsWith('collaborators')) {
+    } else if (name.startsWith('description.specifications')) {
       const index = parseInt(name.split('-')[1], 10);
-      const updatedCollaborators = [...newProduct.collaborators];
-      updatedCollaborators[index] = { ...updatedCollaborators[index], amount: parseFloat(value) || 0 };
-      setNewProduct({ ...newProduct, collaborators: updatedCollaborators });
+      const keyOrValue = name.split('-')[2];
+      const updatedSpecifications = [...newProduct.description.specifications];
+      updatedSpecifications[index] = {
+        ...updatedSpecifications[index],
+        [keyOrValue]: value,
+      };
+      setNewProduct({
+        ...newProduct,
+        description: { ...newProduct.description, specifications: updatedSpecifications },
+      });
+    } else if (name.startsWith('description.')) {
+      const field = name.split('.')[1];
+      setNewProduct({
+        ...newProduct,
+        description: { ...newProduct.description, [field]: value },
+      });
     } else {
       setNewProduct({ ...newProduct, [name]: value });
     }
+  };
+
+  const addSpecification = () => {
+    setNewProduct({
+      ...newProduct,
+      description: {
+        ...newProduct.description,
+        specifications: [...newProduct.description.specifications, { key: '', value: '' }],
+      },
+    });
+  };
+
+  const removeSpecification = (index) => {
+    const updatedSpecifications = newProduct.description.specifications.filter((_, i) => i !== index);
+    setNewProduct({
+      ...newProduct,
+      description: { ...newProduct.description, specifications: updatedSpecifications },
+    });
   };
 
   const handleDrop = (e) => {
@@ -176,18 +227,6 @@ const NewProductForm = () => {
     fileInputRef.current.click();
   };
 
-  const addCollaborator = () => {
-    setNewProduct({
-      ...newProduct,
-      collaborators: [...newProduct.collaborators, { username: '', amount: 0 }],
-    });
-  };
-
-  const removeCollaborator = (index) => {
-    const updatedCollaborators = newProduct.collaborators.filter((_, i) => i !== index);
-    setNewProduct({ ...newProduct, collaborators: updatedCollaborators });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -198,6 +237,8 @@ const NewProductForm = () => {
         });
       } else if (key === 'collaborators') {
         formData.append(key, JSON.stringify(newProduct.collaborators));
+      } else if (key === 'description') {
+        formData.append(key, JSON.stringify(newProduct.description));
       } else {
         formData.append(key, newProduct[key]);
       }
@@ -254,11 +295,114 @@ const NewProductForm = () => {
         onChange={handleChange}
       />
       <textarea
-        name="description"
-        placeholder="Description"
-        value={newProduct.description}
+        name="description.pdescription"
+        placeholder="Product Description"
+        value={newProduct.description.pdescription}
         onChange={handleChange}
       ></textarea>
+
+      <input
+        type="text"
+        name="description.model"
+        placeholder="Model"
+        value={newProduct.description.model}
+        onChange={handleChange}
+      />
+      <input
+        type="text"
+        name="description.make"
+        placeholder="Make"
+        value={newProduct.description.make}
+        onChange={handleChange}
+      />
+      <input
+        type="number"
+        name="description.yearOfManufacture"
+        placeholder="Year of Manufacture"
+        min="1900"
+        max="2100"
+        value={newProduct.description.yearOfManufacture}
+        onChange={handleChange}
+      />
+
+      <h4>Specifications</h4>
+      {newProduct.description.specifications.map((spec, index) => (
+        <div key={index}>
+          <input
+            type="text"
+            name={`description.specifications-${index}-key`}
+            placeholder="Key"
+            value={spec.key}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            name={`description.specifications-${index}-value`}
+            placeholder="Value"
+            value={spec.value}
+            onChange={handleChange}
+          />
+          <button type="button" onClick={() => removeSpecification(index)}>
+            Remove
+          </button>
+        </div>
+      ))}
+      <button type="button" onClick={addSpecification}>
+        Add Specification
+      </button>
+
+      <input
+        type="number"
+        name="description.dimensions.height"
+        placeholder="Height (cm)"
+        value={newProduct.description.dimensions.height}
+        onChange={handleChange}
+      />
+      <input
+        type="number"
+        name="description.dimensions.width"
+        placeholder="Width (cm)"
+        value={newProduct.description.dimensions.width}
+        onChange={handleChange}
+      />
+      <input
+        type="number"
+        name="description.dimensions.depth"
+        placeholder="Depth (cm)"
+        value={newProduct.description.dimensions.depth}
+        onChange={handleChange}
+      />
+      <input
+        type="number"
+        name="description.dimensions.weight"
+        placeholder="Weight (kg)"
+        value={newProduct.description.dimensions.weight}
+        onChange={handleChange}
+      />
+
+      <input
+        type="text"
+        name="description.manufacturerDetails.name"
+        placeholder="Manufacturer Name"
+        value={newProduct.description.manufacturerDetails.name}
+        onChange={handleChange}
+      />
+      <input
+        type="text"
+        name="description.manufacturerDetails.contactInfo"
+        placeholder="Manufacturer Contact Info"
+        value={newProduct.description.manufacturerDetails.contactInfo}
+        onChange={handleChange}
+      />
+
+      <input
+        type="text"
+        name="description.warranty"
+        placeholder="Warranty"
+        value={newProduct.description.warranty}
+        onChange={handleChange}
+      />
+
       <input
         type="number"
         name="quantity"
@@ -267,47 +411,6 @@ const NewProductForm = () => {
         value={newProduct.quantity}
         onChange={handleChange}
       />
-      <select name="type" value={newProduct.type} onChange={handleChange}
-      >
-        <option value="product">Product</option>
-      </select>
-
-      {newProduct.type === 'collaborator' && (
-        <div>
-          <h4>Collaborators</h4>
-          {newProduct.collaborators.map((collaborator, index) => (
-            <div key={index}>
-              <input
-                type="text"
-                name={`collaborators-${index}`}
-                placeholder="Collaborator Username"
-                value={collaborator.username}
-                onChange={(e) =>
-                  setNewProduct({
-                    ...newProduct,
-                    collaborators: newProduct.collaborators.map((c, i) =>
-                      i === index ? { ...c, username: e.target.value } : c
-                    ),
-                  })
-                }
-              />
-              <input
-                type="number"
-                name={`amount-${index}`}
-                placeholder="Amount"
-                value={collaborator.amount}
-                onChange={handleChange}
-              />
-              <button type="button" onClick={() => removeCollaborator(index)}>
-                Remove
-              </button>
-            </div>
-          ))}
-          <button type="button" onClick={addCollaborator}>
-            Add Collaborator
-          </button>
-        </div>
-      )}
 
       <label>
         Images:
