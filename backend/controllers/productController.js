@@ -59,34 +59,37 @@ exports.createProduct = async (req, res) => {
       collaborators,
     } = req.body;
 
+    // Log incoming data for debugging
     console.log(req.body);
 
+    // Ensure required fields are present
+    if (!name || !category || !description || !price || !username || !quantity) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
     // Parse specifications if they are strings
-    const parsedSpecifications =
-      typeof specifications === "string" ? JSON.parse(specifications) : specifications;
+    const parsedSpecifications = specifications && typeof specifications === "string" ? JSON.parse(specifications) : specifications;
 
     // Parse technicalDetails if it is a string
-    const parsedTechnicalDetails =
-      typeof technicalDetails === "string" ? JSON.parse(technicalDetails) : technicalDetails;
+    const parsedTechnicalDetails = technicalDetails && typeof technicalDetails === "string" ? JSON.parse(technicalDetails) : technicalDetails;
 
     // Parse dimensions if it is a string
-    const parsedDimensions =
-      typeof dimensions === "string" ? JSON.parse(dimensions) : dimensions;
+    const parsedDimensions = dimensions && typeof dimensions === "string" ? JSON.parse(dimensions) : dimensions;
 
     // Parse manufacturerDetails if it is a string
-    const parsedManufacturerDetails =
-      typeof manufacturerDetails === "string" ? JSON.parse(manufacturerDetails) : manufacturerDetails;
+    const parsedManufacturerDetails = manufacturerDetails && typeof manufacturerDetails === "string" ? JSON.parse(manufacturerDetails) : manufacturerDetails;
 
-    // Upload multiple images if available
-    const imageUrls =
-      req.files && req.files.length > 0 ? await uploadFiles(req.files) : [];
+    // Ensure collaborators is an array if it’s provided
+    const parsedCollaborators = collaborators && Array.isArray(collaborators) ? collaborators : [];
+
+    // Upload images if available
+    const imageUrls = req.files && req.files.length > 0 ? await uploadFiles(req.files) : [];
     console.log("Uploaded images:", imageUrls);
 
+    // Generate productId (UUID or another strategy)
     const productId = uuidv4();
 
-    const collaboratorData =
-      type === "collaborator" && collaborators ? collaborators : undefined;
-
+    // Create new product document
     const newProduct = new Product({
       name,
       category,
@@ -101,17 +104,20 @@ exports.createProduct = async (req, res) => {
       quantity,
       images: imageUrls,
       type,
-      collaborators: collaboratorData,
+      collaborators: parsedCollaborators,
       yearOfManufacture,
       specifications: parsedSpecifications,
-      features,
+      features: features || [], // Default to empty array if not provided
       technicalDetails: parsedTechnicalDetails, // Parsed as Map
       dimensions: parsedDimensions, // Parsed as Object
       manufacturerDetails: parsedManufacturerDetails, // Parsed as Object
       warranty,
     });
 
+    // Save the new product to the database
     await newProduct.save();
+
+    // Return the created product
     res.status(201).json({ product: newProduct });
   } catch (error) {
     console.error("Error in createProduct:", error);
