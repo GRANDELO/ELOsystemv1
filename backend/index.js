@@ -179,6 +179,7 @@ app.use('/api/withdraw', withdrawRoutes);
 app.use('/api/pushnotifications', pushNotificationRoutes);
 app.use('/api/chat', chatRoutes);
 app.use("/api/review", reviewRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 
 app.use((req, res, next) => {

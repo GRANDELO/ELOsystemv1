@@ -11,6 +11,7 @@ import Settings from './settings';
 import ShopSettings from './shopSettings';
 import Footer from './Footer';
 import Withdrawal from './withdrawal';
+import FeedbackForm from './Feedback';
 import { getUsernameFromToken } from '../utils/auth';
 import './styles/Home.css';
 
@@ -94,6 +95,12 @@ const Home = () => {
             >
               View Performance
             </button>
+            <button
+              className={`home-settings-button ${activeSection === 'feedback' ? 'active' : ''}`}
+              onClick={() => setActiveSection('feedback')}
+            >
+              Feedback
+            </button>
           </div>
 
           <div className="home-show-section">
@@ -106,6 +113,7 @@ const Home = () => {
                 {activeSection === 'product-list' && <ProductOwner />}
                 {activeSection === 'add-product' && <NewProductForm />}
                 {activeSection === 'product-performance' && <ProductPerformance />}
+                {activeSection === 'feedback' && <FeedbackForm />}
               </>
             )}
           </div>
