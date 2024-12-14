@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUsernameFromToken } from '../utils/auth';
 import BGvideo from './images/topvid.mp4';
 import './styles/header.css';
 
 const Header = () => {
+  const [username, setUsername] = useState('');
   const navigate = useNavigate();
-  const username = getUsernameFromToken();
-
+  //const username = getUsernameFromToken();
+  useEffect(() => {
+    const fetchedUsername = getUsernameFromToken();
+    setUsername(fetchedUsername || 'Guest');
+  }, []);
   // Function to determine the greeting based on the current time
   const getGreeting = () => {
     const currentHour = new Date().getHours();

@@ -131,6 +131,7 @@ const Dashboard = () => {
                                     <li><a href="/sales">Sales</a></li>
                                     <li><a href="/reports">Reports</a></li>
                                     <li><a href="/hr">HR</a></li>
+                                    <li><a href="/feedback">Feedback</a></li>
                                 </ul>
                             </div>
                         </div>

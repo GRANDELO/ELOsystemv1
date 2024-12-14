@@ -10,6 +10,7 @@ import ProductPerformance from './productperfomance';
 import Settings from './settings';
 import ShopSettings from './shopSettings';
 import Footer from './Footer';
+import FeedbackForm from './Feedback';
 import Withdrawal from './withdrawal';
 import { getUsernameFromToken } from '../utils/auth';
 import './styles/Home.css';
