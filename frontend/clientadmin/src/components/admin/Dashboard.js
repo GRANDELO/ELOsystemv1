@@ -9,6 +9,7 @@ import Header from './header';
 import HR from './hr/hrdash';
 import Sales from './sales/Salespg';
 import Setting from './settings';
+import AdminFeedback from '../feedback';
 import './styles/Dashboard.css';
 
 const Dashboard = () => {
@@ -87,6 +88,13 @@ const Dashboard = () => {
                     >
                         Reports
                     </button>
+                    <button
+                        className={`dashad-nav-button ${view === 'feedback' ? 'dashad-active' : ''}`}
+                        onClick={() => setView('feedback')}
+                    >
+                        Feedback
+                    </button>
+
                 </nav>
 
                 <div className="dashad-content">
@@ -132,6 +140,7 @@ const Dashboard = () => {
                     {view === 'sales' && <Sales />}
                     {view === 'HR' && <HR />}
                     {view === 'reports' && <Reports />}
+                    {view === 'feedback' && <AdminFeedback />}
                 </div>
                 
             </div>
