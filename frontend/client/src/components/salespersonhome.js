@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FaBell, FaBoxOpen, FaCog, FaShoppingCart } from 'react-icons/fa'; // Import bell icon for notifications
 import { FiArrowDown, FiArrowUp, FiXCircle } from "react-icons/fi";
+import { AiOutlineQrcode } from "react-icons/ai";
 import { IoMdMenu } from "react-icons/io";
 import { IoClose } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
@@ -200,7 +201,7 @@ const Home = () => {
 
         {/* Cart Section */}
         {isCartVisible && (
-          <div className="salesp-floating-cart show">
+          <div className="salesp-order-section">
             {!loading && !error && cart.length > 0 && <Cart cart={cart} setCart={setCart} />}
           </div>
         )}
@@ -226,8 +227,8 @@ const Home = () => {
                       <FaBell />
                       {unreadCount > 0 && <span className="salesp-notification-count">{unreadCount}</span>}
                     </button>
-                    <button>
-                      <AppDownloadQRIcon />
+                    <button className="salesp-toggle-button">
+                      <AiOutlineQrcode />
                     </button>
                     <button className="salesp-toggle-button" onClick={toggleNav}>
                       <FiXCircle />
