@@ -24,6 +24,7 @@ import Register from './components/Register';
 import Success from './components/Success';
 import Verification from './components/Verification';
 
+import FeedbackForm from './components/Feedback';
 
 
 import Coreordering from './components/coreordering';
@@ -124,7 +125,7 @@ const App = () => {
             <Route path="/notification" element={<Notification />} />
             <Route path="/displayorder" element={<Displayorder />} />
             <Route path="/productperfomance" element={<Productperfomance />} />
-
+            <Route path="/feedback" element={<FeedbackForm />} />
           </Route>
         </Routes>
       </div>

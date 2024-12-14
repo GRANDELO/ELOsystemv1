@@ -124,6 +124,16 @@ body {
 .salesp-notifications-section {
   animation: fadeIn 0.3s ease-in-out;
 }
+.salesp-feedback-section {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  width: 300px;
+  z-index: 1000;
+}
 
 @keyframes fadeIn {
   from {

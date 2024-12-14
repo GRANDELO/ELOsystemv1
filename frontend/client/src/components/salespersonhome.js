@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { FaBell, FaBoxOpen, FaCog, FaShoppingCart } from 'react-icons/fa'; // Import bell icon for notifications
+import { FaBell, FaBoxOpen, FaCog, FaShoppingCart, FaCommentDots } from 'react-icons/fa'; // Import bell icon for notifications
 import { FiArrowDown, FiArrowUp, FiXCircle } from "react-icons/fi";
 import { AiOutlineQrcode } from "react-icons/ai";
 import { IoMdMenu } from "react-icons/io";
@@ -15,6 +15,7 @@ import Displayorder from './displayorder';
 import Header from './header';
 import Notifications from './notification'; // Import Notifications component
 import Settings from './settings';
+import FeedbackForm from './Feedback';
 import './styles/salespersonhome.css';
 import { Alert} from 'react-bootstrap';
 
@@ -34,7 +35,8 @@ const Home = () => {
   const apptoken = localStorage.getItem('apptoken');
   const appcat = localStorage.getItem('appcat');
   const [isNavVisible, setIsNavVisible] = useState(false);
-
+  const [isFeedbackVisible, setIsFeedbackVisible] = useState(false); 
+ 
   
   useEffect(() => {
     // If apptoken is set, use it to set the token and navigate based on the app category
@@ -88,6 +90,14 @@ const Home = () => {
   };
   const handleLogout = () => {
     navigate('/logout');
+  };
+  const toggleFeedback = () => {
+    if (!username) {
+      setLoginPrompt('You have to sign in to send feedback.');
+      return;
+    }
+    setIsFeedbackVisible(!isFeedbackVisible);
+    
   };
 
 
@@ -205,6 +215,16 @@ const Home = () => {
             {!loading && !error && cart.length > 0 && <Cart cart={cart} setCart={setCart} />}
           </div>
         )}
+        
+        {/* Feedback Section */}
+        {isFeedbackVisible && (
+          <section className="salesp-feedback-section">
+            <FeedbackForm />
+            <button onClick={toggleFeedback}>
+              <IoClose />
+            </button>
+          </section>
+        )}
       </main>
 
       {/* Floating Buttons for Toggle */}
@@ -229,6 +249,9 @@ const Home = () => {
                     </button>
                     <button className="salesp-toggle-button">
                       <AiOutlineQrcode />
+                    </button>
+                    <button onClick={toggleFeedback}>
+                      <FaCommentDots /> {/* Feedback Icon */}
                     </button>
                     <button className="salesp-toggle-button" onClick={toggleNav}>
                       <FiXCircle />
