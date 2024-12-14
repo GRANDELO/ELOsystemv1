@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import ProductModal from './ProductModal';
 import axiosInstance from './axiosInstance';
 import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
-
+import { storeSearch, getSearchHistory } from '../utils/search';
+import { useIsMobile } from '../utils/mobilecheck';
 import './styles/NewProductList.css';
 
 const NewProductList = () => {
@@ -14,9 +15,9 @@ const NewProductList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [imageIndexes, setImageIndexes] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
-  const [isMobile, setIsMobile] = useState(false); // Add state to track screen size
+  const isMobile = useIsMobile();
   const PRODUCTS_PER_PAGE = 32;
-  const CATEGORIES_PER_PAGE = isMobile ? 4 : 7; // Number of categories to show per page
+  const CATEGORIES_PER_PAGE = isMobile ? 3 : 7; // Number of categories to show per page
 
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showMoreCategories, setShowMoreCategories] = useState(false);
@@ -164,16 +165,11 @@ const NewProductList = () => {
     return () => clearInterval(intervalId);
   }, [products]);
 
-  // Detect mobile view
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    handleResize(); // Set initial value
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+
 
   const handleProductClick = (product) => {
     setSelectedProduct(product);
+    storeSearch(product.category , product.subCategory)
     setIsModalOpen(true);
   };
 
@@ -209,31 +205,21 @@ const NewProductList = () => {
   };
 
   const filterAndSortProducts = () => {
-    let filtered = products;
-
-    // Filter by category if selected
-    if (selectedCategory) {
-      filtered = filtered.filter(product =>
-        product.category.toLowerCase() === selectedCategory.toLowerCase()
-      );
-    }
-
-    // Search filter
-    filtered = filtered.filter((product) =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.category.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    return filtered.sort((a, b) => {
-      const aMatch =
-        a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        a.category.toLowerCase().includes(searchTerm.toLowerCase());
-      const bMatch =
-        b.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        b.category.toLowerCase().includes(searchTerm.toLowerCase());
-      return aMatch === bMatch ? 0 : aMatch ? -1 : 1;
-    });
+    return products
+      .filter((product) => {
+        const matchesCategory = selectedCategory
+          ? product.category.toLowerCase() === selectedCategory.toLowerCase()
+          : true;
+        const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) || product.category.toLowerCase().includes(searchTerm.toLowerCase());
+        return matchesCategory && matchesSearch;
+      })
+      .sort((a, b) => {
+        const aMatch = a.name.toLowerCase().includes(searchTerm.toLowerCase());
+        const bMatch = b.name.toLowerCase().includes(searchTerm.toLowerCase());
+        return aMatch === bMatch ? 0 : aMatch ? -1 : 1;
+      });
   };
+  
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -291,6 +277,15 @@ const NewProductList = () => {
           <div className="categories">
 
           <button className="category-btnn" onClick={() => handleCategoryPageChange(-1)} disabled={currentCategoryPage === 1}><AiFillCaretLeft/></button>
+          <div className="category-container">
+            <button
+                className={`category-btn ${selectedCategory === " " ? 'active' : ''}`}
+                onClick={() => handleCategoryClick(null)}
+              >
+                {"ALL"}
+            </button>
+          </div>
+
             {currentCategories.map((category) => (
               <div key={category.id} className="category-container">
                 <button
@@ -355,32 +350,34 @@ const NewProductList = () => {
           <button
             onClick={() => handlePageChange(1)}
             disabled={currentPage === 1}
+            aria-label="Go to first page"
           >
             First
           </button>
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
+            aria-label="Go to previous page"
           >
-            Previous
+            Prev
           </button>
-          {/* Display page numbers with ellipses */}
-          {currentPage > 2 && <span>...</span>}
-          <span>{currentPage}</span>
-          {currentPage < totalPages - 1 && <span>...</span>}
+          <span>Page {currentPage} of {totalPages}</span>
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
+            aria-label="Go to next page"
           >
             Next
           </button>
           <button
             onClick={() => handlePageChange(totalPages)}
             disabled={currentPage === totalPages}
+            aria-label="Go to last page"
           >
             Last
           </button>
         </div>
+
 
       )}
 

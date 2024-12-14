@@ -2,6 +2,7 @@
 :root {
   --primary-color: #6c5ce7;
   --secondary-color: #74b9ff;
+  --secondaryh-color: #50a7ff;
   --background-light: rgba(255, 255, 255, 0.95);
   --background-dark: rgba(0, 0, 0, 0.7);
   --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
@@ -49,7 +50,7 @@ h1, h2, h3, h4, h5 {
   border-radius: 15px;
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 3;
   
 }
 
@@ -382,9 +383,15 @@ h1, h2, h3, h4, h5 {
 /* Categories Section */
 .categories {
   display: flex;
-  padding: 0;
-  justify-content: space-around;
-
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: var(--background-light);
+  box-shadow: var(--card-shadow);
+  border-radius: 15px;
+  position: sticky;
+  top: 0;
+  z-index: 3;
 }
 
 
@@ -393,7 +400,7 @@ h1, h2, h3, h4, h5 {
 }
 
 .category-btn {
-  background-color: #8cbcff94;
+  background-color: var(--secondary-color);
   border: 1px solid #ddd;
   padding: 10px 20px;
   border-radius: 5px;
@@ -403,18 +410,28 @@ h1, h2, h3, h4, h5 {
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+
 .category-btnn{
-  background-color: #0c3d8194;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  width: 50px;
+  background: none;
+  max-width: 30px;
+  color: #333333;
   font-size: 20px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+.category-btnn:hover{
+  background: none;
+  max-width: 30px;
+  color: #333333;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+
 .category-btn:hover {
-  background-color: #1870ed94;
+  background-color: var(--secondaryh-color);
   transform: translateY(-2px);
 }
 

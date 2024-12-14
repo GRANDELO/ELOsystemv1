@@ -81,7 +81,8 @@ body {
 
 .salesp-toggle-settings,
 .salesp-toggle-order,
-.salesp-toggle-notifications {
+.salesp-toggle-notifications,
+.salesp-floating-cart  {
   position: absolute;
   top: 16px;
   right: 16px;
@@ -97,7 +98,7 @@ body {
 /* Responsive Layouts */
 
 
-/* Cart Section */
+/* Cart Section 
 .salesp-floating-cart {
   position: fixed;
   top: 10%;
@@ -111,6 +112,7 @@ body {
   z-index: 1000;
   display: none;
 }
+*/
 
 .salesp-floating-cart.show {
   display: block;
@@ -133,4 +135,26 @@ body {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+
+@media (max-width: 768px) {
+
+  .salesp-settings-section,
+  .salesp-order-section,
+  .salesp-notifications-section   {
+  display: absolute;
+  background-color: rgb(255, 255, 255);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  min-height: 100vh;
+  overflow-y: scroll;
+  top: 0%;
+  left: 0%;
+  right: 0%;
+  z-index: 1000;
+}
+
 }
