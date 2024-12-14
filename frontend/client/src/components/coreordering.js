@@ -190,7 +190,7 @@ const OrderingPage = () => {
       <h1 className="ordcore-heading">Order Page</h1>
       {loginPrompt && (
         <Alert variant="warning" className="ordcore-alert">
-          {loginPrompt} <a href="/">Sign In</a> or <a href="/register">Register</a>
+          {loginPrompt} <a href="/login">Sign In</a> or <a href="/register">Register</a>
         </Alert>
       )}
       {message && <Alert variant="success" className="ordcore-message">{message}</Alert>}

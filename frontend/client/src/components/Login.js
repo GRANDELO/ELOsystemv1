@@ -22,14 +22,11 @@ const Login = () => {
       if (appcat) {
         switch (appcat.trim().toLowerCase()) {
           case 'seller':
-            sessionStorage.setItem('username', getUsernameFromToken());
-            navigate('/home');
-            break;
-          case 'admin':
-            navigate('/dashboard');
+            alert('Failed to log in this app is for buyers only.');
             break;
           default:
-            navigate('/salespersonhome');
+            const currentpage = sessionStorage.getItem('currentpage');
+            navigate(currentpage ? currentpage : '/');
             break;
         }
       }
@@ -73,13 +70,10 @@ const Login = () => {
 
       const category = response.data.category.trim().toLowerCase();
       if (category === 'seller') {
-        sessionStorage.setItem('username', response.data.username);
-        navigate('/home');
-      } else if (category === 'admin') {
-        navigate('/dashboard');
-      } else {
+        alert('Failed to log in this app is for buyers only.');
+      }else {
         const currentpage = sessionStorage.getItem('currentpage');
-        navigate(currentpage ? currentpage : '/salespersonhome');
+        navigate(currentpage ? currentpage : '/');
       }
     } catch (error) {
       if (error.response && error.response.data) {

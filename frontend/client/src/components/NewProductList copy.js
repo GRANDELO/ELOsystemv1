@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ProductModal from './ProductModal';
 import axiosInstance from './axiosInstance';
-import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
-
 import './styles/NewProductList.css';
 
 const NewProductList = () => {
@@ -15,11 +13,11 @@ const NewProductList = () => {
   const [imageIndexes, setImageIndexes] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false); // Add state to track screen size
-  const PRODUCTS_PER_PAGE = 32;
-  const CATEGORIES_PER_PAGE = isMobile ? 4 : 7; // Number of categories to show per page
-
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showMoreCategories, setShowMoreCategories] = useState(false);
+
+  const PRODUCTS_PER_PAGE = 32;
+  const CATEGORIES_PER_PAGE = 5; // Number of categories to show per page
 
   const categories = [
     { id: 'electronics', name: 'Electronics', subCategories: ['Phones', 'Laptops', 'Tablets', 'Headphones', 'Cameras', 'Accessories', 'Wearables', 'Smart Home', 'Gaming Consoles', 'Home Audio', 'Smartwatches', 'Virtual Reality'] },
@@ -187,8 +185,6 @@ const NewProductList = () => {
     setCurrentPage(1); // Reset to first page when searching
   };
 
-
-
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
     setCurrentPage(1); // Reset to first page when category changes
@@ -252,7 +248,6 @@ const NewProductList = () => {
     };
   };
 
-  
   const filteredProducts = filterAndSortProducts();
   const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
 
@@ -260,12 +255,10 @@ const NewProductList = () => {
     ? filteredProducts
     : filteredProducts.slice((currentPage - 1) * PRODUCTS_PER_PAGE, currentPage * PRODUCTS_PER_PAGE);
 
-
-      // Get categories for the current page
+  // Get categories for the current page
   const startIdx = (currentCategoryPage - 1) * CATEGORIES_PER_PAGE;
   const endIdx = startIdx + CATEGORIES_PER_PAGE;
   const currentCategories = categories.slice(startIdx, endIdx);
-
 
   if (loading)
     return (
@@ -287,10 +280,9 @@ const NewProductList = () => {
         />
       </header>
 
+      <div  className="housecategories">
           {/* Categories Section */}
           <div className="categories">
-
-          <button className="category-btnn" onClick={() => handleCategoryPageChange(-1)} disabled={currentCategoryPage === 1}><AiFillCaretLeft/></button>
             {currentCategories.map((category) => (
               <div key={category.id} className="category-container">
                 <button
@@ -301,10 +293,15 @@ const NewProductList = () => {
                 </button>
               </div>
             ))}
-
-          <button className="category-btnn"  onClick={() => handleCategoryPageChange(1)} disabled={currentCategoryPage * CATEGORIES_PER_PAGE >= categories.length}><AiFillCaretRight/></button>
           </div>
 
+          {/* Category Pagination */}
+          <div className="category-pagination">
+            <button onClick={() => handleCategoryPageChange(-1)} disabled={currentCategoryPage === 1}>Previous</button>
+            <span>{currentCategoryPage}</span>
+            <button onClick={() => handleCategoryPageChange(1)} disabled={currentCategoryPage * CATEGORIES_PER_PAGE >= categories.length}>Next</button>
+          </div>
+      </div>
 
 
       <div className="product-cards">
@@ -366,8 +363,8 @@ const NewProductList = () => {
           </button>
           {/* Display page numbers with ellipses */}
           {currentPage > 2 && <span>...</span>}
-          <span>{currentPage}</span>
-          {currentPage < totalPages - 1 && <span>...</span>}
+          <button>{currentPage}</button>
+          {totalPages - currentPage > 1 && <span>...</span>}
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
@@ -381,14 +378,13 @@ const NewProductList = () => {
             Last
           </button>
         </div>
-
       )}
 
-      {selectedProduct && (
+      {isModalOpen && selectedProduct && (
         <ProductModal
           product={selectedProduct}
-          show={isModalOpen}
-          handleClose={closeModal}
+          closeModal={closeModal}
+          imageSrc={selectedProduct.images[imageIndexes[selectedProduct._id]]}
         />
       )}
     </div>

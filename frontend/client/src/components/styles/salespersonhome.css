@@ -1,168 +1,135 @@
 /* General Styles */
-.home {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.salesp-home {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
+.salesp-main {
+  display: flex;
+  flex: 1;
+  padding: 16px;
+  gap: 16px;
+}
+
+.salesp-home-intro {
+  flex: 1;
+}
+
+/* Floating Buttons */
+.salesp-floating-buttons {
+  position: fixed;
+  top: 10px;
+  right: 16px;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 12px;
+  z-index: 1000;
+}
+
+.salesp-toggle-button {
+  background-color: #007bff;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.salesp-toggle-button:hover {
+  transform: scale(1.1);
+}
+
+.salesp-notification-count {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: #dc3545;
+  color: #fff;
+  border-radius: 50%;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+/* Responsive Sections */
+.salesp-settings-section,
+.salesp-order-section,
+.salesp-notifications-section {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.salesp-toggle-settings,
+.salesp-toggle-order,
+.salesp-toggle-notifications {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #333;
+  cursor: pointer;
+}
+
+
+
+/* Responsive Layouts */
+
+
+/* Cart Section */
+.salesp-floating-cart {
+  position: fixed;
+  top: 10%;
+  right: 5%;
+  width: 90%;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  z-index: 1000;
+  display: none;
+}
+
+.salesp-floating-cart.show {
+  display: block;
+}
+
+/* Advanced Styling */
+.salesp-settings-section,
+.salesp-order-section,
+.salesp-notifications-section {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  
-  .home-main {
-    flex-grow: 1;
-    padding: 20px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .home-intro {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .home-toggle-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-  }
-  
-  .home-settings-button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  }
-  
-  .home-settings-button.active {
-    background-color: #0056b3;
-  }
-  
-  .home-settings-button:hover {
-    transform: scale(1.05);
-  }
-  
-  /* Sections */
-  .home-show-section {
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-  }
-  
-  .home-settings-section,
-  .home-notifications-section,
-  .home-shop-settings-section {
-    display: none;
-    transition: opacity 0.3s ease-in-out;
-  }
-  
-  .home-settings-section.active,
-  .home-notifications-section.active,
-  .home-shop-settings-section.active {
-    display: block;
-  }
-  
-  /* Loading Container */
-  .home-loading-container {
-    text-align: center;
-    font-size: 18px;
-    color: #333;
-  }
-  
-  /* Floating Action Buttons */
-  .salesp-floating-buttons {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    z-index: 1001;
-  }
-  
-  .salesp-toggle-button {
-    width: 60px;
-    height: 60px;
-    border: none;
-    border-radius: 50%;
-    background-color: #007bff;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 26px;
-    cursor: pointer;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-  }
-  
-  .salesp-toggle-button:hover {
-    background-color: #0056b3;
-    transform: scale(1.1);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-  }
-  
-  .salesp-toggle-button .icon {
-    font-size: 26px;
-  }
-  
-  /* Notification Badge */
-  .salesp-notification-count {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background-color: #ff0000;
-    color: white;
-    border-radius: 50%;
-    font-size: 12px;
-    padding: 5px;
-  }
-  
-  /* Footer */
-  footer {
-    padding: 20px;
-    background-color: #333;
-    color: white;
-    text-align: center;
-  }
-  
-  footer a {
-    color: white;
-    text-decoration: none;
-    margin: 0 10px;
-  }
-  
-  footer a:hover {
-    text-decoration: underline;
-  }
-  
-  /* Mobile Responsiveness */
-  @media (max-width: 768px) {
-    .home-toggle-buttons {
-      flex-direction: column;
-    }
-  
-    .salesp-toggle-button {
-      width: 50px;
-      height: 50px;
-      font-size: 20px;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .salesp-floating-buttons {
-      bottom: 15px;
-      right: 15px;
-      gap: 10px;
-    }
-  
-    .salesp-toggle-button {
-      width: 45px;
-      height: 45px;
-      font-size: 18px;
-    }
-  }
-  
+}

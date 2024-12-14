@@ -19,6 +19,7 @@ const ProductModal = ({ product, show, handleClose }) => {
   const [sellerOrderId, setSellerOrderId] = useState('');
   const username = getUsernameFromToken();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [loginPrompt, setLoginPrompt] = useState('');
 
   const [reviews, setReviews] = useState([]);
   const [reviewToEdit, setReviewToEdit] = useState(null);
@@ -58,6 +59,10 @@ const ProductModal = ({ product, show, handleClose }) => {
   }, [product]);
 
   const handleAddToCart = async () => {
+    if (!username) {
+      setLoginPrompt('You have to sign in to complete the order.');
+      return;
+    }
     try {
       setMessage('');
       setError('');
@@ -80,6 +85,10 @@ const ProductModal = ({ product, show, handleClose }) => {
   };
 
   const handleCoreSellButtonClick = () => {
+    if (!username) {
+      setLoginPrompt('You have to sign in to complete the order.');
+      return;
+    }
     setShowMpesaInput(true); 
     setMessage('');
     setError('');
@@ -303,6 +312,11 @@ const ProductModal = ({ product, show, handleClose }) => {
           )}
         </div>
       </Modal.Body>
+      {loginPrompt && (
+        <Alert variant="warning" className="ordcore-alert">
+          {loginPrompt} <a href="/login">Sign In</a> or <a href="/register">Register</a>
+        </Alert>
+      )}
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
           Close

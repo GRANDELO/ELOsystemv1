@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaFacebook, FaTwitter, FaInstagram, FaTiktok, FaArrowUp } from 'react-icons/fa'; // Import social icons
 import './styles/Footer.css';
-
+import { FiArrowDown, FiArrowUp, FiXCircle } from "react-icons/fi";
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   const [email, setEmail] = useState('');
@@ -91,7 +91,7 @@ const Footer = () => {
       </div>
 
       {showScroll && (
-        <button onClick={scrollToTop} className="ft-scroll-top"><FaArrowUp/></button>
+        <button onClick={scrollToTop} className="ft-scroll-top"><FiArrowUp/></button>
       )}
       <div className="footer-bottom">
         <p>

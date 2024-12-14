@@ -82,7 +82,9 @@ const App = () => {
       <div className="App">
         <Routes>
           {/* Public routes */}
-          <Route path="/" element={<Login />} />
+
+          <Route path="/" element={<Salespersonhome />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/success" element={<Success />} />
           <Route path="/coreorder" element={<Coreordering />} />
@@ -107,12 +109,6 @@ const App = () => {
             <Route path="/products" element={<ProductList />} />
             <Route path="/seller" element={<Seller />} />
             <Route path="/upload" element={<Upload />} />
-            <Route path="/salespersonhome" 
-               element={
-                <ProtectedRoute>
-                  <Salespersonhome />
-                </ProtectedRoute>
-               } />
             <Route path="/logout" element={<Logout />} />
             <Route path="/order" element={<Order />} />
 

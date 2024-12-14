@@ -119,21 +119,6 @@ const NewProductForm = () => {
     subCategory: '',
     price: '',
     description: "", // Changed to a simple string
-    yearOfManufacture: '',
-    specifications: [{key: '' , value: ''}], // Independent specifications
-    features: [],
-    technicalDetails: {},
-    dimensions: {
-      height: '',
-      width: '',
-      depth: '',
-      weight: '',
-    },
-    manufacturerDetails: {
-      name: '',
-      contactInfo: '',
-    },
-    warranty: '',
     username: lusername,
     quantity: '',
     images: [],
@@ -237,7 +222,7 @@ const removeSpecification = (index) => {
         newProduct.images.forEach((image) => {
           formData.append('images', image);
         });
-      } else if (key === 'specifications' || key === 'technicalDetails' || key === 'dimensions' || key === 'collaborators') {
+      } else if ( key === 'collaborators') {
         formData.append(key, JSON.stringify(newProduct[key])); // Serialize arrays/objects to JSON
       } else {
         formData.append(key, newProduct[key]);
@@ -298,100 +283,11 @@ const removeSpecification = (index) => {
         onChange={handleChange}
       />
       <textarea
-        name="description.pdescription"
+        name="description"
         placeholder="Product Description"
-        value={newProduct.description.pdescription}
+        value={newProduct.description}
         onChange={handleChange}
       ></textarea>
-
-
-      <input
-        type="number"
-        name="yearOfManufacture"
-        placeholder="Year of Manufacture"
-        min="1900"
-        max="2100"
-        value={newProduct.yearOfManufacture}
-        onChange={handleChange}
-      />
-
-      <h4>Specifications</h4>
-      {newProduct.specifications.map((spec, index) => (
-        <div key={index}>
-          <input
-            type="text"
-            name={`specifications-${index}-key`}
-            placeholder="Key"
-            value={spec.key}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            name={`specifications-${index}-value`}
-            placeholder="Value"
-            value={spec.value}
-            onChange={handleChange}
-          />
-          <button type="button" onClick={() => removeSpecification(index)}>
-            Remove
-          </button>
-        </div>
-      ))}
-      <button type="button" onClick={addSpecification}>
-        Add Specification
-      </button>
-
-      <input
-        type="number"
-        name="dimensions.height"
-        placeholder="Height (cm)"
-        value={newProduct.dimensions.height}
-        onChange={handleChange}
-      />
-      <input
-        type="number"
-        name="dimensions.width"
-        placeholder="Width (cm)"
-        value={newProduct.dimensions.width}
-        onChange={handleChange}
-      />
-      <input
-        type="number"
-        name="dimensions.depth"
-        placeholder="Depth (cm)"
-        value={newProduct.dimensions.depth}
-        onChange={handleChange}
-      />
-      <input
-        type="number"
-        name="dimensions.weight"
-        placeholder="Weight (kg)"
-        value={newProduct.dimensions.weight}
-        onChange={handleChange}
-      />
-
-      <input
-        type="text"
-        name="manufacturerDetails.name"
-        placeholder="Manufacturer Name"
-        value={newProduct.manufacturerDetails.name}
-        onChange={handleChange}
-      />
-      <input
-        type="text"
-        name="manufacturerDetails.contactInfo"
-        placeholder="Manufacturer Contact Info"
-        value={newProduct.manufacturerDetails.contactInfo}
-        onChange={handleChange}
-      />
-
-      <input
-        type="text"
-        name="warranty"
-        placeholder="Warranty"
-        value={newProduct.warranty}
-        onChange={handleChange}
-      />
       <input
         type="number"
         name="quantity"

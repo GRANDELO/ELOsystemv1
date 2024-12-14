@@ -1,9 +1,11 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FaBell, FaBoxOpen, FaCog, FaShoppingCart } from 'react-icons/fa'; // Import bell icon for notifications
+import { FiArrowDown, FiArrowUp, FiXCircle } from "react-icons/fi";
+import { IoMdMenu } from "react-icons/io";
 import { IoClose } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
-import { getUsernameFromToken } from '../utils/auth';
+import { getUsernameFromToken, getcategoryFromToken } from '../utils/auth';
 import Cart from './Cart';
 import AppDownloadQRIcon from './qrCode';
 import Footer from './Footer';
@@ -13,6 +15,7 @@ import Header from './header';
 import Notifications from './notification'; // Import Notifications component
 import Settings from './settings';
 import './styles/salespersonhome.css';
+import { Alert} from 'react-bootstrap';
 
 const Home = () => {
   const [cart, setCart] = useState([]);
@@ -25,42 +28,89 @@ const Home = () => {
   const [unreadCount, setUnreadCount] = useState(0); // Track unread notifications
   const username = getUsernameFromToken();
   const navigate = useNavigate();
+  const [loginPrompt, setLoginPrompt] = useState('');
+  const token = localStorage.getItem('token');
+  const apptoken = localStorage.getItem('apptoken');
+  const appcat = localStorage.getItem('appcat');
+  const [isNavVisible, setIsNavVisible] = useState(false);
 
+  
   useEffect(() => {
-    const fetchCart = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await axios.post('https://elosystemv1.onrender.com/api/cart/cart', { username });
-        setCart(response.data.items || []);
-      } catch (err) {
-        setError(err.response?.data?.message || 'Failed to fetch cart');
-      } finally {
-        setLoading(false);
+    // If apptoken is set, use it to set the token and navigate based on the app category
+    if (apptoken) {
+      localStorage.setItem('token', apptoken);
+      if (appcat) {
+        switch (appcat.trim().toLowerCase()) {
+          case 'seller':
+            alert('Failed to log in this app is for buyers only.');
+            break;
+          default:
+            const currentpage = sessionStorage.getItem('currentpage');
+            navigate(currentpage ? currentpage : '/');
+            break;
+        }
       }
-    };
-
-    const fetchUnreadNotifications = async () => {
-      try {
-        const response = await axios.get(`https://elosystemv1.onrender.com/api/notifications/${username}`);
-        const unreadNotifications = response.data.filter(notification => !notification.isRead);
-        setUnreadCount(unreadNotifications.length);
-      } catch (err) {
-        console.error('Failed to fetch notifications');
-      }
-    };
-
-    if (username) {
-      fetchCart();
-      fetchUnreadNotifications();
     }
-  }, [username]);
 
+    // If token exists, store user data and determine navigation
+    if (token) {
+      sessionStorage.setItem('userToken', token);
+      const category = getcategoryFromToken();
+      const trimmedCategory = category?.trim().toLowerCase(); // Add optional chaining for safety
+      const storedUsername = getUsernameFromToken();
+      sessionStorage.setItem('username', storedUsername);
+    }
+  }, [apptoken, appcat, token, navigate]);
+
+
+  const fetchCart = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.post('https://elosystemv1.onrender.com/api/cart/cart', { username });
+      setCart(response.data.items || []);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to fetch cart');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchUnreadNotifications = async () => {
+    try {
+      const response = await axios.get(`https://elosystemv1.onrender.com/api/notifications/${username}`);
+      const unreadNotifications = response.data.filter(notification => !notification.isRead);
+      setUnreadCount(unreadNotifications.length);
+    } catch (err) {
+      console.error('Failed to fetch notifications');
+    }
+  };
   const handleLogout = () => {
     navigate('/logout');
   };
 
+
+  // Handle back button press
+  useEffect(() => {
+    const handlePopState = () => {
+      setIsOrderVisible(false);
+      setIsCartVisible(false);
+      setIsSettingsVisible(false);
+      setIsNotificationsVisible(false);// If no floating sections are open, navigate back
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [ navigate]);
+
   const toggleCart = () => {
+    if (!username) {
+      setLoginPrompt('You have to sign in to open the cart.');
+      return;
+    }
+    fetchCart();
     setIsCartVisible(!isCartVisible);
     setIsSettingsVisible(false);
     setIsOrderVisible(false);
@@ -68,6 +118,10 @@ const Home = () => {
   };
 
   const toggleSettings = () => {
+    if (!username) {
+      setLoginPrompt('You have to sign in to open settings.');
+      return;
+    }
     setIsSettingsVisible(!isSettingsVisible);
     setIsCartVisible(false);
     setIsOrderVisible(false);
@@ -75,6 +129,10 @@ const Home = () => {
   };
 
   const toggleOrder = () => {
+    if (!username) {
+      setLoginPrompt('You have to sign in to access your order.');
+      return;
+    }
     setIsOrderVisible(!isOrderVisible);
     setIsCartVisible(false);
     setIsSettingsVisible(false);
@@ -82,16 +140,29 @@ const Home = () => {
   };
 
   const toggleNotifications = () => {
+    if (!username) {
+      setLoginPrompt('You have to sign in to view your notifications.');
+      return;
+    }
+    fetchUnreadNotifications();
     setIsNotificationsVisible(!isNotificationsVisible);
     setIsCartVisible(false);
     setIsSettingsVisible(false);
     setIsOrderVisible(false);
   };
 
+  const toggleNav = () => {
+    setIsNavVisible(!isNavVisible);
+  };
+
   return (
     <div className="salesp-home">
       <Header />
-
+      {loginPrompt && (
+        <Alert variant="warning" className="ordcore-alert">
+          {loginPrompt} <a href="/login">Sign In</a> or <a href="/register">Register</a>
+        </Alert>
+      )}
       <main className="salesp-main">
         <div className="salesp-home-intro">
           <NewProductList />
@@ -137,22 +208,37 @@ const Home = () => {
 
       {/* Floating Buttons for Toggle */}
       <div className="salesp-floating-buttons">
-        <button className="salesp-toggle-button" onClick={toggleCart}>
-          <FaShoppingCart />
-        </button>
-        <button className="salesp-toggle-button" onClick={toggleSettings}>
-          <FaCog />
-        </button>
-        <button className="salesp-toggle-button" onClick={toggleOrder}>
-          <FaBoxOpen />
-        </button>
-        <button className="salesp-toggle-button" onClick={toggleNotifications}>
-          <FaBell />
-          {unreadCount > 0 && <span className="salesp-notification-count">{unreadCount}</span>}
-        </button>
-        <button>
-          <AppDownloadQRIcon />
-        </button>
+
+        <>
+          {isNavVisible ? (
+                    <>
+                    {isNavVisible ? (''): ('')}
+                    <button className="salesp-toggle-button" onClick={toggleCart}>
+                      <FaShoppingCart />
+                    </button>
+                    <button className="salesp-toggle-button" onClick={toggleSettings}>
+                      <FaCog />
+                    </button>
+                    <button className="salesp-toggle-button" onClick={toggleOrder}>
+                      <FaBoxOpen />
+                    </button>
+                    <button className="salesp-toggle-button" onClick={toggleNotifications}>
+                      <FaBell />
+                      {unreadCount > 0 && <span className="salesp-notification-count">{unreadCount}</span>}
+                    </button>
+                    <button>
+                      <AppDownloadQRIcon />
+                    </button>
+                    <button className="salesp-toggle-button" onClick={toggleNav}>
+                      <FiXCircle />
+                    </button>
+                  </>
+          ): ( 
+          <button className="salesp-toggle-button" onClick={toggleNav}>
+            <IoMdMenu />
+          </button>)}
+        </>
+
       </div>
 
       <footer className="salesp-home-footer">
