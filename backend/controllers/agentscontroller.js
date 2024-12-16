@@ -35,7 +35,7 @@ const registerUser = async (req, res) => {
     if (user) {
       return res.status(400).json({ message: 'Agent already exists' });
     }
-
+    const agentnumber = 'AG' + generateVerificationCode(4);
     // Generate verification code and send email
     const alphanumericCode = generateAlphanumericVerificationCode(6);
     const subject = `Verification - ${alphanumericCode}`;
@@ -43,6 +43,8 @@ const registerUser = async (req, res) => {
 
     Thank you for registering with Bazelink! as our agent Please use the following verification code to complete your registration:
     
+    Your agent number is ${agentnumber},
+
     Verification Code: ${alphanumericCode}
     
     You can also follow this link to verify your account: https://baze-seller.web.app/agentVerification
@@ -55,6 +57,10 @@ const registerUser = async (req, res) => {
         <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
           Welcome to Bazelink, ${username}!
         </h2>
+        
+        <p style="font-size: 16px; color: #555; text-align: center; margin-top: 0;">
+          Your agent number is ${agentnumber},
+        </p>
         <p style="font-size: 16px; color: #555; text-align: center; margin-top: 0;">
           Thank you for registering with us as our agent! To complete your registration, please use the verification code below:
         </p>
@@ -86,7 +92,7 @@ const registerUser = async (req, res) => {
     }
 
     const formattedDateOfBirth = moment(dateOfBirth).format('YYYY-MM-DD');
-    const agentnumber = 'AG' + generateVerificationCode(4);
+    
     user = new User({
       firstName,
       lastName,
@@ -121,7 +127,7 @@ const login = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const user = await User.findOne({ $or: [{ email: username }, { username }, { phoneNumber: username } , { idnumber: username } ] });
+    const user = await User.findOne({ $or: [{ email: username }, { username } , { agentnumber: username } ] });
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }

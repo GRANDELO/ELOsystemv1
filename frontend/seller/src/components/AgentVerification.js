@@ -26,7 +26,7 @@ function Verification() {
       const emailToUse = email || newEmail;
       const response = await axios.post('https://elosystemv1.onrender.com/api/agent/verify', { email: emailToUse, verificationCode });
       if (response.status === 200) {
-        navigate('/success');
+        navigate('/agentSuccess');
       }
     } catch (error) {
       if (error.response && error.response.data) {

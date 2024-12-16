@@ -70,7 +70,7 @@ const Register = () => {
       const response = await axios.post('https://elosystemv1.onrender.com/api/agent/register', trimmedFormData);
       setMessage(response.data.message);
       sessionStorage.setItem('email', trimmedFormData.email);
-      navigate('/verification');
+      navigate('/agentVerification');
     } catch (error) {
       setMessage(error.response?.data?.message || 'An error occurred while processing your request.');
     }

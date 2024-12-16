@@ -12,7 +12,7 @@ import Set from './components/set';
 import AgentRegister from './components/AgentRegister';
 import AgentVerification from './components/AgentVerification';
 import Agentpasswordreset from './components/agentpasswordreset';
-
+import AgentSuccess from './components/AgentSuccess';
 
 import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
@@ -92,7 +92,7 @@ const App = () => {
           <Route path="/agentVerification" element={<AgentVerification />} />
           <Route path="/agentLogin" element={<AgentLogin />} />
           <Route path="/agentpasswordreset" element={<Agentpasswordreset />} />
-          
+          <Route path="/agentSuccess" element={<AgentSuccess />} />
           <Route path="/chatall" element={<ChatList />} />
           <Route path="/chat/:chatId" element={<ChatDetails />} />
           {/* Protected routes */}
