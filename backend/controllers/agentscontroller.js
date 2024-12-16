@@ -45,7 +45,7 @@ const registerUser = async (req, res) => {
     
     Verification Code: ${alphanumericCode}
     
-    You can also follow this link to verify your account: https://bazelink.web.app/verification
+    You can also follow this link to verify your account: https://baze-seller.web.app/agentVerification
     
     Best regards,
     Bazelink Support Team`;
@@ -64,7 +64,7 @@ const registerUser = async (req, res) => {
           </p>
         </div>
         <p style="text-align: center;">
-          <a href="https://bazelink.web.app/verification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+          <a href="https://baze-seller.web.app/agentVerification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
             Verify Your Account
           </a>
         </p>
@@ -215,7 +215,7 @@ const updateEmail = async (req, res) => {
     
     Verification Code: ${user.verificationCode}
     
-    You can also follow this link to verify your account: https://bazelink.web.app/verification
+    You can also follow this link to verify your account: https://baze-seller.web.app/agentRegister
     
     Best regards,
     Bazelink Support Team`;
@@ -235,7 +235,7 @@ const updateEmail = async (req, res) => {
       </p>
     </div>
     <p style="text-align: center;">
-      <a href="https://bazelink.web.app/verification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+      <a href="https://baze-seller.web.app/agentRegister" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
         Verify Your Account
       </a>
     </p>
@@ -289,7 +289,7 @@ const resendVerificationCode = async (req, res) => {
     
     Verification Code: ${user.verificationCode}
     
-    Alternatively, you can follow this link to verify your account: https://grandelo.web.app/verification
+    Alternatively, you can follow this link to verify your account: https://baze-seller.web.app/agentRegister
     
     If you did not sign up for this account, please disregard this email.
     
@@ -310,7 +310,7 @@ const resendVerificationCode = async (req, res) => {
         </p>
       </div>
       <p style="text-align: center;">
-        <a href="https://grandelo.web.app/verification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+        <a href="https://baze-seller.web.app/agentRegister" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
           Verify Your Account
         </a>
       </p>
@@ -359,7 +359,7 @@ const newrecoverPassword = async (req, res) => {
     
     Password Reset Token: ${user.passwordRecoveryToken}
     
-    Alternatively, you can reset your password by following this link: https://grandelo.web.app/reset-password
+    Alternatively, you can reset your password by following this link: https://baze-seller.web.app/agentpasswordreset
     
     This token is valid for 1 hour. If you did not request a password reset, please ignore this message.
     
@@ -380,7 +380,7 @@ const newrecoverPassword = async (req, res) => {
         </p>
       </div>
       <p style="text-align: center;">
-        <a href="https://grandelo.web.app/reset-password" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+        <a href="https://baze-seller.web.app/agentpasswordreset" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
           Reset Your Password
         </a>
       </p>
@@ -538,7 +538,7 @@ const changeemail = async (req, res) => {
     
     Verification Code: ${user.verificationCode}
     
-    Alternatively, you can follow this link to verify your account: https://bazelink.web.app/verification
+    Alternatively, you can follow this link to verify your account: https://baze-seller.web.app/agentRegister
     
     Best regards,
     Bazelink Support Team`;
@@ -557,7 +557,7 @@ const changeemail = async (req, res) => {
       </p>
     </div>
     <p style="text-align: center;">
-      <a href="https://bazelink.web.app/verification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+      <a href="https://baze-seller.web.app/agentRegister" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
         Verify Your Account
       </a>
     </p>

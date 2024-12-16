@@ -7,8 +7,12 @@ import RequireAuth from './RequireAuth'; // Import the authentication check comp
 import ImageList from './components/ImageList';
 import ImageUpload from './components/ImageUpload';
 import Login from './components/Login';
+import AgentLogin from './components/AgentLogin';
 import Set from './components/set';
 import AgentRegister from './components/AgentRegister';
+import AgentVerification from './components/AgentVerification';
+import Agentpasswordreset from './components/agentpasswordreset';
+
 
 import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
@@ -85,6 +89,9 @@ const App = () => {
           <Route path="/testHome" element={<Home />} />
           <Route path="/verification" element={<Verification />} />
           <Route path="/agentRegister" element={<AgentRegister />} />
+          <Route path="/agentVerification" element={<AgentVerification />} />
+          <Route path="/agentLogin" element={<AgentLogin />} />
+          <Route path="/agentpasswordreset" element={<Agentpasswordreset />} />
           
           <Route path="/chatall" element={<ChatList />} />
           <Route path="/chat/:chatId" element={<ChatDetails />} />
