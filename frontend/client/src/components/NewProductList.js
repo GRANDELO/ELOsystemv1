@@ -204,21 +204,39 @@ const NewProductList = () => {
     });
   };
 
+
+  
   const filterAndSortProducts = () => {
+    const searchHistory = getSearchHistory(); // Retrieve search history
+    
     return products
       .filter((product) => {
         const matchesCategory = selectedCategory
           ? product.category.toLowerCase() === selectedCategory.toLowerCase()
           : true;
-        const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) || product.category.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch =
+          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          product.subCategory?.toLowerCase().includes(searchTerm.toLowerCase());
         return matchesCategory && matchesSearch;
       })
       .sort((a, b) => {
+        // Boost products that match the search history
+        const aBoost = Array.isArray(searchHistory[a.category]) && searchHistory[a.category].includes(a.subCategory) ? 1 : 0;
+        const bBoost = Array.isArray(searchHistory[b.category]) && searchHistory[b.category].includes(b.subCategory) ? 1 : 0;
+  
+        if (aBoost !== bBoost) {
+          return bBoost - aBoost; // Prioritize products with higher boost
+        }
+  
+        // Fallback sorting by search term match
         const aMatch = a.name.toLowerCase().includes(searchTerm.toLowerCase());
         const bMatch = b.name.toLowerCase().includes(searchTerm.toLowerCase());
         return aMatch === bMatch ? 0 : aMatch ? -1 : 1;
       });
   };
+  
+  
   
 
   const handlePageChange = (newPage) => {

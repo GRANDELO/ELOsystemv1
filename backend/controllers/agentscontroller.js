@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../models/agent');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
@@ -8,20 +8,9 @@ const sendEmail = require('../services/emailService');
 require('dotenv').config();
 
 const registerUser = async (req, res) => {
-  const { fullName, email, password, confirmPassword, phoneNumber, username, dateOfBirth, gender, category } = req.body;
+  const { firstName, lastName, email, password, confirmPassword, phoneNumber, idnumber, username, gender, category, town, townspecific } = req.body;
 
-  const isDateWithinRange = (date, minYears, maxYears) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const enteredDate = new Date(date);
-    const minAgeDate = new Date(today.setFullYear(today.getFullYear() - minYears));
-    const maxAgeDate = new Date(today.setFullYear(today.getFullYear() - maxYears));
-    return enteredDate <= minAgeDate && enteredDate >= maxAgeDate;
-  };
-
-  if (!isDateWithinRange(dateOfBirth, 12, 85)) {
-    return res.status(400).json({ message: 'Age must be between 12 and 85 to join.' });
-  }
+ 
 
   if (password !== confirmPassword) {
     return res.status(400).json({ message: 'Passwords do not match.' });
@@ -31,9 +20,9 @@ const registerUser = async (req, res) => {
 
   try {
     // Check if user already exists
-    let user = await User.findOne({ $or: [{ email }, { username }] });
+    let user = await User.findOne({ $or: [{ email }, { username }, { phoneNumber } , { idnumber } ] });
     if (user) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: 'Agent already exists' });
     }
 
     // Generate verification code and send email
@@ -41,7 +30,7 @@ const registerUser = async (req, res) => {
     const subject = `Verification - ${alphanumericCode}`;
     const vermessage = `Dear ${username},
 
-    Thank you for registering with Bazelink! Please use the following verification code to complete your registration:
+    Thank you for registering with Bazelink! as our agent Please use the following verification code to complete your registration:
     
     Verification Code: ${alphanumericCode}
     
@@ -56,7 +45,7 @@ const registerUser = async (req, res) => {
           Welcome to Bazelink, ${username}!
         </h2>
         <p style="font-size: 16px; color: #555; text-align: center; margin-top: 0;">
-          Thank you for registering with us! To complete your registration, please use the verification code below:
+          Thank you for registering with us as our agent! To complete your registration, please use the verification code below:
         </p>
         <div style="margin: 25px 0; padding: 20px; background-color: #f0f5fc; border: 1px dashed #1d4ed8; text-align: center; border-radius: 8px;">
           <p style="font-size: 20px; font-weight: bold; color: #1d4ed8; letter-spacing: 1px;">
@@ -85,29 +74,25 @@ const registerUser = async (req, res) => {
       return res.status(500).json({ message: 'Error sending verification email' });
     }
 
-    // Create new user with conditional amount field
-    const formattedDateOfBirth = moment(dateOfBirth).format('YYYY-MM-DD');
-    const userAmount = category === 'Seller' ? 0 : undefined;
-    const userbackgroundUrl = category === 'https://storage.googleapis.com/grandelo.appspot.com/1732717512234-Untitled design.png' ? 0 : undefined;
-    const userlogoUrl = category === 'https://storage.googleapis.com/grandelo.appspot.com/1732717512225-Ícone de perfil de usuário em estilo plano Ilustração em vetor avatar membro em fundo isolado Conceito de negócio de sinal de permissão humana _ Vetor Premium.jpeg' ? 0 : undefined;
-
     user = new User({
-      fullName,
+        firstName,
+        lastName,
       email,
       password,
       phoneNumber,
+      idnumber,
       username,
-      dateOfBirth: formattedDateOfBirth,
       gender,
       category,
+      town,
+      townspecific,
+      agentnumber,
       verificationCode: alphanumericCode,
       isVerified: false,
       active: false,
       resetPasswordToken: undefined,
       resetPasswordExpires: undefined,
-      amount: userAmount,
-      backgroundUrl: " ",
-      logoUrl: " ",
+      amount: 0,
     });
     await user.save();
 
