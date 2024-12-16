@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const crypto = require('crypto');
-const { generateAlphanumericVerificationCode } = require('../services/verificationcode');
+const { generateAlphanumericVerificationCode, generateVerificationCode } = require('../services/verificationcode');
 const sendEmail = require('../services/emailService');
 require('dotenv').config();
 
@@ -86,10 +86,10 @@ const registerUser = async (req, res) => {
     }
 
     const formattedDateOfBirth = moment(dateOfBirth).format('YYYY-MM-DD');
-    const agentnumber = 'AG' + generateAlphanumericVerificationCode(4);
+    const agentnumber = 'AG' + generateVerificationCode(4);
     user = new User({
-        firstName,
-        lastName,
+      firstName,
+      lastName,
       email,
       password,
       phoneNumber,
@@ -110,7 +110,7 @@ const registerUser = async (req, res) => {
     });
     await user.save();
 
-    res.status(201).json({ message: 'User registered successfully' });
+    res.status(201).json({ message: 'Agent registered successfully' });
   } catch (error) {
     console.error('Server error during registration:', error);
     res.status(500).json({ message: 'Server error' });
