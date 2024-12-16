@@ -1,4 +1,4 @@
-const User = require('../models/agent');
+const User = require('../models/agents');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
