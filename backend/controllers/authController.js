@@ -122,7 +122,7 @@ const login = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const user = await User.findOne({ $or: [{ email }, { username }, ] });
+    const user = await User.findOne({ $or: [{ username: email }, { username } ] });
     if (!user) {
       return res.status(401).json({ message: 'Invalid username' });
     }

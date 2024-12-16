@@ -23,6 +23,7 @@ const Login = () => {
         switch (appcat.trim().toLowerCase()) {
           case 'seller':
             alert('Failed to log in this app is for buyers only.');
+            navigate('/logout');
             break;
           default:
             const currentpage = sessionStorage.getItem('currentpage');
