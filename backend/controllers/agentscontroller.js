@@ -86,7 +86,7 @@ const registerUser = async (req, res) => {
     }
 
     const formattedDateOfBirth = moment(dateOfBirth).format('YYYY-MM-DD');
-
+    const agentnumber = 'AG' + generateAlphanumericVerificationCode(4);
     user = new User({
         firstName,
         lastName,
