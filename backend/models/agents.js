@@ -14,7 +14,7 @@ const AgentsSchema = new mongoose.Schema({
   category: { type: String, required: true },
   town: { type: String, required: true },
   townspecific: { type: String, required: true },
-  agentnumber: {type: Number, required: true},
+  agentnumber: {type: String, required: true},
   verificationCode: { type: String },
   isVerified: { type: Boolean, default: false },
   isDisabled: { type: Boolean, default: false },
