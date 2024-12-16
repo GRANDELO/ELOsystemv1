@@ -8,6 +8,7 @@ import ImageList from './components/ImageList';
 import ImageUpload from './components/ImageUpload';
 import Login from './components/Login';
 import Set from './components/set';
+import AgentRegister from './components/AgentRegister';
 
 import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
@@ -83,7 +84,8 @@ const App = () => {
           <Route path="/set" element={<Set />} />
           <Route path="/testHome" element={<Home />} />
           <Route path="/verification" element={<Verification />} />
-
+          <Route path="/agentRegister" element={<AgentRegister />} />
+          
           <Route path="/chatall" element={<ChatList />} />
           <Route path="/chat/:chatId" element={<ChatDetails />} />
           {/* Protected routes */}

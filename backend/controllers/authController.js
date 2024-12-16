@@ -124,7 +124,7 @@ const login = async (req, res) => {
   try {
     const user = await User.findOne({ $or: [{ email: username }, { username } ] });
     if (!user) {
-      return res.status(401).json({ message: 'Invalid username' });
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
     if (!user.isVerified) {
       return res.status(401).json({ message: 'Please verify your account first' });
@@ -132,7 +132,7 @@ const login = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid password' });
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     user.active = true;

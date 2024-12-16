@@ -8,9 +8,20 @@ const sendEmail = require('../services/emailService');
 require('dotenv').config();
 
 const registerUser = async (req, res) => {
-  const { firstName, lastName, email, password, confirmPassword, phoneNumber, idnumber, username, gender, category, town, townspecific } = req.body;
+  const { firstName, lastName, email, password, confirmPassword, phoneNumber, idnumber, username, dateOfBirth, gender, town, townspecific } = req.body;
 
- 
+  const isDateWithinRange = (date, minYears, maxYears) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const enteredDate = new Date(date);
+    const minAgeDate = new Date(today.setFullYear(today.getFullYear() - minYears));
+    const maxAgeDate = new Date(today.setFullYear(today.getFullYear() - maxYears));
+    return enteredDate <= minAgeDate && enteredDate >= maxAgeDate;
+  };
+
+  if (!isDateWithinRange(dateOfBirth, 12, 85)) {
+    return res.status(400).json({ message: 'Age must be between 12 and 85 to join.' });
+  }
 
   if (password !== confirmPassword) {
     return res.status(400).json({ message: 'Passwords do not match.' });
@@ -74,6 +85,8 @@ const registerUser = async (req, res) => {
       return res.status(500).json({ message: 'Error sending verification email' });
     }
 
+    const formattedDateOfBirth = moment(dateOfBirth).format('YYYY-MM-DD');
+
     user = new User({
         firstName,
         lastName,
@@ -82,8 +95,9 @@ const registerUser = async (req, res) => {
       phoneNumber,
       idnumber,
       username,
+      dateOfBirth: formattedDateOfBirth,
       gender,
-      category,
+      category: "Agent",
       town,
       townspecific,
       agentnumber,
@@ -107,9 +121,9 @@ const login = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const user = await User.findOne({ $or: [{ email }, { username }, { phoneNumber } , { idnumber } ] });
+    const user = await User.findOne({ $or: [{ email: username }, { username }, { phoneNumber: username } , { idnumber: username } ] });
     if (!user) {
-      return res.status(401).json({ message: 'Invalid username' });
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
     if (!user.isVerified) {
       return res.status(401).json({ message: 'Please verify your account first' });
@@ -117,7 +131,7 @@ const login = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid password' });
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     user.active = true;
@@ -573,6 +587,7 @@ const changeemail = async (req, res) => {
     res.status(500).json({ message: 'An error occurred while updating Email' });
   }
 };
+
 module.exports = {
   registerUser,
   login,

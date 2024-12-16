@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getUsernameFromToken, getcategoryFromToken } from '../utils/auth';
 import './styles/Login.css';
-
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -111,11 +111,11 @@ const Login = () => {
         {!recoverpassword ? (
           <div>
             <h2>Login</h2>
-            <label>Username:</label>
+            <label>Username or Email:</label>
             <input
               type="text"
               value={username}
-              placeholder="Enter your username"
+              placeholder="Username or Email"
               onChange={(e) => setUsername(e.target.value)}
               required
             />
@@ -134,7 +134,7 @@ const Login = () => {
                 className="toggle-password"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? 'Hide' : 'Show'}
+                {showPassword ? <FaRegEyeSlash/> : <FaRegEye/>}
               </button>
             </div>
             <button type="submit">Login</button>

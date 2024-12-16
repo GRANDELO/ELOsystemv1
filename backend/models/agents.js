@@ -9,6 +9,7 @@ const AgentsSchema = new mongoose.Schema({
   phoneNumber: { type: String, required: true },
   idnumber: {type: Number, required: true},
   username: { type: String, required: true, unique: true },
+  dateOfBirth: { type: Date, required: true },
   gender: { type: String, required: true },
   category: { type: String, required: true },
   town: { type: String, required: true },
