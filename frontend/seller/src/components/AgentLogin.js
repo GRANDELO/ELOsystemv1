@@ -140,8 +140,8 @@ const Login = () => {
             </div>
             <button type="submit">Login</button>
             <button type="button" onClick={handleRecoverPassword}>Forgot Password</button>
-            <p>Verify your account <Link to="/verification">Verify Account</Link></p>
-            <p>If you don't have an account <Link to="/register">Register</Link></p>
+            <p>Verify your account <Link to="/agentVerification">Verify Account</Link></p>
+            <p>If you don't have an account <Link to="/agentRegister">Register</Link></p>
           </div>
         ) : (
           <div>
