@@ -24,6 +24,11 @@ const AgentsSchema = new mongoose.Schema({
   active: { type: Boolean, default: false },
   amount: { type: Number, default: undefined},
 
+  packeges: [{
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Order', required: true },
+    processedDate: { type: Date, default: Date.now },
+  }],
+
 }, { timestamps: true });
 
 AgentsSchema.pre('save', async function(next) {

@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const { generateAlphanumericVerificationCode, generateVerificationCode } = require('../services/verificationcode');
 const sendEmail = require('../services/emailService');
 require('dotenv').config();
+const mongoose = require('mongoose');
 
 const registerUser = async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword, phoneNumber, idnumber, username, dateOfBirth, gender, town, townspecific } = req.body;
@@ -594,7 +595,50 @@ const changeemail = async (req, res) => {
   }
 };
 
+// Controller function to add an order to the agent's packages
+const addOrderToAgentPackages = async (req, res) => {
+  try {
+    const { agentnumber, orderId } = req.body;
+
+    // Validate inputs
+    if (!agentnumber || !orderId) {
+      return res.status(400).json({ error: "Agent number and Order ID are required." });
+    }
+
+    // Check if the orderId is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
+      return res.status(400).json({ error: "Invalid Order ID format." });
+    }
+
+    // Find the agent by agentnumber
+    const agent = await User.findOne({ agentnumber });
+
+    if (!agent) {
+      return res.status(404).json({ error: "Agent not found." });
+    }
+
+    // Add the new order to the packages array
+    agent.packeges.push({
+      productId: orderId,
+      processedDate: new Date(),
+    });
+
+    // Save the updated agent document
+    await agent.save();
+
+    return res.status(200).json({
+      message: "Order added successfully to agent packages.",
+      agent,
+    });
+  } catch (error) {
+    console.error("Error adding order to agent packages:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
 module.exports = {
+  addOrderToAgentPackages,
   registerUser,
   login,
   verifyUser,

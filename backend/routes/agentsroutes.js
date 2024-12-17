@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerUser, login, verifyUser, updateEmail, resendVerificationCode, newrecoverPassword, resetPassword, changeusername, changepassword, changephonenumber, changeemail, logout} = require('../controllers/agentscontroller');
+const { addOrderToAgentPackages, registerUser, login, verifyUser, updateEmail, resendVerificationCode, newrecoverPassword, resetPassword, changeusername, changepassword, changephonenumber, changeemail, logout} = require('../controllers/agentscontroller');
 const router = express.Router();
 
 
@@ -15,5 +15,6 @@ router.post('/changepassword', changepassword);
 router.post('/changephonenumber', changephonenumber);
 router.post('/changeemail', changeemail);
 router.post('/logout', logout);
+router.post('/add-order', addOrderToAgentPackages);
 
 module.exports = router;
