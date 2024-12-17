@@ -617,6 +617,17 @@ const addOrderToAgentPackages = async (req, res) => {
       return res.status(404).json({ error: "Agent not found." });
     }
 
+        // Check if the order already exists in the packages array
+        const orderExists = agent.packeges.some(
+          (package) => package.productId.toString() === orderId
+        );
+    
+        if (orderExists) {
+          return res
+            .status(400)
+            .json({ error: "Order already exists under this agent." });
+        }
+
     // Add the new order to the packages array
     agent.packeges.push({
       productId: orderId,
