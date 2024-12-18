@@ -25,7 +25,7 @@ const deliveryPersonnelSchema = new mongoose.Schema({
   amount: { type: Number, default: undefined},
 
   packeges: [{
-    boxId: { type: mongoose.Schema.Types.ObjectId, ref: 'Box', required: true },
+    boxid: {type: String, required: true},
     processedDate: { type: Date, default: Date.now },
     isdelivered: { type: Boolean, default: false },
   }],
