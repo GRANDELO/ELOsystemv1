@@ -31,7 +31,7 @@ const Register = () => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await axios.get('https://elosystemv1.onrender.com/api/locations');
+        const response = await axios.get('https://elosystemv1.onrender.com/api/locationsroutes');
         setTowns(response.data);
       } catch (err) {
         console.error('Failed to fetch locations:', err);
@@ -158,18 +158,27 @@ const Register = () => {
             <p style={{ color: 'red', fontSize: 'smaller' }}>Full Name must be at least 3 characters long and contain only letters.</p>
           )}
 
-          <label>Username:</label>
-          <input
-            type="text"
+          <label>vehicle type:</label>
+          <select
             name="username"
-            placeholder="Enter your username"
             value={formData.username}
             onChange={handleChange}
             required
-          />
-          {formData.username && !/^[a-zA-Z0-9_]{4,}$/.test(formData.username) && (
-            <p style={{ color: 'red', fontSize: 'smaller' }}>Username must be at least 4 characters long and contain only letters, numbers, or underscores.</p>
-          )}
+          >
+            <option value="">Select vehicle type</option>
+            <option value="Motorcycle">Motorcycle</option>
+            <option value="Bicycle">Bicycle</option>
+            <option value="Tuk Tuk">Tuk Tuk</option>
+            {/*
+            <option value="Pickup Truck">Pickup Truck</option>
+            <option value="Van">Van</option>
+            <option value="Lorry">Lorry</option>
+            <option value="Car">Car</option>
+            <option value="Trailer">Trailer</option>
+            <option value="Cart">Cart</option>
+            <option value="Drone">Drone</option>
+            */}
+          </select>
 
           <button type="button" onClick={nextStep} disabled={!isNextEnabled}>Next</button>
         </div>
