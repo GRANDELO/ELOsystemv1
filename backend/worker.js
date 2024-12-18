@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const Box = require('./models/box'); // Box model
 const User = require('./models/agents'); // User model with agent's info
 const { v4: uuidv4 } = require('uuid');
+const { generateVerificationCode } = require('./services/verificationcode');
 
 const processPendingJobs = async () => {
     try {
@@ -98,6 +99,7 @@ const groupOrdersForAllAgents = async () => {
             // Create a new box if none exists
             box = new Box({
               boxNumber: `${uuidv4()}_${timeSlot}`,
+              boxid: generateVerificationCode(6),
               destination,
               items: [{ orderNumber }], // Add the current order
               agentnumber,
