@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Box = require('../models/Box'); // Box model
+const Box = require('../models/box'); // Box model
 const User = require('../models/agents'); // User model with agent's info
 const { v4: uuidv4 } = require('uuid');
 
