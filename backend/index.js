@@ -40,6 +40,7 @@ const chatRoutes = require('./routes/chatRoutes');
 const reviewRoutes = require("./routes/review");
 const feed = require('./routes/feedRoutes');
 const agentsroutes = require('./routes/agentsroutes');
+const Deliveryroutes = require('./routes/deliveryroutes');
 
 
 const uploadDir = path.join(__dirname, 'uploads');
@@ -184,6 +185,7 @@ app.use('/api/chat', chatRoutes);
 app.use("/api/review", reviewRoutes);
 app.use('/api/feedback', feed);
 app.use('/api/agent', agentsroutes);
+app.use('/api/delivery', Deliveryroutes);
 
 
 app.use((req, res, next) => {
