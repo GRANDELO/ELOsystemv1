@@ -69,7 +69,7 @@ const groupOrdersForAllAgents = async () => {
   
         for (const pkg of unpackedOrders) {
           const orderId = pkg.productId;
-  
+          const processedDate = pkg.processedDate;
           // Fetch full order details from the database
           const order = await mongoose.model("Order").findById(orderId);
   
@@ -79,8 +79,8 @@ const groupOrdersForAllAgents = async () => {
           }
   
           const destination = order.destination;
-          const timeSlot = getTimeSlot(order.createdAt);
-          const date = order.createdAt.toISOString().split("T")[0]; // YYYY-MM-DD
+          const timeSlot = getTimeSlot(processedDate);
+          const date = processedDate.toISOString().split("T")[0]; // YYYY-MM-DD
   
           // Check for an existing box for this destination, date, and time slot
           let box = await Box.findOne({
