@@ -7,7 +7,7 @@ const { generateAlphanumericVerificationCode, generateVerificationCode } = requi
 const sendEmail = require('../services/emailService');
 require('dotenv').config();
 const mongoose = require('mongoose');
-const Box = require('./models/box'); // Adjust path as needed
+const Box = require('../models/box'); // Adjust path as needed
 
 const registerUser = async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword, phoneNumber, idnumber, username, dateOfBirth, gender, town, townspecific } = req.body;
