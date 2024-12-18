@@ -624,8 +624,32 @@ const assignBoxToDeliveryPerson = async (req, res ) => {
 };
 
 
+const getPackagesForDeliveryPerson = async (req, res) => {
+  try {
+    const { deliveryPersonnumber } = req.params;
+
+    // Find the delivery person by their deliveryPersonnumber
+    const deliveryPerson = await User.findOne({ deliveryPersonnumber });
+
+    if (!deliveryPerson) {
+      return res.status(404).json({ success: false, message: 'Delivery person not found' });
+    }
+
+    // Get the packages assigned to the delivery person
+    const packages = deliveryPerson.packeges;
+
+    // Send the packages to the frontend
+    return res.status(200).json({ success: true, packages });
+  } catch (error) {
+    console.error('Error fetching packages for delivery person:', error);
+    return res.status(500).json({ success: false, message: 'An error occurred', error });
+  }
+};
+
+
 
 module.exports = {
+  getPackagesForDeliveryPerson,
   assignBoxToDeliveryPerson,
   registerUser,
   login,

@@ -61,6 +61,7 @@ const AgentBoxes = () => {
               <li key={box._id} style={styles.boxItem}>
                 <div>
                   <strong>Box Number:</strong> {box.boxNumber} <br />
+                  <strong>Box ID:</strong> {box.boxid} <br />
                   <strong>Destination:</strong> {box.destination} <br />
                   <strong>Current Place:</strong> {box.currentplace} <br />
                   <strong>Packing Date:</strong> {new Date(box.packingDate).toLocaleString()} <br />
