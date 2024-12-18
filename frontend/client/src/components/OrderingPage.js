@@ -160,6 +160,7 @@ const OrderingPage = () => {
                 setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
                 console.error('Error:', error);
             }
+
       }else{
         await handleClearCart();
         setTimeout(() => {

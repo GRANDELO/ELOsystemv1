@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { FaBell, FaBoxOpen, FaCog, FaShoppingCart, FaCommentDots } from 'react-icons/fa'; // Import bell icon for notifications
 import { FiArrowDown, FiArrowUp, FiXCircle } from "react-icons/fi";
@@ -74,7 +74,7 @@ const Home = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/cart/cart', { username });
+      const response = await axiosInstance.post('/cart/cart', { username });
       setCart(response.data.items || []);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to fetch cart');
@@ -85,7 +85,7 @@ const Home = () => {
 
   const fetchUnreadNotifications = async () => {
     try {
-      const response = await axios.get(`https://elosystemv1.onrender.com/api/notifications/${username}`);
+      const response = await axiosInstance.get(`/notifications/${username}`);
       const unreadNotifications = response.data.filter(notification => !notification.isRead);
       setUnreadCount(unreadNotifications.length);
     } catch (err) {

@@ -29,13 +29,13 @@ import FeedbackForm from './components/Feedback';
 
 import Coreordering from './components/coreordering';
 import Displayorder from './components/displayorder';
-import Home from './components/home';
+//import Home from './components/home';
 import Image from './components/image';
 import Notification from './components/notification';
 import Passwordrecovery from './components/passwordreset';
 import Productperfomance from './components/productperfomance';
 import Regdeliverypeople from './components/regdeliverypeople';
-import Salespersonhome from './components/salespersonhome';
+import Home from './components/salespersonhome';
 import Seller from './components/sellerHome';
 import Upload from './components/upload';
 
@@ -84,7 +84,7 @@ const App = () => {
         <Routes>
           {/* Public routes */}
 
-          <Route path="/" element={<Salespersonhome />} />
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/success" element={<Success />} />
