@@ -27,6 +27,7 @@ const AgentsSchema = new mongoose.Schema({
   packeges: [{
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Order', required: true },
     processedDate: { type: Date, default: Date.now },
+    ispacked: { type: Boolean, default: false },
   }],
 
 }, { timestamps: true });

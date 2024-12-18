@@ -7,17 +7,17 @@ const boxSchema = new mongoose.Schema({
     default: uuidv4, 
   },
   items: [{
-    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Order', required: true },
+    orderId: { type: mongoose.Schema.Types.ObjectId, ref: 'Order', required: true },
   }],
   destination: { type: String, required: true },
   packingDate: { type: Date, default: Date.now },
-  packed: {type: Boolean, defautlt: false},
+  packed: { type: Boolean, default: false },
   deliveryPerson: { type: String, required: true }, 
   isDeliveryInProcess: { type: Boolean, default: false },
   isDelivered: { type: Boolean, default: false },
-  currentplace : { type: String, required: true },
+  currentplace: { type: String, required: true },
 });
 
-const Box = mongoose.model('Box', orderSchema);
+const Box = mongoose.model('Box', boxSchema);
 
 module.exports = Box;

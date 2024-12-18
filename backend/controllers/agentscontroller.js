@@ -632,6 +632,7 @@ const addOrderToAgentPackages = async (req, res) => {
     agent.packeges.push({
       productId: orderId,
       processedDate: new Date(),
+      ispacked: false,
     });
 
     // Save the updated agent document

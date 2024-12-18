@@ -24,7 +24,7 @@ const ProductPage = () => {
       alert("You have to sign in to complete the order.");
       sessionStorage.setItem("currentpage", `review?productId=${productId}`);
       const interval = setInterval(() => {
-        navigate("/");
+        navigate("/login");
       }, 3000);
       return () => clearInterval(interval);
     }
