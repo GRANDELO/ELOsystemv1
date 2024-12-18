@@ -7,7 +7,7 @@ const boxSchema = new mongoose.Schema({
     default: uuidv4, 
   },
   items: [{
-    orderId: { type: mongoose.Schema.Types.ObjectId, ref: 'Order', required: true },
+    orderNumber: {type: String,default: uuidv4, },
   }],
   agentnumber: {type: String, required: true},
   destination: { type: String, required: true },

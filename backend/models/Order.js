@@ -2,10 +2,7 @@ const mongoose = require('mongoose');
 const { v4: uuidv4 } = require('uuid');
 
 const orderSchema = new mongoose.Schema({
-  orderNumber: {
-    type: String,
-    default: uuidv4, 
-  },
+  orderNumber: {type: String,default: uuidv4, },
   items: [{
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'NewProduct', required: true },
     quantity: { type: Number, required: true },

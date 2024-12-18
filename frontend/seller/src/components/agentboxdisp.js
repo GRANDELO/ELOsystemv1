@@ -6,14 +6,16 @@ const AgentBoxes = () => {
   const [boxes, setBoxes] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [expandedBox, setExpandedBox] = useState(null); // Tracks which box is expanded
 
   const fetchBoxes = async () => {
     setError("");
     setLoading(true);
     setBoxes([]);
+    setExpandedBox(null);
 
     try {
-      const response = await axios.get(`/api/agent/${agentNumber}/boxes`);
+      const response = await axios.get(`https://elosystemv1.onrender.com/api/agent/${agentNumber}/boxes`);
       setBoxes(response.data.boxes);
     } catch (err) {
       if (err.response) {
@@ -26,6 +28,11 @@ const AgentBoxes = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const toggleBoxDetails = (boxId) => {
+    // Toggles the details of a specific box
+    setExpandedBox((prevBoxId) => (prevBoxId === boxId ? null : boxId));
   };
 
   return (
@@ -52,11 +59,36 @@ const AgentBoxes = () => {
           <ul style={styles.boxListItems}>
             {boxes.map((box) => (
               <li key={box._id} style={styles.boxItem}>
-                <strong>Box Number:</strong> {box.boxNumber} <br />
-                <strong>Destination:</strong> {box.destination} <br />
-                <strong>Current Place:</strong> {box.currentplace} <br />
-                <strong>Packing Date:</strong> {new Date(box.packingDate).toLocaleString()} <br />
-                <strong>Items:</strong> {box.items.length} orders
+                <div>
+                  <strong>Box Number:</strong> {box.boxNumber} <br />
+                  <strong>Destination:</strong> {box.destination} <br />
+                  <strong>Current Place:</strong> {box.currentplace} <br />
+                  <strong>Packing Date:</strong> {new Date(box.packingDate).toLocaleString()} <br />
+                  <strong>
+                    Items:{" "}
+                    <span
+                      style={styles.itemToggle}
+                      onClick={() => toggleBoxDetails(box._id)}
+                    >
+                      {box.items.length} orders (click to view)
+                    </span>
+                  </strong>
+                </div>
+
+                {expandedBox === box._id && (
+                  <div style={styles.itemDetails}>
+                    <h4>Item Details:</h4>
+                    <ul>
+                      {box.items.map((item, index) => (
+                        <li key={index} style={styles.itemDetail}>
+                          <strong>Item Name:</strong> {item.name} <br />
+                          <strong>Quantity:</strong> {item.quantity} <br />
+                          <strong>Weight:</strong> {item.weight} kg
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </li>
             ))}
           </ul>
@@ -124,6 +156,21 @@ const styles = {
   },
   subtitle: {
     fontSize: "18px",
+    marginBottom: "10px",
+  },
+  itemToggle: {
+    color: "#007BFF",
+    cursor: "pointer",
+    textDecoration: "underline",
+  },
+  itemDetails: {
+    marginTop: "10px",
+    padding: "10px",
+    border: "1px solid #ccc",
+    borderRadius: "5px",
+    backgroundColor: "#eef2f7",
+  },
+  itemDetail: {
     marginBottom: "10px",
   },
   noData: {

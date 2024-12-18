@@ -45,7 +45,7 @@ const getTimeSlot = (date) => {
 // Function to group orders into boxes
 const groupOrdersForAllAgents = async () => {
     try {
-      // Step 1: Get all agents from the database
+      // Step 1: Get all agents
       const agents = await User.find({ agentnumber: { $exists: true } });
   
       if (!agents || agents.length === 0) {
@@ -59,62 +59,64 @@ const groupOrdersForAllAgents = async () => {
   
         console.log(`Processing agent: ${agentnumber}`);
   
-        // Step 3: Extract the products (unpacked orders) under this agent
+        // Extract unpacked orders for this agent
         const unpackedOrders = agent.packeges.filter((pkg) => !pkg.ispacked);
   
         if (unpackedOrders.length === 0) {
           console.log(`No unpacked orders found for agent: ${agentnumber}`);
-          continue; // Skip to the next agent if no unpacked orders
+          continue;
         }
   
         for (const pkg of unpackedOrders) {
           const orderId = pkg.productId;
           const processedDate = pkg.processedDate;
-          // Fetch full order details from the database
-          const order = await mongoose.model("Order").findById(orderId);
   
+          // Fetch the order details
+          const order = await mongoose.model("Order").findById(orderId);
           if (!order) {
             console.warn(`Order not found: ${orderId}`);
-            continue; // Skip if the order does not exist
+            continue;
           }
   
           const destination = order.destination;
-          const timeSlot = getTimeSlot(processedDate);
-          const date = processedDate.toISOString().split("T")[0]; // YYYY-MM-DD
+          const timeSlot = getTimeSlot(processedDate); // Helper function to determine the time slot
+          const date = processedDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
   
-          // Check for an existing box for this destination, date, and time slot
+          // Check if a box already exists for this destination, date, and time slot
           let box = await Box.findOne({
             destination,
             packingDate: {
               $gte: new Date(`${date}T00:00:00Z`),
               $lt: new Date(`${date}T23:59:59Z`),
             },
-            boxNumber: { $regex: timeSlot }, // Match the correct time slot
+            boxNumber: { $regex: timeSlot },
           });
   
-          // Step 4: Create a new box if none exists
+          const orderNumber = order.orderNumber;
+  
           if (!box) {
+            // Create a new box if none exists
             box = new Box({
               boxNumber: `${uuidv4()}_${timeSlot}`,
               destination,
-              items: [{ orderId }],
-              agentnumber: agentnumber,
+              items: [{ orderNumber }], // Add the current order
+              agentnumber,
               currentplace: "Warehouse",
               packingDate: new Date(),
               packed: false,
-              deliveryPerson: 'non assigned', // Assign to the agent
+              deliveryPerson: "non assigned",
             });
   
             await box.save();
           } else {
-            // Add the order to the existing box
-            if (!box.items.some((item) => item.orderId.toString() === orderId)) {
-              box.items.push({ orderId });
+            // Add the order to the existing box if not already added
+            if (!box.items.some((item) => item.orderNumber === orderNumber)) {
+              box.items.push({ orderNumber });
               await box.save();
             }
           }
   
-          // Step 5: Mark the package as packed in the agent's packages
+          // Mark the package as packed
           pkg.ispacked = true;
           pkg.processedDate = new Date();
         }
@@ -130,6 +132,7 @@ const groupOrdersForAllAgents = async () => {
       return "Error: Internal Server Error.";
     }
   };
+  
   
 setInterval(groupOrdersForAllAgents, 30000);
 setInterval(processPendingJobs, 60000);
