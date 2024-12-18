@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import { getUsernameFromToken } from '../utils/auth';
 
 const FeedbackForm = () => {
@@ -11,6 +11,7 @@ const FeedbackForm = () => {
     useEffect(() => {
         const fetchedUsername = getUsernameFromToken();
         if (fetchedUsername) {
+            console.log('Fetched username:', fetchedUsername);
             setUsername(fetchedUsername);
         } else {
             setMessage('Username not found. Please log in again.');
@@ -25,10 +26,12 @@ const FeedbackForm = () => {
         }
 
         try {
-            await axios.post('https://elosystemv1.onrender.com/api/feedback/submit', {
+            await axiosInstance.post('/feedback/submit', {
                 username,
                 feedback,
             });
+            console.log('Submitting feedback:', { username, feedback });
+
             setMessage('Feedback submitted successfully!');
             setFeedback('');
         } catch (error) {

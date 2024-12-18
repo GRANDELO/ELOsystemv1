@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import React, { useState } from 'react';
 
 const RegisterDeliveryPersonnel = () => {
@@ -14,7 +14,7 @@ const RegisterDeliveryPersonnel = () => {
     setSuccess('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/delivery-personnel', {
+      const response = await axiosInstance.post('/delivery-personnel', {
         name,
         phone,
         status,

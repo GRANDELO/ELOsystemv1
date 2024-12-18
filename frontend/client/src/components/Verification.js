@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './styles/ThankYou.css';
@@ -24,7 +24,7 @@ function Verification() {
     e.preventDefault();
     try {
       const emailToUse = email || newEmail;
-      const response = await axios.post('https://elosystemv1.onrender.com/api/auth/verify', { email: emailToUse, verificationCode });
+      const response = await axiosInstance.post('/auth/verify', { email: emailToUse, verificationCode });
       if (response.status === 200) {
         navigate('/success');
       }
@@ -50,7 +50,7 @@ function Verification() {
     else
     {
       try {
-        const response = await axios.post('https://elosystemv1.onrender.com/api/auth/update-email', { oldEmail: email, newEmail });
+        const response = await axiosInstance.post('/auth/update-email', { oldEmail: email, newEmail });
         if (response.status === 200) {
           setEmail(newEmail);
           sessionStorage.setItem('email', newEmail);
@@ -75,7 +75,7 @@ function Verification() {
       if (!emailToUse) {
         setError('Enter your email.');
       } else {
-        const response = await axios.post('https://elosystemv1.onrender.com/api/auth/resendemail', { email: emailToUse });
+        const response = await axiosInstance.post('/auth/resendemail', { email: emailToUse });
         if (response.status === 200) {
           setError('Verification code has been resent.');
         }

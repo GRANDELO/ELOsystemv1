@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 import { getUsernameFromToken } from "../utils/auth";
 import './styles/ReviewList.css'; // Import the CSS file
 
@@ -12,8 +12,8 @@ const ReviewList = ({ productId, onReviewAction }) => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await axios.get(
-          `https://elosystemv1.onrender.com/api/review/${productId}`
+        const response = await axiosInstance.get(
+          `/review/${productId}`
         );
         setReviews(response.data);
       } catch (err) {

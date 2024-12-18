@@ -36,6 +36,8 @@ const Home = () => {
   const appcat = localStorage.getItem('appcat');
   const [isNavVisible, setIsNavVisible] = useState(false);
   const [isFeedbackVisible, setIsFeedbackVisible] = useState(false); 
+  const [isQrScannerVisible, setIsQrScannerVisible] = useState(false); // QR Scanner State
+  const [qrResult, setQrResult] = useState('');
  
   
   useEffect(() => {
@@ -166,6 +168,10 @@ const Home = () => {
     setIsNavVisible(!isNavVisible);
   };
 
+  const toggleQRScanner = () => {
+    setIsQrScannerVisible(!isQrScannerVisible);
+  };
+
   return (
     <div className="salesp-home">
       <Header />
@@ -224,6 +230,26 @@ const Home = () => {
               <IoClose />
             </button>
           </section>
+        )}
+        {/* QR Scanner Section */}
+        {isQrScannerVisible && (
+          <div className="qr-scanner-container">
+            <h4>Scan QR Code</h4>
+            <AppDownloadQRIcon
+              onResult={(result, error) => {
+                if (result) {
+                  setQrResult(result?.text);
+                  setIsQrScannerVisible(false);
+                }
+                if (error) console.error('QR Error:', error);
+              }}
+              style={{ width: '100%' }}
+            />
+            <p>Scanned Result: {qrResult}</p>
+            <button onClick={toggleQRScanner}>
+              <IoClose /> Close Scanner
+            </button>
+          </div>
         )}
       </main>
 

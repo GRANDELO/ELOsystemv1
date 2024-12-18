@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+
 const categories = [
   { id: 'electronics', name: 'Electronics' },
   { id: 'clothing', name: 'Clothing' },

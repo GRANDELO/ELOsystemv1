@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { getUsernameFromToken } from '../utils/auth';
 import './styles/displayorder.css';
@@ -28,7 +28,7 @@ const OrdersPage = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get(`https://elosystemv1.onrender.com/api/orders/my/${username}`);
+      const response = await axiosInstance.get(`/orders/my/${username}`);
       setOrders(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error('Error fetching orders:', error);
@@ -54,7 +54,7 @@ const OrdersPage = () => {
     };
 
     try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/mpesa/lipa', payload, {
+      const response = await axiosInstance.post('/mpesa/lipa', payload, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -69,7 +69,7 @@ const OrdersPage = () => {
 
   const confirmDelivery = async (orderId) => {
     try {
-      const response = await axios.post(`https://elosystemv1.onrender.com/api/order2/${orderId}/deliverypatcher`);
+      const response = await axiosInstance.post(`/order2/${orderId}/deliverypatcher`);
       setMessage('Delivery confirmed successfully!');
       console.log(response.data);
     } catch (error) {

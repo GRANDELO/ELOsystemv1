@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import React, { useEffect, useState } from 'react';
 
 const FileList = () => {
@@ -6,7 +6,7 @@ const FileList = () => {
 
   const fetchFiles = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/files');
+      const response = await axiosInstance.get('/files');
       setFiles(response.data);
     } catch (error) {
       console.error('Error fetching files', error);

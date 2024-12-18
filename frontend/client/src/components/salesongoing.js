@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { Bar, Line } from 'react-chartjs-2';
 import './styles/sales.css';
@@ -11,7 +11,7 @@ const FinancialSummary = () => {
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        const response = await axios.get('https://elosystemv1.onrender.com/api/financials/summary');
+        const response = await axiosInstance.get('/financials/summary');
         setSummary(response.data);
       } catch (error) {
         setError('Error fetching financial data');

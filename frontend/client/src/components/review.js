@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 import { getUsernameFromToken } from "../utils/auth";
 import AddEditReview from "./AddEditReview";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -32,8 +32,8 @@ const ProductPage = () => {
     if (productId) {
       const fetchReviews = async () => {
         try {
-          const response = await axios.get(
-            `https://elosystemv1.onrender.com/api/review/product/${productId}`
+          const response = await axiosInstance.get(
+            `/review/product/${productId}`
           );
           setReviews(response.data);
         } catch (error) {
@@ -55,8 +55,8 @@ const ProductPage = () => {
 
   const handleDeleteClick = async (reviewId) => {
     try {
-      await axios.delete(
-        `https://elosystemv1.onrender.com/api/review/delete/${reviewId}`
+      await axiosInstance.delete(
+        `/review/delete/${reviewId}`
       );
       alert("Review deleted successfully!");
       setRefreshReviews((prev) => !prev); // Trigger refresh

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 import { Link } from "react-router-dom";
 
 const ChatList = () => {
@@ -14,7 +14,7 @@ const ChatList = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get("https://elosystemv1.onrender.com/api/chat/allchats");
+        const response = await axiosInstance.get("/chat/allchats");
         if (Array.isArray(response.data)) {
           setChats(response.data); // Ensure data is an array
         } else {
@@ -35,7 +35,7 @@ const ChatList = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("https://elosystemv1.onrender.com/api/users/users");
+        const response = await axiosInstance.get("/users/users");
         if (response.data && Array.isArray(response.data)) {
           setUsers(response.data); // Set the users if response is valid
         } else {
@@ -58,7 +58,7 @@ const ChatList = () => {
     }
 
     try {
-      const response = await axios.post("https://elosystemv1.onrender.com/api/chat/create", {
+      const response = await axiosInstance.post("/chat/create", {
         usernames: ["YourUsername", selectedUser], // Replace "YourUsername" with the logged-in user's username
       });
       if (response.data && response.data.chat) {

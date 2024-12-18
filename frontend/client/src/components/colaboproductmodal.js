@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import { QRCodeCanvas } from 'qrcode.react';
 import React, { useEffect, useState } from 'react'; 
 import { Alert, Button, Form, Modal } from 'react-bootstrap';
@@ -34,7 +34,7 @@ const ProductModal = ({ product, show, handleClose }) => {
       setMessage('');
       setError('');
 
-      const addResponse = await axios.post('https://elosystemv1.onrender.com/api/cart/cart/add', 
+      const addResponse = await axiosInstance.post('/cart/cart/add', 
         { username, productId: product._id, quantity }
       );
 
@@ -69,7 +69,7 @@ const ProductModal = ({ product, show, handleClose }) => {
       setMessage('');
       setError('');
   
-      const response = await axios.post('https://elosystemv1.onrender.com/api/coresell/initiate', {
+      const response = await axiosInstance.post('/coresell/initiate', {
         username,
         mpesaNumber,
         productId: product._id,

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './styles/styles.css';
@@ -42,7 +42,7 @@ const Register = () => {
     };
 
     try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/auth/register', trimmedFormData);
+      const response = await axiosInstance.post('/auth/register', trimmedFormData);
       setMessage(response.data.message);
       sessionStorage.setItem('email', trimmedFormData.email);
       navigate('/verification');

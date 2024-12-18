@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Form } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -35,7 +35,7 @@ const OrderingPage = () => {
       setError('');
       sessionStorage.setItem('currentpage', `coreorder?sellerOrderId=${sellerOrderId}&productId=${productId}`);
       try {
-        const response = await axios.get(`https://elosystemv1.onrender.com/api/products/${productId}`);
+        const response = await axiosInstance.get(`/products/${productId}`);
         setProduct(response.data);
       } catch (err) {
         setError(err.response?.data?.message || 'Failed to fetch product');
@@ -50,7 +50,7 @@ const OrderingPage = () => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await axios.get('https://elosystemv1.onrender.com/api/locations');
+        const response = await axiosInstance.get('/locations');
         setTowns(response.data);
       } catch (err) {
         setError(err.response?.data?.message || 'Failed to fetch locations');
@@ -96,7 +96,7 @@ const OrderingPage = () => {
     try {
       setMessage('');
       setError('');
-      const clearResponse = await axios.post('https://elosystemv1.onrender.com/api/cart/cart/clear', 
+      const clearResponse = await axiosInstance.post('/cart/cart/clear', 
         { username }
       );
       setMessage(clearResponse.data.message);
@@ -142,7 +142,7 @@ const OrderingPage = () => {
         orderReference: orderReference,
         sellerOrderId,
       };
-      const response = await axios.post('https://elosystemv1.onrender.com/api/orders', orderDetails);
+      const response = await axiosInstance.post('/orders', orderDetails);
       setMessage(response.data.message);
 
       if (paymentMethod === 'mpesa') 
@@ -155,7 +155,7 @@ const OrderingPage = () => {
             };
 
             try {
-                const response = await axios.post('https://elosystemv1.onrender.com/api/mpesa/lipa', payload, {
+                const response = await axiosInstance.post('/mpesa/lipa', payload, {
                     headers: {
                         'Content-Type': 'application/json'
                     }

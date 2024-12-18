@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 
 const ChatDetails = () => {
   const { chatId } = useParams();
@@ -10,7 +10,7 @@ const ChatDetails = () => {
   useEffect(() => {
     const fetchChatDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/chats/${chatId}`); // Replace with your API endpoint
+        const response = await axiosInstance.get(`/chats/${chatId}`); // Replace with your API endpoint
         setChat(response.data);
       } catch (error) {
         console.error("Error fetching chat details:", error);
@@ -21,7 +21,7 @@ const ChatDetails = () => {
 
   const sendMessage = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/api/chats/send", {
+      const response = await axiosInstance.post("/chats/send", {
         chatId,
         senderUsername: "YourUsername", // Replace with the actual username
         message: newMessage,
