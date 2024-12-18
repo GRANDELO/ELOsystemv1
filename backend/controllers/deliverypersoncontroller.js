@@ -604,7 +604,7 @@ const assignBoxToDeliveryPerson = async (req, res ) => {
 
     // Add the box to the delivery person's packages
     deliveryPerson.packeges.push({ 
-      boxId,
+      boxid: boxId,
       processedDate: new Date(),
       isdelivered: false,
     });
