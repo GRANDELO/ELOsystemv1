@@ -81,9 +81,7 @@ const AgentBoxes = () => {
                     <ul>
                       {box.items.map((item, index) => (
                         <li key={index} style={styles.itemDetail}>
-                          <strong>Item Name:</strong> {item.name} <br />
-                          <strong>Quantity:</strong> {item.quantity} <br />
-                          <strong>Weight:</strong> {item.weight} kg
+                          <strong>Item Order Number:</strong> {item.orderNumber} <br />
                         </li>
                       ))}
                     </ul>
