@@ -16,6 +16,9 @@ import AgentSuccess from './components/AgentSuccess';
 import Loginselectore from './components/loginselectore';
 import Agentpros from './components/agentpros';
 import Agentinput from './components/agentinput';
+import Agentboxdisp from './components/agentboxdisp';
+
+
 
 import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
@@ -99,6 +102,8 @@ const App = () => {
           <Route path="/" element={<Loginselectore />} />
           <Route path="/agentpros" element={<Agentpros />} />
           <Route path="/agentinput" element={<Agentinput />} />
+          <Route path="/agentboxdisp" element={<Agentboxdisp />} />
+
           
           <Route path="/chatall" element={<ChatList />} />
           <Route path="/chat/:chatId" element={<ChatDetails />} />
