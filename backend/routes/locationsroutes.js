@@ -43,7 +43,7 @@ const townsAndAreas = [
 ];
 
 
-router.get('/api/locations', (req, res) => {
+router.get('/api/locationsroutes', (req, res) => {
   res.json(townsAndAreas);
 });
 
