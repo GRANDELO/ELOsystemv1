@@ -18,7 +18,11 @@ import Agentpros from './components/agentpros';
 import Agentinput from './components/agentinput';
 import Agentboxdisp from './components/agentboxdisp';
 
-
+import DeliveryLogin from './components/deliveryLogin';
+import DeliveryRegister from './components/deliveryRegister';
+import DeliverySuccess from './components/deliverySuccess';
+import Deliverypasswordreset from './components/deliverypasswordreset';
+import DeliveryVerification from './components/deliveryVerification';
 
 import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
@@ -104,6 +108,12 @@ const App = () => {
           <Route path="/agentinput" element={<Agentinput />} />
           <Route path="/agentboxdisp" element={<Agentboxdisp />} />
 
+          <Route path="/deliveryLogin" element={<DeliveryLogin />} />
+          <Route path="/deliveryRegister" element={<DeliveryRegister />} />
+          <Route path="/deliverySuccess" element={<DeliverySuccess />} />
+          <Route path="/deliverypasswordreset" element={<Deliverypasswordreset />} />
+          <Route path="/deliveryVerification" element={<DeliveryVerification />} />
+          
           
           <Route path="/chatall" element={<ChatList />} />
           <Route path="/chat/:chatId" element={<ChatDetails />} />
