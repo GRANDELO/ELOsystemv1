@@ -67,7 +67,7 @@ const Register = () => {
     };
 
     try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/agent/register', trimmedFormData);
+      const response = await axios.post('https://elosystemv1.onrender.com/api/delivery/register', trimmedFormData);
       setMessage(response.data.message);
       sessionStorage.setItem('email', trimmedFormData.email);
       navigate('/agentVerification');

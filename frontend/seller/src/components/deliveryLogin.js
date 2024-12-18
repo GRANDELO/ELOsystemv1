@@ -57,7 +57,7 @@ const Login = () => {
     setMessage('');
 
     try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/agent/login', {
+      const response = await axios.post('https://elosystemv1.onrender.com/api/delivery/login', {
         username: username.trim(),
         password,
       });
@@ -95,7 +95,7 @@ const Login = () => {
     setMessage('');
 
     try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/agent/recoverpassword', { username });
+      const response = await axios.post('https://elosystemv1.onrender.com/api/delivery/recoverpassword', { username });
       setMessage(response.data.message);
     } catch (error) {
       if (error.response && error.response.data) {

@@ -24,7 +24,7 @@ function Verification() {
     e.preventDefault();
     try {
       const emailToUse = email || newEmail;
-      const response = await axios.post('https://elosystemv1.onrender.com/api/agent/verify', { email: emailToUse, verificationCode });
+      const response = await axios.post('https://elosystemv1.onrender.com/api/delivery/verify', { email: emailToUse, verificationCode });
       if (response.status === 200) {
         navigate('/agentSuccess');
       }
@@ -50,7 +50,7 @@ function Verification() {
     else
     {
       try {
-        const response = await axios.post('https://elosystemv1.onrender.com/api/agent/update-email', { oldEmail: email, newEmail });
+        const response = await axios.post('https://elosystemv1.onrender.com/api/delivery/update-email', { oldEmail: email, newEmail });
         if (response.status === 200) {
           setEmail(newEmail);
           sessionStorage.setItem('email', newEmail);
@@ -75,7 +75,7 @@ function Verification() {
       if (!emailToUse) {
         setError('Enter your email.');
       } else {
-        const response = await axios.post('https://elosystemv1.onrender.com/api/agent/resendemail', { email: emailToUse });
+        const response = await axios.post('https://elosystemv1.onrender.com/api/delivery/resendemail', { email: emailToUse });
         if (response.status === 200) {
           setError('Verification code has been resent.');
         }
