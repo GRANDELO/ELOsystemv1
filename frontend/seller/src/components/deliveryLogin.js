@@ -112,11 +112,11 @@ const Login = () => {
         {!recoverpassword ? (
           <div>
             <h2>Login</h2>
-            <label>Username:</label>
+            <label>DP number or Email:</label>
             <input
               type="text"
               value={username}
-              placeholder="Enter your username"
+              placeholder="Enter your DP number or Email"
               onChange={(e) => setUsername(e.target.value)}
               required
             />
@@ -140,17 +140,17 @@ const Login = () => {
             </div>
             <button type="submit">Login</button>
             <button type="button" onClick={handleRecoverPassword}>Forgot Password</button>
-            <p>Verify your account <Link to="/agentVerification">Verify Account</Link></p>
-            <p>If you don't have an account <Link to="/agentRegister">Register</Link></p>
+            <p>Verify your account <Link to="/deliveryVerification">Verify Account</Link></p>
+            <p>If you don't have an account <Link to="/deliveryRegister">Register</Link></p>
           </div>
         ) : (
           <div>
             <h2>Recover password</h2>
-            <label>Enter your username:</label>
+            <label>Enter your DP number or Email:</label>
             <input
               type="text"
               value={username}
-              placeholder="Enter your username"
+              placeholder="Enter your DP number or Email"
               onChange={(e) => setUsername(e.target.value)}
               required
             />

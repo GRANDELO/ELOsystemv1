@@ -6,7 +6,7 @@ function Success() {
   return (
     <div className="container">
       <h2>Account Verified Successfully!</h2>
-      <p>Your account has been verified. You can now <Link to="/agentLogin">Login</Link>.</p>
+      <p>Your account has been verified. You can now <Link to="/deliveryLogin">Login</Link>.</p>
     </div>
   );
 }

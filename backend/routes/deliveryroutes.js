@@ -1,8 +1,8 @@
 const express = require('express');
-const { registerUser, login, verifyUser, updateEmail, resendVerificationCode, newrecoverPassword, resetPassword,  changepassword, changephonenumber, changeemail, logout} = require('../controllers/deliverypersoncontroller');
+const { assignBoxToDeliveryPerson, registerUser, login, verifyUser, updateEmail, resendVerificationCode, newrecoverPassword, resetPassword,  changepassword, changephonenumber, changeemail, logout} = require('../controllers/deliverypersoncontroller');
 const router = express.Router();
 
-
+router.post('/acceptpackage', assignBoxToDeliveryPerson);
 router.post('/register', registerUser);
 router.post('/login', login);
 router.post('/verify', verifyUser)

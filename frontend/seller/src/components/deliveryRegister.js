@@ -31,7 +31,7 @@ const Register = () => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await axios.get('https://elosystemv1.onrender.com/api/locationsroutes');
+        const response = await axios.get('https://elosystemv1.onrender.com/api/locations');
         setTowns(response.data);
       } catch (err) {
         console.error('Failed to fetch locations:', err);
@@ -70,7 +70,7 @@ const Register = () => {
       const response = await axios.post('https://elosystemv1.onrender.com/api/delivery/register', trimmedFormData);
       setMessage(response.data.message);
       sessionStorage.setItem('email', trimmedFormData.email);
-      navigate('/agentVerification');
+      navigate('/deliveryVerification');
     } catch (error) {
       setMessage(error.response?.data?.message || 'An error occurred while processing your request.');
     }
@@ -277,7 +277,7 @@ const Register = () => {
               <option value="">Select Area</option>
               {areas.map((area) => (
                 <option key={area} value={area}>
-                  {area}
+                  {area}-route
                 </option>
               ))}
             </select>

@@ -7,6 +7,7 @@ const { generateAlphanumericVerificationCode, generateVerificationCode } = requi
 const sendEmail = require('../services/emailService');
 require('dotenv').config();
 const mongoose = require('mongoose');
+const Box = require('./models/box'); // Adjust path as needed
 
 const registerUser = async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword, phoneNumber, idnumber, username, dateOfBirth, gender, town, townspecific } = req.body;
@@ -36,7 +37,7 @@ const registerUser = async (req, res) => {
     if (user) {
       return res.status(400).json({ message: 'Agent already exists' });
     }
-    const agentnumber = 'AG' + generateVerificationCode(4);
+    const agentnumber = 'DL' + generateVerificationCode(4);
     // Generate verification code and send email
     const alphanumericCode = generateAlphanumericVerificationCode(6);
     const subject = `Verification - ${alphanumericCode}`;
@@ -44,11 +45,11 @@ const registerUser = async (req, res) => {
 
     Thank you for registering with Bazelink! as our agent Please use the following verification code to complete your registration:
     
-    Your agent number is ${agentnumber},
+    Your DPnumber is ${agentnumber},
 
     Verification Code: ${alphanumericCode}
     
-    You can also follow this link to verify your account: https://baze-seller.web.app/agentVerification
+    You can also follow this link to verify your account: https://baze-seller.web.app/deliveryVerification
     
     Best regards,
     Bazelink Support Team`;
@@ -60,7 +61,7 @@ const registerUser = async (req, res) => {
         </h2>
         
         <p style="font-size: 16px; color: #555; text-align: center; margin-top: 0;">
-          Your agent number is ${agentnumber},
+          Your DPnumber is ${agentnumber},
         </p>
         <p style="font-size: 16px; color: #555; text-align: center; margin-top: 0;">
           Thank you for registering with us as our agent! To complete your registration, please use the verification code below:
@@ -71,7 +72,7 @@ const registerUser = async (req, res) => {
           </p>
         </div>
         <p style="text-align: center;">
-          <a href="https://baze-seller.web.app/agentVerification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+          <a href="https://baze-seller.web.app/deliveryVerification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
             Verify Your Account
           </a>
         </p>
@@ -222,7 +223,7 @@ const updateEmail = async (req, res) => {
     
     Verification Code: ${user.verificationCode}
     
-    You can also follow this link to verify your account: https://baze-seller.web.app/agentRegister
+    You can also follow this link to verify your account: https://baze-seller.web.app/deliveryVerification
     
     Best regards,
     Bazelink Support Team`;
@@ -242,7 +243,7 @@ const updateEmail = async (req, res) => {
       </p>
     </div>
     <p style="text-align: center;">
-      <a href="https://baze-seller.web.app/agentRegister" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+      <a href="https://baze-seller.web.app/deliveryVerification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
         Verify Your Account
       </a>
     </p>
@@ -296,7 +297,7 @@ const resendVerificationCode = async (req, res) => {
     
     Verification Code: ${user.verificationCode}
     
-    Alternatively, you can follow this link to verify your account: https://baze-seller.web.app/agentRegister
+    Alternatively, you can follow this link to verify your account: https://baze-seller.web.app/deliveryVerification
     
     If you did not sign up for this account, please disregard this email.
     
@@ -317,7 +318,7 @@ const resendVerificationCode = async (req, res) => {
         </p>
       </div>
       <p style="text-align: center;">
-        <a href="https://baze-seller.web.app/agentRegister" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+        <a href="https://baze-seller.web.app/deliveryVerification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
           Verify Your Account
         </a>
       </p>
@@ -366,7 +367,7 @@ const newrecoverPassword = async (req, res) => {
     
     Password Reset Token: ${user.passwordRecoveryToken}
     
-    Alternatively, you can reset your password by following this link: https://baze-seller.web.app/agentpasswordreset
+    Alternatively, you can reset your password by following this link: https://baze-seller.web.app/deliverypasswordreset
     
     This token is valid for 1 hour. If you did not request a password reset, please ignore this message.
     
@@ -387,7 +388,7 @@ const newrecoverPassword = async (req, res) => {
         </p>
       </div>
       <p style="text-align: center;">
-        <a href="https://baze-seller.web.app/agentpasswordreset" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+        <a href="https://baze-seller.web.app/deliverypasswordreset" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
           Reset Your Password
         </a>
       </p>
@@ -461,8 +462,6 @@ const logout = async (req, res) => {
   }
 };
 
-
-
 const changepassword = async (req, res) => {
   const { lemail, newPassword } = req.body;
 
@@ -524,7 +523,7 @@ const changeemail = async (req, res) => {
     
     Verification Code: ${user.verificationCode}
     
-    Alternatively, you can follow this link to verify your account: https://baze-seller.web.app/agentRegister
+    Alternatively, you can follow this link to verify your account: https://baze-seller.web.app/deliveryVerification
     
     Best regards,
     Bazelink Support Team`;
@@ -543,7 +542,7 @@ const changeemail = async (req, res) => {
       </p>
     </div>
     <p style="text-align: center;">
-      <a href="https://baze-seller.web.app/agentRegister" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+      <a href="https://baze-seller.web.app/deliveryVerification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
         Verify Your Account
       </a>
     </p>
@@ -574,9 +573,60 @@ const changeemail = async (req, res) => {
   }
 };
 
+const assignBoxToDeliveryPerson = async (req, res ) => {
+  try {
+    const { deliveryPersonnumber, boxId } = req.body;
+    
+    // Find the delivery person by deliveryPersonnumber
+    const deliveryPerson = await User.findOne({ deliveryPersonnumber });
+    if (!deliveryPerson) {
+      return res.status(404).json({ success: false, message: 'Delivery person not found' });
+    }
+
+    // Find the box by boxId
+    const box = await Box.findOne({ boxId });
+    if (!box) {
+      return  res.status(404).json({ success: false, message: 'Box not found' });
+    }
+
+    // Split the box destination into parts
+    const [boxTown, boxSpecificRoute] = box.destination.split(',').map(part => part.trim());
+
+    // Check if both town and specific route match
+    if (deliveryPerson.town !== boxTown || deliveryPerson.townspecificroute !== boxSpecificRoute) {
+      return res.status(404).json({ success: false, message: 'Destination mismatch between delivery person and box' });
+    }
+
+    // Check if the box is already assigned
+    if (box.deliveryPerson) {
+      return res.status(404).json({ success: false, message: 'Box is already assigned to a delivery person' });
+    }
+
+    // Add the box to the delivery person's packages
+    deliveryPerson.packeges.push({ 
+      boxId: box.boxNumber,
+      processedDate: new Date(),
+      isdelivered: false,
+    });
+    await deliveryPerson.save();
+
+
+    box.packed = true;
+    box.deliveryPerson = deliveryPersonnumber;
+    box.isDeliveryInProcess = true;
+    await box.save();
+
+    return res.status(200).json({ success: true, message: 'Box successfully assigned to delivery person' });
+  } catch (error) {
+    console.error('Error assigning box to delivery person:', error);
+    return res.status(500).json({ success: false, message: 'An error occurred', error });
+  }
+};
+
 
 
 module.exports = {
+  assignBoxToDeliveryPerson,
   registerUser,
   login,
   verifyUser,

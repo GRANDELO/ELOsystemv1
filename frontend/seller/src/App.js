@@ -23,6 +23,8 @@ import DeliveryRegister from './components/deliveryRegister';
 import DeliverySuccess from './components/deliverySuccess';
 import Deliverypasswordreset from './components/deliverypasswordreset';
 import DeliveryVerification from './components/deliveryVerification';
+import Deliveryaccept from './components/deliveryaccept';
+
 
 import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
@@ -113,6 +115,7 @@ const App = () => {
           <Route path="/deliverySuccess" element={<DeliverySuccess />} />
           <Route path="/deliverypasswordreset" element={<Deliverypasswordreset />} />
           <Route path="/deliveryVerification" element={<DeliveryVerification />} />
+          <Route path="/deliveryaccept" element={<Deliveryaccept />} />
           
           
           <Route path="/chatall" element={<ChatList />} />
