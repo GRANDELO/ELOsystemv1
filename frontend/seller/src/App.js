@@ -7,7 +7,15 @@ import RequireAuth from './RequireAuth'; // Import the authentication check comp
 import ImageList from './components/ImageList';
 import ImageUpload from './components/ImageUpload';
 import Login from './components/Login';
+import AgentLogin from './components/AgentLogin';
 import Set from './components/set';
+import AgentRegister from './components/AgentRegister';
+import AgentVerification from './components/AgentVerification';
+import Agentpasswordreset from './components/agentpasswordreset';
+import AgentSuccess from './components/AgentSuccess';
+import Loginselectore from './components/loginselectore';
+import Agentpros from './components/agentpros';
+import Agentinput from './components/agentinput';
 
 import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
@@ -20,8 +28,7 @@ import ProtectedRoute from './components/ProtectRoute';
 import Register from './components/Register';
 import Success from './components/Success';
 import Verification from './components/Verification';
-
-
+import Registerselector from './components/registerselector';
 
 import Coreordering from './components/coreordering';
 import Displayorder from './components/displayorder';
@@ -76,14 +83,23 @@ const App = () => {
       <div className="App">
         <Routes>
           {/* Public routes */}
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/sellerlogin" element={<Login />} />
+          <Route path="/registerseller" element={<Register />} />
           <Route path="/success" element={<Success />} />
           <Route path="/coreorder" element={<Coreordering />} />
           <Route path="/set" element={<Set />} />
           <Route path="/testHome" element={<Home />} />
           <Route path="/verification" element={<Verification />} />
-
+          <Route path="/agentRegister" element={<AgentRegister />} />
+          <Route path="/agentVerification" element={<AgentVerification />} />
+          <Route path="/agentLogin" element={<AgentLogin />} />
+          <Route path="/agentpasswordreset" element={<Agentpasswordreset />} />
+          <Route path="/agentSuccess" element={<AgentSuccess />} />
+          <Route path="/register" element={<Registerselector />} />
+          <Route path="/" element={<Loginselectore />} />
+          <Route path="/agentpros" element={<Agentpros />} />
+          <Route path="/agentinput" element={<Agentinput />} />
+          
           <Route path="/chatall" element={<ChatList />} />
           <Route path="/chat/:chatId" element={<ChatDetails />} />
           {/* Protected routes */}

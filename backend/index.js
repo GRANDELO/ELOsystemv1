@@ -39,6 +39,8 @@ const withdrawRoutes = require('./routes/withdrawRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const reviewRoutes = require("./routes/review");
 const feed = require('./routes/feedRoutes');
+const agentsroutes = require('./routes/agentsroutes');
+
 
 const uploadDir = path.join(__dirname, 'uploads');
 
@@ -50,7 +52,7 @@ if (!fs.existsSync(uploadDir)) {
 const app = express();
 
 app.set('trust proxy', true);
-const allowedOrigins = ['https://grandelo.web.app', 'https://bazelinkadmin.web.app', 'https://baze-seller.web.app', 'http://localhost:3000'];
+const allowedOrigins = ['https://grandelo.web.app', 'https://baze-link.web.app', 'https://bazelinkadmin.web.app', 'https://baze-seller.web.app', 'http://localhost:3000'];
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
@@ -181,7 +183,7 @@ app.use('/api/pushnotifications', pushNotificationRoutes);
 app.use('/api/chat', chatRoutes);
 app.use("/api/review", reviewRoutes);
 app.use('/api/feedback', feed);
-
+app.use('/api/agent', agentsroutes);
 
 
 app.use((req, res, next) => {

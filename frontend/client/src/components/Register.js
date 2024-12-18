@@ -64,7 +64,7 @@ const Register = () => {
       switch (currentStep) {
         case 1:
           const fullNameValid = /^[a-zA-Z]{3,}$/.test(formData.fullName.trim());
-          const emailValid = /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(formData.email.trim());
+          const emailValid = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/.test(formData.email.trim());
           const usernameValid = /^[a-zA-Z0-9_]{4,}$/.test(formData.username.trim());
           return fullNameValid && emailValid && usernameValid;
         case 2:

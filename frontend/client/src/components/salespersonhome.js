@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FaBell, FaBoxOpen, FaCog, FaShoppingCart, FaCommentDots } from 'react-icons/fa'; // Import bell icon for notifications
 import { FiArrowDown, FiArrowUp, FiXCircle } from "react-icons/fi";
+import { FaMessage } from "react-icons/fa6";
 import { AiOutlineQrcode } from "react-icons/ai";
 import { IoMdMenu } from "react-icons/io";
 import { IoClose } from 'react-icons/io5';
@@ -48,6 +49,7 @@ const Home = () => {
         switch (appcat.trim().toLowerCase()) {
           case 'seller':
             alert('Failed to log in this app is for buyers only.');
+            navigate('/logout');
             break;
           default:
             const currentpage = sessionStorage.getItem('currentpage');
@@ -224,7 +226,7 @@ const Home = () => {
         
         {/* Feedback Section */}
         {isFeedbackVisible && (
-          <section className="salesp-feedback-section">
+          <section  className="salesp-settings-section">
             <FeedbackForm />
             <button onClick={toggleFeedback}>
               <IoClose />
@@ -276,8 +278,8 @@ const Home = () => {
                     <button className="salesp-toggle-button">
                       <AiOutlineQrcode />
                     </button>
-                    <button onClick={toggleFeedback}>
-                      <FaCommentDots /> {/* Feedback Icon */}
+                    <button className="salesp-toggle-button"  onClick={toggleFeedback}>
+                      <FaMessage /> {/* Feedback Icon */}
                     </button>
                     <button className="salesp-toggle-button" onClick={toggleNav}>
                       <FiXCircle />

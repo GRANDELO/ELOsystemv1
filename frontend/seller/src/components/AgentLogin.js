@@ -1,9 +1,9 @@
-import axiosInstance from './axiosInstance';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getUsernameFromToken, getcategoryFromToken } from '../utils/auth';
 import './styles/Login.css';
-import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -22,12 +22,11 @@ const Login = () => {
       if (appcat) {
         switch (appcat.trim().toLowerCase()) {
           case 'seller':
-            alert('Failed to log in this app is for buyers only.');
-            navigate('/logout');
+            sessionStorage.setItem('username', getUsernameFromToken());
+            navigate('/home');
             break;
           default:
-            const currentpage = sessionStorage.getItem('currentpage');
-            navigate(currentpage ? currentpage : '/');
+            setMessage('Failed to login, This is for sellers only.');
             break;
         }
       }
@@ -58,7 +57,7 @@ const Login = () => {
     setMessage('');
 
     try {
-      const response = await axiosInstance.post('/auth/login', {
+      const response = await axios.post('https://elosystemv1.onrender.com/api/agent/login', {
         username: username.trim(),
         password,
       });
@@ -70,12 +69,14 @@ const Login = () => {
       localStorage.setItem('appcat', response.data.category.trim().toLowerCase());
 
       const category = response.data.category.trim().toLowerCase();
-      if (category === 'seller') {
-        alert('Failed to log in this app is for buyers only.');
-      }else {
-        const currentpage = sessionStorage.getItem('currentpage');
-        navigate(currentpage ? currentpage : '/');
+      if (category === 'seller')
+      {
+        sessionStorage.setItem('username', response.data.username);
+        navigate('/home');
+      }else if (category === 'Salesperson'){
+        setMessage('Failed to login, This is for sellers only.');
       }
+
     } catch (error) {
       if (error.response && error.response.data) {
         setMessage(error.response.data.message);
@@ -94,7 +95,7 @@ const Login = () => {
     setMessage('');
 
     try {
-      const response = await axiosInstance.post('/auth/recoverpassword', { username });
+      const response = await axios.post('https://elosystemv1.onrender.com/api/agent/recoverpassword', { username });
       setMessage(response.data.message);
     } catch (error) {
       if (error.response && error.response.data) {
@@ -111,11 +112,11 @@ const Login = () => {
         {!recoverpassword ? (
           <div>
             <h2>Login</h2>
-            <label>Username or Email:</label>
+            <label>Username:</label>
             <input
               type="text"
               value={username}
-              placeholder="Username or Email"
+              placeholder="Enter your username"
               onChange={(e) => setUsername(e.target.value)}
               required
             />
@@ -134,13 +135,13 @@ const Login = () => {
                 className="toggle-password"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? <FaRegEyeSlash/> : <FaRegEye/>}
+                {showPassword ? 'Hide' : 'Show'}
               </button>
             </div>
             <button type="submit">Login</button>
             <button type="button" onClick={handleRecoverPassword}>Forgot Password</button>
-            <p>Verify your account <Link to="/verification">Verify Account</Link></p>
-            <p>If you don't have an account <Link to="/register">Register</Link></p>
+            <p>Verify your account <Link to="/agentVerification">Verify Account</Link></p>
+            <p>If you don't have an account <Link to="/agentRegister">Register</Link></p>
           </div>
         ) : (
           <div>

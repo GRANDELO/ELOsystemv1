@@ -43,9 +43,9 @@ function Verification() {
   };
 
   const handleSaveEmail = async () => {
-    if(!(/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(newEmail)))
+    if(!(/^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/.test(newEmail)))
       {
-        setError('Please enter a valid gmail address (e.g., yourname@gmail.com).');
+        setError('Please enter a valid email address (e.g., yourname@gmail.com).');
       }
     else
     {
@@ -106,7 +106,7 @@ function Verification() {
             <input
               type="email"
               value={newEmail}
-              pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$"
+              pattern="/^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/"
               onChange={(e) => setNewEmail(e.target.value)}
               required
             />
@@ -118,7 +118,7 @@ function Verification() {
           <input
             type="email"
             value={newEmail}
-            pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$"
+            pattern="/^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/"
             onChange={(e) => setNewEmail(e.target.value)}
             required
           />

@@ -1,14 +1,15 @@
-const User = require('../models/User');
+const User = require('../models/agents');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const crypto = require('crypto');
-const { generateAlphanumericVerificationCode } = require('../services/verificationcode');
+const { generateAlphanumericVerificationCode, generateVerificationCode } = require('../services/verificationcode');
 const sendEmail = require('../services/emailService');
 require('dotenv').config();
+const mongoose = require('mongoose');
 
 const registerUser = async (req, res) => {
-  const { fullName, email, password, confirmPassword, phoneNumber, username, dateOfBirth, gender, category } = req.body;
+  const { firstName, lastName, email, password, confirmPassword, phoneNumber, idnumber, username, dateOfBirth, gender, town, townspecific } = req.body;
 
   const isDateWithinRange = (date, minYears, maxYears) => {
     const today = new Date();
@@ -31,21 +32,23 @@ const registerUser = async (req, res) => {
 
   try {
     // Check if user already exists
-    let user = await User.findOne({ $or: [{ email }, { username }] });
+    let user = await User.findOne({ $or: [{ email }, { username }, { phoneNumber } , { idnumber } ] });
     if (user) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: 'Agent already exists' });
     }
-
+    const agentnumber = 'AG' + generateVerificationCode(4);
     // Generate verification code and send email
     const alphanumericCode = generateAlphanumericVerificationCode(6);
     const subject = `Verification - ${alphanumericCode}`;
     const vermessage = `Dear ${username},
 
-    Thank you for registering with Bazelink! Please use the following verification code to complete your registration:
+    Thank you for registering with Bazelink! as our agent Please use the following verification code to complete your registration:
     
+    Your agent number is ${agentnumber},
+
     Verification Code: ${alphanumericCode}
     
-    You can also follow this link to verify your account: https://baze-link.web.app/verification
+    You can also follow this link to verify your account: https://baze-seller.web.app/agentVerification
     
     Best regards,
     Bazelink Support Team`;
@@ -55,8 +58,12 @@ const registerUser = async (req, res) => {
         <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
           Welcome to Bazelink, ${username}!
         </h2>
+        
         <p style="font-size: 16px; color: #555; text-align: center; margin-top: 0;">
-          Thank you for registering with us! To complete your registration, please use the verification code below:
+          Your agent number is ${agentnumber},
+        </p>
+        <p style="font-size: 16px; color: #555; text-align: center; margin-top: 0;">
+          Thank you for registering with us as our agent! To complete your registration, please use the verification code below:
         </p>
         <div style="margin: 25px 0; padding: 20px; background-color: #f0f5fc; border: 1px dashed #1d4ed8; text-align: center; border-radius: 8px;">
           <p style="font-size: 20px; font-weight: bold; color: #1d4ed8; letter-spacing: 1px;">
@@ -64,7 +71,7 @@ const registerUser = async (req, res) => {
           </p>
         </div>
         <p style="text-align: center;">
-          <a href="https://baze-link.web.app/verification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+          <a href="https://baze-seller.web.app/agentVerification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
             Verify Your Account
           </a>
         </p>
@@ -85,33 +92,32 @@ const registerUser = async (req, res) => {
       return res.status(500).json({ message: 'Error sending verification email' });
     }
 
-    // Create new user with conditional amount field
     const formattedDateOfBirth = moment(dateOfBirth).format('YYYY-MM-DD');
-    const userAmount = category === 'Seller' ? 0 : undefined;
-    const userbackgroundUrl = category === 'https://storage.googleapis.com/grandelo.appspot.com/1732717512234-Untitled design.png' ? 0 : undefined;
-    const userlogoUrl = category === 'https://storage.googleapis.com/grandelo.appspot.com/1732717512225-Ícone de perfil de usuário em estilo plano Ilustração em vetor avatar membro em fundo isolado Conceito de negócio de sinal de permissão humana _ Vetor Premium.jpeg' ? 0 : undefined;
-
+    
     user = new User({
-      fullName,
+      firstName,
+      lastName,
       email,
       password,
       phoneNumber,
+      idnumber,
       username,
       dateOfBirth: formattedDateOfBirth,
       gender,
-      category,
+      category: "Agent",
+      town,
+      townspecific,
+      agentnumber,
       verificationCode: alphanumericCode,
       isVerified: false,
       active: false,
       resetPasswordToken: undefined,
       resetPasswordExpires: undefined,
-      amount: userAmount,
-      backgroundUrl: " ",
-      logoUrl: " ",
+      amount: 0,
     });
     await user.save();
 
-    res.status(201).json({ message: 'User registered successfully' });
+    res.status(201).json({ message: 'Agent registered successfully' });
   } catch (error) {
     console.error('Server error during registration:', error);
     res.status(500).json({ message: 'Server error' });
@@ -122,7 +128,7 @@ const login = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const user = await User.findOne({ $or: [{ email: username }, { username } ] });
+    const user = await User.findOne({ $or: [{ email: username }, { username } , { agentnumber: username } ] });
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
@@ -216,7 +222,7 @@ const updateEmail = async (req, res) => {
     
     Verification Code: ${user.verificationCode}
     
-    You can also follow this link to verify your account: https://baze-link.web.app/verification
+    You can also follow this link to verify your account: https://baze-seller.web.app/agentRegister
     
     Best regards,
     Bazelink Support Team`;
@@ -236,7 +242,7 @@ const updateEmail = async (req, res) => {
       </p>
     </div>
     <p style="text-align: center;">
-      <a href="https://baze-link.web.app/verification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+      <a href="https://baze-seller.web.app/agentRegister" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
         Verify Your Account
       </a>
     </p>
@@ -290,7 +296,7 @@ const resendVerificationCode = async (req, res) => {
     
     Verification Code: ${user.verificationCode}
     
-    Alternatively, you can follow this link to verify your account: https://grandelo.web.app/verification
+    Alternatively, you can follow this link to verify your account: https://baze-seller.web.app/agentRegister
     
     If you did not sign up for this account, please disregard this email.
     
@@ -311,7 +317,7 @@ const resendVerificationCode = async (req, res) => {
         </p>
       </div>
       <p style="text-align: center;">
-        <a href="https://grandelo.web.app/verification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+        <a href="https://baze-seller.web.app/agentRegister" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
           Verify Your Account
         </a>
       </p>
@@ -360,7 +366,7 @@ const newrecoverPassword = async (req, res) => {
     
     Password Reset Token: ${user.passwordRecoveryToken}
     
-    Alternatively, you can reset your password by following this link: https://baze-link.web.app/reset-password
+    Alternatively, you can reset your password by following this link: https://baze-seller.web.app/agentpasswordreset
     
     This token is valid for 1 hour. If you did not request a password reset, please ignore this message.
     
@@ -381,7 +387,7 @@ const newrecoverPassword = async (req, res) => {
         </p>
       </div>
       <p style="text-align: center;">
-        <a href="https://baze-link.web.app/reset-password" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+        <a href="https://baze-seller.web.app/agentpasswordreset" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
           Reset Your Password
         </a>
       </p>
@@ -539,7 +545,7 @@ const changeemail = async (req, res) => {
     
     Verification Code: ${user.verificationCode}
     
-    Alternatively, you can follow this link to verify your account: https://baze-link.web.app/verification
+    Alternatively, you can follow this link to verify your account: https://baze-seller.web.app/agentRegister
     
     Best regards,
     Bazelink Support Team`;
@@ -558,7 +564,7 @@ const changeemail = async (req, res) => {
       </p>
     </div>
     <p style="text-align: center;">
-      <a href="https://baze-link.web.app/verification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+      <a href="https://baze-seller.web.app/agentRegister" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
         Verify Your Account
       </a>
     </p>
@@ -588,7 +594,63 @@ const changeemail = async (req, res) => {
     res.status(500).json({ message: 'An error occurred while updating Email' });
   }
 };
+
+// Controller function to add an order to the agent's packages
+const addOrderToAgentPackages = async (req, res) => {
+  try {
+    const { agentnumber, orderId } = req.body;
+
+    // Validate inputs
+    if (!agentnumber || !orderId) {
+      return res.status(400).json({ error: "Agent number and Order ID are required." });
+    }
+
+    // Check if the orderId is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
+      return res.status(400).json({ error: "Invalid Order ID format." });
+    }
+
+    // Find the agent by agentnumber
+    const agent = await User.findOne({ agentnumber });
+
+    if (!agent) {
+      return res.status(404).json({ error: "Agent not found." });
+    }
+
+        // Check if the order already exists in the packages array
+        const orderExists = agent.packeges.some(
+          (package) => package.productId.toString() === orderId
+        );
+    
+        if (orderExists) {
+          return res
+            .status(400)
+            .json({ error: "Order already exists under this agent." });
+        }
+
+    // Add the new order to the packages array
+    agent.packeges.push({
+      productId: orderId,
+      processedDate: new Date(),
+      ispacked: false,
+    });
+
+    // Save the updated agent document
+    await agent.save();
+
+    return res.status(200).json({
+      message: "Order added successfully to agent packages.",
+      agent,
+    });
+  } catch (error) {
+    console.error("Error adding order to agent packages:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
 module.exports = {
+  addOrderToAgentPackages,
   registerUser,
   login,
   verifyUser,

@@ -154,7 +154,7 @@ const OrderingPage = () => {
                 setMessage('Payment initiated successfully!');
                 handleClearCart();
                 setTimeout(() => {
-                  navigate('/salespersonhome');
+                  navigate('/');
                 }, 3000);
             } catch (error) {
                 setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
@@ -163,7 +163,7 @@ const OrderingPage = () => {
       }else{
         await handleClearCart();
         setTimeout(() => {
-          navigate('/salespersonhome');
+          navigate('/');
         }, 3000);
       }
 
