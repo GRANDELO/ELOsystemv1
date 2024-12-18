@@ -9,6 +9,7 @@ const boxSchema = new mongoose.Schema({
   items: [{
     orderId: { type: mongoose.Schema.Types.ObjectId, ref: 'Order', required: true },
   }],
+  agentnumber: {type: String, required: true},
   destination: { type: String, required: true },
   packingDate: { type: Date, default: Date.now },
   packed: { type: Boolean, default: false },

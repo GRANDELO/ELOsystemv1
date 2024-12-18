@@ -98,10 +98,11 @@ const groupOrdersForAllAgents = async () => {
               boxNumber: `${uuidv4()}_${timeSlot}`,
               destination,
               items: [{ orderId }],
+              agentnumber: agentnumber,
               currentplace: "Warehouse",
               packingDate: new Date(),
               packed: false,
-              deliveryPerson: agentnumber, // Assign to the agent
+              deliveryPerson: 'non assigned', // Assign to the agent
             });
   
             await box.save();
