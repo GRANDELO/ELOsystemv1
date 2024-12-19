@@ -73,7 +73,7 @@ const groupOrdersForAllAgents = async () => {
           const processedDate = pkg.processedDate;
   
           // Fetch the order details
-          const order = await User.findOne({ orderNumber: orderId });
+          const order = await Order.findOne({ orderNumber:orderId });
           if (!order) {
             console.warn(`Order not found: ${orderId}`);
             continue;
