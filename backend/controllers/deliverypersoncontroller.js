@@ -602,6 +602,15 @@ const assignBoxToDeliveryPerson = async (req, res ) => {
       return res.status(404).json({ success: false, message: 'Box is already assigned to a delivery person' });
     }
 
+    const boxExists = deliveryPerson.packeges.some(
+      (package) => package.boxid === boxId
+    );
+
+    if (boxExists) {
+      return res
+        .status(400)
+        .json({ error: "Box already exists under this agent." });
+    }
     // Add the box to the delivery person's packages
     deliveryPerson.packeges.push({ 
       boxid: boxId,
