@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const DeliveryPersonPackages = ({ deliveryPersonnumber }) => {
+const DeliveryPersonPackages = () => {
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
+  const deliveryPersonnumber = "DL9616";
   useEffect(() => {
     const fetchPackages = async () => {
       try {

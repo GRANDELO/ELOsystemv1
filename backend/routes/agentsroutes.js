@@ -1,7 +1,7 @@
 const express = require('express');
 const { addOrderToAgentPackages, registerUser, login, verifyUser, updateEmail, resendVerificationCode, newrecoverPassword, resetPassword, changeusername, changepassword, changephonenumber, changeemail, logout} = require('../controllers/agentscontroller');
 const router = express.Router();
-const {getBoxesForAgent } = require('../controllers/boxcontroller');
+const { addBoxToAgentPackages, getBoxesForAgent } = require('../controllers/boxcontroller');
 
 
 router.post('/register', registerUser);
@@ -18,5 +18,7 @@ router.post('/changeemail', changeemail);
 router.post('/logout', logout);
 router.post('/add-order', addOrderToAgentPackages);
 router.get("/:agentnumber/boxes", getBoxesForAgent);
+router.post("/add-box", addBoxToAgentPackages);
+
 
 module.exports = router;

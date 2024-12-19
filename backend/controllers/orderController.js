@@ -9,7 +9,7 @@ const ProductPerformance = require('../models/ProductPerformance');
 const {increateNotification} = require('./notificationController');
 const {b2cRequestHandler} = require("./mpesaController");
 const CoreSellOrder = require('../models/CoreSellOrder');
-
+const { generateVerificationCode } = require('../services/verificationcode');
 // Create Order
 exports.createOrder = async (req, res) => {
   const {
@@ -49,17 +49,17 @@ exports.createOrder = async (req, res) => {
 
     // Find an available delivery person with role "delivery" and status "available"
     const deliveryPerson = await Employee.findOne({ role: 'delivery', status: 'available' }).sort({ createdAt: 1 });
-
+    const orderNumber = 'ORD' + generateVerificationCode(6);
     // Create the order, conditionally include sellerOrderId only if it is provided
     const orderData = {
       items,
+      orderNumber,
       totalPrice,
       paymentMethod,
       paid: false,
       destination,
       orderDate,
       username,
-      deliveryPerson: deliveryPerson ? deliveryPerson._id : null,
       isDeliveryInProcess: false,
       isDelivered: false,
       packed: false,

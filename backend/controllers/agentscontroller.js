@@ -7,6 +7,7 @@ const { generateAlphanumericVerificationCode, generateVerificationCode } = requi
 const sendEmail = require('../services/emailService');
 require('dotenv').config();
 const mongoose = require('mongoose');
+const Order = require('../models/Order');
 
 const registerUser = async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword, phoneNumber, idnumber, username, dateOfBirth, gender, town, townspecific } = req.body;
@@ -606,8 +607,10 @@ const addOrderToAgentPackages = async (req, res) => {
     }
 
     // Check if the orderId is a valid ObjectId
-    if (!mongoose.Types.ObjectId.isValid(orderId)) {
-      return res.status(400).json({ error: "Invalid Order ID format." });
+    const order = await Order.find({orderNumber: orderId,});
+
+    if (!order) {
+      return res.status(400).json({ error: "Invalid Order." });
     }
 
     // Find the agent by agentnumber
@@ -619,7 +622,7 @@ const addOrderToAgentPackages = async (req, res) => {
 
         // Check if the order already exists in the packages array
         const orderExists = agent.packeges.some(
-          (package) => package.productId.toString() === orderId
+          (package) => package.productId === orderId
         );
     
         if (orderExists) {

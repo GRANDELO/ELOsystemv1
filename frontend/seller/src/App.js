@@ -17,6 +17,7 @@ import Loginselectore from './components/loginselectore';
 import Agentpros from './components/agentpros';
 import Agentinput from './components/agentinput';
 import Agentboxdisp from './components/agentboxdisp';
+import Agentboxinput from './components/agentboxinput';
 
 import DeliveryLogin from './components/deliveryLogin';
 import DeliveryRegister from './components/deliveryRegister';
@@ -24,6 +25,7 @@ import DeliverySuccess from './components/deliverySuccess';
 import Deliverypasswordreset from './components/deliverypasswordreset';
 import DeliveryVerification from './components/deliveryVerification';
 import Deliveryaccept from './components/deliveryaccept';
+import Deliverydisp from './components/deliverydisp';
 
 
 import Logout from './components/Logout';
@@ -109,13 +111,15 @@ const App = () => {
           <Route path="/agentpros" element={<Agentpros />} />
           <Route path="/agentinput" element={<Agentinput />} />
           <Route path="/agentboxdisp" element={<Agentboxdisp />} />
-
+          <Route path="/agentboxinput" element={<Agentboxinput />} />
+          
           <Route path="/deliveryLogin" element={<DeliveryLogin />} />
           <Route path="/deliveryRegister" element={<DeliveryRegister />} />
           <Route path="/deliverySuccess" element={<DeliverySuccess />} />
           <Route path="/deliverypasswordreset" element={<Deliverypasswordreset />} />
           <Route path="/deliveryVerification" element={<DeliveryVerification />} />
           <Route path="/deliveryaccept" element={<Deliveryaccept />} />
+          <Route path="/deliverydisp" element={<Deliverydisp />} />
           
           
           <Route path="/chatall" element={<ChatList />} />
