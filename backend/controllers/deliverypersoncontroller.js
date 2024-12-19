@@ -573,45 +573,52 @@ const changeemail = async (req, res) => {
   }
 };
 
-const assignBoxToDeliveryPerson = async (req, res ) => {
+const assignBoxToDeliveryPerson = async (req, res) => {
   try {
     const { deliveryPersonnumber, boxId } = req.body;
-    
-    // Find the delivery person by deliveryPersonnumber
+
+    // Find the delivery person
     const deliveryPerson = await User.findOne({ deliveryPersonnumber });
     if (!deliveryPerson) {
       return res.status(404).json({ success: false, message: 'Delivery person not found' });
     }
 
-    // Find the box by boxId
+    // Find the box
     const box = await Box.findOne({ boxId });
     if (!box) {
-      return  res.status(404).json({ success: false, message: 'Box not found' });
+      return res.status(404).json({ success: false, message: 'Box not found' });
     }
 
-    // Split the box destination into parts
+    // Validate box destination format
+    if (!box.destination || !box.destination.includes(',')) {
+      return res.status(400).json({ success: false, message: 'Invalid box destination format' });
+    }
+
+    // Split destination into town and route
     const [boxTown, boxSpecificRoute] = box.destination.split(',').map(part => part.trim());
 
-    // Check if both town and specific route match
+    // Validate delivery person town and route
+    if (!deliveryPerson.town || !deliveryPerson.townspecificroute) {
+      return res.status(400).json({ success: false, message: 'Delivery person town or route is not specified' });
+    }
+
+    // Check for destination mismatch
     if (deliveryPerson.town !== boxTown || deliveryPerson.townspecificroute !== boxSpecificRoute) {
-      return res.status(404).json({ success: false, message: 'Destination mismatch between delivery person and box' });
+      return res.status(400).json({ success: false, message: 'Destination mismatch between delivery person and box' });
     }
 
     // Check if the box is already assigned
-    if (!box.deliveryPerson === "non assigned") {
-      return res.status(404).json({ success: false, message: 'Box is already assigned to a delivery person' });
+    if (box.deliveryPerson !== "non assigned") {
+      return res.status(400).json({ success: false, message: 'Box is already assigned to a delivery person' });
     }
 
-    const boxExists = deliveryPerson.packeges.some(
-      (package) => package.boxid === boxId
-    );
-
+    // Check if box already exists in delivery person's packages
+    const boxExists = deliveryPerson.packeges.some(pkg => pkg.boxid === boxId);
     if (boxExists) {
-      return res
-        .status(400)
-        .json({ error: "Box already exists under this agent." });
+      return res.status(400).json({ success: false, message: 'Box is already assigned to this delivery person.' });
     }
-    // Add the box to the delivery person's packages
+
+    // Add box to delivery person's packages
     deliveryPerson.packeges.push({ 
       boxid: boxId,
       processedDate: new Date(),
@@ -619,7 +626,7 @@ const assignBoxToDeliveryPerson = async (req, res ) => {
     });
     await deliveryPerson.save();
 
-
+    // Update box details
     box.packed = true;
     box.deliveryPerson = deliveryPersonnumber;
     box.isDeliveryInProcess = true;
@@ -631,6 +638,7 @@ const assignBoxToDeliveryPerson = async (req, res ) => {
     return res.status(500).json({ success: false, message: 'An error occurred', error });
   }
 };
+
 
 
 const getPackagesForDeliveryPerson = async (req, res) => {
