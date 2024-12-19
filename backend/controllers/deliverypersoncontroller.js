@@ -609,7 +609,7 @@ const assignBoxToDeliveryPerson = async (req, res) => {
 
     // Check if the box is already assigned
     if (box.deliveryPerson !== "non assigned") {
-      return res.status(400).json({ success: false, message: 'Box is already assigned to a delivery person' });
+      return res.status(400).json({ success: false, message: `Box is already assigned to a ${deliveryPerson.firstName} ${deliveryPerson.lastName}` });
     }
 
     // Check if box already exists in delivery person's packages
