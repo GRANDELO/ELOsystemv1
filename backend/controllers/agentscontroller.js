@@ -638,6 +638,9 @@ const addOrderToAgentPackages = async (req, res) => {
       ispacked: false,
     });
 
+    order.currentplace =  agent.town + ' ' + agent.townspecific;
+    order.packed = true;
+    await order.save();
     // Save the updated agent document
     await agent.save();
 

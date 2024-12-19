@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Box = require('../models/box'); // Box model
 const User = require('../models/agents'); // User model with agent's info
 const { v4: uuidv4 } = require('uuid');
+const Order = require('../models/Order');
 
 const getBoxesForAgent = async (req, res) => {
   try {
@@ -69,6 +70,9 @@ const addBoxToAgentPackages = async (req, res) => {
 
     for (const order of bitems) {
       // Check if the order already exists in the packages array
+
+      const theorder = await Order.findOne({ orderNumber: order.orderNumber });
+      
       const orderExists = agent.packeges.some(
         (package) => package.productId === order.orderNumber
       );
@@ -85,6 +89,10 @@ const addBoxToAgentPackages = async (req, res) => {
         ispacked: false,
       });
       addedOrders.push(order.orderNumber); // Track successfully added orders
+
+      theorder.currentplace =  agent.town + ' ' + agent.townspecific;
+      theorder.packed = true;
+      await theorder.save();
     }
 
     // Save the updated agent document

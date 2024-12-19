@@ -609,7 +609,7 @@ const assignBoxToDeliveryPerson = async (req, res) => {
 
     // Check if the box is already assigned
     if (box.deliveryPerson !== "non assigned") {
-      return res.status(400).json({ success: false, message: `Box is already assigned to a ${deliveryPerson.firstName} ${deliveryPerson.lastName}` });
+      return res.status(400).json({ success: false, message: `Box is already assigned to ${deliveryPerson.firstName} ${deliveryPerson.lastName}` });
     }
 
     // Check if box already exists in delivery person's packages
@@ -632,14 +632,13 @@ const assignBoxToDeliveryPerson = async (req, res) => {
     box.isDeliveryInProcess = true;
     await box.save();
 
+   
     return res.status(200).json({ success: true, message: 'Box successfully assigned to delivery person' });
   } catch (error) {
     console.error('Error assigning box to delivery person:', error);
     return res.status(500).json({ success: false, message: 'An error occurred', error });
   }
 };
-
-
 
 const getPackagesForDeliveryPerson = async (req, res) => {
   try {
@@ -662,8 +661,6 @@ const getPackagesForDeliveryPerson = async (req, res) => {
     return res.status(500).json({ success: false, message: 'An error occurred', error });
   }
 };
-
-
 
 module.exports = {
   getPackagesForDeliveryPerson,
