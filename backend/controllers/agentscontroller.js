@@ -606,44 +606,49 @@ const addOrderToAgentPackages = async (req, res) => {
       return res.status(400).json({ error: "Agent number and Order ID are required." });
     }
 
-    // Check if the orderId is a valid ObjectId
-    const order = await Order.findOne({orderNumber: orderId,});
-
+    // Find the order by orderNumber
+    const order = await Order.findOne({ orderNumber: orderId });
     if (!order) {
       return res.status(400).json({ error: "Invalid Order." });
     }
 
     // Find the agent by agentnumber
     const agent = await User.findOne({ agentnumber });
-
     if (!agent) {
       return res.status(404).json({ error: "Agent not found." });
     }
 
-        // Check if the order already exists in the packages array
-        const orderExists = agent.packeges.some(
-          (package) => package.productId === orderId
-        );
-    
-        if (orderExists) {
-          return res
-            .status(400)
-            .json({ error: "Order already exists under this agent." });
-        }
+    // Check if the order already exists in the agent's packages array
+    const orderExists = agent.packeges.some(
+      (package) => package.productId === orderId
+    );
+    if (orderExists) {
+      return res
+        .status(400)
+        .json({ error: "Order already exists under this agent." });
+    }
 
-    // Add the new order to the packages array
+    // Add the new order to the agent's packages
     agent.packeges.push({
       productId: orderId,
       processedDate: new Date(),
       ispacked: false,
     });
 
+    // Update the order's properties
+    order.currentplace = `${agent.town}, ${agent.townspecific}`;
+    order.isDeliveryInProcess = true;
 
+    // Save both documents
     await agent.save();
-    
+    await order.save();
+
     return res.status(200).json({
       message: "Order added successfully to agent packages.",
-      agent,
+      agentnumber,
+      orderId,
+      currentplace: order.currentplace,
+      isDeliveryInProcess: order.isDeliveryInProcess,
     });
   } catch (error) {
     console.error("Error adding order to agent packages:", error);
