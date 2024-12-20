@@ -646,7 +646,9 @@ const addOrderToAgentPackages = async (req, res) => {
         packed: true,
       }
     );
-
+    await order.save();
+    await agent.save();
+    
     return res.status(200).json({
       message: "Order added successfully to agent packages.",
       agent,
