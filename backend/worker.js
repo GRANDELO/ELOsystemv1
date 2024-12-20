@@ -45,99 +45,98 @@ const getTimeSlot = (date) => {
 
 // Function to group orders into boxes
 const groupOrdersForAllAgents = async () => {
-    try {
-      // Step 1: Get all agents
-      const agents = await User.find({ agentnumber: { $exists: true } });
-  
-      if (!agents || agents.length === 0) {
-        console.log("No agents found.");
-        return "No agents found.";
+  try {
+    // Step 1: Get all agents with valid agent numbers
+    const agents = await User.find({ agentnumber: { $exists: true } });
+
+    if (!agents || agents.length === 0) {
+      console.log("No agents found.");
+      return "No agents found.";
+    }
+
+    // Step 2: Process each agent
+    for (const agent of agents) {
+      const { agentnumber, packeges, townspecific } = agent;
+
+      console.log(`Processing agent: ${agentnumber}`);
+
+      // Step 3: Filter unpacked orders for the agent
+      const unpackedOrders = packeges.filter((pkg) => !pkg.ispacked);
+
+      if (unpackedOrders.length === 0) {
+        console.log(`No unpacked orders found for agent: ${agentnumber}`);
+        continue;
       }
-  
-      // Step 2: Iterate through each agent and group their orders
-      for (const agent of agents) {
-        const agentnumber = agent.agentnumber;
-  
-        console.log(`Processing agent: ${agentnumber}`);
-  
-        // Extract unpacked orders for this agent
-        const unpackedOrders = agent.packeges.filter((pkg) => !pkg.ispacked);
-  
-        if (unpackedOrders.length === 0) {
-          console.log(`No unpacked orders found for agent: ${agentnumber}`);
+
+      // Step 4: Process each unpacked order
+      for (const pkg of unpackedOrders) {
+        const { productId: orderId, processedDate } = pkg;
+
+        // Fetch the corresponding order details
+        const order = await Order.findOne({ orderNumber: orderId });
+        if (!order) {
+          console.warn(`Order not found: ${orderId}`);
           continue;
         }
-  
-        for (const pkg of unpackedOrders) {
-          const orderId = pkg.productId;
-          const processedDate = pkg.processedDate;
-  
-          // Fetch the order details
-          const order = await Order.findOne({ orderNumber:orderId });
-          if (!order) {
-            console.warn(`Order not found: ${orderId}`);
-            continue;
-          }
-  
-          const destination = order.destination;
-          const timeSlot = getTimeSlot(processedDate); // Helper function to determine the time slot
-          const date = processedDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
-  
-          // Check if a box already exists for this destination, date, and time slot
-          let box = await Box.findOne({
+
+        const { destination, orderNumber } = order;
+        const timeSlot = getTimeSlot(processedDate); // Helper function to determine time slot
+        const date = processedDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+
+        // Step 5: Check if a box exists for the destination, date, and time slot
+        let box = await Box.findOne({
+          destination,
+          packingDate: {
+            $gte: new Date(`${date}T00:00:00Z`),
+            $lt: new Date(`${date}T23:59:59Z`),
+          },
+          boxNumber: { $regex: timeSlot },
+        });
+
+        // Step 6: Create a new box if one doesn't exist
+        if (!box) {
+          box = new Box({
+            boxNumber: `${uuidv4()}_${timeSlot}`,
+            boxid: generateVerificationCode(6),
             destination,
-            packingDate: {
-              $gte: new Date(`${date}T00:00:00Z`),
-              $lt: new Date(`${date}T23:59:59Z`),
-            },
-            boxNumber: { $regex: timeSlot },
+            items: [{ orderNumber }], // Add the current order
+            agentnumber,
+            currentplace: townspecific,
+            packingDate: new Date(),
+            packed: false,
+            deliveryPerson: "non assigned",
           });
-  
-          const orderNumber = order.orderNumber;
-  
-          if (!box) {
-            // Create a new box if none exists
-            box = new Box({
-              boxNumber: `${uuidv4()}_${timeSlot}`,
-              boxid: generateVerificationCode(6),
-              destination,
-              items: [{ orderNumber }], // Add the current order
-              agentnumber,
-              currentplace: agent.townspecific,
-              packingDate: new Date(),
-              packed: false,
-              deliveryPerson: "non assigned",
-            });
-  
+
+          await box.save();
+        } else {
+          // Add the order to the existing box if it's not already added
+          if (!box.items.some((item) => item.orderNumber === orderNumber)) {
+            box.items.push({ orderNumber });
             await box.save();
-            order.packed = true;
-        
-            // Save both documents
-            await order.save();
-          } else {
-            // Add the order to the existing box if not already added
-            if (!box.items.some((item) => item.orderNumber === orderNumber)) {
-              box.items.push({ orderNumber });
-              await box.save();
-            }
           }
-  
-          // Mark the package as packed
-          pkg.ispacked = true;
-          pkg.processedDate = new Date();
         }
-  
-        // Save the updated agent document
-        await agent.save();
-        console.log(`Orders grouped successfully into boxes for agent: ${agentnumber}`);
+
+        // Step 7: Update the order and mark it as packed
+        order.packed = true;
+        await order.save();
+
+        // Step 8: Update the package in the agent's document
+        pkg.ispacked = true;
+        pkg.processedDate = new Date();
       }
-  
-      return "Orders grouped successfully into boxes for all agents.";
-    } catch (error) {
-      console.error("Error grouping orders into boxes:", error);
-      return "Error: Internal Server Error.";
+
+      // Step 9: Save the updated agent document
+      await agent.save();
+      console.log(`Orders grouped successfully into boxes for agent: ${agentnumber}`);
     }
-  };
+
+    return "Orders grouped successfully into boxes for all agents.";
+  } catch (error) {
+    console.error("Error grouping orders into boxes:", error);
+    return "Error: Internal Server Error.";
+  }
+};
+
   
   
 setInterval(groupOrdersForAllAgents, 30000);
