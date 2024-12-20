@@ -3,7 +3,7 @@ const Box = require('../models/box'); // Box model
 const User = require('../models/agents'); // User model with agent's info
 const { v4: uuidv4 } = require('uuid');
 const Order = require('../models/Order');
-const User = require('../models/DeliveryPersonnel');
+const Dpe = require('../models/DeliveryPersonnel');
 
 const getBoxesForAgent = async (req, res) => {
   try {
@@ -55,7 +55,7 @@ const addBoxToAgentPackages = async (req, res) => {
     }
 
     // Find the delivery person by deliveryPersonnumber
-    const delperson = await User.findOne({ deliveryPersonnumber: box.deliveryPerson });
+    const delperson = await Dpe.findOne({ deliveryPersonnumber: box.deliveryPerson });
     if (!delperson) {
       return res.status(404).json({ error: "Delivery person not found." });
     }
