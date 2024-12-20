@@ -607,7 +607,7 @@ const addOrderToAgentPackages = async (req, res) => {
     }
 
     // Check if the orderId is a valid ObjectId
-    const order = await Order.find({orderNumber: orderId,});
+    const order = await Order.findOne({orderNumber: orderId,});
 
     if (!order) {
       return res.status(400).json({ error: "Invalid Order." });
