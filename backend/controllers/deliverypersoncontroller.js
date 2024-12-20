@@ -582,6 +582,7 @@ const assignBoxToDeliveryPerson = async (req, res) => {
     if (!deliveryPerson) {
       return res.status(404).json({ success: false, message: 'Delivery person not found' });
     }
+    
 
     // Find the box
     const box = await Box.findOne({ boxid: boxId });
