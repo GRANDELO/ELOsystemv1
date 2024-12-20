@@ -38,6 +38,7 @@ const processPendingJobs = async () => {
 };
 
 // Function to determine time slot
+// Function to determine time slot
 const getTimeSlot = (date) => {
   const hours = date.getHours();
   return hours >= 0 && hours < 12 ? 'midnight_to_noon' : 'noon_to_midnight';
@@ -83,20 +84,22 @@ const groupOrdersForAllAgents = async () => {
         const timeSlot = getTimeSlot(processedDate); // Helper function to determine time slot
         const date = processedDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
 
-        // Step 5: Check if a box exists for the destination, date, and time slot
+        // Step 5: Check if a box exists for the agent, destination, date, and time slot
         let box = await Box.findOne({
           destination,
           packingDate: {
             $gte: new Date(`${date}T00:00:00Z`),
             $lt: new Date(`${date}T23:59:59Z`),
           },
-          boxNumber: { $regex: timeSlot },
+          boxNumber: { $regex: `${timeSlot}_${agentnumber}` },
         });
 
-        // Step 6: Create a new box if one doesn't exist
-        if (!box) {
+        // Step 6: Create a new box if:
+        // - No box exists, OR
+        // - The existing box is already packed
+        if (!box || box.packed) {
           box = new Box({
-            boxNumber: `${uuidv4()}_${timeSlot}`,
+            boxNumber: `${uuidv4()}_${timeSlot}_${agentnumber}`, // Ensure uniqueness with agentnumber
             boxid: generateVerificationCode(6),
             destination,
             items: [{ orderNumber }], // Add the current order
@@ -136,6 +139,8 @@ const groupOrdersForAllAgents = async () => {
     return "Error: Internal Server Error.";
   }
 };
+
+
 
   
   
