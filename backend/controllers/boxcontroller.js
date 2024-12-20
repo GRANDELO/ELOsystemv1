@@ -3,6 +3,7 @@ const Box = require('../models/box'); // Box model
 const User = require('../models/agents'); // User model with agent's info
 const { v4: uuidv4 } = require('uuid');
 const Order = require('../models/Order');
+const User = require('../models/DeliveryPersonnel');
 
 const getBoxesForAgent = async (req, res) => {
   try {
@@ -51,6 +52,26 @@ const addBoxToAgentPackages = async (req, res) => {
     const box = await Box.findOne({ boxid: boxId });
     if (!box) {
       return res.status(404).json({ error: "Box not found." });
+    }
+
+    // Find the delivery person by deliveryPersonnumber
+    const delperson = await User.findOne({ deliveryPersonnumber: box.deliveryPerson });
+    if (!delperson) {
+      return res.status(404).json({ error: "Delivery person not found." });
+    }
+
+    // Check if the box exists in the delivery person's packages
+    const boxIndex = delperson.packeges.findIndex(
+      (package) => package.boxid === boxId
+    );
+    if (boxIndex !== -1) {
+      // Update the isdelivered status to true for this package
+      delperson.packeges[boxIndex].isdelivered = true;
+      await delperson.save();
+
+      return res.status(400).json({
+        error: "Order already exists under this agent. Delivery status updated.",
+      });
     }
 
     // Check if the box contains items
