@@ -606,58 +606,52 @@ const addOrderToAgentPackages = async (req, res) => {
       return res.status(400).json({ error: "Agent number and Order ID are required." });
     }
 
-    // Check if the orderId is a valid ObjectId
-    const order = await Order.findOne({orderNumber: orderId,});
-
+    // Find the order by orderNumber
+    const order = await Order.findOne({ orderNumber: orderId });
     if (!order) {
-      return res.status(400).json({ error: "Invalid Order." });
+      return res.status(404).json({ error: "Order not found." });
     }
 
     // Find the agent by agentnumber
     const agent = await User.findOne({ agentnumber });
-
     if (!agent) {
       return res.status(404).json({ error: "Agent not found." });
     }
 
-        // Check if the order already exists in the packages array
-        const orderExists = agent.packeges.some(
-          (package) => package.productId === orderId
-        );
-    
-        if (orderExists) {
-          return res
-            .status(400)
-            .json({ error: "Order already exists under this agent." });
-        }
+    // Check if the order already exists in the agent's packages
+    const orderExists = agent.packages.some(
+      (package) => package.productId === orderId
+    );
+    if (orderExists) {
+      return res.status(400).json({ error: "Order already exists under this agent." });
+    }
 
-    // Add the new order to the packages array
-    agent.packeges.push({
+    // Add the new order to the agent's packages
+    agent.packages.push({
       productId: orderId,
       processedDate: new Date(),
       ispacked: false,
     });
 
+    // Update the order with the agent's location and packed status
+    order.currentplace = `${agent.town}, ${agent.townspecific}`;
+    order.packed = true;
 
-
-    await order.push(
-      {
-        currentplace: `${agent.town}, ${agent.townspecific}`,
-        packed: true,
-      }
-    );
-    await order.save();
+    // Save both documents
     await agent.save();
-    
+    await order.save();
+
     return res.status(200).json({
       message: "Order added successfully to agent packages.",
-      agent,
+      agentnumber,
+      orderId,
     });
   } catch (error) {
     console.error("Error adding order to agent packages:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 
 module.exports = {
