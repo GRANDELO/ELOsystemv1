@@ -639,9 +639,13 @@ const addOrderToAgentPackages = async (req, res) => {
     });
 
 
-    order.currentplace = `${agent.town}, ${agent.townspecific}`;
-    order.packed = true;
-    await order.save();
+
+    await order.push(
+      {
+        currentplace: `${agent.town}, ${agent.townspecific}`,
+        packed: true,
+      }
+    );
 
     return res.status(200).json({
       message: "Order added successfully to agent packages.",
