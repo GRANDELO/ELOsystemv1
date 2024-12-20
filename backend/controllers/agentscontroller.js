@@ -639,7 +639,13 @@ const addOrderToAgentPackages = async (req, res) => {
 
     // Save both documents
     await agent.save();
-    await order.save();
+    try{
+      await order.save();
+    }catch (error) {
+      console.error("Error adding order to agent packages:", error);
+      return res.status(500).json({ error: "Internal Server Error add" });
+    }
+    
 
     return res.status(200).json({
       message: "Order added successfully to agent packages.",
