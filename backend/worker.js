@@ -99,12 +99,12 @@ const groupOrdersForAllAgents = async () => {
         // - The existing box is already packed
         if (!box || box.packed) {
           box = new Box({
-            boxNumber: `${uuidv4()}_${timeSlot}_${agentnumber}`, // Ensure uniqueness with agentnumber
+            boxNumber:  `${uuidv4()}_${timeSlot}_${agentnumber}`,
             boxid: generateVerificationCode(6),
             destination,
             items: [{ orderNumber }], // Add the current order
             agentnumber,
-            currentplace: townspecific,
+            currentplace: agent.townspecific,
             packingDate: new Date(),
             packed: false,
             deliveryPerson: "non assigned",
