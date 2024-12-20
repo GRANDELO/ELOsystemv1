@@ -69,9 +69,6 @@ const addBoxToAgentPackages = async (req, res) => {
       delperson.packeges[boxIndex].isdelivered = true;
       await delperson.save();
 
-      return res.status(400).json({
-        error: "Order already exists under this agent. Delivery status updated.",
-      });
     }
 
     // Check if the box contains items
