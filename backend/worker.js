@@ -110,6 +110,10 @@ const groupOrdersForAllAgents = async () => {
             });
   
             await box.save();
+            order.packed = true;
+        
+            // Save both documents
+            await order.save();
           } else {
             // Add the order to the existing box if not already added
             if (!box.items.some((item) => item.orderNumber === orderNumber)) {

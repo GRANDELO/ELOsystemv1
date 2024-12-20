@@ -53,7 +53,7 @@ const addBoxToAgentPackages = async (req, res) => {
       return res.status(404).json({ error: "Box not found." });
     }
 
-    // Check if the box is empty
+    // Check if the box contains items
     const bitems = box.items || [];
     if (bitems.length === 0) {
       return res.status(400).json({ error: "Box is empty." });
@@ -65,34 +65,40 @@ const addBoxToAgentPackages = async (req, res) => {
       return res.status(404).json({ error: "Agent not found." });
     }
 
+    // Initialize arrays to track processed orders
     const addedOrders = [];
     const skippedOrders = [];
 
+    // Iterate through the items in the box
     for (const order of bitems) {
-      // Check if the order already exists in the packages array
+      const orderRecord = await Order.findOne({ orderNumber: order.orderNumber });
+      if (!orderRecord) {
+        skippedOrders.push(order.orderNumber); // Skip if the order doesn't exist
+        continue;
+      }
 
-      const theorder = await Order.findOne({ orderNumber: order.orderNumber });
-      
+      // Check if the order already exists in the agent's packages
       const orderExists = agent.packeges.some(
         (package) => package.productId === order.orderNumber
       );
 
       if (orderExists) {
-        skippedOrders.push(order.orderNumber); // Track skipped orders
+        skippedOrders.push(order.orderNumber); // Skip if already added
         continue;
       }
 
-      // Add the new order to the packages array
+      // Add the order to the agent's packages
       agent.packeges.push({
         productId: order.orderNumber,
         processedDate: new Date(),
         ispacked: false,
       });
-      addedOrders.push(order.orderNumber); // Track successfully added orders
+      addedOrders.push(order.orderNumber); // Track added orders
 
-      theorder.currentplace =  agent.town + ' ' + agent.townspecific;
-      theorder.packed = true;
-      await theorder.save();
+      // Update the order's properties
+      orderRecord.currentplace = `${agent.town}, ${agent.townspecific}`;
+      orderRecord.packed = true;
+      await orderRecord.save(); // Save the updated order
     }
 
     // Save the updated agent document
@@ -100,15 +106,16 @@ const addBoxToAgentPackages = async (req, res) => {
 
     return res.status(200).json({
       message: "Orders processed successfully.",
-      addedOrders,
-      skippedOrders,
+      addedOrders, // Successfully added orders
+      skippedOrders, // Orders that were skipped
       agent,
     });
   } catch (error) {
-    console.error("Error adding order to agent packages:", error);
+    console.error("Error adding orders to agent packages:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 
 module.exports = { 
