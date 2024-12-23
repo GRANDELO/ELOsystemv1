@@ -18,6 +18,7 @@ import Agentpros from './components/agentpros';
 import Agentinput from './components/agentinput';
 import Agentboxdisp from './components/agentboxdisp';
 import Agentboxinput from './components/agentboxinput';
+import Agentdash from './components/agentdash';
 
 import DeliveryLogin from './components/deliveryLogin';
 import DeliveryRegister from './components/deliveryRegister';
@@ -112,6 +113,7 @@ const App = () => {
           <Route path="/agentinput" element={<Agentinput />} />
           <Route path="/agentboxdisp" element={<Agentboxdisp />} />
           <Route path="/agentboxinput" element={<Agentboxinput />} />
+          <Route path="/agentdash" element={<Agentdash />} />
           
           <Route path="/deliveryLogin" element={<DeliveryLogin />} />
           <Route path="/deliveryRegister" element={<DeliveryRegister />} />

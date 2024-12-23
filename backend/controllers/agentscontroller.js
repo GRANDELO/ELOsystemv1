@@ -151,6 +151,7 @@ const login = async (req, res) => {
         username: user.username,
         email: user.email,
         category: user.category,
+        agentnumber: user.agentnumber,
       },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
