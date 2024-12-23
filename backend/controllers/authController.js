@@ -206,6 +206,11 @@ const updateEmail = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+    const newuser = await User.findOne({ email: newEmail });
+    if (newuser) {
+      return res.status(404).json({ message: 'Email is in use find a different one' });
+    }
+
 
     user.email = newEmail;
     await user.save();
@@ -251,7 +256,7 @@ const updateEmail = async (req, res) => {
 
 
     try {
-      await sendEmail(email, subject, vermessage, htmlMessage);
+      await sendEmail(user.email, subject, vermessage, htmlMessage);
       console.log('Email sent successfully');
     } catch (error) {
       console.error('Error sending email:', error);
@@ -463,7 +468,7 @@ const changeusername = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    let checkuser = await User.findOne({ newUsername });
+    let checkuser = await User.findOne({ username: newUsername });
     if (checkuser) {
       return res.status(400).json({ message: 'Username already exists try a different one.' });
     }
@@ -526,7 +531,7 @@ const changeemail = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    let checkuser = await User.findOne({ newEmail });
+    let checkuser = await User.findOne({ email: newEmail });
     if (checkuser) {
       return res.status(400).json({ message: 'Email already exists try a different one.' });
     }
@@ -588,6 +593,7 @@ const changeemail = async (req, res) => {
     res.status(500).json({ message: 'An error occurred while updating Email' });
   }
 };
+
 module.exports = {
   registerUser,
   login,

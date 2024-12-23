@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import ReceiveBox from "./agentboxinput";
 import ReceivePackage from "./agentinput";
 import ViewPackage from "./agentboxdisp";
-import Settings from "./settings";
+import Settings from "./Agentsettings";
 import Withdrawal from "./withdrawal";
 
 const AgentDashboard = () => {

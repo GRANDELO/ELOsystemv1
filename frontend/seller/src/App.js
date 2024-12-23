@@ -19,6 +19,9 @@ import Agentinput from './components/agentinput';
 import Agentboxdisp from './components/agentboxdisp';
 import Agentboxinput from './components/agentboxinput';
 import Agentdash from './components/agentdash';
+import AgentLogout from './components/agentLogout';
+import Agentsettings from './components/Agentsettings';
+
 
 import DeliveryLogin from './components/deliveryLogin';
 import DeliveryRegister from './components/deliveryRegister';
@@ -114,6 +117,8 @@ const App = () => {
           <Route path="/agentboxdisp" element={<Agentboxdisp />} />
           <Route path="/agentboxinput" element={<Agentboxinput />} />
           <Route path="/agentdash" element={<Agentdash />} />
+          <Route path="/agentLogout" element={<AgentLogout />} />
+          <Route path="/agentsettings" element={<Agentsettings />} />
           
           <Route path="/deliveryLogin" element={<DeliveryLogin />} />
           <Route path="/deliveryRegister" element={<DeliveryRegister />} />

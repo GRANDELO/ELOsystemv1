@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { getagentnoFromToken } from '../utils/auth';
 
 const AgentBoxes = () => {
-  const [agentNumber, setAgentNumber] = useState("");
+  const agentNumber = getagentnoFromToken();
   const [boxes, setBoxes] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -38,19 +39,6 @@ const AgentBoxes = () => {
   return (
     <div style={styles.container}>
       <h2 style={styles.title}>Agent Boxes</h2>
-      <div style={styles.form}>
-        <input
-          type="text"
-          placeholder="Enter Agent Number"
-          value={agentNumber}
-          onChange={(e) => setAgentNumber(e.target.value)}
-          style={styles.input}
-        />
-        <button onClick={fetchBoxes} style={styles.button}>
-          {loading ? "Loading..." : "Fetch Boxes"}
-        </button>
-      </div>
-
       {error && <p style={styles.error}>{error}</p>}
 
       {boxes.length > 0 && (

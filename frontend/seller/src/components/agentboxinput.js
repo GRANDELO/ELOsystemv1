@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { getagentnoFromToken } from '../utils/auth';
 
 const AddOrderToAgent = () => {
   const [formData, setFormData] = useState({
@@ -30,7 +31,7 @@ const AddOrderToAgent = () => {
     try {
       // Send POST request to backend
       const res = await axios.post("https://elosystemv1.onrender.com/api/agent/add-box", {
-        agentnumber: formData.agentnumber,
+        agentnumber: getagentnoFromToken(),
         boxId: formData.orderId,
       });
 
@@ -50,20 +51,8 @@ const AddOrderToAgent = () => {
 
   return (
     <div style={{ maxWidth: "500px", margin: "2rem auto", textAlign: "center" }}>
-      <h2>Add Order to Agent</h2>
+      <h2>Add Box to Agent</h2>
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column" }}>
-        <label>
-          Agent Number:
-          <input
-            type="text"
-            name="agentnumber"
-            value={formData.agentnumber}
-            onChange={handleChange}
-            placeholder="Enter agent number"
-            required
-          />
-        </label>
-        <br />
         <label>
           Order ID:
           <input
