@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { getdpnoFromToken } from '../utils/auth';
 
 const AssignBox = () => {
-  const [deliveryPersonnumber, setDeliveryPersonnumber] = useState('');
+  const deliveryPersonnumber = getdpnoFromToken();
   const [boxId, setBoxId] = useState('');
   const [responseMessage, setResponseMessage] = useState('');
   const [error, setError] = useState('');
@@ -34,24 +35,6 @@ const AssignBox = () => {
     <div style={{ maxWidth: '500px', margin: '0 auto', padding: '20px' }}>
       <h2>Assign Box to Delivery Person</h2>
       <form onSubmit={handleAssignBox}>
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="deliveryPersonnumber">Delivery Person Number</label>
-          <input
-            type="text"
-            id="deliveryPersonnumber"
-            value={deliveryPersonnumber}
-            onChange={(e) => setDeliveryPersonnumber(e.target.value)}
-            placeholder="Enter Delivery Person Number"
-            required
-            style={{
-              width: '100%',
-              padding: '10px',
-              marginTop: '5px',
-              border: '1px solid #ccc',
-              borderRadius: '5px',
-            }}
-          />
-        </div>
         <div style={{ marginBottom: '15px' }}>
           <label htmlFor="boxId">Box ID</label>
           <input

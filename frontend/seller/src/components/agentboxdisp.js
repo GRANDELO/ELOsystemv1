@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { getagentnoFromToken } from '../utils/auth';
+import { getagentnoFromToken } from "../utils/auth";
 
 const AgentBoxes = () => {
-  const agentNumber = getagentnoFromToken();
-  const [boxes, setBoxes] = useState([]);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [expandedBox, setExpandedBox] = useState(null); // Tracks which box is expanded
+  const agentNumber = getagentnoFromToken(); // Retrieve agent number
+  const [boxes, setBoxes] = useState([]); // Store fetched boxes
+  const [error, setError] = useState(""); // Error message
+  const [loading, setLoading] = useState(false); // Loading state
+  const [expandedBox, setExpandedBox] = useState(null); // Tracks expanded box
 
+  useEffect(() => {
+    fetchBoxes();
+  }, []);
+  // Fetch boxes assigned to the agent
   const fetchBoxes = async () => {
     setError("");
     setLoading(true);
@@ -16,14 +20,14 @@ const AgentBoxes = () => {
     setExpandedBox(null);
 
     try {
-      const response = await axios.get(`https://elosystemv1.onrender.com/api/agent/${agentNumber}/boxes`);
+      const response = await axios.get(
+        `https://elosystemv1.onrender.com/api/agent/${agentNumber}/boxes`
+      );
       setBoxes(response.data.boxes);
     } catch (err) {
       if (err.response) {
-        // If the server responded with an error
         setError(err.response.data.error || err.response.data.message);
       } else {
-        // Network or other errors
         setError("Failed to fetch boxes. Please try again.");
       }
     } finally {
@@ -31,14 +35,16 @@ const AgentBoxes = () => {
     }
   };
 
+  // Toggle box details view
   const toggleBoxDetails = (boxId) => {
-    // Toggles the details of a specific box
     setExpandedBox((prevBoxId) => (prevBoxId === boxId ? null : boxId));
   };
 
   return (
     <div style={styles.container}>
       <h2 style={styles.title}>Agent Boxes</h2>
+
+
       {error && <p style={styles.error}>{error}</p>}
 
       {boxes.length > 0 && (
@@ -52,7 +58,8 @@ const AgentBoxes = () => {
                   <strong>Box ID:</strong> {box.boxid} <br />
                   <strong>Destination:</strong> {box.destination} <br />
                   <strong>Current Place:</strong> {box.currentplace} <br />
-                  <strong>Packing Date:</strong> {new Date(box.packingDate).toLocaleString()} <br />
+                  <strong>Packing Date:</strong>{" "}
+                  {new Date(box.packingDate).toLocaleString()} <br />
                   <strong>
                     Items:{" "}
                     <span
@@ -70,7 +77,8 @@ const AgentBoxes = () => {
                     <ul>
                       {box.items.map((item, index) => (
                         <li key={index} style={styles.itemDetail}>
-                          <strong>Item Order Number:</strong> {item.orderNumber} <br />
+                          <strong>Item Order Number:</strong> {item.orderNumber}
+                          <br />
                         </li>
                       ))}
                     </ul>
@@ -101,18 +109,6 @@ const styles = {
     fontSize: "24px",
     marginBottom: "20px",
   },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",
-    marginBottom: "20px",
-  },
-  input: {
-    padding: "10px",
-    fontSize: "16px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
-  },
   button: {
     padding: "10px",
     fontSize: "16px",
@@ -121,6 +117,7 @@ const styles = {
     border: "none",
     borderRadius: "5px",
     cursor: "pointer",
+    marginBottom: "20px",
   },
   error: {
     color: "red",

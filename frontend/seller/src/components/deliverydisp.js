@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { getdpnoFromToken } from '../utils/auth';
 
 const DeliveryPersonPackages = () => {
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const deliveryPersonnumber = "DL9616";
+  const deliveryPersonnumber = getdpnoFromToken();
   useEffect(() => {
     const fetchPackages = async () => {
       try {

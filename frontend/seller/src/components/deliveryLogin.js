@@ -21,12 +21,12 @@ const Login = () => {
       localStorage.setItem('token', apptoken);
       if (appcat) {
         switch (appcat.trim().toLowerCase()) {
-          case 'seller':
+          case 'delivery person':
             sessionStorage.setItem('username', getUsernameFromToken());
-            navigate('/home');
+            navigate('/deliverydash');
             break;
           default:
-            setMessage('Failed to login, This is for sellers only.');
+            setMessage('Failed to login, This is for delivery people only.');
             break;
         }
       }
@@ -69,12 +69,12 @@ const Login = () => {
       localStorage.setItem('appcat', response.data.category.trim().toLowerCase());
 
       const category = response.data.category.trim().toLowerCase();
-      if (category === 'seller')
+      if (category === 'delivery person')
       {
         sessionStorage.setItem('username', response.data.username);
-        navigate('/home');
-      }else if (category === 'Salesperson'){
-        setMessage('Failed to login, This is for sellers only.');
+        navigate('/deliverydash');
+      }else{
+        setMessage('Failed to login, This is for delivery people only.');
       }
 
     } catch (error) {

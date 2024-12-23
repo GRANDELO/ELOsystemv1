@@ -23,6 +23,7 @@ import AgentLogout from './components/agentLogout';
 import Agentsettings from './components/Agentsettings';
 
 
+import DeliveryLogout from './components/deliveryLogout';
 import DeliveryLogin from './components/deliveryLogin';
 import DeliveryRegister from './components/deliveryRegister';
 import DeliverySuccess from './components/deliverySuccess';
@@ -30,6 +31,7 @@ import Deliverypasswordreset from './components/deliverypasswordreset';
 import DeliveryVerification from './components/deliveryVerification';
 import Deliveryaccept from './components/deliveryaccept';
 import Deliverydisp from './components/deliverydisp';
+import Deliverydash from './components/deliverydash';
 
 
 import Logout from './components/Logout';
@@ -127,6 +129,8 @@ const App = () => {
           <Route path="/deliveryVerification" element={<DeliveryVerification />} />
           <Route path="/deliveryaccept" element={<Deliveryaccept />} />
           <Route path="/deliverydisp" element={<Deliverydisp />} />
+          <Route path="/deliveryLogout" element={<DeliveryLogout />} />
+          <Route path="/deliverydash" element={<Deliverydash />} />
           
           
           <Route path="/chatall" element={<ChatList />} />
