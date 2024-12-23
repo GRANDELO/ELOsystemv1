@@ -496,6 +496,11 @@ const changephonenumber = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
+    const newuser = await User.findOne({ phoneNumber: newPhoneNumber });
+    if (newuser) {
+      return res.status(404).json({ message: 'Phone Number is in use by a different delivery person' });
+    }
+
     user.phoneNumber = newPhoneNumber;
     await user.save();
     const token = jwt.sign({ id: user._id, username: user.firstName, email: user.email, category: user.category }, process.env.JWT_SECRET, {
