@@ -676,7 +676,7 @@ const awithdraw = async (req, res) => {
     // Find the user by username
     const user = await User.findOne({ agentnumber: username });
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: `User not found ${username}` });
     }
 
     // Check if the user has enough balance
