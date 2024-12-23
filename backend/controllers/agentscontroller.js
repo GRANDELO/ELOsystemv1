@@ -8,6 +8,8 @@ const sendEmail = require('../services/emailService');
 require('dotenv').config();
 const mongoose = require('mongoose');
 const Order = require('../models/Order');
+const Withdrawal = require('../models/Withdrawal');
+const {b2cRequestHandler} = require("./mpesaController");
 
 const registerUser = async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword, phoneNumber, idnumber, username, dateOfBirth, gender, town, townspecific } = req.body;
@@ -666,9 +668,66 @@ const addOrderToAgentPackages = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+// Handle withdrawal logic
+const awithdraw = async (req, res) => {
+  const { username, amount, Phonenumber } = req.body;
+
+  try {
+    // Find the user by username
+    const user = await User.findOne({ agentnumber: username });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the user has enough balance
+    if (user.amount < amount) {
+      return res.status(400).json({ message: 'Insufficient balance' });
+    }
+
+    // Deduct the withdrawal amount from the user's balance
+    const resp = await b2cRequestHandler(amount, Phonenumber);
+    console.log(resp);
+    
+    user.amount -= amount;
+    await user.save();
+
+    // Record the withdrawal
+    const withdrawal = new Withdrawal({
+      username: user.agentnumber,
+      phonenumber: Phonenumber,
+      amount: amount,
+      balance: user.amount,
+    });
+    await withdrawal.save();
+
+    // Send success response
+    res.status(200).json({ message: 'Withdrawal successful', balance: user.amount });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Get all withdrawals for a specific user
+const agetWithdrawalsByUsername = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const withdrawals = await Withdrawal.find({ agentnumber: username });
+    if (!withdrawals.length) {
+      return res.status(404).json({ message: 'No withdrawals found for this user' });
+    }
+    res.status(200).json({ withdrawals });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 
 module.exports = {
+  awithdraw,
+  agetWithdrawalsByUsername,
   addOrderToAgentPackages,
   registerUser,
   login,

@@ -5,7 +5,7 @@ import ReceiveBox from "./agentboxinput";
 import ReceivePackage from "./agentinput";
 import ViewPackage from "./agentboxdisp";
 import Settings from "./Agentsettings";
-import Withdrawal from "./withdrawal";
+import Withdrawal from "./agentwithdrawal";
 
 const AgentDashboard = () => {
   const [activeSection, setActiveSection] = useState("receiveBox");
