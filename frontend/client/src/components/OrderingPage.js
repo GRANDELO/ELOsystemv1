@@ -122,7 +122,16 @@ const OrderingPage = () => {
           price: item.product.discount 
             ? item.product.price * (1 - item.product.discountpersentage / 100) // Apply discount if exists
             : item.product.price
-        })),
+        })), 
+        variations: cart.map(item => ({
+          color: item.variant.color,
+          size: item.variant.size,
+          material: item.variant.material,
+          model: item.variant.model,
+
+        })), 
+
+
         totalPrice: cart.reduce((total, item) => {
           const price = item.product.discount
             ? item.product.price * (1 - item.product.discountpersentage / 100)
@@ -133,8 +142,10 @@ const OrderingPage = () => {
         destination: `${selectedTown}, ${selectedArea}`,
         orderDate: new Date().toISOString(),
         username,
+        
         mpesaPhoneNumber: paymentMethod === 'mpesa' ? mpesaPhoneNumber : undefined,
-        orderReference
+        orderReference,
+        
       };
 
       const response = await axiosInstance.post('/orders', orderDetails);
