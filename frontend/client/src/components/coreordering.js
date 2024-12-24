@@ -207,10 +207,11 @@ const OrderingPage = () => {
                         'Content-Type': 'application/json'
                     }
                 });
-                setMessage('Payment initiated successfully!');
+                
                 handleClearCart();
+                setMessage('Payment initiated successfully!');
                 setTimeout(() => {
-                  navigate('/salespersonhome');
+                  navigate('/');
                 }, 3000);
             } catch (error) {
                 setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
@@ -218,8 +219,9 @@ const OrderingPage = () => {
             }
       }else{
         await handleClearCart();
+        setMessage('Order made successfully!');
         setTimeout(() => {
-          navigate('/salespersonhome');
+          navigate('/');
         }, 3000);
       }
 
@@ -229,18 +231,11 @@ const OrderingPage = () => {
   };
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <Alert variant="danger">{error}</Alert>;
   const { discountedPrice, savedAmount } = calculateDiscountedPrice();
 
   return (
     <div className="ordcore-ordering-page">
       <h1 className="ordcore-heading">Order Page</h1>
-      {loginPrompt && (
-        <Alert variant="warning" className="ordcore-alert">
-          {loginPrompt} <a href="/login">Sign In</a> or <a href="/register">Register</a>
-        </Alert>
-      )}
-      {message && <Alert variant="success" className="ordcore-message">{message}</Alert>}
       <h2 className="ordcore-total-price">Total Price: Ksh {discountedPrice.toFixed(2)}</h2>
 
       {product && (
@@ -435,7 +430,12 @@ const OrderingPage = () => {
       </Form>
 
       {error && <Alert variant="danger" className="ordcore-alert">{error}</Alert>}
-
+      {loginPrompt && (
+        <Alert variant="warning" className="ordcore-alert">
+          {loginPrompt} <a href="/login">Sign In</a> or <a href="/register">Register</a>
+        </Alert>
+      )}
+      {message && <Alert variant="success" className="ordcore-message">{message}</Alert>}
       <Button onClick={handleSubmitOrder} className="ordcore-submit-btn">Submit Order</Button>
     </div>
   );
