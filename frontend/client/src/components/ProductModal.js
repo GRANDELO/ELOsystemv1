@@ -20,6 +20,7 @@ const ProductModal = ({ product, show, handleClose }) => {
   const username = getUsernameFromToken();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loginPrompt, setLoginPrompt] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const [reviews, setReviews] = useState([]);
   const [reviewToEdit, setReviewToEdit] = useState(null);
@@ -71,14 +72,19 @@ const ProductModal = ({ product, show, handleClose }) => {
         setError('Quantity must be at least 1');
         return;
       }
-
+      setLoading(true);
       const addResponse = await axiosInstance.post('/cart/cart/add', 
         { username, productId: product._id, quantity }
       );
 
       setMessage(addResponse.data.message);
-
+      setTimeout(() => {
+        setLoading(false);
+        handleClose();
+      }, 2000);
+      
     } catch (err) {
+      setLoading(false);
       console.error('Failed to add to cart:', err);
       setError(err.response?.data?.message || 'Failed to add to cart');
     }
@@ -146,11 +152,13 @@ const ProductModal = ({ product, show, handleClose }) => {
   };
 
   const downloadQRCode = () => {
+    setLoading(true);
     const qrCodeUrl = document.getElementById('qrCode').toDataURL('image/png');
     const link = document.createElement('a');
     link.href = qrCodeUrl;
     link.download = `${product.name}_QR.png`;
     link.click();
+    setLoading(false);
   };
 
   if (!product) return null;
@@ -213,9 +221,6 @@ const ProductModal = ({ product, show, handleClose }) => {
         <Modal.Title className="modal-title">{product.name}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {message && <Alert variant="success">{message}</Alert>}
-        {error && <Alert variant="danger">{error}</Alert>}
-
         <div className="product-details-container">
           {/* Product Image Section */}
           <div className="product-image-container">
@@ -304,7 +309,8 @@ const ProductModal = ({ product, show, handleClose }) => {
                     size={150}
                   />
                   <Button variant="primary" onClick={downloadQRCode}>
-                    Download QR Code
+                  {loading ? "Downloading..." : "Download QR Code"}
+                    
                   </Button>
                 </div>
               )}
@@ -317,12 +323,15 @@ const ProductModal = ({ product, show, handleClose }) => {
           {loginPrompt} <a href="/login">Sign In</a> or <a href="/register">Register</a>
         </Alert>
       )}
+        {message && <Alert variant="success">{message}</Alert>}
+        {error && <Alert variant="danger">{error}</Alert>}
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
         <Button variant="primary" onClick={handleAddToCart}>
-          Add to Cart
+        {loading ? "Adding..." : "Add to Cart"}
+          
         </Button>
       </Modal.Footer>
     </Modal>

@@ -101,7 +101,10 @@ const Home = () => {
       return;
     }
     setIsFeedbackVisible(!isFeedbackVisible);
-    
+    setIsOrderVisible(false);
+    setIsCartVisible(false);
+    setIsSettingsVisible(false);
+    setIsNotificationsVisible(false);
   };
 
 
@@ -126,6 +129,7 @@ const Home = () => {
       return;
     }
     fetchCart();
+    setIsFeedbackVisible(false);
     setIsCartVisible(!isCartVisible);
     setIsSettingsVisible(false);
     setIsOrderVisible(false);
@@ -137,6 +141,7 @@ const Home = () => {
       setLoginPrompt('You have to sign in to open settings.');
       return;
     }
+    setIsFeedbackVisible(false);
     setIsSettingsVisible(!isSettingsVisible);
     setIsCartVisible(false);
     setIsOrderVisible(false);
@@ -148,6 +153,7 @@ const Home = () => {
       setLoginPrompt('You have to sign in to access your order.');
       return;
     }
+    setIsFeedbackVisible(false);
     setIsOrderVisible(!isOrderVisible);
     setIsCartVisible(false);
     setIsSettingsVisible(false);
@@ -159,6 +165,7 @@ const Home = () => {
       setLoginPrompt('You have to sign in to view your notifications.');
       return;
     }
+    setIsFeedbackVisible(false);
     fetchUnreadNotifications();
     setIsNotificationsVisible(!isNotificationsVisible);
     setIsCartVisible(false);
@@ -172,6 +179,12 @@ const Home = () => {
 
   const toggleQRScanner = () => {
     setIsQrScannerVisible(!isQrScannerVisible);
+    setIsFeedbackVisible(false);
+    fetchUnreadNotifications();
+    setIsNotificationsVisible(false);
+    setIsCartVisible(false);
+    setIsSettingsVisible(false);
+    setIsOrderVisible(false);
   };
 
   return (
@@ -220,8 +233,15 @@ const Home = () => {
         {/* Cart Section */}
         {isCartVisible && (
           <div className="salesp-order-section">
-            {!loading && !error && cart.length > 0 && <Cart cart={cart} setCart={setCart} />}
+            {!loading && !error ? (
+              cart.length > 0 ? (
+                <Cart cart={cart} setCart={setCart} />
+              ) : (
+                <p>Your cart is empty.</p>
+              )
+            ) : null}
           </div>
+
         )}
         
         {/* Feedback Section */}
@@ -275,7 +295,7 @@ const Home = () => {
                       <FaBell />
                       {unreadCount > 0 && <span className="salesp-notification-count">{unreadCount}</span>}
                     </button>
-                    <button className="salesp-toggle-button">
+                    <button className="salesp-toggle-button" onClick={toggleQRScanner}>
                       <AiOutlineQrcode />
                     </button>
                     <button className="salesp-toggle-button"  onClick={toggleFeedback}>

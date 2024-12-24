@@ -1,7 +1,7 @@
-import axiosInstance from './axiosInstance';
-import React, { useEffect, useRef, useState } from 'react';
-import { getUsernameFromToken } from '../utils/auth';
-import "react-quill/dist/quill.snow.css"; // Import Quill's default styling
+import axios from "axios";
+import React, { useEffect, useRef, useState } from "react";
+import { getUsernameFromToken } from "../utils/auth";
+import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 
 const categories = [
@@ -114,25 +114,39 @@ const categories = [
 const NewProductForm = () => {
   const lusername = getUsernameFromToken();
   const fileInputRef = useRef(null);
-  const [newProduct, setNewProduct] = useState({
-    name: '',
-    category: '',
-    subCategory: '',
-    price: '',
-    description: '',
+
+  const [newProduct, setNewProduct] = useState(
+    {
+    name: "",
+    category: "",
+    subCategory: "",
+    price: "",
+    description: "",
     username: lusername,
-    quantity: '',
-    images: [], // Array for multiple images
-    type: '',
-    collaborators: [], // Array for collaborators
-  });
+    quantity: "",
+    images: [],
+    type: "",
+    collaborators: [],
+    features: [],
+    variations: [
+      {
+        color: '',
+        size: [''],
+        material: '',
+        model: '',
+      },
+    ],
+  }
+);
 
   const [subCategories, setSubCategories] = useState([]);
   const [dragging, setDragging] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const selectedCategory = categories.find((cat) => cat.id === newProduct.category);
+    const selectedCategory = categories.find(
+      (cat) => cat.id === newProduct.category
+    );
     if (selectedCategory) {
       setSubCategories(selectedCategory.subCategories);
     } else {
@@ -142,14 +156,27 @@ const NewProductForm = () => {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === 'images') {
-      // Set selected files in state
-      setNewProduct({ ...newProduct, images: Array.from(files) });
-    } else if (name.startsWith('collaborators')) {
-      const index = parseInt(name.split('-')[1], 10);
-      const updatedCollaborators = [...newProduct.collaborators];
-      updatedCollaborators[index] = { ...updatedCollaborators[index], amount: parseFloat(value) || 0 };
-      setNewProduct({ ...newProduct, collaborators: updatedCollaborators });
+
+    if (name === "images") {
+      const newImages = Array.from(files);
+      if (newProduct.images.length + newImages.length > 6) {
+        setMessage("You can only upload a maximum of 6 images.");
+        return;
+      }
+
+      const validImages = newImages.filter((file) =>
+        ["image/jpeg", "image/png", "image/jpg"].includes(file.type)
+      );
+
+      if (validImages.length < newImages.length) {
+        setMessage("Only JPG, JPEG, and PNG files are allowed.");
+        return;
+      }
+
+      setNewProduct({
+        ...newProduct,
+        images: [...newProduct.images, ...validImages],
+      });
     } else {
       setNewProduct({ ...newProduct, [name]: value });
     }
@@ -159,9 +186,31 @@ const NewProductForm = () => {
     e.preventDefault();
     setDragging(false);
     const files = Array.from(e.dataTransfer.files);
-    if (files.length > 0) {
-      setNewProduct({ ...newProduct, images: files });
+    if (newProduct.images.length + files.length > 6) {
+      setMessage("You can only upload a maximum of 6 images.");
+      return;
     }
+    const validImages = files.filter((file) =>
+      ["image/jpeg", "image/png", "image/jpg"].includes(file.type)
+    );
+    if (validImages.length < files.length) {
+      setMessage("Only JPG, JPEG, and PNG files are allowed.");
+      return;
+    }
+
+    setNewProduct({ ...newProduct, images: [...newProduct.images, ...validImages] });
+  };
+
+  const addFeature = () => {
+    setNewProduct({
+      ...newProduct,
+      features: [...newProduct.features, { type: "", specification: "" }],
+    });
+  };
+
+  const removeFeature = (index) => {
+    const updatedFeatures = newProduct.features.filter((_, i) => i !== index);
+    setNewProduct({ ...newProduct, features: updatedFeatures });
   };
 
   const handleDragOver = (e) => {
@@ -178,44 +227,35 @@ const NewProductForm = () => {
     fileInputRef.current.click();
   };
 
-  const addCollaborator = () => {
-    setNewProduct({
-      ...newProduct,
-      collaborators: [...newProduct.collaborators, { username: '', amount: 0 }],
-    });
-  };
-
-  const removeCollaborator = (index) => {
-    const updatedCollaborators = newProduct.collaborators.filter((_, i) => i !== index);
-    setNewProduct({ ...newProduct, collaborators: updatedCollaborators });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
+  
+    // Serialize the data properly
     Object.keys(newProduct).forEach((key) => {
       if (key === 'images') {
         newProduct.images.forEach((image) => {
           formData.append('images', image);
         });
-      } else if (key === 'collaborators') {
-        formData.append(key, JSON.stringify(newProduct.collaborators));
+      } else if (key === 'variations' || key === 'collaborators' || key === 'features') {
+        formData.append(key, JSON.stringify(newProduct[key])); // Serialize arrays/objects to JSON
       } else {
         formData.append(key, newProduct[key]);
       }
     });
-
+  
     try {
-      const res = await axiosInstance.post('/products', formData, {
+      const res = await axios.post('https://elosystemv1.onrender.com/api/products', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      console.log('NewProduct created:', res.data);
+      console.log('New Product created:', res.data);
       setMessage('Product created successfully');
     } catch (err) {
-      console.error(err);
+      console.error('Error in createProduct:', err.response?.data || err.message);
       setMessage('Error creating product');
     }
   };
+  
 
   const handleDescriptionChange = (value) => {
     setNewProduct({ ...newProduct, description: value });
@@ -227,14 +267,35 @@ const NewProductForm = () => {
       ["bold", "italic", "underline"],
       [{ list: "ordered" }, { list: "bullet" }],
       ["link", "image"],
-      ["clean"], // Remove formatting button
+      ["clean"],
     ],
+  };
+
+  const addVariation = () => {
+    setNewProduct({
+      ...newProduct,
+      variations: [...newProduct.variations, { color: '', size: [], material: '', model: '' }],
+    });
+  };
+  
+  const removeVariation = (index) => {
+    const updatedVariations = newProduct.variations.filter((_, i) => i !== index);
+    setNewProduct({ ...newProduct, variations: updatedVariations });
+  };
+  
+  const handleVariationChange = (index, field, value) => {
+    const updatedVariations = [...newProduct.variations];
+    if (field === 'size') {
+      updatedVariations[index][field] = value.split(',').map((size) => size.trim()); // Handle size as an array
+    } else {
+      updatedVariations[index][field] = value;
+    }
+    setNewProduct({ ...newProduct, variations: updatedVariations });
   };
   
 
   return (
     <form onSubmit={handleSubmit}>
-      <p>weeeeeeeeeeeeeeeeeh</p>
       <input
         type="text"
         name="name"
@@ -242,7 +303,11 @@ const NewProductForm = () => {
         value={newProduct.name}
         onChange={handleChange}
       />
-      <select name="category" value={newProduct.category} onChange={handleChange}>
+      <select
+        name="category"
+        value={newProduct.category}
+        onChange={handleChange}
+      >
         <option value="">Select Category</option>
         {categories.map((cat) => (
           <option key={cat.id} value={cat.id}>
@@ -272,7 +337,7 @@ const NewProductForm = () => {
         onChange={handleChange}
       />
       <label>Description:</label>
-        <ReactQuill
+      <ReactQuill
         theme="snow"
         value={newProduct.description}
         onChange={handleDescriptionChange}
@@ -280,6 +345,85 @@ const NewProductForm = () => {
         placeholder="Write an engaging product description..."
       />
 
+      <div>
+        <h4>Features</h4>
+        {newProduct.features.map((feature, index) => (
+          <div key={index}>
+            <input
+              type="text"
+              placeholder="Feature Type"
+              value={feature.type}
+              onChange={(e) =>
+                setNewProduct({
+                  ...newProduct,
+                  features: newProduct.features.map((f, i) =>
+                    i === index ? { ...f, type: e.target.value } : f
+                  ),
+                })
+              }
+            />
+            <input
+              type="text"
+              placeholder="Specification"
+              value={feature.specification}
+              onChange={(e) =>
+                setNewProduct({
+                  ...newProduct,
+                  features: newProduct.features.map((f, i) =>
+                    i === index
+                      ? { ...f, specification: e.target.value }
+                      : f
+                  ),
+                })
+              }
+            />
+            <button type="button" onClick={() => removeFeature(index)}>
+              Remove
+            </button>
+          </div>
+        ))}
+        <button type="button" onClick={addFeature}>
+          Add Feature
+        </button>
+      </div>
+
+      <div>
+        <h4>Product Variations</h4>
+        {newProduct.variations.map((variation, index) => (
+          <div key={index} style={{ marginBottom: '10px', border: '1px solid #ccc', padding: '10px' }}>
+            <input
+              type="text"
+              placeholder="Color"
+              value={variation.color}
+              onChange={(e) => handleVariationChange(index, 'color', e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Sizes (comma-separated)"
+              value={variation.size.join(', ')} // Join array back to string for display
+              onChange={(e) => handleVariationChange(index, 'size', e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Material"
+              value={variation.material}
+              onChange={(e) => handleVariationChange(index, 'material', e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Model"
+              value={variation.model}
+              onChange={(e) => handleVariationChange(index, 'model', e.target.value)}
+            />
+            <button type="button" onClick={() => removeVariation(index)}>
+              Remove Variation
+            </button>
+          </div>
+        ))}
+        <button type="button" onClick={addVariation}>
+          Add Variation
+        </button>
+      </div>
 
       <input
         type="number"
@@ -289,47 +433,6 @@ const NewProductForm = () => {
         value={newProduct.quantity}
         onChange={handleChange}
       />
-      <select name="type" value={newProduct.type} onChange={handleChange}
-      >
-        <option value="product">Product</option>
-      </select>
-
-      {newProduct.type === 'collaborator' && (
-        <div>
-          <h4>Collaborators</h4>
-          {newProduct.collaborators.map((collaborator, index) => (
-            <div key={index}>
-              <input
-                type="text"
-                name={`collaborators-${index}`}
-                placeholder="Collaborator Username"
-                value={collaborator.username}
-                onChange={(e) =>
-                  setNewProduct({
-                    ...newProduct,
-                    collaborators: newProduct.collaborators.map((c, i) =>
-                      i === index ? { ...c, username: e.target.value } : c
-                    ),
-                  })
-                }
-              />
-              <input
-                type="number"
-                name={`amount-${index}`}
-                placeholder="Amount"
-                value={collaborator.amount}
-                onChange={handleChange}
-              />
-              <button type="button" onClick={() => removeCollaborator(index)}>
-                Remove
-              </button>
-            </div>
-          ))}
-          <button type="button" onClick={addCollaborator}>
-            Add Collaborator
-          </button>
-        </div>
-      )}
 
       <label>
         Images:
@@ -338,19 +441,19 @@ const NewProductForm = () => {
           name="images"
           onChange={handleChange}
           ref={fileInputRef}
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
           multiple
         />
         <div
-          className={`drop-zone ${dragging ? 'dragging' : ''}`}
+          className={`drop-zone ${dragging ? "dragging" : ""}`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           onClick={handleClick}
         >
           {newProduct.images.length > 0
-            ? newProduct.images.map((image) => image.name).join(', ')
-            : 'Drag and drop images or click to select'}
+            ? `${newProduct.images.length}/6 images selected`
+            : "Drag and drop images or click to select (max 6)"}
         </div>
       </label>
 

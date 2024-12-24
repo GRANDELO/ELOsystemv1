@@ -1,8 +1,9 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PushNotification from '../PushNotification';
 import { getUsernameFromToken, getcategoryFromToken, getemailFromToken } from '../utils/auth';
+import { ThemeContext } from '../ThemeContext'; // Import ThemeContext
 import './styles/setting.css';
 
 const Settings = () => {
@@ -11,6 +12,7 @@ const Settings = () => {
   const lemail = getemailFromToken();
   const lcategory = getcategoryFromToken();
 
+  const { theme, toggleTheme } = useContext(ThemeContext); // Access theme and toggleTheme
   const [newUsername, setNewUsername] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -25,12 +27,11 @@ const Settings = () => {
   const [amount, setAmount] = useState(null); // Initialize amount state
 
   useEffect(() => {
-    // Fetch the amount from sessionStorage only if the user is in the 'seller' category
     const storedAmount = sessionStorage.getItem('amount');
     if (storedAmount) {
-      setAmount(storedAmount); // Set amount if it's available
+      setAmount(storedAmount);
     } else {
-      setAmount(null); // Ensure amount is null if it’s not available
+      setAmount(null);
     }
   }, []);
 
@@ -120,7 +121,6 @@ const Settings = () => {
           <p><b>Username:</b> <i>{lusername}</i></p>
           <p><b>Email:</b> <i>{lemail}</i></p>
           <p><b>Specialty:</b> <i>{lcategory}</i></p>
-          {/* Conditionally render amount only if it has a valid value */}
           {amount !== null && amount !== 'undefined' && (
             <p><b>Amount:</b> KES: <i>{amount}</i></p>
           )}
@@ -132,6 +132,9 @@ const Settings = () => {
         <button className="settings-button" onClick={() => setChangePassword(!changePassword)}>Change Password</button>
         <button className="settings-button" onClick={() => setChangeEmail(!changeEmail)}>Change Email</button>
         <button className="settings-button" onClick={() => setChangePhoneNumber(!changePhoneNumber)}>Change Phone Number</button>
+        <button className="settings-button" onClick={toggleTheme}>
+          Toggle to {theme === "light" ? "Dark" : "Light"} Mode
+        </button>
       </div>
       <form>
         {changeUsername && (
@@ -167,7 +170,7 @@ const Settings = () => {
         {message && <p className="message">{message}</p>}
         {error && <p className="error">{error}</p>}
       </form>
-      <PushNotification/>
+      <PushNotification />
       <button className="logoutbutton" onClick={handleLogout}>Logout</button>
     </div>
   );

@@ -33,6 +33,7 @@ import Deliveryaccept from './components/deliveryaccept';
 import Deliverydisp from './components/deliverydisp';
 import Deliverydash from './components/deliverydash';
 
+import MM from './components/mm';
 
 import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
@@ -58,7 +59,8 @@ import Upload from './components/upload';
 
 import ChatList from "./components/ChatList";
 import ChatDetails from "./components/ChatDetails";
-
+import Colabonewproduct from "./components/colabonewproduct";
+import ThemeProvider from "./ThemeContext";
 import './main.css';
 
 const socket = io('https://elosystemv1.onrender.com');
@@ -96,10 +98,14 @@ const App = () => {
   }, []);
 
   return (
+    <ThemeProvider>
     <Router>
       <div className="App">
         <Routes>
           {/* Public routes */}
+          
+          <Route path="/colabonewproduct" element={<Colabonewproduct />} />
+
           <Route path="/sellerlogin" element={<Login />} />
           <Route path="/registerseller" element={<Register />} />
           <Route path="/success" element={<Success />} />
@@ -121,6 +127,8 @@ const App = () => {
           <Route path="/agentdash" element={<Agentdash />} />
           <Route path="/agentLogout" element={<AgentLogout />} />
           <Route path="/agentsettings" element={<Agentsettings />} />
+
+          <Route path="/MM" element={<MM />} />
           
           <Route path="/deliveryLogin" element={<DeliveryLogin />} />
           <Route path="/deliveryRegister" element={<DeliveryRegister />} />
@@ -163,9 +171,11 @@ const App = () => {
             <Route path="/productperfomance" element={<Productperfomance />} />
 
           </Route>
+        
         </Routes>
       </div>
     </Router>
+    </ThemeProvider>
   );
 };
 

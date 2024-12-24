@@ -14,6 +14,10 @@ const RegistrationPage = () => {
     navigate("/registerseller");
   };
 
+  const handleRegisterAsdp = () => {
+    navigate("/deliveryRegister");
+  };
+
   const goToLogin = () => {
     navigate("/");
   };
@@ -22,11 +26,14 @@ const RegistrationPage = () => {
     <div className="reg-container">
       <h1 className="reg-header">Register</h1>
       <div className="reg-options">
-        <button className="reg-btn reg-agent-btn" onClick={handleRegisterAsAgent}>
-          Register as Agent
-        </button>
         <button className="reg-btn reg-seller-btn" onClick={handleRegisterAsSeller}>
           Register as Seller
+        </button>
+        <button className="reg-btn reg-agent-btn" onClick={handleRegisterAsdp}>
+          Register as a Delivery person
+        </button>
+        <button className="reg-btn reg-agent-btn" onClick={handleRegisterAsAgent}>
+          Register as Agent
         </button>
       </div>
       <p className="reg-link">

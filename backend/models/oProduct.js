@@ -17,7 +17,23 @@ const productSchema = new mongoose.Schema(
     lable: { type: String, default: undefined },
     quantity: { type: Number, required: true },
     images: [String],
-
+    features: { 
+      type: [
+        {
+          type: { type: String }, // Collaborator's username
+          specification: { type: String },  // Money to be paid to the collaborator
+        },
+      ], 
+      default: undefined 
+    },
+    variations: [
+      {
+        color: String,
+        size: [String],
+        material: String,
+        model: String,
+      },
+    ],
     type: { type: String, default: undefined }, // New field
     collaborators: { 
       type: [

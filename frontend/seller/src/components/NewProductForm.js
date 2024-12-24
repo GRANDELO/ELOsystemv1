@@ -1,6 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { getUsernameFromToken } from '../utils/auth';
+import "react-quill/dist/quill.snow.css"; // Import Quill's default styling
+import ReactQuill from "react-quill";
 
 const categories = [
   { id: 'electronics', name: 'Electronics', subCategories: ['Phones', 'Laptops', 'Tablets', 'Headphones', 'Cameras', 'Accessories', 'Wearables', 'Smart Home', 'Gaming Consoles', 'Home Audio', 'Smartwatches', 'Virtual Reality'] },
@@ -241,7 +243,19 @@ const removeSpecification = (index) => {
     }
   };
   
-  
+  const handleDescriptionChange = (value) => {
+    setNewProduct({ ...newProduct, description: value });
+  };
+
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ["bold", "italic", "underline"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "image"],
+      ["clean"], // Remove formatting button
+    ],
+  };
   
 
   return (
@@ -282,16 +296,22 @@ const removeSpecification = (index) => {
         value={newProduct.price}
         onChange={handleChange}
       />
-      <textarea
-        name="description"
-        placeholder="Product Description"
+      <label>Description:</label>
+        <ReactQuill
+        theme="snow"
         value={newProduct.description}
-        onChange={handleChange}
-      ></textarea>
+        onChange={handleDescriptionChange}
+        name="description"
+        modules={modules}
+        placeholder="Write an engaging product description..."
+      />
+
+
+
       <input
         type="number"
         name="quantity"
-        placeholder="Quantity"
+        placeholder="Stock"
         min="1"
         value={newProduct.quantity}
         onChange={handleChange}

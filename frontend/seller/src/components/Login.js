@@ -15,6 +15,16 @@ const Login = () => {
   const apptoken = localStorage.getItem('apptoken');
   const appcat = localStorage.getItem('appcat');
 
+  // Detect and apply dark mode from localStorage
+  useEffect(() => {
+    const darkMode = localStorage.getItem('mode') === 'dark';
+    if (darkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, []); // Only run once when the component mounts
+
   useEffect(() => {
     // If apptoken is set, use it to set the token and navigate based on the app category
     if (apptoken) {

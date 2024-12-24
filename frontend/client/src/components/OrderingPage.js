@@ -10,6 +10,7 @@ const OrderingPage = () => {
   const username = getUsernameFromToken();
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [nloading, setnLoading] = useState(false);
   const [error, setError] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
   const [mpesaPhoneNumber, setMpesaPhoneNumber] = useState('');
@@ -98,13 +99,16 @@ const OrderingPage = () => {
   };
 
   const handleSubmitOrder = async () => {
+    setnLoading(true)
     if (!paymentMethod || !selectedTown || !selectedArea || (paymentMethod === 'mpesa' && !mpesaPhoneNumber)) {
       setError('Please select a payment method, provide a delivery destination, and enter M-Pesa phone number if applicable.');
+      setnLoading(false)
       return;
     }
 
     if (mpesaPhoneNumberError) {
       setError('Please correct the errors in the form.');
+      setnLoading(false)
       return;
     }
 
@@ -151,18 +155,21 @@ const OrderingPage = () => {
                         'Content-Type': 'application/json'
                     }
                 });
-                setMessage('Payment initiated successfully!');
+                setnLoading(false)
                 handleClearCart();
+                setMessage('Payment initiated successfully!');
                 setTimeout(() => {
                   navigate('/');
                 }, 3000);
             } catch (error) {
+              setnLoading(false)
                 setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
                 console.error('Error:', error);
             }
 
       }else{
         await handleClearCart();
+        setMessage('Order placed successfully!');
         setTimeout(() => {
           navigate('/');
         }, 3000);
@@ -174,6 +181,7 @@ const OrderingPage = () => {
 
     } catch (err) {
       console.error('Failed to submit order:', err);
+      setnLoading(false);
       setError(err.response?.data?.message || 'Failed to submit order.');
     }
   };
@@ -186,12 +194,11 @@ const OrderingPage = () => {
   }, 0);
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <Alert variant="danger">{error}</Alert>;
 
   return (
     <div className="ordering-page">
       <h1>Order Page</h1>
-      {message && <Alert variant="success">{message}</Alert>}
+
       <h2>Total Price: Ksh {totalPrice.toFixed(2)}</h2>
       
       {/* Display Cart Items */}
@@ -280,10 +287,13 @@ const OrderingPage = () => {
           </Form.Group>
         )}
       </Form>
-
+      {message && <Alert variant="success">{message}</Alert>}
+      {error && <Alert variant="danger">{error}</Alert>}
       {/* Submit Order Button */}
-      <Button onClick={handleSubmitOrder}>Submit Order</Button>
-
+      <Button onClick={handleSubmitOrder}>
+      {nloading ? "Ordering..." : "Make Order"}
+        </Button>
+      
     </div>
   );
 };
