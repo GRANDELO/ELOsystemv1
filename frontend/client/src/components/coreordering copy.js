@@ -21,54 +21,14 @@ const OrderingPage = () => {
   const [selectedArea, setSelectedArea] = useState('');
   const [loginPrompt, setLoginPrompt] = useState('');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedVariation, setSelectedVariation] = useState({
+    color: '',
+    size: '',
+    material: '',
+    model: '',
+  });
   const navigate = useNavigate();
   const location = useLocation();
-  const [selectedVariation, setSelectedVariation] = useState({
-    color: "",
-    size: "",
-    material: "",
-    model: "",
-  });
-  const [filteredVariations, setFilteredVariations] = useState([]);
-
-  useEffect(() => {
-    if (product && product.variations) {
-      // Filter variations based on selected color
-      const filtered = product.variations.filter(
-        (variation) => variation.color === selectedVariation.color
-      );
-      setFilteredVariations(filtered);
-    }
-  }, [selectedVariation.color, product]);
-
-  const handleVariationChange = (e) => {
-    const { name, value } = e.target;
-    setSelectedVariation((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  // Get unique sizes for the selected color
-  const sizeOptions = [
-    ...new Set(
-      filteredVariations.flatMap((variation) => variation.size)
-    ),
-  ];
-
-  // Get unique materials for the selected color
-  const materialOptions = [
-    ...new Set(
-      filteredVariations.flatMap((variation) => variation.material)
-    ),
-  ];
-
-  // Get unique models for the selected color
-  const modelOptions = [
-    ...new Set(
-      filteredVariations.flatMap((variation) => variation.model)
-    ),
-  ];
 
   // Query parameters
   const queryParams = new URLSearchParams(location.search);
@@ -117,6 +77,14 @@ const OrderingPage = () => {
     }
   }, [product]);
 
+  const handleVariationChange = (e) => {
+    const { name, value } = e.target;
+    setSelectedVariation((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const handlePaymentMethodChange = (e) => setPaymentMethod(e.target.value);
 
   const handleMpesaPhoneNumberChange = (e) => {
@@ -160,7 +128,6 @@ const OrderingPage = () => {
     setSelectedArea(''); // Reset area when town changes
   };
 
-  // Add the missing handleAreaChange function
   const handleAreaChange = (e) => {
     setSelectedArea(e.target.value);
   };
@@ -178,7 +145,7 @@ const OrderingPage = () => {
     const { discountedPrice } = calculateDiscountedPrice();
     try {
       const orderDetails = {
-        items: [{ productId, quantity: 1 }],
+        items: [{ productId, quantity: 1, variations: selectedVariation }],
         totalPrice: discountedPrice,
         paymentMethod,
         destination: `${selectedTown}, ${selectedArea}`,
@@ -187,36 +154,33 @@ const OrderingPage = () => {
         mpesaPhoneNumber: paymentMethod === 'mpesa' ? mpesaPhoneNumber : undefined,
         orderReference: orderReference,
         sellerOrderId,
-        variations: selectedVariation,
       };
       const response = await axiosInstance.post('/orders', orderDetails);
       setMessage(response.data.message);
 
-      if (paymentMethod === 'mpesa') 
-        {
-            const payload = 
-            {
-                phone: mpesaPhoneNumber,
-                amount: discountedPrice.toFixed(0),
-                orderReference: orderReference
-            };
+      if (paymentMethod === 'mpesa') {
+        const payload = {
+          phone: mpesaPhoneNumber,
+          amount: discountedPrice.toFixed(0),
+          orderReference: orderReference,
+        };
 
-            try {
-                const response = await axiosInstance.post('/mpesa/lipa', payload, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                setMessage('Payment initiated successfully!');
-                handleClearCart();
-                setTimeout(() => {
-                  navigate('/salespersonhome');
-                }, 3000);
-            } catch (error) {
-                setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
-                console.error('Error:', error);
-            }
-      }else{
+        try {
+          const response = await axiosInstance.post('/mpesa/lipa', payload, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          setMessage('Payment initiated successfully!');
+          handleClearCart();
+          setTimeout(() => {
+            navigate('/salespersonhome');
+          }, 3000);
+        } catch (error) {
+          setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
+          console.error('Error:', error);
+        }
+      } else {
         await handleClearCart();
         setTimeout(() => {
           navigate('/salespersonhome');
@@ -277,166 +241,88 @@ const OrderingPage = () => {
             </>
           )}
 
-        <div
+          <div
             className="product-description"
             dangerouslySetInnerHTML={{ __html: product.description }}
           ></div>
 
-{product.variations && product.variations.length > 0 && (
-        <div className="ordcore-variations">
-          <h4 className="ordcore-variations-heading">Available Variations</h4>
-          
-          {/* Color selection */}
-          <div>
-            <label>Color:</label>
-            <Form.Control
-              as="select"
-              name="color"
-              value={selectedVariation.color}
-              onChange={handleVariationChange}
-              className="ordcore-select"
-            >
-              <option value="">Select Color</option>
+          {product.variations && product.variations.length > 0 && (
+            <div className="ordcore-variations">
+              <h4 className="ordcore-variations-heading">Available Variations</h4>
               {product.variations.map((variation, index) => (
-                <option key={index} value={variation.color}>
-                  {variation.color}
-                </option>
+                <div key={index} className="ordcore-variation">
+                  {variation.color && (
+                    <div>
+                      <label>Color:</label>
+                      <Form.Control
+                        as="select"
+                        name="color"
+                        value={selectedVariation.color}
+                        onChange={handleVariationChange}
+                        className="ordcore-select"
+                      >
+                        <option value="">Select Color</option>
+                        <option value={variation.color}>{variation.color}</option>
+                      </Form.Control>
+                    </div>
+                  )}
+                  {variation.size && (
+                    <div>
+                      <label>Size:</label>
+                      <Form.Control
+                        as="select"
+                        name="size"
+                        value={selectedVariation.size}
+                        onChange={handleVariationChange}
+                        className="ordcore-select"
+                      >
+                        <option value="">Select Size</option>
+                        <option value={variation.size}>{variation.size}</option>
+                      </Form.Control>
+                    </div>
+                  )}
+                  {variation.material && (
+                    <div>
+                      <label>Material:</label>
+                      <Form.Control
+                        as="select"
+                        name="material"
+                        value={selectedVariation.material}
+                        onChange={handleVariationChange}
+                        className="ordcore-select"
+                      >
+                        <option value="">Select Material</option>
+                        <option value={variation.material}>{variation.material}</option>
+                      </Form.Control>
+                    </div>
+                  )}
+                  {variation.model && (
+                    <div>
+                      <label>Model:</label>
+                      <Form.Control
+                        as="select"
+                        name="model"
+                        value={selectedVariation.model}
+                        onChange={handleVariationChange}
+                        className="ordcore-select"
+                      >
+                        <option value="">Select Model</option>
+                        <option value={variation.model}>{variation.model}</option>
+                      </Form.Control>
+                    </div>
+                  )}
+                </div>
               ))}
-            </Form.Control>
-          </div>
-
-          {/* Size selection */}
-          {selectedVariation.color && sizeOptions.length > 0 && (
-            <div>
-              <label>Size:</label>
-              <Form.Control
-                as="select"
-                name="size"
-                value={selectedVariation.size}
-                onChange={handleVariationChange}
-                className="ordcore-select"
-              >
-                <option value="">Select Size</option>
-                {sizeOptions.map((size, index) => (
-                  <option key={index} value={size}>
-                    {size}
-                  </option>
-                ))}
-              </Form.Control>
-            </div>
-          )}
-
-          {/* Material selection */}
-          {selectedVariation.size && materialOptions.length > 0 && (
-            <div>
-              <label>Material:</label>
-              <Form.Control
-                as="select"
-                name="material"
-                value={selectedVariation.material}
-                onChange={handleVariationChange}
-                className="ordcore-select"
-              >
-                <option value="">Select Material</option>
-                {materialOptions.map((material, index) => (
-                  <option key={index} value={material}>
-                    {material}
-                  </option>
-                ))}
-              </Form.Control>
-            </div>
-          )}
-
-          {/* Model selection */}
-          {selectedVariation.material && modelOptions.length > 0 && (
-            <div>
-              <label>Model:</label>
-              <Form.Control
-                as="select"
-                name="model"
-                value={selectedVariation.model}
-                onChange={handleVariationChange}
-                className="ordcore-select"
-              >
-                <option value="">Select Model</option>
-                {modelOptions.map((model, index) => (
-                  <option key={index} value={model}>
-                    {model}
-                  </option>
-                ))}
-              </Form.Control>
             </div>
           )}
         </div>
       )}
-
-        </div>
-      )}
-
-      <Form.Group className="ordcore-form-group">
-        <Form.Label>Town</Form.Label>
-        <Form.Control as="select" value={selectedTown} onChange={handleTownChange} className="ordcore-select">
-          <option value="">Select Town</option>
-          {towns.map((town) => (
-            <option key={town.town} value={town.town}>{town.town}</option>
-          ))}
-        </Form.Control>
-      </Form.Group>
-
-      {selectedTown && (
-        <Form.Group className="ordcore-form-group">
-          <Form.Label>Area</Form.Label>
-          <Form.Control as="select" value={selectedArea} onChange={handleAreaChange} className="ordcore-select">
-            <option value="">Select Area</option>
-            {areas.map((area) => (
-              <option key={area} value={area}>{area}</option>
-            ))}
-          </Form.Control>
-        </Form.Group>
-      )}
-
-      <Form>
-        <Form.Group className="ordcore-form-group">
-          <Form.Label>Payment Method</Form.Label>
-          <Form.Check
-            type="radio"
-            name="paymentMethod"
-            label="Mpesa"
-            value="mpesa"
-            onChange={handlePaymentMethodChange}
-            className="ordcore-radio-label"
-          />
-          <Form.Check
-            type="radio"
-            name="paymentMethod"
-            label="On Delivery"
-            value="ondelivery"
-            onChange={handlePaymentMethodChange}
-            className="ordcore-radio-label"
-          />
-        </Form.Group>
-
-        {paymentMethod === 'mpesa' && (
-          <Form.Group className="ordcore-form-group">
-            <Form.Label>Mpesa Phone Number</Form.Label>
-            <Form.Control
-              type="text"
-              value={mpesaPhoneNumber}
-              onChange={handleMpesaPhoneNumberChange}
-              className="ordcore-form-control ordcore-phone-number"
-              placeholder="Enter Mpesa Phone Number"
-              isInvalid={!!mpesaPhoneNumberError}
-            />
-            <Form.Control.Feedback type="invalid">
-              {mpesaPhoneNumberError}
-            </Form.Control.Feedback>
-          </Form.Group>
-        )}
+      <Form onSubmit={handleSubmitOrder}>
+        {/* Add form elements for town selection, area, payment method, and Mpesa phone number */}
+        <Button type="submit" variant="primary" className="ordcore-submit-button">
+          Place Order
+        </Button>
       </Form>
-
-      {error && <Alert variant="danger" className="ordcore-alert">{error}</Alert>}
-
-      <Button onClick={handleSubmitOrder} className="ordcore-submit-btn">Submit Order</Button>
     </div>
   );
 };

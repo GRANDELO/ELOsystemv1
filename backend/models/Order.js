@@ -20,6 +20,14 @@ const orderSchema = new mongoose.Schema({
   orderReference: { type: String, required: true },
   sellerOrderId: { type: String, default: undefined},
   currentplace: { type: String, default: "Waiting for delivery." },
+  variations: [
+    {
+      color: { type: String },
+      size: [{ type: String }],
+      material: { type: String },
+      model: { type: String },
+    },
+  ],
 });
 
 const Order = mongoose.model('Order', orderSchema);

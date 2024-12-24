@@ -226,6 +226,7 @@ const OrderingPage = () => {
           <div>
             <strong>Price:</strong> Ksh {price.toFixed(2)} x {item.quantity}
           </div>
+          <br/>
           <div>
             <strong>Variant:</strong>
             {variantDetails.length > 0 ? (
