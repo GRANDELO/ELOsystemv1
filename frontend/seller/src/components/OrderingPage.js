@@ -20,7 +20,7 @@ const OrderingPage = () => {
   const [areas, setAreas] = useState([]);
   const [selectedArea, setSelectedArea] = useState('');
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const fetchCart = async () => {
       setLoading(true);
@@ -86,9 +86,7 @@ const OrderingPage = () => {
     try {
       setMessage('');
       setError('');
-      const clearResponse = await axios.post('https://elosystemv1.onrender.com/api/cart/cart/clear', 
-        { username }
-      );
+      const clearResponse = await axios.post('https://elosystemv1.onrender.com/api/cart/cart/clear', { username });
       setMessage(clearResponse.data.message);
       setCart([]); // Clear the cart
     } catch (err) {
@@ -136,41 +134,34 @@ const OrderingPage = () => {
       const response = await axios.post('https://elosystemv1.onrender.com/api/orders', orderDetails);
       setMessage(response.data.message);
 
-      if (paymentMethod === 'mpesa') 
-        {
-            const payload = 
-            {
-                phone: mpesaPhoneNumber,
-                amount: totalPrice.toFixed(0),
-                orderReference: orderReference
-            };
+      if (paymentMethod === 'mpesa') {
+        const payload = {
+          phone: mpesaPhoneNumber,
+          amount: totalPrice.toFixed(0),
+          orderReference: orderReference
+        };
 
-            try {
-                const response = await axios.post('https://elosystemv1.onrender.com/api/mpesa/lipa', payload, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                setMessage('Payment initiated successfully!');
-                handleClearCart();
-                setTimeout(() => {
-                  navigate('/salespersonhome');
-                }, 3000);
-            } catch (error) {
-                setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
-                console.error('Error:', error);
+        try {
+          const response = await axios.post('https://elosystemv1.onrender.com/api/mpesa/lipa', payload, {
+            headers: {
+              'Content-Type': 'application/json'
             }
-      }else{
+          });
+          setMessage('Payment initiated successfully!');
+          handleClearCart();
+          setTimeout(() => {
+            navigate('/salespersonhome');
+          }, 3000);
+        } catch (error) {
+          setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
+          console.error('Error:', error);
+        }
+      } else {
         await handleClearCart();
         setTimeout(() => {
           navigate('/salespersonhome');
         }, 3000);
       }
-
-      // Send order details to the logistics system
-      //await axios.post('https://elosystemv1.onrender.com/api/logistics', orderDetails);
-
-
     } catch (err) {
       console.error('Failed to submit order:', err);
       setError(err.response?.data?.message || 'Failed to submit order.');
@@ -179,7 +170,7 @@ const OrderingPage = () => {
 
   const totalPrice = cart.reduce((total, item) => {
     const price = item.product.discount
-      ?   item.product.price * (1 - item.product.discountpersentage / 100)
+      ? item.product.price * (1 - item.product.discountpersentage / 100)
       : item.product.price;
     return total + price * item.quantity;
   }, 0);
@@ -193,7 +184,6 @@ const OrderingPage = () => {
       {message && <Alert variant="success">{message}</Alert>}
       <h2>Total Price: Ksh {totalPrice.toFixed(2)}</h2>
       
-      {/* Display Cart Items */}
       <div>
         <h3>Cart Items</h3>
         <ul>
@@ -205,6 +195,7 @@ const OrderingPage = () => {
               return (
                 <li key={item.product._id}>
                   {item.product.name} - Ksh {price.toFixed(2)} x {item.quantity}
+                  {item.variant && <span> (Variant: {item.variant})</span>}
                 </li>
               );
             })
@@ -241,7 +232,6 @@ const OrderingPage = () => {
         </Form.Group>
       )}
 
-      {/* Payment Method Selection */}
       <Form>
         <Form.Group>
           <Form.Label>Payment Method</Form.Label>
@@ -263,7 +253,6 @@ const OrderingPage = () => {
           />
         </Form.Group>
 
-        {/* M-Pesa Phone Number */}
         {paymentMethod === 'mpesa' && (
           <Form.Group>
             <Form.Label>M-Pesa Phone Number</Form.Label>
@@ -280,9 +269,7 @@ const OrderingPage = () => {
         )}
       </Form>
 
-      {/* Submit Order Button */}
       <Button onClick={handleSubmitOrder}>Submit Order</Button>
-
     </div>
   );
 };
