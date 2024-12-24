@@ -205,21 +205,43 @@ const OrderingPage = () => {
       <div>
         <h3>Cart Items</h3>
         <ul>
-          {cart.length > 0 ? (
-            cart.map((item) => {
-              const price = item.product.discount
-                ? item.product.price * (1 - item.product.discountpersentage / 100)
-                : item.product.price;
-              return (
-                <li key={item.product._id}>
-                  {item.product.name} - Ksh {price.toFixed(2)} x {item.quantity}
-                </li>
-              );
-            })
-          ) : (
-            <p>No items in cart.</p>
-          )}
-        </ul>
+  {cart.length > 0 ? (
+    cart.map((item) => {
+      const price = item.product.discount
+        ? item.product.price * (1 - item.product.discountpersentage / 100)
+        : item.product.price;
+
+      // Extract variant details
+      const variantDetails = Object.entries(item.variant || {}).map(([key, value]) => (
+        <div key={key}>
+          <strong>{key}:</strong> {value}
+        </div>
+      ));
+
+      return (
+        <li key={item.product._id}>
+          <div>
+            <strong>Product:</strong> {item.product.name}
+          </div>
+          <div>
+            <strong>Price:</strong> Ksh {price.toFixed(2)} x {item.quantity}
+          </div>
+          <div>
+            <strong>Variant:</strong>
+            {variantDetails.length > 0 ? (
+              <div className="variant-details">{variantDetails}</div>
+            ) : (
+              <span>Not Specified</span>
+            )}
+          </div>
+        </li>
+      );
+    })
+  ) : (
+    <p>No items in cart.</p>
+  )}
+</ul>
+
       </div>
 
       {/* Delivery Destination */}

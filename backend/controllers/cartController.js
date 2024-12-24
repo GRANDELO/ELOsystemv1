@@ -19,6 +19,7 @@ exports.getCart = async (req, res) => {
         return {
           product,
           quantity: item.quantity,
+          variant: item.variant,
         };
       })
     );
