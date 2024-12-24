@@ -1,7 +1,7 @@
-import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
-import { getUsernameFromToken } from '../utils/auth';
-import "react-quill/dist/quill.snow.css"; // Import Quill's default styling
+import axios from "axios";
+import React, { useEffect, useRef, useState } from "react";
+import { getUsernameFromToken } from "../utils/auth";
+import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 
 const categories = [
@@ -115,25 +115,38 @@ const NewProductForm = () => {
   const lusername = getUsernameFromToken();
   const fileInputRef = useRef(null);
 
-  const [newProduct, setNewProduct] = useState({
-    name: '',
-    category: '',
-    subCategory: '',
-    price: '',
-    description: "", // Changed to a simple string
+  const [newProduct, setNewProduct] = useState(
+    {
+    name: "",
+    category: "",
+    subCategory: "",
+    price: "",
+    description: "",
     username: lusername,
-    quantity: '',
+    quantity: "",
     images: [],
-    type: '',
+    type: "",
     collaborators: [],
-  });
-  
+    features: [],
+    variations: [
+      {
+        color: '',
+        size: [''],
+        material: '',
+        model: '',
+      },
+    ],
+  }
+);
+
   const [subCategories, setSubCategories] = useState([]);
   const [dragging, setDragging] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const selectedCategory = categories.find((cat) => cat.id === newProduct.category);
+    const selectedCategory = categories.find(
+      (cat) => cat.id === newProduct.category
+    );
     if (selectedCategory) {
       setSubCategories(selectedCategory.subCategories);
     } else {
@@ -143,63 +156,62 @@ const NewProductForm = () => {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-  
-    if (name === 'images') {
+
+    if (name === "images") {
       const newImages = Array.from(files);
       if (newProduct.images.length + newImages.length > 6) {
-        setMessage('You can only upload a maximum of 6 images.');
+        setMessage("You can only upload a maximum of 6 images.");
         return;
       }
-      setNewProduct({ ...newProduct, images: [...newProduct.images, ...newImages] });
-    } else if (name.includes('.')) {
-      const [parentKey, childKey] = name.split('.');
+
+      const validImages = newImages.filter((file) =>
+        ["image/jpeg", "image/png", "image/jpg"].includes(file.type)
+      );
+
+      if (validImages.length < newImages.length) {
+        setMessage("Only JPG, JPEG, and PNG files are allowed.");
+        return;
+      }
+
       setNewProduct({
         ...newProduct,
-        [parentKey]: {
-          ...newProduct[parentKey],
-          [childKey]: value,
-        },
+        images: [...newProduct.images, ...validImages],
       });
-    } else if (name.startsWith('specifications')) {
-      const index = parseInt(name.split('-')[1], 10);
-      const keyOrValue = name.split('-')[2];
-      const updatedSpecifications = [...newProduct.specifications];
-      updatedSpecifications[index] = {
-        ...updatedSpecifications[index],
-        [keyOrValue]: value,
-      };
-      setNewProduct({ ...newProduct, specifications: updatedSpecifications });
     } else {
       setNewProduct({ ...newProduct, [name]: value });
     }
   };
-  
 
-const handleDrop = (e) => {
-  e.preventDefault();
-  setDragging(false);
-  const files = Array.from(e.dataTransfer.files);
-  if (newProduct.images.length + files.length > 6) {
-    setMessage('You can only upload a maximum of 6 images.');
-    return;
-  }
-  setNewProduct({ ...newProduct, images: [...newProduct.images, ...files] });
-};
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragging(false);
+    const files = Array.from(e.dataTransfer.files);
+    if (newProduct.images.length + files.length > 6) {
+      setMessage("You can only upload a maximum of 6 images.");
+      return;
+    }
+    const validImages = files.filter((file) =>
+      ["image/jpeg", "image/png", "image/jpg"].includes(file.type)
+    );
+    if (validImages.length < files.length) {
+      setMessage("Only JPG, JPEG, and PNG files are allowed.");
+      return;
+    }
 
-  
+    setNewProduct({ ...newProduct, images: [...newProduct.images, ...validImages] });
+  };
 
-const addSpecification = () => {
-  setNewProduct({
-    ...newProduct,
-    specifications: [...newProduct.specifications, { key: '', value: '' }],
-  });
-};
+  const addFeature = () => {
+    setNewProduct({
+      ...newProduct,
+      features: [...newProduct.features, { type: "", specification: "" }],
+    });
+  };
 
-const removeSpecification = (index) => {
-  const updatedSpecifications = newProduct.specifications.filter((_, i) => i !== index);
-  setNewProduct({ ...newProduct, specifications: updatedSpecifications });
-};
-
+  const removeFeature = (index) => {
+    const updatedFeatures = newProduct.features.filter((_, i) => i !== index);
+    setNewProduct({ ...newProduct, features: updatedFeatures });
+  };
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -214,6 +226,7 @@ const removeSpecification = (index) => {
     e.stopPropagation();
     fileInputRef.current.click();
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -224,7 +237,7 @@ const removeSpecification = (index) => {
         newProduct.images.forEach((image) => {
           formData.append('images', image);
         });
-      } else if ( key === 'collaborators') {
+      } else if (key === 'variations' || key === 'collaborators' || key === 'features') {
         formData.append(key, JSON.stringify(newProduct[key])); // Serialize arrays/objects to JSON
       } else {
         formData.append(key, newProduct[key]);
@@ -243,6 +256,7 @@ const removeSpecification = (index) => {
     }
   };
   
+
   const handleDescriptionChange = (value) => {
     setNewProduct({ ...newProduct, description: value });
   };
@@ -253,8 +267,30 @@ const removeSpecification = (index) => {
       ["bold", "italic", "underline"],
       [{ list: "ordered" }, { list: "bullet" }],
       ["link", "image"],
-      ["clean"], // Remove formatting button
+      ["clean"],
     ],
+  };
+
+  const addVariation = () => {
+    setNewProduct({
+      ...newProduct,
+      variations: [...newProduct.variations, { color: '', size: [], material: '', model: '' }],
+    });
+  };
+  
+  const removeVariation = (index) => {
+    const updatedVariations = newProduct.variations.filter((_, i) => i !== index);
+    setNewProduct({ ...newProduct, variations: updatedVariations });
+  };
+  
+  const handleVariationChange = (index, field, value) => {
+    const updatedVariations = [...newProduct.variations];
+    if (field === 'size') {
+      updatedVariations[index][field] = value.split(',').map((size) => size.trim()); // Handle size as an array
+    } else {
+      updatedVariations[index][field] = value;
+    }
+    setNewProduct({ ...newProduct, variations: updatedVariations });
   };
   
 
@@ -267,7 +303,11 @@ const removeSpecification = (index) => {
         value={newProduct.name}
         onChange={handleChange}
       />
-      <select name="category" value={newProduct.category} onChange={handleChange}>
+      <select
+        name="category"
+        value={newProduct.category}
+        onChange={handleChange}
+      >
         <option value="">Select Category</option>
         {categories.map((cat) => (
           <option key={cat.id} value={cat.id}>
@@ -297,21 +337,98 @@ const removeSpecification = (index) => {
         onChange={handleChange}
       />
       <label>Description:</label>
-        <ReactQuill
+      <ReactQuill
         theme="snow"
         value={newProduct.description}
         onChange={handleDescriptionChange}
-        name="description"
         modules={modules}
         placeholder="Write an engaging product description..."
       />
 
+      <div>
+        <h4>Features</h4>
+        {newProduct.features.map((feature, index) => (
+          <div key={index}>
+            <input
+              type="text"
+              placeholder="Feature Type"
+              value={feature.type}
+              onChange={(e) =>
+                setNewProduct({
+                  ...newProduct,
+                  features: newProduct.features.map((f, i) =>
+                    i === index ? { ...f, type: e.target.value } : f
+                  ),
+                })
+              }
+            />
+            <input
+              type="text"
+              placeholder="Specification"
+              value={feature.specification}
+              onChange={(e) =>
+                setNewProduct({
+                  ...newProduct,
+                  features: newProduct.features.map((f, i) =>
+                    i === index
+                      ? { ...f, specification: e.target.value }
+                      : f
+                  ),
+                })
+              }
+            />
+            <button type="button" onClick={() => removeFeature(index)}>
+              Remove
+            </button>
+          </div>
+        ))}
+        <button type="button" onClick={addFeature}>
+          Add Feature
+        </button>
+      </div>
 
+      <div>
+        <h4>Product Variations</h4>
+        {newProduct.variations.map((variation, index) => (
+          <div key={index} style={{ marginBottom: '10px', border: '1px solid #ccc', padding: '10px' }}>
+            <input
+              type="text"
+              placeholder="Color"
+              value={variation.color}
+              onChange={(e) => handleVariationChange(index, 'color', e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Sizes (comma-separated)"
+              value={variation.size.join(', ')} // Join array back to string for display
+              onChange={(e) => handleVariationChange(index, 'size', e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Material"
+              value={variation.material}
+              onChange={(e) => handleVariationChange(index, 'material', e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Model"
+              value={variation.model}
+              onChange={(e) => handleVariationChange(index, 'model', e.target.value)}
+            />
+            <button type="button" onClick={() => removeVariation(index)}>
+              Remove Variation
+            </button>
+          </div>
+        ))}
+        <button type="button" onClick={addVariation}>
+          Add Variation
+        </button>
+      </div>
 
       <input
         type="number"
         name="quantity"
-        placeholder="Stock"
+        placeholder="Quantity"
         min="1"
         value={newProduct.quantity}
         onChange={handleChange}
@@ -324,21 +441,20 @@ const removeSpecification = (index) => {
           name="images"
           onChange={handleChange}
           ref={fileInputRef}
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
           multiple
         />
         <div
-          className={`drop-zone ${dragging ? 'dragging' : ''}`}
+          className={`drop-zone ${dragging ? "dragging" : ""}`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           onClick={handleClick}
         >
           {newProduct.images.length > 0
-            ? `${newProduct.images.length}/6 images selected: ${newProduct.images.map((image) => image.name).join(', ')}`
-            : 'Drag and drop images or click to select (max 6)'}
+            ? `${newProduct.images.length}/6 images selected`
+            : "Drag and drop images or click to select (max 6)"}
         </div>
-
       </label>
 
       <button type="submit">Create New Product</button>
