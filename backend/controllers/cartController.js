@@ -37,7 +37,7 @@ exports.getCart = async (req, res) => {
 
 exports.addToCart = async (req, res) => {
   try {
-    const { username, productId, quantity } = req.body; // Get username from the request body
+    const { username, productId, quantity, variant } = req.body; // Get username from the request body
     let cart = await Cart.findOne({ user: username });
 
     if (cart) {
@@ -50,7 +50,7 @@ exports.addToCart = async (req, res) => {
     } else {
       cart = new Cart({
         user: username,
-        items: [{ product: productId, quantity }],
+        items: [{ product: productId, quantity, variant }],
       });
     }
     await cart.save();

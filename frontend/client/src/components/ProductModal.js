@@ -21,7 +21,9 @@ const ProductModal = ({ product, show, handleClose }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loginPrompt, setLoginPrompt] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const [selectedVariant, setSelectedVariant] = useState({});
+  const [filteredVariations, setFilteredVariations] = useState(product.variations || []); 
+  
   const [reviews, setReviews] = useState([]);
   const [reviewToEdit, setReviewToEdit] = useState(null);
   const currentUser = getUsernameFromToken(); // Replace with getUsernameFromToken();
@@ -74,7 +76,7 @@ const ProductModal = ({ product, show, handleClose }) => {
       }
       setLoading(true);
       const addResponse = await axiosInstance.post('/cart/cart/add', 
-        { username, productId: product._id, quantity }
+        { username, productId: product._id, quantity, variant: selectedVariant,  }
       );
 
       setMessage(addResponse.data.message);
@@ -203,6 +205,13 @@ const ProductModal = ({ product, show, handleClose }) => {
 
   const { discountedPrice, discountAmount } = calculateDiscountedPrice(product);
 
+  const handleVariantChange = (type, value) => {
+    setSelectedVariant((prev) => ({
+      ...prev,
+      [type]: value,
+    }));
+  };
+
   return (
     <Modal
       className="custom-modal"
@@ -215,6 +224,8 @@ const ProductModal = ({ product, show, handleClose }) => {
         setShowMpesaInput(false);
         setSellerOrderId('');
         setMpesaNumber('');
+        setSelectedVariant({});
+        setFilteredVariations(product.variations || []);
       }}
     >
       <Modal.Header closeButton>
@@ -237,7 +248,11 @@ const ProductModal = ({ product, show, handleClose }) => {
 
           {/* Product Info Section */}
           <div className="product-info">
-            <p className="product-description">{product.description}</p>
+          <div
+            className="product-description"
+            dangerouslySetInnerHTML={{ __html: product.description }}
+          ></div>
+
             <p className="product-category">Category: {product.category}</p>
             {product.label && <span className="product-badge">{product.label}</span>}
 
@@ -256,6 +271,77 @@ const ProductModal = ({ product, show, handleClose }) => {
                 <p className="new-price">Ksh {product.price.toFixed(2)}</p>
               )}
             </div>
+
+            <div className="product-features">
+              {product.features && product.features.length > 0 ? (
+                
+                <ul>
+                  <h3>Features:</h3>
+                  {product.features.map((feature, index) => (
+                    <li key={index}>
+                      <strong>{feature.type}:</strong> {feature.specification}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                ""
+              )}
+            </div>
+
+            <div className="product-variations">
+              <h3>Select Your Variations:</h3>
+              {product.variations && product.variations.length > 0 ? (
+                <>
+                  {['color', 'size', 'material', 'style'].map((field, index) => (
+                    <div key={field} className="variant-selection">
+                      <label htmlFor={field}>
+                        {field.charAt(0).toUpperCase() + field.slice(1)}:
+                      </label>
+                      <select
+                        id={field}
+                        name={field}
+                        onChange={(e) => handleVariantChange(field, e.target.value)}
+                        value={selectedVariant[field] || ''}
+                        disabled={
+                          index > 0 &&
+                          !selectedVariant[Object.keys(selectedVariant)[index - 1]] // Disable if previous selection isn't made
+                        }
+                      >
+                        <option value="" disabled>
+                          Select {field.charAt(0).toUpperCase() + field.slice(1)}
+                        </option>
+
+                        {/* For 'size' field, use your unique size extraction logic */}
+                        {field === 'size' ? (
+                          [
+                            ...new Set(
+                              filteredVariations.flatMap((variation) => variation.size)
+                            ),
+                          ].map((size, index) => (
+                            <option key={index} value={size}>
+                              {size}
+                            </option>
+                          ))
+                        ) : (
+                          // For other fields, map the filtered variations
+                          filteredVariations
+                            .map((variation) => variation[field])
+                            .filter((value, i, self) => self.indexOf(value) === i) // Remove duplicates
+                            .map((option, idx) => (
+                              <option key={idx} value={option}>
+                                {option}
+                              </option>
+                            ))
+                        )}
+                      </select>
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <p>No variations available for this product.</p>
+              )}
+            </div>
+
           </div>
         </div>
 
