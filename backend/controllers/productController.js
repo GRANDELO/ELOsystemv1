@@ -51,11 +51,9 @@ exports.createProduct = async (req, res) => {
       type,
       collaborators,
       features,
-      variations, // Expecting this as a JSON string
+      variations,
     } = req.body;
 
-    // Parse variations if it's a string
-    const parsedVariations = typeof variations === 'string' ? JSON.parse(variations) : variations;
 
     const imageUrls =
       req.files && req.files.length > 0 ? await uploadFiles(req.files) : [];
@@ -81,8 +79,8 @@ exports.createProduct = async (req, res) => {
       images: imageUrls,
       type,
       collaborators: collaboratorData,
-      features,
-      variations: parsedVariations, // Use parsed variations
+      features: JSON.parse(features || "[]"),
+      variations: JSON.parse(variations || "[]"),
     });
 
     await newProduct.save();
@@ -92,7 +90,6 @@ exports.createProduct = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 
 
 

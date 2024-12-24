@@ -256,8 +256,6 @@ const NewProductForm = () => {
     }
   };
   
-  
-  
 
   const handleDescriptionChange = (value) => {
     setNewProduct({ ...newProduct, description: value });
