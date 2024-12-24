@@ -54,15 +54,16 @@ exports.createProduct = async (req, res) => {
       variations,
     } = req.body;
 
+    // Parse variations and collaborators if they are stringified JSON
+    const parsedVariations = typeof variations === "string" ? JSON.parse(variations) : variations;
+    const parsedCollaborators = typeof collaborators === "string" ? JSON.parse(collaborators) : collaborators;
+    const parsedFeatures = typeof features === "string" ? JSON.parse(features) : features;
 
     const imageUrls =
       req.files && req.files.length > 0 ? await uploadFiles(req.files) : [];
     console.log("Uploaded images:", imageUrls);
 
     const productId = uuidv4();
-
-    const collaboratorData =
-      type === "collaborator" && collaborators ? collaborators : undefined;
 
     const newProduct = new Product({
       name,
@@ -78,9 +79,9 @@ exports.createProduct = async (req, res) => {
       quantity,
       images: imageUrls,
       type,
-      collaborators: collaboratorData,
-      features,
-      variations,
+      collaborators: parsedCollaborators,
+      features: parsedFeatures,
+      variations: parsedVariations,
     });
 
     await newProduct.save();

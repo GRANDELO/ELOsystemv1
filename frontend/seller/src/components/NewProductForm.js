@@ -233,11 +233,11 @@ const NewProductForm = () => {
   
     // Serialize the data properly
     Object.keys(newProduct).forEach((key) => {
-      if (key === 'images') {
+      if (key === "images") {
         newProduct.images.forEach((image) => {
-          formData.append('images', image);
+          formData.append("images", image);
         });
-      } else if (key === 'variations' || key === 'collaborators' || key === 'features') {
+      } else if (key === "variations" || key === "collaborators" || key === "features") {
         formData.append(key, JSON.stringify(newProduct[key])); // Serialize arrays/objects to JSON
       } else {
         formData.append(key, newProduct[key]);
@@ -245,16 +245,21 @@ const NewProductForm = () => {
     });
   
     try {
-      const res = await axios.post('https://elosystemv1.onrender.com/api/products', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      console.log('New Product created:', res.data);
-      setMessage('Product created successfully');
+      const res = await axios.post(
+        "https://elosystemv1.onrender.com/api/products",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      console.log("New Product created:", res.data);
+      setMessage("Product created successfully");
     } catch (err) {
-      console.error('Error in createProduct:', err.response?.data || err.message);
-      setMessage('Error creating product');
+      console.error("Error in createProduct:", err.response?.data || err.message);
+      setMessage("Error creating product");
     }
   };
+  
   
 
   const handleDescriptionChange = (value) => {
