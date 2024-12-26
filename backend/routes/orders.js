@@ -6,6 +6,7 @@ const orderController = require('../controllers/orderController');
 router.post('/', orderController.createOrder);
 router.get('/:eid', orderController.getOrder);
 router.get('/my/:username', orderController.getMyOrder);
+router.get('/mypending/:username', orderController.getMyPendingOrder);
 router.patch('/:orderId/status', orderController.updateOrderStatus);
 // You can add more routes here if needed.
 

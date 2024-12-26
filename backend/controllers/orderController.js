@@ -80,6 +80,7 @@ exports.createOrder = async (req, res) => {
 };
 
 // Fetch All Orders with Populated Delivery Person Info
+getMyPendingOrder
 exports.getOrder = async (req, res) => {
   const { eid } = req.params; 
 
@@ -113,6 +114,61 @@ exports.getMyOrder = async (req, res) => {
   }
 };
 
+
+exports.getMyPendingOrder = async (req, res) => {
+  try {
+    // Step 1: Fetch orders that are not packed
+    const { username } = req.params;
+    const orders = await Order.find({ currentplace: "Waiting for delivery." }).lean(); // Fetch all orders with the currentplace
+    console.log('Fetched Orders:', orders.length); // Log the number of fetched orders
+
+    if (orders.length === 0) {
+      return res.json([]); // Return empty if no orders found
+    }
+
+    // Step 2: Extract product IDs from all orders
+    const productIds = orders.flatMap(order =>
+      order.items.map(item => item.productId)
+    );
+
+    // Step 3: Fetch product details that belong to the username
+    const products = await Product.find({ _id: { $in: productIds }, username }).lean(); // Filter products by username
+
+    // Step 4: Create a map for quick product lookup
+    const productMap = {};
+    products.forEach(product => {
+      productMap[product._id] = { // Use product._id instead of productId
+        name: product.name,
+        category: product.category,
+        image: product.images,
+        price: product.price,
+        variance: product.variations,
+      };
+    });
+
+    // Step 5: Format the response with order details and filtered products
+    const orderProductDetails = orders.map(order => {
+      const formattedProducts = order.items
+        .filter(item => productMap[item.productId]) // Only include products that match the username
+        .map(item => ({
+          ...productMap[item.productId], // Get the product details from the map
+          quantity: item.quantity, // Include the quantity from the order
+        }));
+
+      return {
+        orderId: order.orderNumber,
+        products: formattedProducts,
+      };
+    }).filter(order => order.products.length > 0); // Exclude orders with no matching products
+
+    res.json(orderProductDetails);
+  } catch (error) {
+    console.error('Failed to fetch unpacked order products:', error);
+    res.status(500).json({ message: 'Failed to fetch unpacked order products', error: error.message });
+  }
+};
+
+
 exports.updateOrderStatus = async (req, res) => {
   const { orderId } = req.params; // Get order ID from request parameters
   const { isDeliveryInProcess } = req.body; // Status update from request body
@@ -140,7 +196,8 @@ exports.updateOrderStatus = async (req, res) => {
 exports.getUnpackedOrderProducts = async (req, res) => {
   try {
     // Step 1: Fetch orders that are not packed
-    const orders = await Order.find({ packed: false }).lean(); // Using .lean() for better performance
+    const { username } = req.params; 
+    const orders = await Order.find({ currentplace: "Waiting for delivery." }).lean(); // Using .lean() for better performance
     console.log('Fetched Orders:', orders.length); // Log the number of fetched orders
 
     if (orders.length === 0) {
