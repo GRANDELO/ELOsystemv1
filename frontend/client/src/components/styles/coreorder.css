@@ -1,7 +1,7 @@
 /* General Styling */
 .ordcore-ordering-page {
   font-family: Arial, sans-serif;
-  background-color: #f4f7fb;
+  background-color: var(--bg-color-light);
   color: #333;
   display: flex;
   flex-direction: column;
@@ -24,7 +24,7 @@
 .ordcore-ordering-page {
   max-width: 700px;
   width: 100%;
-  background: #fff;
+  background: var(--overlay-light);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 20px 30px;
@@ -33,7 +33,7 @@
 /* Heading */
 .ordcore-heading {
   text-align: center;
-  color: #333;
+  color: var(--input-text-color);
   font-size: 2rem;
   margin-bottom: 1.5rem;
   font-weight: 700;
@@ -64,7 +64,7 @@
   margin-top: 20px;
   padding: 20px;
   border-radius: 8px;
-  background-color: #f7f9fc;
+  background-color: var(--overlay-light);
   border: 1px solid #e5e9f2;
   text-align: center;
 }
@@ -92,7 +92,7 @@
 
 .ordcore-product-description {
   font-size: 0.95rem;
-  color: #666;
+  color: var(--input-text-color);
   line-height: 1.5;
 }
 
@@ -121,7 +121,7 @@
   margin-top: 10px;
   font-weight: 500;
   font-size: 1rem;
-  color: #333;
+  color: var(--text-color-light);
 }
 
 .ordcore-radio-label input {
@@ -183,4 +183,109 @@
   .ordcore-product-price, .ordcore-submit-btn {
     font-size: 0.95rem;
   }
+}
+.lables{
+  color: var(  --text-color-light);
+}
+
+  
+.model Label{
+  color: var(  --text-color-light);
+}
+
+.model select{
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 5px;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--input-text-color);
+  font-size: 1rem;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+.model input{
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 5px;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--input-text-color);
+  font-size: 1rem;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.model2{
+  width: 100%;
+}
+
+
+.model2 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Space between elements */
+  padding: 15px;
+  border: 1px solid #ddd; /* Light border around the group */
+  border-radius: 8px;
+  background-color: var(--bg-color-light); /* Subtle background */
+
+}
+
+.Label {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--text-color-light); /* Dark text */
+  margin-bottom: 10px;
+}
+
+.model2 .form-check {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between radio button and label */
+}
+
+.model2 .form-check input[type='radio'] {
+  appearance: none; /* Hide default radio */
+  width: 20px;
+  height: 20px;
+  border: 2px solid #007bff; /* Blue border for radio */
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.model2 .form-check input[type='radio']:checked {
+  border-color: #0056b3; /* Darker blue when selected */
+  background-color: #007bff; /* Fill color for selected radio */
+}
+
+.model2 .form-check input[type='radio']::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 10px;
+  height: 10px;
+  background-color: var(--bg-color-light);
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+.model2 .form-check input[type='radio']:checked::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.model2 .form-check label {
+  font-size: 14px;
+  color: var(--input-text-color); /* Medium-dark text */
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.model2 .form-check input[type='radio']:hover + label {
+  color: #007bff; /* Change label color on hover */
 }

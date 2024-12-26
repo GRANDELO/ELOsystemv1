@@ -254,10 +254,11 @@ const OrderingPage = () => {
           </div>
           {product.discount ? (
             <>
-              <p className="ordcore-original-price">
+
+              <p className="ld-price">
                 Original Price: <del>Ksh {product.price.toFixed(2)}</del>
               </p>
-              <p className="ordcore-product-price">
+              <p className="new-price">
                 Price: Ksh {discountedPrice.toFixed(2)}
               </p>
               <p className="ordcore-saved-amount">
@@ -266,7 +267,7 @@ const OrderingPage = () => {
             </>
           ) : (
             <>
-              <p className="ordcore-product-price">
+              <p className="discount-info">
                 Price: Ksh {product.price.toFixed(2)}
               </p>
             </>
@@ -283,7 +284,7 @@ const OrderingPage = () => {
           
           {/* Color selection */}
           <div>
-            <label>Color:</label>
+            <label className='lables'>Color:</label>
             <Form.Control
               as="select"
               name="color"
@@ -303,7 +304,7 @@ const OrderingPage = () => {
           {/* Size selection */}
           {selectedVariation.color && sizeOptions.length > 0 && (
             <div>
-              <label>Size:</label>
+              <label className='lables'>Size:</label>
               <Form.Control
                 as="select"
                 name="size"
@@ -324,7 +325,7 @@ const OrderingPage = () => {
           {/* Material selection */}
           {selectedVariation.size && materialOptions.length > 0 && (
             <div>
-              <label>Material:</label>
+              <label className='lables'>Material:</label>
               <Form.Control
                 as="select"
                 name="material"
@@ -345,7 +346,7 @@ const OrderingPage = () => {
           {/* Model selection */}
           {selectedVariation.material && modelOptions.length > 0 && (
             <div>
-              <label>Model:</label>
+              <label className='lables'>Model:</label>
               <Form.Control
                 as="select"
                 name="model"
@@ -368,59 +369,66 @@ const OrderingPage = () => {
         </div>
       )}
 
-      <Form.Group className="ordcore-form-group">
-        <Form.Label>Town</Form.Label>
-        <Form.Control as="select" value={selectedTown} onChange={handleTownChange} className="ordcore-select">
+      {/* Delivery Destination */}
+      <Form.Group className='model'>
+        <Form.Label className='Label' >Town</Form.Label>
+        <Form.Control  className='select' as="select" value={selectedTown} onChange={handleTownChange}>
           <option value="">Select Town</option>
           {towns.map((town) => (
-            <option key={town.town} value={town.town}>{town.town}</option>
+            <option key={town.town} value={town.town}>
+              {town.town}
+            </option>
           ))}
         </Form.Control>
       </Form.Group>
 
       {selectedTown && (
-        <Form.Group className="ordcore-form-group">
-          <Form.Label>Area</Form.Label>
-          <Form.Control as="select" value={selectedArea} onChange={handleAreaChange} className="ordcore-select">
+        <Form.Group className='model'>
+          <Form.Label className='Label' >Area</Form.Label>
+          <Form.Control className='select' as="select" value={selectedArea} onChange={handleAreaChange}>
             <option value="">Select Area</option>
             {areas.map((area) => (
-              <option key={area} value={area}>{area}</option>
+              <option key={area} value={area}>
+                {area}
+              </option>
             ))}
           </Form.Control>
         </Form.Group>
       )}
 
+      {/* Payment Method Selection */}
       <Form>
-        <Form.Group className="ordcore-form-group">
-          <Form.Label>Payment Method</Form.Label>
+        <Form.Group className='model2'>
+          <Form.Label className='Label' >Payment Method</Form.Label>
           <Form.Check
             type="radio"
+            label="M-Pesa"
             name="paymentMethod"
-            label="Mpesa"
             value="mpesa"
+            checked={paymentMethod === 'mpesa'}
             onChange={handlePaymentMethodChange}
-            className="ordcore-radio-label"
           />
           <Form.Check
             type="radio"
+            label="Cash on Delivery"
             name="paymentMethod"
-            label="On Delivery"
-            value="ondelivery"
+            value="cod"
+            checked={paymentMethod === 'cod'}
             onChange={handlePaymentMethodChange}
-            className="ordcore-radio-label"
           />
         </Form.Group>
 
+        {/* M-Pesa Phone Number */}
         {paymentMethod === 'mpesa' && (
-          <Form.Group className="ordcore-form-group">
-            <Form.Label>Mpesa Phone Number</Form.Label>
+          <Form.Group className='model'>
+            <Form.Label className='Label' >M-Pesa Phone Number</Form.Label>
             <Form.Control
+            className='input'
               type="text"
               value={mpesaPhoneNumber}
+              placeholder='Enter the M-pesa number as 2547/2541'
               onChange={handleMpesaPhoneNumberChange}
-              className="ordcore-form-control ordcore-phone-number"
-              placeholder="Enter Mpesa Phone Number"
-              isInvalid={!!mpesaPhoneNumberError}
+              isInvalid={mpesaPhoneNumberError !== ''}
             />
             <Form.Control.Feedback type="invalid">
               {mpesaPhoneNumberError}

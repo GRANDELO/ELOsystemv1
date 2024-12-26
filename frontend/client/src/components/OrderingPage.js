@@ -213,53 +213,53 @@ const OrderingPage = () => {
       <h2>Total Price: Ksh {totalPrice.toFixed(2)}</h2>
       
       {/* Display Cart Items */}
-      <div>
+      <div className='detail'>
         <h3>Cart Items</h3>
         <ul>
-  {cart.length > 0 ? (
-    cart.map((item) => {
-      const price = item.product.discount
-        ? item.product.price * (1 - item.product.discountpersentage / 100)
-        : item.product.price;
+          {cart.length > 0 ? (
+            cart.map((item) => {
+              const price = item.product.discount
+                ? item.product.price * (1 - item.product.discountpersentage / 100)
+                : item.product.price;
 
-      // Extract variant details
-      const variantDetails = Object.entries(item.variant || {}).map(([key, value]) => (
-        <div key={key}>
-          <strong>{key}:</strong> {value}
-        </div>
-      ));
+              // Extract variant details
+              const variantDetails = Object.entries(item.variant || {}).map(([key, value]) => (
+                <div key={key}>
+                  <strong>{key}:</strong> {value}
+                </div>
+              ));
 
-      return (
-        <li key={item.product._id}>
-          <div>
-            <strong>Product:</strong> {item.product.name}
-          </div>
-          <div>
-            <strong>Price:</strong> Ksh {price.toFixed(2)} x {item.quantity}
-          </div>
-          <br/>
-          <div>
-            <strong>Variant:</strong>
-            {variantDetails.length > 0 ? (
-              <div className="variant-details">{variantDetails}</div>
-            ) : (
-              <span>Not Specified</span>
-            )}
-          </div>
-        </li>
-      );
-    })
-  ) : (
-    <p>No items in cart.</p>
-  )}
-</ul>
+              return (
+                <li className='variant-detailsall' key={item.product._id}>
+                  <div>
+                    <strong>Product:</strong> {item.product.name}
+                  </div>
+                  <div>
+                    <strong>Price:</strong> Ksh {price.toFixed(2)} x {item.quantity}
+                  </div>
+                  <br/>
+                  <div className='variant-details'>
+                    <strong>Variant:</strong>
+                    {variantDetails.length > 0 ? (
+                      <div className="variant-details">{variantDetails}</div>
+                    ) : (
+                      <span>Not Specified</span>
+                    )}
+                  </div>
+                </li>
+              );
+            })
+          ) : (
+            <p>No items in cart.</p>
+          )}
+        </ul>
 
       </div>
 
       {/* Delivery Destination */}
-      <Form.Group>
-        <Form.Label>Town</Form.Label>
-        <Form.Control as="select" value={selectedTown} onChange={handleTownChange}>
+      <Form.Group className='model'>
+        <Form.Label className='Label' >Town</Form.Label>
+        <Form.Control  className='select' as="select" value={selectedTown} onChange={handleTownChange}>
           <option value="">Select Town</option>
           {towns.map((town) => (
             <option key={town.town} value={town.town}>
@@ -270,9 +270,9 @@ const OrderingPage = () => {
       </Form.Group>
 
       {selectedTown && (
-        <Form.Group>
-          <Form.Label>Area</Form.Label>
-          <Form.Control as="select" value={selectedArea} onChange={handleAreaChange}>
+        <Form.Group className='model'>
+          <Form.Label className='Label' >Area</Form.Label>
+          <Form.Control className='select' as="select" value={selectedArea} onChange={handleAreaChange}>
             <option value="">Select Area</option>
             {areas.map((area) => (
               <option key={area} value={area}>
@@ -285,8 +285,8 @@ const OrderingPage = () => {
 
       {/* Payment Method Selection */}
       <Form>
-        <Form.Group>
-          <Form.Label>Payment Method</Form.Label>
+        <Form.Group className='model2'>
+          <Form.Label className='Label' >Payment Method</Form.Label>
           <Form.Check
             type="radio"
             label="M-Pesa"
@@ -307,11 +307,13 @@ const OrderingPage = () => {
 
         {/* M-Pesa Phone Number */}
         {paymentMethod === 'mpesa' && (
-          <Form.Group>
-            <Form.Label>M-Pesa Phone Number</Form.Label>
+          <Form.Group className='model'>
+            <Form.Label className='Label' >M-Pesa Phone Number</Form.Label>
             <Form.Control
+            className='input'
               type="text"
               value={mpesaPhoneNumber}
+              placeholder='Enter the M-pesa number as 2547/2541'
               onChange={handleMpesaPhoneNumberChange}
               isInvalid={mpesaPhoneNumberError !== ''}
             />

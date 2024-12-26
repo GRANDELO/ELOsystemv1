@@ -13,17 +13,6 @@
   margin-bottom: 20px;
 }
 
-.old-price{
-  color: red;
-}
-
-.new-price{
-  color: green;
-}
-
-.discount-amount{
-  color:#343a40;
-}
 
 .dsord-orders-list {
   list-style: none;

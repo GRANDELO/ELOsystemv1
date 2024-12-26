@@ -352,7 +352,7 @@ const NewProductList = () => {
                       </p>
                     </>
                   ) : (
-                    <h4>Ksh {product.price.toFixed(2)}</h4>
+                    <h4 className='product-prices'>Ksh {product.price.toFixed(2)}</h4>
                   )}
                 </div>
               </div>
