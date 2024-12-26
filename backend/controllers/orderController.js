@@ -80,7 +80,7 @@ exports.createOrder = async (req, res) => {
 };
 
 // Fetch All Orders with Populated Delivery Person Info
-getMyPendingOrder
+
 exports.getOrder = async (req, res) => {
   const { eid } = req.params; 
 
