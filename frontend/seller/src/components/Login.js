@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getUsernameFromToken, getcategoryFromToken } from '../utils/auth';
 import './styles/Login.css';
-
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -16,15 +16,6 @@ const Login = () => {
   const appcat = localStorage.getItem('appcat');
 
   // Detect and apply dark mode from localStorage
-  useEffect(() => {
-    const darkMode = localStorage.getItem('mode') === 'dark';
-    if (darkMode) {
-      document.body.classList.add('dark-mode');
-    } else {
-      document.body.classList.remove('dark-mode');
-    }
-  }, []); // Only run once when the component mounts
-
   useEffect(() => {
     // If apptoken is set, use it to set the token and navigate based on the app category
     if (apptoken) {
@@ -145,7 +136,7 @@ const Login = () => {
                 className="toggle-password"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? 'Hide' : 'Show'}
+                {showPassword ? <FaRegEyeSlash/> : <FaRegEye/>}
               </button>
             </div>
             <button type="submit">Login</button>

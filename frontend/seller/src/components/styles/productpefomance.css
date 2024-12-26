@@ -1,118 +1,99 @@
-/* Body */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f0f4f8;
-  }
-  
-  /* Container for the Chart */
-  .chart-container {
-    max-width: 1200px;
-    margin: 40px auto;
-    padding: 30px;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    transition: all 0.3s ease-in-out;
-  }
-  
-  /* Loading and Error Messages */
-  .loading-text,
-  .error-text {
-    font-size: 1.2rem;
-    font-weight: 500;
-    color: #4f5b66;
-    margin-top: 20px;
-  }
-  
-  .error-text {
-    color: #e74c3c;
-  }
-  
-  .selected-product {
-    margin-top: 30px;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-  }
-  
-  .product-title {
-    font-size: 1.6rem;
-    margin-bottom: 15px;
-    font-weight: 600;
-    color: #333;
-  }
-  
-  .monthly-sales-container {
-    padding: 30px;
-    background-color: #ffffff;
-    margin-top: 30px;
-    border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .month-year-selector {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 25px;
-  }
-  
-  select {
-    padding: 12px 20px;
-    font-size: 1.1rem;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    background-color: #f7f7f7;
-    outline: none;
-    transition: all 0.3s ease;
-  }
-  
-  select:hover {
-    background-color: #f1f1f1;
-  }
-  
-  select:focus {
-    border-color: #4caf50;
-    background-color: #e8f5e9;
-    box-shadow: 0 0 10px rgba(76, 175, 80, 0.2);
-  }
-  
-  /* Chart Styling */
-  canvas {
-    max-width: 100% !important;
-    height: auto !important;
-  }
-  
-  /* Gradient Background for Bars */
-  .chartjs-render-monitor {
-    border-radius: 8px !important;
-  }
-  
-  /* Hover Effects for Product Selection */
-  .product-container {
-    transition: all 0.3s ease-in-out;
-  }
-  
-  .product-container:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Customizing the Header */
-  .chart-container h2 {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 25px;
-    color: #34495e;
-  }
-  
-  /* Mobile-Friendly Adjustments */
+/* General styles for the chart container */
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: var(--bg-color-light);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Loading and error text styles */
+.loading-text, .error-text {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Styles for the selected product section */
+.selected-product {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: var(--bg-color-light);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.product-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--input-text-color);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Styles for the monthly sales chart container */
+.monthly-sales-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Month and year selector styles */
+.month-year-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.month-year-selector label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  margin-right: 10px;
+}
+
+.month-year-selector select {
+  padding: 5px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.month-year-selector select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Bar chart styles */
+canvas {
+  background-color: #ffffff !important;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
   @media screen and (max-width: 768px) {
     .chart-container {
       padding: 20px;
+      width: 400px;
     }
   
     .monthly-sales-container,

@@ -50,6 +50,7 @@ const ProductModal = ({ product, show, handleClose }) => {
     };
   }, [show, handleClose]);
   
+  
   // Handle the image index change every 4 seconds if product has multiple images
   useEffect(() => {
     if (product?.images?.length > 1) {
@@ -289,9 +290,10 @@ const ProductModal = ({ product, show, handleClose }) => {
             </div>
 
             <div className="product-variations">
-              <h3>Select Your Variations:</h3>
               {product.variations && product.variations.length > 0 ? (
                 <>
+
+                  <h3>Select Your Variations:</h3>
                   {['color', 'size', 'material', 'style'].map((field, index) => (
                     <div key={field} className="variant-selection">
                       <label htmlFor={field}>
@@ -338,7 +340,7 @@ const ProductModal = ({ product, show, handleClose }) => {
                   ))}
                 </>
               ) : (
-                <p>No variations available for this product.</p>
+                ""
               )}
             </div>
 

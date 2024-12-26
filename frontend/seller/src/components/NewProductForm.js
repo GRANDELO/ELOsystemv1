@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { getUsernameFromToken } from "../utils/auth";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
-
+import './styles/newproductform.css';
 const categories = [
   { id: 'electronics', name: 'Electronics', subCategories: ['Phones', 'Laptops', 'Tablets', 'Headphones', 'Cameras', 'Accessories', 'Wearables', 'Smart Home', 'Gaming Consoles', 'Home Audio', 'Smartwatches', 'Virtual Reality'] },
   { id: 'clothing', name: 'Clothing', subCategories: ['Men', 'Women', 'Kids', 'Footwear', 'Accessories', 'Activewear', 'Outerwear', 'Swimwear', 'Suits', 'Athleisure', 'Plus Size', 'Maternity'] },
@@ -142,7 +142,8 @@ const NewProductForm = () => {
   const [subCategories, setSubCategories] = useState([]);
   const [dragging, setDragging] = useState(false);
   const [message, setMessage] = useState("");
-
+  const [loading, setloading] = useState(false);
+  const [error, seterror] = useState("");
   useEffect(() => {
     const selectedCategory = categories.find(
       (cat) => cat.id === newProduct.category
@@ -160,7 +161,7 @@ const NewProductForm = () => {
     if (name === "images") {
       const newImages = Array.from(files);
       if (newProduct.images.length + newImages.length > 6) {
-        setMessage("You can only upload a maximum of 6 images.");
+        seterror("You can only upload a maximum of 6 images.");
         return;
       }
 
@@ -169,7 +170,7 @@ const NewProductForm = () => {
       );
 
       if (validImages.length < newImages.length) {
-        setMessage("Only JPG, JPEG, and PNG files are allowed.");
+        seterror("Only JPG, JPEG, and PNG files are allowed.");
         return;
       }
 
@@ -187,14 +188,14 @@ const NewProductForm = () => {
     setDragging(false);
     const files = Array.from(e.dataTransfer.files);
     if (newProduct.images.length + files.length > 6) {
-      setMessage("You can only upload a maximum of 6 images.");
+      seterror("You can only upload a maximum of 6 images.");
       return;
     }
     const validImages = files.filter((file) =>
       ["image/jpeg", "image/png", "image/jpg"].includes(file.type)
     );
     if (validImages.length < files.length) {
-      setMessage("Only JPG, JPEG, and PNG files are allowed.");
+      seterror("Only JPG, JPEG, and PNG files are allowed.");
       return;
     }
 
@@ -228,6 +229,7 @@ const NewProductForm = () => {
   };
 
   const handleSubmit = async (e) => {
+    setloading(true)
     e.preventDefault();
     const formData = new FormData();
   
@@ -250,10 +252,13 @@ const NewProductForm = () => {
       });
       console.log('New Product created:', res.data);
       setMessage('Product created successfully');
+      setloading(false);
     } catch (err) {
+      setloading(false);
       console.error('Error in createProduct:', err.response?.data || err.message);
-      setMessage('Error creating product');
+      seterror('Error creating product');
     }
+    setloading(false);
   };
   
 
@@ -390,7 +395,7 @@ const NewProductForm = () => {
       <div>
         <h4>Product Variations</h4>
         {newProduct.variations.map((variation, index) => (
-          <div key={index} style={{ marginBottom: '10px', border: '1px solid #ccc', padding: '10px' }}>
+          <div key={index} >
             <input
               type="text"
               placeholder="Color"
@@ -457,8 +462,12 @@ const NewProductForm = () => {
         </div>
       </label>
 
-      <button type="submit">Create New Product</button>
-      {message && <p>{message}</p>}
+      <button type="submit">
+      {loading ? "Creating......" : "Create New Product"}
+        
+        </button>
+      {message && <p className="success">{message}</p>}
+      {error && <p className="error">{error}</p>}
     </form>
   );
 };

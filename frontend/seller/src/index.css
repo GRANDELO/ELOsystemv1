@@ -3,20 +3,35 @@
   --bg-color-light: rgba(249, 249, 249, 0.9); /* Transparent overlay for light mode */
   --text-color-light: #333333;
   --link-color-light: #6200ee;
-  --overlay-light: rgba(255, 255, 255, 0.7); /* Optional semi-transparent overlay */
+  --overlay-light: rgba(151, 188, 255, 0.515); /* Optional semi-transparent overlay */
 
   /* Dark theme variables */
   --bg-color-dark: rgba(30, 30, 47, 0.9);
   --text-color-dark: #ffffff;
   --link-color-dark: #3f51b5;
-  --overlay-dark: rgba(0, 0, 0, 0.7);
-
+  --overlay-dark: rgba(18, 19, 44, 0.493);
+  --loading: #130d4792;
   /* Shared styles */
+
   --bg-image: url('./components/images/bg6.jpeg');
   --bg-size: cover;
   --bg-position: center;
   --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+
+  /* Button styles */
+  --button-bg: #1b0073;
+  --button-text-color: white;
+  --button-hover-bg: #080c48;
+
+  /* Input styles */
+  --input-bg: #ffffff;
+  --input-border: #ccc;
+  --input-focus-border: #6200ee;
+  --input-text-color: #333;
+
+  /* Header font size */
+  --header-font-size: 2rem;
 }
 
 [data-theme="dark"] {
@@ -25,6 +40,18 @@
   --text-color-light: var(--text-color-dark);
   --link-color-light: var(--link-color-dark);
   --overlay-light: var(--overlay-dark);
+
+  /* Dark theme button styles */
+
+
+  /* Dark theme input styles */
+  --input-bg: #2c2c2c;
+  --input-border: #444;
+  --input-focus-border: #6200ee;
+  --input-text-color: #fff;
+  --loading: #2369eb92;
+  /* Header font size */
+  --header-font-size: 2.2rem;
 }
 
 body, html {
@@ -42,11 +69,11 @@ body, html {
   align-items: center;
   overflow-x: hidden;
   color: var(--text-color-light);
+  line-height: 1.6; /* Improved line height for readability */
+  box-sizing: border-box; /* Global box-sizing */
 }
 
 /* Apply a semi-transparent overlay for better contrast */
-
-/* Container styles */
 .container {
   position: relative;
   z-index: 2;
@@ -56,15 +83,16 @@ body, html {
   border-radius: 15px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
   text-align: center;
+  transition: background 0.3s ease; /* Smooth transition for background change */
 }
 
-/* Code font styles (optional, for specific content) */
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-  color: var(--link-color-light);
-  background-color: rgba(0, 0, 0, 0.1);
-  padding: 5px 10px;
-  border-radius: 5px;
+/* Header Styles */
+h1, h2 , h4{
+  font-size: var(--header-font-size);
+  color: var(--text-color-light);
+  margin-bottom: 20px;
+  font-weight: 600;
+  text-align: center;
 }
 
 /* General styles for links */
@@ -76,6 +104,78 @@ a {
 
 a:hover {
   color: var(--link-color-dark);
+}
+
+/* Button styles */
+button {
+  background-color: var(--button-bg);
+  color: var(--button-text-color);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 10px;
+  width: 100%; /* Makes button full-width for small screens */
+}
+
+button:hover {
+  background-color: var(--button-hover-bg);
+  transform: scale(1.05); /* Subtle hover effect */
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(98, 0, 238, 0.6); /* Focus state for accessibility */
+}
+
+button.active {
+  background-color: var(--button-hover-bg);
+}
+
+/* Input styles */
+input, select{
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 5px;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--input-text-color);
+  font-size: 1rem;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+
+input:focus 
+{
+  border-color: var(--input-focus-border);
+  outline: none;
+  background-color: #f2f2f2; /* Light background on focus */
+  color: #333;
+}
+
+select:focus{
+  border-color: var(--input-focus-border);
+  outline: none;
+  background-color: #f2f2f2; /* Light background on focus */
+  color: #333;
+}
+
+/* Password field styles */
+.password-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.password-container button {
+  background: none;
+  border: none;
+  color: var(--link-color-light);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0;
 }
 
 /* Resetting box model */
@@ -93,4 +193,36 @@ a:hover {
   body {
     justify-content: center; /* Stack content from top */
   }
+
+  button {
+    width: auto; /* Adjust button width for larger screens */
+  }
 }
+
+/* Message styles */
+.message {
+  margin-top: 20px;
+  color: var(--link-color-light);
+  font-size: 1rem;
+}
+
+.divmess {
+  margin-top: 20px;
+}
+
+/* Form specific styles */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+form label {
+  font-size: 1rem;
+  margin-bottom: 5px;
+  color: var(--text-color-light);
+}
+
+
+

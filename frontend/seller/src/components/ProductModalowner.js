@@ -161,8 +161,12 @@ const ProductModal = ({ product, show, handleClose }) => {
           )}
         </div>
 
-        <p>{product.description}</p>
-        <p>{product.category}</p>
+        <div
+            className="product-description"
+            dangerouslySetInnerHTML={{ __html: product.description }}
+          ></div>
+          
+          <p className="product-category">Category: {product.category}</p>
         {product.lable && <span className={`product-badge label-badge`}>{product.lable}</span>}
         
         <div className="product-prices">
@@ -183,8 +187,9 @@ const ProductModal = ({ product, show, handleClose }) => {
         <ReviewList productId={product._id} onReviewAction={handleReviewAction} />
         {/* Update Field Selection */}
         <Form.Group className="mt-3">
-          <Form.Label>Field to Update</Form.Label>
+          <Form.Label className="Label">Field to Update</Form.Label>
           <Form.Select
+            className="Select"
             value={updatedField}
             onChange={(e) => setUpdatedField(e.target.value)}
           >
@@ -197,10 +202,11 @@ const ProductModal = ({ product, show, handleClose }) => {
             <option value="discountpersentage">Discount Percentage</option>
             <option value="lable">Label</option>
           </Form.Select>
-          <Form.Label className="mt-2">New Value</Form.Label>
+          <Form.Label className="Label">New Value</Form.Label>
           {/* Conditional Input Field Rendering */}
           {updatedField === 'discount' ? (
             <Form.Select
+              className="Select"
               value={updatedValue}
               onChange={(e) => setUpdatedValue(e.target.value)}
             >
@@ -210,6 +216,7 @@ const ProductModal = ({ product, show, handleClose }) => {
             </Form.Select>
           ) : updatedField === 'lable' ? (
             <Form.Select
+              className="Select"
               value={updatedValue}
               onChange={(e) => setUpdatedValue(e.target.value)}
             >
@@ -220,6 +227,7 @@ const ProductModal = ({ product, show, handleClose }) => {
             </Form.Select>
           ) : updatedField === 'discountpersentage' ? (
             <Form.Control
+              className="Select"
               type="number"
               placeholder="Enter discount percentage"
               value={updatedValue}
@@ -229,6 +237,7 @@ const ProductModal = ({ product, show, handleClose }) => {
             />
           ) : (
             <Form.Control
+              className="Select"
               type="text"
               placeholder="Enter new value"
               value={updatedValue}

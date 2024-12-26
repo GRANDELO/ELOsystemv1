@@ -1,16 +1,17 @@
 :root {
-  --bg-gradient: linear-gradient(135deg, #6a11cb, #2575fc);
-  --card-bg: rgba(255, 255, 255, 0.1);
-  --card-border: rgba(255, 255, 255, 0.2);
-  --text-color-light: #ffffff;
-  --btn-primary: linear-gradient(135deg, #6a5af9, #3d84ff);
-  --btn-hover: linear-gradient(135deg, #3d84ff, #6a5af9);
+  /* Neutral color scheme */
+  --bg-gradient: linear-gradient(135deg, #f5f5f5, #e0e0e0); /* Soft gradient for background */
+  --card-bg: rgba(255, 255, 255, 0.9); /* Light transparent background for cards */
+  --card-border: rgba(0, 0, 0, 0.1); /* Light border */
+  --text-color-light: #333333; /* Darker text for readability */
+  --btn-primary: #6200ee; /* Subtle purple button background */
+  --btn-hover: #3700b3; /* Slightly darker purple on hover */
   --btn-text-color: #ffffff;
-  --link-color: #80d0ff;
-  --link-hover-color: #b5e3ff;
-  --shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
-  --border-radius: 12px;
-  --transition: 0.3s ease-in-out;
+  --link-color: #6200ee; /* Button and link color */
+  --link-hover-color: #3700b3; /* Darker link hover effect */
+  --shadow: 0 6px 24px rgba(0, 0, 0, 0.1); /* Light shadow for elevation */
+  --border-radius: 12px; /* Smooth rounded corners */
+  --transition: 0.3s ease-in-out; /* Smooth transitions */
   --font-size-header: 2rem;
   --font-size-btn: 1.2rem;
   --font-size-link: 1rem;
@@ -19,24 +20,19 @@
   --card-hover-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  font-family: "Poppins", sans-serif;
-  background: var(--bg-gradient);
-  color: var(--text-color-light);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  overflow: hidden;
-  text-align: center;
+
+
+[data-theme="dark"] {
+
+  --bg-gradient: linear-gradient(135deg, #f5f5f5, #e0e0e0); /* Soft gradient for background */
+  --card-bg: rgba(20, 20, 53, 0.643); /* Light transparent background for cards */
 }
+
 
 .log-container {
   max-width: 400px;
   width: 90%;
-  background: var(--card-bg);
+  background: var(--overlay-light);
   backdrop-filter: blur(12px);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
@@ -71,7 +67,7 @@ body {
 }
 
 .log-btn {
-  background: var(--btn-primary);
+  background: var(--button-bg);
   color: var(--btn-text-color);
   font-size: var(--font-size-btn);
   font-weight: 600;
@@ -90,14 +86,14 @@ body {
 }
 
 .log-btn:hover {
-  background: var(--btn-hover);
+  background: var(--button-hover-bg);
   transform: translateY(-4px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
 }
 
 .log-btn:focus {
   outline: none;
-  border: 2px solid var(--btn-primary);
+  border: 2px solid var(--button-hover-bg);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 

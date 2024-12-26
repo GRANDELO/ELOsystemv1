@@ -277,7 +277,7 @@ button:focus {
   background-color: #ff6f61;
   color: white;
   padding: 5px 10px;
-  border-radius: 5px;
+  border-radius: 5px; 
   margin-top: 10px;
 }
 

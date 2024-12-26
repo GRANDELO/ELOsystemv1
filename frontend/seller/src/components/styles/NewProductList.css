@@ -2,8 +2,8 @@
 :root {
   --primary-color: #6c5ce7;
   --secondary-color: #74b9ff;
-  --background-light: rgba(255, 255, 255, 0.95);
-  --background-dark: rgba(0, 0, 0, 0.7);
+  --background-light: var(--bg-color-light);
+  --background-dark: var(--bg-color-dark);
   --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
   --card-shadow-hover: 0 12px 30px rgba(0, 0, 0, 0.2);
   --blur: 8px;
@@ -14,23 +14,30 @@
   --font-secondary: 'Roboto', sans-serif;
   --gradient-primary: linear-gradient(45deg, #6c5ce7, #74b9ff);
   --gradient-success: linear-gradient(45deg, #00b894, #55efc4);
-  --gradient-danger: linear-gradient(45deg, #d63031, #ff7675);
+  --gradient-danger: linear-gradient(45deg, #d63031, #a17171);
   --gradient-warning: linear-gradient(45deg, #fdcb6e, #ffeaa7);
   --button-color: #6c5ce7;
   --button-hover: #5e4cc1;
   --button-active: #4e3c9e;
+
+  --price: #028521;
+  --old-price: #ff1900;
+  --new-price: #00ba19;
+  --discountamount: #0a7a38;
+}
+
+[data-theme="dark"] {
+  --background-light: var(--background-dark);
+  --text-dark: var(--text-light);
+  --gradient-warning: linear-gradient(45deg, #005081, #005db4);
+  --price: #30d646;
+  --old-price: #ff1900;
+  --new-price: #00ff22;
+  --discountamount: #109d4a;
 }
 
 /* General Styles */
-body {
-  font-family: var(--font-primary);
-  margin: 0;
-  padding: 0;
-  background: #f9f9f9;
-  color: var(--text-dark);
-  line-height: 1.5;
-  overflow-x: hidden;
-}
+
 
 h1, h2, h3, h4, h5 {
   margin: 0;
@@ -53,13 +60,11 @@ h1, h2, h3, h4, h5 {
 
 .product-search {
   width: 100%;
-  max-width: 280px;
   padding: 0.5rem 1rem;
   border-radius: 25px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   outline: none;
   font-size: 0.85rem;
-  background: #f1f1f1;
   transition: background 0.3s ease;
 }
 
@@ -164,18 +169,21 @@ h1, h2, h3, h4, h5 {
   text-transform: capitalize;
 }
 
+
 .product-prices {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 0.6rem;
   text-align: center;
+  font-weight: bold;
   margin-top: auto;
+  color: var(--price);
 }
 
 .old-price {
   font-size: 0.9rem;
-  color: #e74c3c;
+  color: var(--old-price);
   text-decoration: line-through;
 }
 
@@ -184,11 +192,12 @@ h1, h2, h3, h4, h5 {
   color: var(--primary-color);
   font-weight: bold;
   letter-spacing: 0.5px;
+  color: var(--new-price);
 }
 
 .discount-amount {
   font-size: 1rem;
-  color: #27ae60;
+  color: var(--discountamount);
   font-weight: bold;
 }
 
