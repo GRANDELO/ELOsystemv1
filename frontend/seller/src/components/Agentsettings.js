@@ -1,7 +1,8 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState , useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 import PushNotification from '../PushNotification';
+import { ThemeContext } from '../ThemeContext'; 
 import { getUsernameFromToken, getcategoryFromToken, getemailFromToken } from '../utils/auth';
 import './styles/setting.css';
 
@@ -10,7 +11,7 @@ const Settings = () => {
   const lusername = getUsernameFromToken();
   const lemail = getemailFromToken();
   const lcategory = getcategoryFromToken();
-
+  const { theme, toggleTheme } = useContext(ThemeContext);
   const [newUsername, setNewUsername] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -113,25 +114,39 @@ const Settings = () => {
     navigate('/agentLogout');
   };
 
+  
+
   return (
     <div className="settingmain">
-      <div className="userinfo">
-        <span className='userinfospan'>
-          <p><b>Username:</b> <i>{lusername}</i></p>
-          <p><b>Email:</b> <i>{lemail}</i></p>
-          <p><b>Category:</b> <i>{lcategory}</i></p>
-          {/* Conditionally render amount only if it has a valid value */}
-          {amount !== null && amount !== 'undefined' && (
-            <p><b>Amount:</b> KES: <i>{amount}</i></p>
-          )}
-        </span>
-      </div>
+    <div className="userinfo-card">
+      <span className="userinfo-content">
+        <p className="userinfo-row">
+          <b>Username:</b> <i>{lusername}</i>
+        </p>
+        <p className="userinfo-row">
+          <b>Email:</b> <i>{lemail}</i>
+        </p>
+        <p className="userinfo-row">
+          <b>Category:</b> <i>{lcategory}</i>
+        </p>
+        {amount !== null && amount !== 'undefined' && (
+          <p className="userinfo-row">
+            <b>Amount:</b> KES: <i>{amount}</i>
+          </p>
+        )}
+      </span>
+    </div>
+
+
       <h2>Settings</h2>
       <div className="set-buttons">
         <button className="settings-button" onClick={() => setChangeUsername(!changeUsername)}>Change Username</button>
         <button className="settings-button" onClick={() => setChangePassword(!changePassword)}>Change Password</button>
         <button className="settings-button" onClick={() => setChangeEmail(!changeEmail)}>Change Email</button>
         <button className="settings-button" onClick={() => setChangePhoneNumber(!changePhoneNumber)}>Change Phone Number</button>
+        <button className="settings-button" onClick={toggleTheme}>
+          Toggle to {theme === "light" ? "Dark" : "Light"} Mode
+        </button>
       </div>
       <form>
         {changeUsername && (

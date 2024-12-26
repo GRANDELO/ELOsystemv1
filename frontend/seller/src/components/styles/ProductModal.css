@@ -113,7 +113,9 @@ button:focus {
   outline: none;
 }
 
+
 .mt-3 {
+  width: 100%;
   margin-top: 1.5rem;
   color: var(--input-text-color);
 }

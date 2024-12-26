@@ -56,6 +56,7 @@ const AddEditReview = ({
         ))}
       </div>
       <textarea
+        required="false"
         className="aerevp-textarea"
         placeholder="Write your review here..."
         value={comment}

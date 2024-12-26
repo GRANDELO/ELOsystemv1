@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { getdpnoFromToken } from '../utils/auth';
+import './styles/input.css';
 
 const AssignBox = () => {
   const deliveryPersonnumber = getdpnoFromToken();
@@ -14,7 +15,6 @@ const AssignBox = () => {
     setError('');
 
     try {
-      // API call to assign the box
       const response = await axios.post('https://elosystemv1.onrender.com/api/delivery/acceptpackage', {
         deliveryPersonnumber,
         boxId,
@@ -32,10 +32,10 @@ const AssignBox = () => {
   };
 
   return (
-    <div style={{ maxWidth: '500px', margin: '0 auto', padding: '20px' }}>
+    <div className="add-order-container">
       <h2>Assign Box to Delivery Person</h2>
       <form onSubmit={handleAssignBox}>
-        <div style={{ marginBottom: '15px' }}>
+        <div>
           <label htmlFor="boxId">Box ID</label>
           <input
             type="text"
@@ -44,34 +44,21 @@ const AssignBox = () => {
             onChange={(e) => setBoxId(e.target.value)}
             placeholder="Enter Box ID"
             required
-            style={{
-              width: '100%',
-              padding: '10px',
-              marginTop: '5px',
-              border: '1px solid #ccc',
-              borderRadius: '5px',
-            }}
           />
         </div>
-        <button
-          type="submit"
-          style={{
-            backgroundColor: '#007bff',
-            color: '#fff',
-            padding: '10px 20px',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-          }}
-        >
-          Assign Box
-        </button>
+        <button type="submit">Assign Box</button>
       </form>
       {responseMessage && (
-        <p style={{ color: 'green', marginTop: '15px' }}>{responseMessage}</p>
+        <div className="response">
+          <h3>Success!</h3>
+          <pre>{responseMessage}</pre>
+        </div>
       )}
       {error && (
-        <p style={{ color: 'red', marginTop: '15px' }}>{error}</p>
+        <div className="error">
+          <h3>Error</h3>
+          <p>{error}</p>
+        </div>
       )}
     </div>
   );

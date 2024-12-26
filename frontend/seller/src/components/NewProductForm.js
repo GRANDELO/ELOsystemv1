@@ -343,6 +343,7 @@ const NewProductForm = () => {
       />
       <label>Description:</label>
       <ReactQuill
+        className="npfdiv"
         theme="snow"
         value={newProduct.description}
         onChange={handleDescriptionChange}
@@ -350,10 +351,14 @@ const NewProductForm = () => {
         placeholder="Write an engaging product description..."
       />
 
-      <div>
+      <div
+      className="npfdiv">
         <h4>Features</h4>
         {newProduct.features.map((feature, index) => (
-          <div key={index}>
+          <div key={index}
+          
+          >
+
             <input
               type="text"
               placeholder="Feature Type"
@@ -392,7 +397,8 @@ const NewProductForm = () => {
         </button>
       </div>
 
-      <div>
+      <div
+      className="npfdiv">
         <h4>Product Variations</h4>
         {newProduct.variations.map((variation, index) => (
           <div key={index} >

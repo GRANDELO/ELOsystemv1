@@ -1,6 +1,6 @@
 /* AddEditReview Component Styles */
 .aerevp-container {
-    background-color: #ffffff;
+    background-color: var(--overlay-light);
     border: 1px solid #e0e0e0;
     border-radius: 10px;
     padding: 20px;
@@ -11,7 +11,7 @@
   
   .aerevp-title {
     font-size: 24px;
-    color: #333333;
+    color: var(--input-text-color);
     margin-bottom: 15px;
     text-align: center;
     font-weight: bold;
@@ -26,7 +26,7 @@
   .aerevp-star {
     cursor: pointer;
     font-size: 30px;
-    color: gray;
+    color: var(--input-text-color);
     transition: color 0.3s ease;
   }
   
@@ -57,8 +57,6 @@
     width: 100%;
     padding: 10px 0;
     font-size: 18px;
-    color: #ffffff;
-    background-color: #1d4ed8;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -67,12 +65,10 @@
   }
   
   .aerevp-button:hover {
-    background-color: #174ab0;
     transform: scale(1.03);
   }
   
   .aerevp-button:active {
-    background-color: #123a86;
     transform: scale(0.98);
   }
   

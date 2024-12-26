@@ -126,6 +126,15 @@
   
   /* Responsive Design */
   @media (max-width: 768px) {
+    .footer-bottom,
+    .footer-top
+    {
+      display: none;
+    }
+
+    .footer-container {
+      background: none;
+    }
     .footer-top {
       flex-direction: column;
       align-items: center;

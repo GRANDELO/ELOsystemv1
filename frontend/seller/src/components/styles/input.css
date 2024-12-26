@@ -1,0 +1,85 @@
+/* Container styling */
+.add-order-container {
+    max-width: 500px; 
+    margin: 2rem auto;
+    padding: 20px;
+    background: var(--overlay-light);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    font-family: "Poppins", sans-serif;
+    text-align: center;
+  }
+  
+  /* Heading styling */
+  .add-order-container h2 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    font-weight: 600;
+  }
+  
+  /* Form styling */
+  .add-order-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .add-order-container label {
+    text-align: left;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  
+  .add-order-container input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: border 0.3s;
+  }
+
+  .add-order-container button:disabled {
+    background: #ddd;
+    cursor: not-allowed;
+  }
+  
+  /* Response & Error Messages */
+  .add-order-container .response {
+    margin-top: 20px;
+    text-align: left;
+    color: #28a745;
+    background: #e9f7ef;
+    border: 1px solid #d4edda;
+    padding: 15px;
+    border-radius: 5px;
+  }
+  
+  .add-order-container .response h3 {
+    margin: 0 0 10px;
+  }
+  
+  .add-order-container .response pre {
+    margin: 0;
+    font-size: 0.9rem;
+    font-family: monospace;
+  }
+  
+  .add-order-container .error {
+    margin-top: 20px;
+    color: #d9534f;
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 15px;
+    border-radius: 5px;
+  }
+  
+  .add-order-container .error h3 {
+    margin: 0 0 10px;
+  }
+  
+  .add-order-container .error p {
+    margin: 0;
+  }
+  

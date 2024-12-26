@@ -1,8 +1,9 @@
 import axiosInstance from './axiosInstance';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PushNotification from '../PushNotification';
 import { getUsernameFromToken, getcategoryFromToken, getemailFromToken } from '../utils/auth';
+import { ThemeContext } from '../ThemeContext'; // Import ThemeContext
 import './styles/setting.css';
 
 const Settings = () => {
@@ -11,6 +12,7 @@ const Settings = () => {
   const lemail = getemailFromToken();
   const lcategory = getcategoryFromToken();
 
+  const { theme, toggleTheme } = useContext(ThemeContext);
   const [newUsername, setNewUsername] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -132,6 +134,9 @@ const Settings = () => {
         <button className="settings-button" onClick={() => setChangePassword(!changePassword)}>Change Password</button>
         <button className="settings-button" onClick={() => setChangeEmail(!changeEmail)}>Change Email</button>
         <button className="settings-button" onClick={() => setChangePhoneNumber(!changePhoneNumber)}>Change Phone Number</button>
+        <button className="settings-button" onClick={toggleTheme}>
+          Toggle to {theme === "light" ? "Dark" : "Light"} Mode
+        </button>
       </div>
       <form>
         {changeUsername && (

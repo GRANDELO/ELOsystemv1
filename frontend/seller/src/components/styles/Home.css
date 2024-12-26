@@ -79,7 +79,7 @@
 
 .home-settings-section div{
     margin: 10px;
-    background-color: rgba(0, 78, 155, 0.288);
+    background-color: var(--overlay-light);
 }
 
 .home-settings-section.active,
@@ -96,8 +96,9 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  font-size: 14px;
   z-index: 1000000;
-  bottom: 60px;
+  bottom: 90px;
   
 }
 
@@ -134,9 +135,13 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .home-main {
+    padding: 0px;
+  }
   .home-toggle-buttons {
     flex-direction: column;
     align-items: center;
+
   }
 
   .home-settings-button {
@@ -144,7 +149,7 @@
   }
 
   .salesp-floating-buttons {
-    bottom: 60px;
+    bottom: 90px;
     right: 10px;
   }
 
@@ -159,7 +164,7 @@
   .home-settings-section div{
     margin: 10px;
     align-items: center;
-    background-color: rgba(0, 78, 155, 0.288);
+    background-color: var(--overlay-light);
 }
 
   /*

@@ -1,6 +1,7 @@
 /* ReviewList Enhanced Styles */
 .listrevp-container {
     max-width: 800px;
+    min-width: 100%;
     margin: 20px auto;
     padding: 20px;
     background: var(--bg-color-light);

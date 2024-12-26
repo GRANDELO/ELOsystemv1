@@ -356,7 +356,7 @@ exports.sendOrderReceiptEmail = async (orderNumber) => {
           <li style="margin-bottom: 15px;">
             <strong>${product.name}</strong> (Category: ${product.category}) x${product.quantity} @ ${product.price} each
             <div style="text-align: center; margin-top: 10px;">
-              <a href="https://grandelo.web.app/review?productId=${productid}" 
+              <a href="https://baze-link.web.app/review?productId=${productid}" 
                  style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px;">
                 Review this product
               </a>
@@ -459,7 +459,7 @@ const sendOrderReceiptEmail = async (orderNumber) => {
     ${formattedProducts
       .map(
         (product) =>
-          `https://grandelo.web.app/review?productId=${product.productid}`
+          `https://baze-link.web.app/review?productId=${product.productid}`
       )
       .join('\n')}
     

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { getagentnoFromToken } from '../utils/auth';
+import './styles/input.css';
+
 const AddOrderToAgent = () => {
   const [formData, setFormData] = useState({
     agentnumber: "",
@@ -49,9 +51,9 @@ const AddOrderToAgent = () => {
   };
 
   return (
-    <div style={{ maxWidth: "500px", margin: "2rem auto", textAlign: "center" }}>
+    <div className="add-order-container">
       <h2>Add Package to Agent</h2>
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column" }}>
+      <form onSubmit={handleSubmit}>
         <label>
           Order ID:
           <input
@@ -63,29 +65,29 @@ const AddOrderToAgent = () => {
             required
           />
         </label>
-        <br />
         <button type="submit" disabled={loading}>
           {loading ? "Adding..." : "Add Order"}
         </button>
       </form>
-
+  
       {/* Display Response */}
       {response && (
-        <div style={{ marginTop: "20px", color: "green", textAlign: "left" }}>
+        <div className="response">
           <h3>Order Added Successfully:</h3>
           <pre>{JSON.stringify(response, null, 2)}</pre>
         </div>
       )}
-
+  
       {/* Display Error */}
       {error && (
-        <div style={{ marginTop: "20px", color: "red" }}>
+        <div className="error">
           <h3>Error:</h3>
           <p>{error}</p>
         </div>
       )}
     </div>
   );
+  
 };
 
 export default AddOrderToAgent;

@@ -50,9 +50,9 @@ const AddOrderToAgent = () => {
   };
 
   return (
-    <div style={{ maxWidth: "500px", margin: "2rem auto", textAlign: "center" }}>
-      <h2>Add Box to Agent</h2>
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column" }}>
+    <div className="add-order-container">
+     <h2>Add Box to Agent</h2>
+     <form onSubmit={handleSubmit} >
         <label>
           Order ID:
           <input
@@ -64,27 +64,26 @@ const AddOrderToAgent = () => {
             required
           />
         </label>
-        <br />
         <button type="submit" disabled={loading}>
-          {loading ? "Adding..." : "Add Order"}
+          {loading ? "Adding..." : "Add box"}
         </button>
       </form>
 
-      {/* Display Response */}
-      {response && (
-        <div style={{ marginTop: "20px", color: "green", textAlign: "left" }}>
-          <h3>Order Added Successfully:</h3>
-          <pre>{JSON.stringify(response, null, 2)}</pre>
-        </div>
-      )}
+    {/* Display Response */}
+    {response && (
+      <div className="response">
+        <h3>Order Added Successfully:</h3>
+        <pre>{JSON.stringify(response, null, 2)}</pre>
+      </div>
+    )}
 
-      {/* Display Error */}
-      {error && (
-        <div style={{ marginTop: "20px", color: "red" }}>
-          <h3>Error:</h3>
-          <p>{error}</p>
-        </div>
-      )}
+    {/* Display Error */}
+    {error && (
+      <div className="error">
+        <h3>Error:</h3>
+        <p>{error}</p>
+      </div>
+    )}
     </div>
   );
 };

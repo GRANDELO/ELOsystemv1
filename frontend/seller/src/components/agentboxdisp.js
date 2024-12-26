@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { getagentnoFromToken } from "../utils/auth";
+import './styles/box.css';
 
 const AgentBoxes = () => {
-  const agentNumber = getagentnoFromToken(); // Retrieve agent number
-  const [boxes, setBoxes] = useState([]); // Store fetched boxes
-  const [error, setError] = useState(""); // Error message
-  const [loading, setLoading] = useState(false); // Loading state
-  const [expandedBox, setExpandedBox] = useState(null); // Tracks expanded box
+  const agentNumber = getagentnoFromToken();
+  const [boxes, setBoxes] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [expandedBox, setExpandedBox] = useState(null);
 
   useEffect(() => {
     fetchBoxes();
   }, []);
-  // Fetch boxes assigned to the agent
+
   const fetchBoxes = async () => {
     setError("");
     setLoading(true);
@@ -35,24 +36,24 @@ const AgentBoxes = () => {
     }
   };
 
-  // Toggle box details view
   const toggleBoxDetails = (boxId) => {
     setExpandedBox((prevBoxId) => (prevBoxId === boxId ? null : boxId));
   };
 
   return (
-    <div style={styles.container}>
-      <h2 style={styles.title}>Agent Boxes</h2>
+    <div className="agent-boxes-container">
+      <h2 className="agent-boxes-title">Agent Boxes</h2>
 
+      {error && <p className="error-message">{error}</p>}
 
-      {error && <p style={styles.error}>{error}</p>}
+      {loading && <p className="loading-message">Loading...</p>}
 
       {boxes.length > 0 && (
-        <div style={styles.boxList}>
-          <h3 style={styles.subtitle}>Boxes for Agent {agentNumber}:</h3>
-          <ul style={styles.boxListItems}>
+        <div className="box-list">
+          <h3 className="subtitle">Boxes for Agent {agentNumber}:</h3>
+          <ul className="box-list-items">
             {boxes.map((box) => (
-              <li key={box._id} style={styles.boxItem}>
+              <li key={box._id} className="box-item">
                 <div>
                   <strong>Box Number:</strong> {box.boxNumber} <br />
                   <strong>Box ID:</strong> {box.boxid} <br />
@@ -63,7 +64,7 @@ const AgentBoxes = () => {
                   <strong>
                     Items:{" "}
                     <span
-                      style={styles.itemToggle}
+                      className="item-toggle"
                       onClick={() => toggleBoxDetails(box._id)}
                     >
                       {box.items.length} orders (click to view)
@@ -72,13 +73,13 @@ const AgentBoxes = () => {
                 </div>
 
                 {expandedBox === box._id && (
-                  <div style={styles.itemDetails}>
+                  <div className="item-details">
                     <h4>Item Details:</h4>
                     <ul>
                       {box.items.map((item, index) => (
-                        <li key={index} style={styles.itemDetail}>
-                          <strong>Item Order Number:</strong> {item.orderNumber}
-                          <br />
+                        <li key={index} className="item-detail">
+                          <strong>Item Order Number:</strong>{" "}
+                          {item.orderNumber}
                         </li>
                       ))}
                     </ul>
@@ -91,75 +92,10 @@ const AgentBoxes = () => {
       )}
 
       {boxes.length === 0 && !error && !loading && (
-        <p style={styles.noData}>No boxes available for this agent.</p>
+        <p className="no-data-message">No boxes available for this agent.</p>
       )}
     </div>
   );
-};
-
-const styles = {
-  container: {
-    fontFamily: "Arial, sans-serif",
-    padding: "20px",
-    maxWidth: "600px",
-    margin: "0 auto",
-    textAlign: "center",
-  },
-  title: {
-    fontSize: "24px",
-    marginBottom: "20px",
-  },
-  button: {
-    padding: "10px",
-    fontSize: "16px",
-    color: "#fff",
-    backgroundColor: "#007BFF",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    marginBottom: "20px",
-  },
-  error: {
-    color: "red",
-    marginTop: "10px",
-  },
-  boxList: {
-    textAlign: "left",
-    marginTop: "20px",
-  },
-  boxListItems: {
-    listStyle: "none",
-    padding: 0,
-  },
-  boxItem: {
-    border: "1px solid #ccc",
-    padding: "10px",
-    marginBottom: "10px",
-    borderRadius: "5px",
-    backgroundColor: "#f9f9f9",
-  },
-  subtitle: {
-    fontSize: "18px",
-    marginBottom: "10px",
-  },
-  itemToggle: {
-    color: "#007BFF",
-    cursor: "pointer",
-    textDecoration: "underline",
-  },
-  itemDetails: {
-    marginTop: "10px",
-    padding: "10px",
-    border: "1px solid #ccc",
-    borderRadius: "5px",
-    backgroundColor: "#eef2f7",
-  },
-  itemDetail: {
-    marginBottom: "10px",
-  },
-  noData: {
-    color: "#666",
-  },
 };
 
 export default AgentBoxes;

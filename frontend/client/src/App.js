@@ -42,6 +42,7 @@ import Upload from './components/upload';
 import ChatList from "./components/ChatList";
 import ChatDetails from "./components/ChatDetails";
 
+import ThemeProvider from "./ThemeContext";
 import './main.css';
 
 const socket = io('https://elosystemv1.onrender.com');
@@ -79,6 +80,7 @@ const App = () => {
   }, []);
 
   return (
+    <ThemeProvider>
     <Router>
       <div className="App">
         <Routes>
@@ -130,6 +132,7 @@ const App = () => {
         </Routes>
       </div>
     </Router>
+    </ThemeProvider>
   );
 };
 

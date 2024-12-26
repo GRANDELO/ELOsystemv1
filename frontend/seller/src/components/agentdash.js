@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { getagentnoFromToken } from '../utils/auth';
-
+import './styles/dash.css';
 // Import your section components
 import ReceiveBox from "./agentboxinput";
 import ReceivePackage from "./agentinput";
