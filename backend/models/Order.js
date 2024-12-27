@@ -6,6 +6,15 @@ const orderSchema = new mongoose.Schema({
   items: [{
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'NewProduct', required: true },
     quantity: { type: Number, required: true },
+    variations: [
+      {
+        productId: { type: mongoose.Schema.Types.ObjectId, ref: 'NewProduct', required: true },
+        color: { type: String },
+        size: [{ type: String }],
+        material: { type: String },
+        model: { type: String },
+      },
+    ],
   }],
   totalPrice: { type: Number, required: true },
   paymentMethod: { type: String, required: true },
@@ -20,15 +29,7 @@ const orderSchema = new mongoose.Schema({
   orderReference: { type: String, required: true },
   sellerOrderId: { type: String, default: undefined},
   currentplace: { type: String, default: "Waiting for delivery." },
-  variations: [
-    {
-      productId: { type: mongoose.Schema.Types.ObjectId, ref: 'NewProduct', required: true },
-      color: { type: String },
-      size: [{ type: String }],
-      material: { type: String },
-      model: { type: String },
-    },
-  ],
+
 });
 
 const Order = mongoose.model('Order', orderSchema);

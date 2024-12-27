@@ -21,7 +21,7 @@ exports.createOrder = async (req, res) => {
     username,
     orderReference,
     sellerOrderId,// Add sellerOrderId directly here
-    variations,
+    
   } = req.body;
 
   try {
@@ -114,72 +114,79 @@ exports.getMyOrder = async (req, res) => {
   }
 };
 
+const getVariance = async (orderid, productId) => {
+  try {
+    // Find the order by ID
+    const order = await Order.findById(orderid).lean();
+    if (!order) {
+      throw new Error(`Order with id ${orderid} not found`);
+    }
+
+    // Find the specific variation associated with the productId
+    const variance = order.variations.find(variation => variation.productId === productId);
+
+    if (!variance) {
+      throw new Error(`Variation not found for productId ${productId} in order ${orderid}`);
+    }
+
+    return variance;
+  } catch (error) {
+    console.error("Error fetching variance:", error.message);
+    throw error;
+  }
+};
+
 
 exports.getMyPendingOrder = async (req, res) => {
   try {
+    // Step 1: Fetch orders that are not packed
     const { username } = req.params;
-
-    // Step 1: Fetch orders with currentplace "Waiting for delivery."
-    const orders = await Order.find({ currentplace: "Waiting for delivery." }).lean();
-
-    console.log("Fetched Orders:", orders.length); // Log the number of fetched orders
+    const orders = await Order.find({ currentplace: "Waiting for delivery." }).lean(); // Fetch all orders with the currentplace
+    console.log('Fetched Orders:', orders.length); // Log the number of fetched orders
 
     if (orders.length === 0) {
-      return res.json([]); // Return an empty array if no orders found
+      return res.json([]); // Return empty if no orders found
     }
 
-    // Step 2: Extract product IDs from the fetched orders
+    // Step 2: Extract product IDs from all orders
     const productIds = orders.flatMap(order =>
       order.items.map(item => item.productId)
     );
 
-    // Step 3: Fetch products that match the provided username
-    const products = await Product.find({ _id: { $in: productIds }, username }).lean();
+    // Step 3: Fetch product details that belong to the username
+    const products = await Product.find({ _id: { $in: productIds }, username }).lean(); // Filter products by username
 
-    // Step 4: Create a product lookup map
+    // Step 4: Create a map for quick product lookup
     const productMap = {};
     products.forEach(product => {
-      productMap[String(product._id)] = {
+      productMap[product._id] = { // Use product._id instead of productId
         name: product.name,
         category: product.category,
         image: product.images,
         price: product.price,
+        variance: getVariance(product._id, product._id),
       };
     });
 
-    // Step 5: Map orders to include the product and variation details
+    // Step 5: Format the response with order details and filtered products
     const orderProductDetails = orders.map(order => {
-      const formattedProducts = order.items.map(item => {
-        const productDetails = productMap[String(item.productId)] || null;
-
-        // Find the corresponding variation for the product
-        const variation = order.variations.find(
-          variation => variation.productId === item.productId
-        );
-
-        if (productDetails) {
-          return {
-            ...productDetails,
-            quantity: item.quantity, // Include quantity from order
-            variations: variation || {}, // Include variation or empty object
-          };
-        }
-        return null; // Skip products not matching the username
-      }).filter(product => product !== null); // Filter out null products
+      const formattedProducts = order.items
+        .filter(item => productMap[item.productId]) // Only include products that match the username
+        .map(item => ({
+          ...productMap[item.productId], // Get the product details from the map
+          quantity: item.quantity, // Include the quantity from the order
+        }));
 
       return {
         orderId: order.orderNumber,
-        destination: order.destination,
-        totalPrice: order.totalPrice,
-        orderDate: new Date(order.orderDate).toISOString(),
         products: formattedProducts,
       };
-    }).filter(order => order.products.length > 0); // Exclude orders with no products
-    console.log(orderProductDetails);
+    }).filter(order => order.products.length > 0); // Exclude orders with no matching products
+
     res.json(orderProductDetails);
   } catch (error) {
-    console.error("Failed to fetch unpacked order products:", error);
-    res.status(500).json({ message: "Failed to fetch unpacked order products", error: error.message });
+    console.error('Failed to fetch unpacked order products:', error);
+    res.status(500).json({ message: 'Failed to fetch unpacked order products', error: error.message });
   }
 };
 
