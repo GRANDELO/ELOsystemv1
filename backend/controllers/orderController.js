@@ -21,7 +21,7 @@ exports.createOrder = async (req, res) => {
     username,
     orderReference,
     sellerOrderId,// Add sellerOrderId directly here
-    
+    variations,
   } = req.body;
 
   try {
@@ -64,6 +64,7 @@ exports.createOrder = async (req, res) => {
       isDeliveryInProcess: false,
       isDelivered: false,
       packed: false,
+      variations,
       orderReference,
       ...(sellerOrderId && { sellerOrderId }), // Only add sellerOrderId if it exists
     };
@@ -113,28 +114,6 @@ exports.getMyOrder = async (req, res) => {
   }
 };
 
-const getVariance = async (orderid, productId) => {
-  try {
-    // Find the order by ID
-    const order = await Order.findById(orderid).lean();
-    if (!order) {
-      throw new Error(`Order with id ${orderid} not found`);
-    }
-
-    // Find the specific variation associated with the productId
-    const variance = order.variations.find(variation => variation.productId === productId);
-
-    if (!variance) {
-      throw new Error(`Variation not found for productId ${productId} in order ${orderid}`);
-    }
-
-    return variance;
-  } catch (error) {
-    console.error("Error fetching variance:", error.message);
-    throw error;
-  }
-};
-
 
 exports.getMyPendingOrder = async (req, res) => {
   try {
@@ -158,23 +137,40 @@ exports.getMyPendingOrder = async (req, res) => {
     // Step 4: Create a map for quick product lookup
     const productMap = {};
     products.forEach(product => {
-      productMap[product._id] = { // Use product._id instead of productId
+      productMap[product._id] = {
         name: product.name,
         category: product.category,
         image: product.images,
         price: product.price,
-        variance: getVariance(product._id, product._id),
+        variations: product.variations, // Store variations for each product
       };
     });
 
-    // Step 5: Format the response with order details and filtered products
+    // Step 5: Format the response with order details and filtered products, including variations
     const orderProductDetails = orders.map(order => {
       const formattedProducts = order.items
         .filter(item => productMap[item.productId]) // Only include products that match the username
-        .map(item => ({
-          ...productMap[item.productId], // Get the product details from the map
-          quantity: item.quantity, // Include the quantity from the order
-        }));
+        .map(item => {
+          const productDetails = productMap[item.productId]; // Get the product details from the map
+          
+          // Find the variations for this specific item in the order
+          const itemVariations = item.variations.map(variation => {
+            const productVariation = productDetails.variations.find(variant => variant.productId.toString() === variation.productId.toString());
+            return {
+              ...productVariation, // Spread variation properties
+              color: variation.color,
+              size: variation.size,
+              material: variation.material,
+              model: variation.model,
+            };
+          });
+
+          return {
+            ...productDetails, // Get the main product details
+            quantity: item.quantity, // Include the quantity from the order
+            variations: itemVariations, // Include the variations for this product
+          };
+        });
 
       return {
         orderId: order.orderNumber,
@@ -188,6 +184,7 @@ exports.getMyPendingOrder = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch unpacked order products', error: error.message });
   }
 };
+
 
 
 exports.updateOrderStatus = async (req, res) => {
