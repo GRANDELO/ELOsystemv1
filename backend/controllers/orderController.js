@@ -10,6 +10,9 @@ const {increateNotification} = require('./notificationController');
 const {b2cRequestHandler} = require("./mpesaController");
 const CoreSellOrder = require('../models/CoreSellOrder');
 const { generateVerificationCode } = require('../services/verificationcode');
+const { sersendNotificationToUser } = require('../services/pushNotificationController');
+
+
 // Create Order
 exports.createOrder = async (req, res) => {
   const {
@@ -21,27 +24,41 @@ exports.createOrder = async (req, res) => {
     username,
     orderReference,
     sellerOrderId,
+    
   } = req.body;
 
   try {
-    // Validate items and variations
-    if (!items || !Array.isArray(items) || items.length === 0) {
-      return res.status(400).json({ message: 'Items are required and must be an array' });
+    // Validate required fields
+    if (!items) {
+      return res.status(400).json({ message: 'Missing required field: items' });
+    }
+    if (!totalPrice) {
+      return res.status(400).json({ message: 'Missing required field: totalPrice' });
+    }
+    if (!paymentMethod) {
+      return res.status(400).json({ message: 'Missing required field: paymentMethod' });
+    }
+    if (!destination) {
+      return res.status(400).json({ message: 'Missing required field: destination' });
+    }
+    if (!orderDate) {
+      return res.status(400).json({ message: 'Missing required field: orderDate' });
+    }
+    if (!username) {
+      return res.status(400).json({ message: 'Missing required field: username' });
+    }
+    if (!orderReference) {
+      return res.status(400).json({ message: 'Missing required field: orderReference' });
     }
 
-    for (const item of items) {
-      if (!item.variations || !Array.isArray(item.variations)) {
-        return res.status(400).json({ message: 'Each item must have a variations array' });
-      }
-
-      for (const variation of item.variations) {
-        if (!variation.productId) {
-          return res.status(400).json({ message: 'Each variation must have a productId' });
-        }
-      }
-    }
-
+    // Find an available delivery person with role "delivery" and status "available"
+    const deliveryPerson = await Employee.findOne({ role: 'delivery', status: 'available' }).sort({ createdAt: 1 });
     const orderNumber = 'ORD' + generateVerificationCode(6);
+
+    // Extract product IDs from items and find the respective product owners
+    const productIds = items.map(item => item.productId); // Assuming each item contains a productId
+    const products = await Product.find({ _id: { $in: productIds } }); // Fetch product details
+    const productOwners = [...new Set(products.map(product => product.owner))]; // Get unique usernames of owners
 
     // Create the order
     const orderData = {
@@ -56,6 +73,7 @@ exports.createOrder = async (req, res) => {
       isDeliveryInProcess: false,
       isDelivered: false,
       packed: false,
+      
       orderReference,
       ...(sellerOrderId && { sellerOrderId }), // Only add sellerOrderId if it exists
     };
@@ -63,12 +81,26 @@ exports.createOrder = async (req, res) => {
     const order = new Order(orderData);
     await order.save();
 
+    // Send notifications to product owners
+    for (const owner of productOwners) {
+      await sersendNotificationToUser(
+        owner, 
+        'New Order Alert', 
+        `You have a new order for one of your products!`, 
+        '1', 
+        `/orders/${order._id}`, 
+        `order-${order._id}`, 
+        true
+      );
+    }
+
     res.status(201).json({ message: 'Order created successfully', order });
   } catch (err) {
     console.error('Failed to create order:', err);
     res.status(400).json({ message: 'Failed to create order', error: err.message });
   }
 };
+
 
 
 // Fetch All Orders with Populated Delivery Person Info
