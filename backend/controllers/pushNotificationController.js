@@ -66,10 +66,10 @@ exports.sendNotification = async (req, res) => {
 exports.sendNotificationToUser = async (req, res) => {
     try {
       const { username } = req.body;
-      const subscription = await Subscription.findOne({ username });
+      const subscription = await Subscription.findOne({ username:  username});
   
       if (!subscription) {
-        return res.status(404).json({ message: 'User not found' });
+        return res.status(404).json({ message: `User not found ${username}` });
       }
   
       const payload = JSON.stringify({
