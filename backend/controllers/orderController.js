@@ -154,7 +154,7 @@ exports.getMyPendingOrder = async (req, res) => {
 
         // Find the corresponding variation for the product
         const variation = order.variations.find(
-          variation => String(variation.productId) === String(item.productId)
+          variation => variation.productId === item.productId
         );
 
         if (productDetails) {
@@ -175,7 +175,7 @@ exports.getMyPendingOrder = async (req, res) => {
         products: formattedProducts,
       };
     }).filter(order => order.products.length > 0); // Exclude orders with no products
-
+    console.log(orderProductDetails);
     res.json(orderProductDetails);
   } catch (error) {
     console.error("Failed to fetch unpacked order products:", error);
