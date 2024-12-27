@@ -142,7 +142,6 @@ exports.getMyPendingOrder = async (req, res) => {
         category: product.category,
         image: product.images,
         price: product.price,
-        variance: product.variations,
       };
     });
 
@@ -153,11 +152,12 @@ exports.getMyPendingOrder = async (req, res) => {
         .map(item => ({
           ...productMap[item.productId], // Get the product details from the map
           quantity: item.quantity, // Include the quantity from the order
+          variance: item.variations,
         }));
 
       return {
         orderId: order.orderNumber,
-        products: order.variations,
+        products: formattedProducts,
       };
     }).filter(order => order.products.length > 0); // Exclude orders with no matching products
 
