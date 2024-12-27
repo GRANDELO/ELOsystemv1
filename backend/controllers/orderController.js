@@ -117,27 +117,29 @@ exports.getMyOrder = async (req, res) => {
 
 exports.getMyPendingOrder = async (req, res) => {
   try {
-    // Step 1: Fetch orders that are not packed
     const { username } = req.params;
-    const orders = await Order.find({ currentplace: "Waiting for delivery." }).lean(); // Fetch all orders with the currentplace
-    console.log('Fetched Orders:', orders.length); // Log the number of fetched orders
+
+    // Step 1: Fetch orders with currentplace "Waiting for delivery."
+    const orders = await Order.find({ currentplace: "Waiting for delivery." }).lean();
+
+    console.log("Fetched Orders:", orders.length); // Log the number of fetched orders
 
     if (orders.length === 0) {
-      return res.json([]); // Return empty if no orders found
+      return res.json([]); // Return an empty array if no orders found
     }
 
-    // Step 2: Extract product IDs from all orders
+    // Step 2: Extract product IDs from the fetched orders
     const productIds = orders.flatMap(order =>
       order.items.map(item => item.productId)
     );
 
-    // Step 3: Fetch product details that belong to the username
-    const products = await Product.find({ _id: { $in: productIds }, username }).lean(); // Filter products by username
+    // Step 3: Fetch products that match the provided username
+    const products = await Product.find({ _id: { $in: productIds }, username }).lean();
 
-    // Step 4: Create a map for quick product lookup
+    // Step 4: Create a product lookup map
     const productMap = {};
     products.forEach(product => {
-      productMap[product._id] = { // Use product._id instead of productId
+      productMap[String(product._id)] = {
         name: product.name,
         category: product.category,
         image: product.images,
@@ -145,40 +147,41 @@ exports.getMyPendingOrder = async (req, res) => {
       };
     });
 
-    // Step 5: Format the response with order details and filtered products
+    // Step 5: Map orders to include the product and variation details
     const orderProductDetails = orders.map(order => {
-      const formattedProducts = order.items
-        .filter(item => productMap[item.productId]) // Only include products that match the username
-        .map(item => {
-          // Safely handle the case where order.variations is undefined
-          const variation = Array.isArray(order.variations)
-            ? order.variations.find(variation =>
-                String(variation.productId) === String(item.productId)
-              )
-            : {}; // Default to an empty object if variations is undefined or not an array
+      const formattedProducts = order.items.map(item => {
+        const productDetails = productMap[String(item.productId)] || null;
 
+        // Find the corresponding variation for the product
+        const variation = order.variations.find(
+          variation => String(variation.productId) === String(item.productId)
+        );
+
+        if (productDetails) {
           return {
-            ...productMap[item.productId], // Get the product details from the map
-            quantity: item.quantity, // Include the quantity from the order
-            variations: variation, // Include the matched variation from the order
+            ...productDetails,
+            quantity: item.quantity, // Include quantity from order
+            variations: variation || {}, // Include variation or empty object
           };
-        });
+        }
+        return null; // Skip products not matching the username
+      }).filter(product => product !== null); // Filter out null products
 
       return {
         orderId: order.orderNumber,
+        destination: order.destination,
+        totalPrice: order.totalPrice,
+        orderDate: new Date(order.orderDate).toISOString(),
         products: formattedProducts,
       };
-    }).filter(order => order.products.length > 0); // Exclude orders with no matching products
+    }).filter(order => order.products.length > 0); // Exclude orders with no products
 
     res.json(orderProductDetails);
   } catch (error) {
-    console.error('Failed to fetch unpacked order products:', error);
-    res.status(500).json({ message: 'Failed to fetch unpacked order products', error: error.message });
+    console.error("Failed to fetch unpacked order products:", error);
+    res.status(500).json({ message: "Failed to fetch unpacked order products", error: error.message });
   }
 };
-
-
-
 
 
 exports.updateOrderStatus = async (req, res) => {

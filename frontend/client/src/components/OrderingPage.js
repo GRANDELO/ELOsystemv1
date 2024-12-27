@@ -124,6 +124,7 @@ const OrderingPage = () => {
             : item.product.price
         })), 
         variations: cart.map(item => ({
+          productId: item.variant.productId,
           color: item.variant.color,
           size: item.variant.size,
           material: item.variant.material,
