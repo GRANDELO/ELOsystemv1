@@ -10,7 +10,7 @@ const {increateNotification} = require('./notificationController');
 const {b2cRequestHandler} = require("./mpesaController");
 const CoreSellOrder = require('../models/CoreSellOrder');
 const { generateVerificationCode } = require('../services/verificationcode');
-const { sersendNotificationToUser } = require('../services/pushNotificationController');
+const { sersendNotificationToUser } = require('./pushNotificationController');
 
 
 // Create Order
