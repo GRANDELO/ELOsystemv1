@@ -87,11 +87,17 @@ exports.createOrder = async (req, res) => {
         owner, 
         'New Order Alert', 
         `You have a new order for one of your products!`, 
-        '1', 
-        `/orders/${order._id}`, 
-        `order-${order._id}`, 
+        '', 
+        `https://baze-seller.web.app/home`, 
+        `New Order Notification`, 
         true
       );
+
+      await increateNotification(
+        owner,
+        `You have a new order for one of your products!`,
+        `New Order Notification`, 
+      )
     }
 
     res.status(201).json({ message: 'Order created successfully', order });

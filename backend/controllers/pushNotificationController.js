@@ -141,7 +141,7 @@ exports.sersendNotificationToUser = async (username, title, body, badge, url, ta
     });
   
       await webPush.sendNotification(subscription, payload);
-      return ( `message: Notification sent to ${username}`);
+      console.log ( `message: Notification sent to ${username}`);
     } catch (err) {
       return (`error: ${err.message}` );
     }
