@@ -64,7 +64,6 @@ exports.createOrder = async (req, res) => {
       isDeliveryInProcess: false,
       isDelivered: false,
       packed: false,
-      variations,
       orderReference,
       ...(sellerOrderId && { sellerOrderId }), // Only add sellerOrderId if it exists
     };

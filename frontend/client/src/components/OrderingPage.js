@@ -119,10 +119,6 @@ const OrderingPage = () => {
         items: cart.map(item => ({
           productId: item.product._id,
           quantity: item.quantity,
-          price: item.product.discount 
-            ? item.product.price * (1 - item.product.discountpersentage / 100) // Apply discount if exists
-            : item.product.price
-          ,
           variations: {
             productId: item.variant.productId,
             color: item.variant.color,
@@ -130,6 +126,11 @@ const OrderingPage = () => {
             material: item.variant.material,
             model: item.variant.model,
           }, 
+          price: item.product.discount 
+            ? item.product.price * (1 - item.product.discountpersentage / 100) // Apply discount if exists
+            : item.product.price
+          
+
         })), 
 
 
@@ -148,7 +149,7 @@ const OrderingPage = () => {
         orderReference,
         
       };
-
+      console.log(orderDetails)
       const response = await axiosInstance.post('/orders', orderDetails);
       setMessage(response.data.message);
 
