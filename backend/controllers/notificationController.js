@@ -19,7 +19,7 @@ const increateNotification = async (username, message, topic) => {
     console.log(notification);
     return(notification);
   } catch (error) {
-    console.log('Failed to create notification');
+    console.log(`Failed to create notification ${error}`);
     return'Failed to create notification';
   }
 };

@@ -122,32 +122,43 @@ exports.sersendNotification = async (title, body, badge, url, tag, renotify) => 
 };
 
 // Send notification to a specific user
-exports.sersendNotificationToUser = async (username, title, body, icon, badge, url, tag, renotify,) => {
-    try {
-      const subscription = await Subscription.findOne({ username });
-  
-      if (!subscription) {
-        console.log(`message: User not found ${username}` );
-        return (`message: User not found ${username}` );
-      }
-  
-      const payload = JSON.stringify({
-        title: title || 'New Notification',
-        body: body || 'Hello from your backend!',
-        icon: icon || '/icon.png',             // Default icon path
-        badge: badge || '/badge.png',          // Default badge path
-        url: url || '/',                       // URL to open when the notification is clicked
-        tag: tag || 'general-notification',    // Tag for grouping
-        renotify: renotify !== false           // Re-alert user if not specified as false
-    });
-  
-      await webPush.sendNotification(subscription, payload);
-      console.log ( `message: Notification sent to ${username}`);
-    } catch (err) {
-      console.log(`error: ${err.message}` );
-      return (`error: ${err.message}` );
+exports.sersendNotificationToUser = async (username, title, body, icon, badge, url, tag, renotify) => {
+  try {
+    // Find all subscriptions for the given username
+    const subscriptions = await Subscription.find({ username });
+
+    if (!subscriptions || subscriptions.length === 0) {
+      console.log(`Message: No subscriptions found for user: ${username}`);
+      return `Message: No subscriptions found for user: ${username}`;
     }
-  };
+
+    const payload = JSON.stringify({
+      title: title || 'New Notification',
+      body: body || 'Hello from your backend!',
+      icon: icon || '/icon.png',             // Default icon path
+      badge: badge || '/badge.png',          // Default badge path
+      url: url || '/',                       // URL to open when the notification is clicked
+      tag: tag || 'general-notification',    // Tag for grouping
+      renotify: renotify !== false           // Re-alert user if not specified as false
+    });
+
+    // Iterate through all subscriptions and send notifications
+    for (const subscription of subscriptions) {
+      try {
+        await webPush.sendNotification(subscription, payload);
+        console.log(`Message: Notification sent to ${username} at endpoint ${subscription.endpoint}`);
+      } catch (err) {
+        console.error(`Error sending notification to ${username} at endpoint ${subscription.endpoint}: ${err.message}`);
+      }
+    }
+
+    return `Message: Notifications sent to all subscriptions for user: ${username}`;
+  } catch (err) {
+    console.error(`Error: ${err.message}`);
+    return `Error: ${err.message}`;
+  }
+};
+
 
   /*
   all users
