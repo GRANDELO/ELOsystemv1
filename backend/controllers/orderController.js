@@ -633,9 +633,10 @@ const TransactionLedgerfuc = async (products, orderNumber) => {
       ? price * (1 - (discountpersentage / 100)) // Apply percentage discount
       : price;
 
-    const sellerPercentage = getPercentage(price); // Get percentage based on price
-    const companyPercentage = sellerOrderId ? 0.1 : (1 - sellerPercentage);
-    const coSellerPercentage = sellerOrderId ? 0.1 : 0;
+    const companyBasePercentage = getPercentage(price); // Get percentage based on price
+    const sellerPercentage =  1 - companyBasePercentage; 
+    const coSellerPercentage = sellerOrderId ? companyBasePercentage / 4 : 0; // Co-seller gets 1/4 of companyBasePercentage
+    const companyPercentage = sellerOrderId ? (companyBasePercentage * 3) / 4 : companyBasePercentage; // Adjusted company percentage
 
     const sellerEarnings = effectivePrice * quantity * sellerPercentage;
     const coSellerEarnings = sellerOrderId ? effectivePrice * quantity * coSellerPercentage : 0;
@@ -711,6 +712,7 @@ const TransactionLedgerfuc = async (products, orderNumber) => {
   const message = `Sales processed successfully for order ${orderNumber}. Total company earnings: $${totalCompanyEarnings.toFixed(2)}`;
   return { message };
 };
+
 
 
 const notifyOutOfStockAndDelete = async () => {
