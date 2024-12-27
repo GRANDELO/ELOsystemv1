@@ -109,10 +109,7 @@ exports.createOrder = async (req, res) => {
   }
 };
 
-
-
 // Fetch All Orders with Populated Delivery Person Info
-
 exports.getOrder = async (req, res) => {
   const { eid } = req.params; 
 
@@ -617,33 +614,29 @@ const TransactionLedgerfuc = async (products, orderNumber) => {
   const sellerOrderId = order ? order.sellerOrderId : undefined;
   const coreseller = sellerOrderId ? await CoreSellOrder.findOne({ sellerOrderId }) : null;
 
-  const defaultSellerPercentage = 0.8;
-  const defaultCompanyPercentage = 0.2;
-  const sellerPercentage = sellerOrderId ? 0.8 : defaultSellerPercentage;
-  const coSellerPercentage = sellerOrderId ? 0.1 : 0;
-  const companyPercentage = sellerOrderId ? 0.1 : defaultCompanyPercentage;
-
   const earningsData = {};
+
+  // Function to calculate the percentage based on price
+  const getPercentage = (price) => {
+    if (price < 250) return 0.15; // 15%
+    if (price < 500) return 0.12; // 12%
+    if (price < 1000) return 0.10; // 10%
+    if (price < 5000) return 0.08; // 8%
+    return 0.05; // 5% for prices above 5000
+  };
 
   for (const product of products) {
     const { username, price, quantity, discount, discountpersentage } = product;
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-    console.log(discount);
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-    console.log(price);
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-    console.log(username);
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-    console.log(quantity);
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-    console.log(discountpersentage);
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+
     // Check for discount and calculate the effective price
     const effectivePrice = discount
       ? price * (1 - (discountpersentage / 100)) // Apply percentage discount
       : price;
-      
-      console.log(effectivePrice);
+
+    const sellerPercentage = getPercentage(price); // Get percentage based on price
+    const companyPercentage = sellerOrderId ? 0.1 : (1 - sellerPercentage);
+    const coSellerPercentage = sellerOrderId ? 0.1 : 0;
+
     const sellerEarnings = effectivePrice * quantity * sellerPercentage;
     const coSellerEarnings = sellerOrderId ? effectivePrice * quantity * coSellerPercentage : 0;
     const companyEarnings = effectivePrice * quantity * companyPercentage;
@@ -718,6 +711,7 @@ const TransactionLedgerfuc = async (products, orderNumber) => {
   const message = `Sales processed successfully for order ${orderNumber}. Total company earnings: $${totalCompanyEarnings.toFixed(2)}`;
   return { message };
 };
+
 
 const notifyOutOfStockAndDelete = async () => {
   try {
