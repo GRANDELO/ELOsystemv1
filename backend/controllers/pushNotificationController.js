@@ -127,7 +127,8 @@ exports.sersendNotificationToUser = async (username, title, body, badge, url, ta
       const subscription = await Subscription.findOne({ username });
   
       if (!subscription) {
-        return ('message: User not found' );
+        console.log(`message: User not found ${username}` );
+        return (`message: User not found ${username}` );
       }
   
       const payload = JSON.stringify({
@@ -143,6 +144,7 @@ exports.sersendNotificationToUser = async (username, title, body, badge, url, ta
       await webPush.sendNotification(subscription, payload);
       console.log ( `message: Notification sent to ${username}`);
     } catch (err) {
+      console.log(`error: ${err.message}` );
       return (`error: ${err.message}` );
     }
   };
