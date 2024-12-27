@@ -10,7 +10,6 @@ const {increateNotification} = require('./notificationController');
 const {b2cRequestHandler} = require("./mpesaController");
 const CoreSellOrder = require('../models/CoreSellOrder');
 const { generateVerificationCode } = require('../services/verificationcode');
-const { sersendNotification, sersendNotificationToUser} = require('./pushNotificationController');
 
 // Create Order
 exports.createOrder = async (req, res) => {
@@ -22,7 +21,7 @@ exports.createOrder = async (req, res) => {
     orderDate,
     username,
     orderReference,
-    sellerOrderId,
+    sellerOrderId,// Add sellerOrderId directly here
     variations,
   } = req.body;
 
@@ -53,13 +52,7 @@ exports.createOrder = async (req, res) => {
     // Find an available delivery person with role "delivery" and status "available"
     const deliveryPerson = await Employee.findOne({ role: 'delivery', status: 'available' }).sort({ createdAt: 1 });
     const orderNumber = 'ORD' + generateVerificationCode(6);
-
-    // Extract product IDs from items and find the respective product owners
-    const productIds = items.map(item => item.productId); // Assuming each item contains a productId
-    const products = await Product.find({ _id: { $in: productIds } }); // Fetch product details
-    const productOwners = [...new Set(products.map(product => product.username))]; // Get unique usernames of owners
-
-    // Create the order
+    // Create the order, conditionally include sellerOrderId only if it is provided
     const orderData = {
       items,
       orderNumber,
@@ -80,32 +73,12 @@ exports.createOrder = async (req, res) => {
     const order = new Order(orderData);
     await order.save();
 
-    // Send notifications to product owners
-    for (const owner of productOwners) {
-      await sersendNotificationToUser(
-        owner, 
-        'New Order Alert', 
-        `You have a new order for one of your products!`, 
-        '', 
-        `https://baze-link.web.app`, 
-        `New Order notification`, 
-        true
-      );
-
-      await increateNotification(
-        owner,
-        `You have a new order for one of your products!`,
-        `New Order notification`,
-      )
-    }
-
     res.status(201).json({ message: 'Order created successfully', order });
   } catch (err) {
     console.error('Failed to create order:', err);
     res.status(400).json({ message: 'Failed to create order', error: err.message });
   }
 };
-
 
 // Fetch All Orders with Populated Delivery Person Info
 
