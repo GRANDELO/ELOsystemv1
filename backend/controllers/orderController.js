@@ -20,38 +20,30 @@ exports.createOrder = async (req, res) => {
     orderDate,
     username,
     orderReference,
-    sellerOrderId,// Add sellerOrderId directly here
-    variations,
+    sellerOrderId,
   } = req.body;
 
   try {
-    // Validate required fields
-    if (!items) {
-      return res.status(400).json({ message: 'Missing required field: items' });
-    }
-    if (!totalPrice) {
-      return res.status(400).json({ message: 'Missing required field: totalPrice' });
-    }
-    if (!paymentMethod) {
-      return res.status(400).json({ message: 'Missing required field: paymentMethod' });
-    }
-    if (!destination) {
-      return res.status(400).json({ message: 'Missing required field: destination' });
-    }
-    if (!orderDate) {
-      return res.status(400).json({ message: 'Missing required field: orderDate' });
-    }
-    if (!username) {
-      return res.status(400).json({ message: 'Missing required field: username' });
-    }
-    if (!orderReference) {
-      return res.status(400).json({ message: 'Missing required field: orderReference' });
+    // Validate items and variations
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ message: 'Items are required and must be an array' });
     }
 
-    // Find an available delivery person with role "delivery" and status "available"
-    const deliveryPerson = await Employee.findOne({ role: 'delivery', status: 'available' }).sort({ createdAt: 1 });
+    for (const item of items) {
+      if (!item.variations || !Array.isArray(item.variations)) {
+        return res.status(400).json({ message: 'Each item must have a variations array' });
+      }
+
+      for (const variation of item.variations) {
+        if (!variation.productId) {
+          return res.status(400).json({ message: 'Each variation must have a productId' });
+        }
+      }
+    }
+
     const orderNumber = 'ORD' + generateVerificationCode(6);
-    // Create the order, conditionally include sellerOrderId only if it is provided
+
+    // Create the order
     const orderData = {
       items,
       orderNumber,
@@ -64,7 +56,6 @@ exports.createOrder = async (req, res) => {
       isDeliveryInProcess: false,
       isDelivered: false,
       packed: false,
-      variations,
       orderReference,
       ...(sellerOrderId && { sellerOrderId }), // Only add sellerOrderId if it exists
     };
@@ -78,6 +69,7 @@ exports.createOrder = async (req, res) => {
     res.status(400).json({ message: 'Failed to create order', error: err.message });
   }
 };
+
 
 // Fetch All Orders with Populated Delivery Person Info
 
@@ -160,7 +152,7 @@ exports.getMyPendingOrder = async (req, res) => {
         products: formattedProducts,
       };
     }).filter(order => order.products.length > 0); // Exclude orders with no matching products
-    console.log(orderProductDetails)
+    console.log(orderProductDetails);
     res.json(orderProductDetails);
   } catch (error) {
     console.error('Failed to fetch unpacked order products:', error);

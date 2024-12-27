@@ -8,7 +8,7 @@ const orderSchema = new mongoose.Schema({
     quantity: { type: Number, required: true },
     variations: [
       {
-        productId: { type: mongoose.Schema.Types.ObjectId, ref: 'NewProduct', required: true },
+        productId: { type: mongoose.Schema.Types.ObjectId, ref: 'NewProduct', required: false },
         color: { type: String },
         size: [{ type: String }],
         material: { type: String },
