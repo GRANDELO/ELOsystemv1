@@ -22,6 +22,7 @@ const orderSchema = new mongoose.Schema({
   currentplace: { type: String, default: "Waiting for delivery." },
   variations: [
     {
+      productId: { type: mongoose.Schema.Types.ObjectId, ref: 'NewProduct', required: true },
       color: { type: String },
       size: [{ type: String }],
       material: { type: String },

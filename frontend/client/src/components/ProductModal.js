@@ -76,6 +76,7 @@ const ProductModal = ({ product, show, handleClose }) => {
         return;
       }
       setLoading(true);
+      console.log("Selected Variations:", selectedVariant);
       const addResponse = await axiosInstance.post('/cart/cart/add', 
         { username, productId: product._id, quantity, variant: selectedVariant,  }
       );
@@ -209,10 +210,11 @@ const ProductModal = ({ product, show, handleClose }) => {
   const handleVariantChange = (type, value) => {
     setSelectedVariant((prev) => ({
       ...prev,
-      [type]: value,
+      [type]: value, // Add or update the selected field
+      productId: product._id, // Ensure productId is included
     }));
   };
-
+  
   return (
     <Modal
       className="custom-modal"
@@ -292,7 +294,6 @@ const ProductModal = ({ product, show, handleClose }) => {
             <div className="product-variations">
               {product.variations && product.variations.length > 0 ? (
                 <>
-
                   <h3>Select Your Variations:</h3>
                   {['color', 'size', 'material', 'style'].map((field, index) => (
                     <div key={field} className="variant-selection">
@@ -306,29 +307,25 @@ const ProductModal = ({ product, show, handleClose }) => {
                         value={selectedVariant[field] || ''}
                         disabled={
                           index > 0 &&
-                          !selectedVariant[Object.keys(selectedVariant)[index - 1]] // Disable if previous selection isn't made
+                          !selectedVariant[Object.keys(selectedVariant)[index - 1]]
                         }
                       >
                         <option value="" disabled>
                           Select {field.charAt(0).toUpperCase() + field.slice(1)}
                         </option>
 
-                        {/* For 'size' field, use your unique size extraction logic */}
                         {field === 'size' ? (
                           [
-                            ...new Set(
-                              filteredVariations.flatMap((variation) => variation.size)
-                            ),
-                          ].map((size, index) => (
-                            <option key={index} value={size}>
+                            ...new Set(filteredVariations.flatMap((variation) => variation.size)),
+                          ].map((size, idx) => (
+                            <option key={idx} value={size}>
                               {size}
                             </option>
                           ))
                         ) : (
-                          // For other fields, map the filtered variations
                           filteredVariations
                             .map((variation) => variation[field])
-                            .filter((value, i, self) => self.indexOf(value) === i) // Remove duplicates
+                            .filter((value, i, self) => self.indexOf(value) === i)
                             .map((option, idx) => (
                               <option key={idx} value={option}>
                                 {option}
@@ -343,6 +340,8 @@ const ProductModal = ({ product, show, handleClose }) => {
                 ""
               )}
             </div>
+
+
 
           </div>
         </div>

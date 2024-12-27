@@ -142,7 +142,6 @@ exports.getMyPendingOrder = async (req, res) => {
         category: product.category,
         image: product.images,
         price: product.price,
-        variance: product.variations,
       };
     });
 
@@ -153,6 +152,7 @@ exports.getMyPendingOrder = async (req, res) => {
         .map(item => ({
           ...productMap[item.productId], // Get the product details from the map
           quantity: item.quantity, // Include the quantity from the order
+          variations: item.variations || {}, // Include the variations from the order
         }));
 
       return {
@@ -167,6 +167,7 @@ exports.getMyPendingOrder = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch unpacked order products', error: error.message });
   }
 };
+
 
 
 exports.updateOrderStatus = async (req, res) => {

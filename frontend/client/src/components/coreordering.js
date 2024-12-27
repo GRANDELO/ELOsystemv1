@@ -24,6 +24,7 @@ const OrderingPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedVariation, setSelectedVariation] = useState({
+    productId: productId,
     color: "",
     size: "",
     material: "",
