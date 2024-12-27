@@ -21,7 +21,7 @@ exports.createOrder = async (req, res) => {
     username,
     orderReference,
     sellerOrderId,// Add sellerOrderId directly here
-    
+    variations,
   } = req.body;
 
   try {
@@ -64,6 +64,7 @@ exports.createOrder = async (req, res) => {
       isDeliveryInProcess: false,
       isDelivered: false,
       packed: false,
+      variations,
       orderReference,
       ...(sellerOrderId && { sellerOrderId }), // Only add sellerOrderId if it exists
     };
@@ -141,6 +142,7 @@ exports.getMyPendingOrder = async (req, res) => {
         category: product.category,
         image: product.images,
         price: product.price,
+        variance: product.variations,
       };
     });
 
@@ -151,7 +153,6 @@ exports.getMyPendingOrder = async (req, res) => {
         .map(item => ({
           ...productMap[item.productId], // Get the product details from the map
           quantity: item.quantity, // Include the quantity from the order
-          variance: item.variations,
         }));
 
       return {
@@ -159,7 +160,7 @@ exports.getMyPendingOrder = async (req, res) => {
         products: formattedProducts,
       };
     }).filter(order => order.products.length > 0); // Exclude orders with no matching products
-    console.log(orderProductDetails);
+
     res.json(orderProductDetails);
   } catch (error) {
     console.error('Failed to fetch unpacked order products:', error);
