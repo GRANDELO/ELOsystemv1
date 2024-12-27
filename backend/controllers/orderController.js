@@ -137,54 +137,36 @@ exports.getMyPendingOrder = async (req, res) => {
     // Step 4: Create a map for quick product lookup
     const productMap = {};
     products.forEach(product => {
-      productMap[product._id] = {
+      productMap[product._id] = { // Use product._id instead of productId
         name: product.name,
         category: product.category,
         image: product.images,
         price: product.price,
-        variations: product.variations, // Store variations for each product
+        variance: product.variations,
       };
     });
 
-    // Step 5: Format the response with order details and filtered products, including variations
+    // Step 5: Format the response with order details and filtered products
     const orderProductDetails = orders.map(order => {
       const formattedProducts = order.items
         .filter(item => productMap[item.productId]) // Only include products that match the username
-        .map(item => {
-          const productDetails = productMap[item.productId]; // Get the product details from the map
-          
-          // Find the variations for this specific item in the order
-          const itemVariations = item.variations.map(variation => {
-            const productVariation = productDetails.variations.find(variant => variant.productId.toString() === variation.productId.toString());
-            return {
-              ...productVariation, // Spread variation properties
-              color: variation.color,
-              size: variation.size,
-              material: variation.material,
-              model: variation.model,
-            };
-          });
-
-          return {
-            ...productDetails, // Get the main product details
-            quantity: item.quantity, // Include the quantity from the order
-            variations: itemVariations, // Include the variations for this product
-          };
-        });
+        .map(item => ({
+          ...productMap[item.productId], // Get the product details from the map
+          quantity: item.quantity, // Include the quantity from the order
+        }));
 
       return {
         orderId: order.orderNumber,
-        products: formattedProducts,
+        products: order.variations,
       };
     }).filter(order => order.products.length > 0); // Exclude orders with no matching products
-   console.log(orderProductDetails)
+
     res.json(orderProductDetails);
   } catch (error) {
     console.error('Failed to fetch unpacked order products:', error);
     res.status(500).json({ message: 'Failed to fetch unpacked order products', error: error.message });
   }
 };
-
 
 
 exports.updateOrderStatus = async (req, res) => {

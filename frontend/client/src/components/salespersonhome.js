@@ -11,6 +11,7 @@ import { getUsernameFromToken, getcategoryFromToken } from '../utils/auth';
 import Cart from './Cart';
 import AppDownloadQRIcon from './qrCode';
 import Footer from './Footer';
+import Qrscaner from './qrscaner';
 import NewProductList from './NewProductList';
 import Displayorder from './displayorder';
 import Header from './header';
@@ -255,18 +256,9 @@ const Home = () => {
         )}
         {/* QR Scanner Section */}
         {isQrScannerVisible && (
-          <div className="qr-scanner-container">
+          <div className="salesp-settings-section">
             <h4>Scan QR Code</h4>
-            <AppDownloadQRIcon
-              onResult={(result, error) => {
-                if (result) {
-                  setQrResult(result?.text);
-                  setIsQrScannerVisible(false);
-                }
-                if (error) console.error('QR Error:', error);
-              }}
-              style={{ width: '100%' }}
-            />
+            <Qrscaner/>
             <p>Scanned Result: {qrResult}</p>
             <button onClick={toggleQRScanner}>
               <IoClose /> Close Scanner
