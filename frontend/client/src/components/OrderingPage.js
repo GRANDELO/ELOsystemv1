@@ -123,13 +123,13 @@ const OrderingPage = () => {
             ? item.product.price * (1 - item.product.discountpersentage / 100) // Apply discount if exists
             : item.product.price
           ,
-          variations: cart.map(item => ({
+          variations: {
             productId: item.variant.productId,
             color: item.variant.color,
             size: item.variant.size,
             material: item.variant.material,
             model: item.variant.model,
-          })), 
+          }, 
         })), 
 
 
