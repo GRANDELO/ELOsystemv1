@@ -58,7 +58,7 @@ exports.createOrder = async (req, res) => {
     // Extract product IDs from items and find the respective product owners
     const productIds = items.map(item => item.productId); // Assuming each item contains a productId
     const products = await Product.find({ _id: { $in: productIds } }); // Fetch product details
-    const productOwners = [...new Set(products.map(product => product.owner))]; // Get unique usernames of owners
+    const productOwners = [...new Set(products.map(product => product.username))]; // Get unique usernames of owners
 
     // Create the order
     const orderData = {
