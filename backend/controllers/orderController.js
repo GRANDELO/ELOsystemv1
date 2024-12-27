@@ -160,7 +160,7 @@ exports.getMyPendingOrder = async (req, res) => {
         products: formattedProducts,
       };
     }).filter(order => order.products.length > 0); // Exclude orders with no matching products
-
+    console.log(orderProductDetails);
     res.json(orderProductDetails);
   } catch (error) {
     console.error('Failed to fetch unpacked order products:', error);
