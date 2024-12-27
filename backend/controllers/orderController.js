@@ -83,6 +83,7 @@ exports.createOrder = async (req, res) => {
 
     // Send notifications to product owners
     for (const owner of productOwners) {
+      console.log(owner)
       await sersendNotificationToUser(
         owner, 
         'New Order Alert', 
