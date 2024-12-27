@@ -14,7 +14,7 @@ const createNotification = async (req, res) => {
 
 const increateNotification = async (username, message, topic) => {
   try {
-    const notification = new Notification({ username, message, topic });
+    const notification = new Notification({ userId: username, message, topic });
     await notification.save();
     console.log(notification);
     return(notification);
