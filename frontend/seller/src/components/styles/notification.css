@@ -1,11 +1,11 @@
 /* Notifications container */
 .not-container {
-    max-width: 600px;
+    width: 100vw;
     margin: 20px auto;
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    background-color: #f9f9f9;
+    background-color: var(  --bg-color-light);
   }
   
   /* Header styling */
@@ -24,7 +24,7 @@
   
   /* Empty message styling */
   .not-empty-message {
-    color: #888;
+    color: var(  --text-color-light);
     font-style: italic;
   }
   
@@ -41,11 +41,13 @@
   
   /* Read and unread notification styles */
   .not-read {
-    background-color: #e9ecef;
+    background-color: var(  --overlay-light);
   }
   
   .not-unread {
     background-color: #fff3cd;
+    display: flex;
+    flex-direction: column;
   }
   
   /* Notification message */
@@ -61,8 +63,5 @@
     margin-left: 10px;
   }
   
-  .not-toggle-button {
-    font-weight: bold;
-    color: #007bff;
-  }
+
   

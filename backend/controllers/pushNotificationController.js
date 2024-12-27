@@ -63,13 +63,15 @@ exports.sendNotification = async (req, res) => {
 };
 
 // Send notification to a specific user
-exports.sendNotificationToUser = async (req, res) => {
+  exports.sendNotificationToUser = async (req, res) => {
     try {
+      // Find all subscriptions for the given username
       const { username } = req.body;
-      const subscription = await Subscription.findOne({ username:  username});
+      const subscriptions = await Subscription.find({ username });
   
-      if (!subscription) {
-        return res.status(404).json({ message: `User not found ${username}` });
+      if (!subscriptions || subscriptions.length === 0) {
+        console.log(`Message: No subscriptions found for user: ${username}`);
+        return res.status(404).json({ Message: `No subscriptions found for user: ${username}`});
       }
   
       const payload = JSON.stringify({
@@ -82,9 +84,19 @@ exports.sendNotificationToUser = async (req, res) => {
         renotify: req.body.renotify !== false           // Re-alert user if not specified as false
     });
   
-      await webPush.sendNotification(subscription, payload);
+      // Iterate through all subscriptions and send notifications
+      for (const subscription of subscriptions) {
+        try {
+          await webPush.sendNotification(subscription, payload);
+          console.log(`Message: Notification sent to ${username} at endpoint ${subscription.endpoint}`);
+        } catch (err) {
+          console.error(`Error sending notification to ${username} at endpoint ${subscription.endpoint}: ${err.message}`);
+        }
+      }
+  
       res.status(200).json({ message: `Notification sent to ${username}` });
     } catch (err) {
+      console.error(`Error: ${err.message}`);
       res.status(500).json({ error: err.message });
     }
   };

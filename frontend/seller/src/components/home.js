@@ -193,12 +193,15 @@ const Home = () => {
         <button className="salesp-toggle-button" onClick={() => toggleVisibility('settings')}>
           <FaCog />
         </button>
+
         <button className="salesp-toggle-button" onClick={() => toggleVisibility('notifications')}>
-          <FaBell />
+        <FaBell />
           {unreadNotifications > 0 && (
             <span className="salesp-notification-count">{unreadNotifications}</span>
           )}
+         
         </button>
+        
         <button className="salesp-toggle-button" onClick={() => toggleVisibility('shopSettings')}>
           <BsBoxFill />
         </button>

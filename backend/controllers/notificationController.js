@@ -4,7 +4,7 @@ const QRCode = require('qrcode');
 const createNotification = async (req, res) => {
   const { username, message, topic } = req.body; // Include topic if applicable
   try {
-    const notification = new Notification({ username, message, topic });
+    const notification = new Notification({ userId: username, message, topic });
     await notification.save();
     res.status(201).json(notification);
   } catch (error) {
