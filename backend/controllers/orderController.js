@@ -150,10 +150,12 @@ exports.getMyPendingOrder = async (req, res) => {
       const formattedProducts = order.items
         .filter(item => productMap[item.productId]) // Only include products that match the username
         .map(item => {
-          // Find the corresponding variation for this productId in the order
-          const variation = order.variations.find(variation => 
-            String(variation.productId) === String(item.productId)
-          ) || {}; // Default to an empty object if no variation is found
+          // Safely handle the case where order.variations is undefined
+          const variation = Array.isArray(order.variations)
+            ? order.variations.find(variation =>
+                String(variation.productId) === String(item.productId)
+              )
+            : {}; // Default to an empty object if variations is undefined or not an array
 
           return {
             ...productMap[item.productId], // Get the product details from the map
@@ -174,6 +176,7 @@ exports.getMyPendingOrder = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch unpacked order products', error: error.message });
   }
 };
+
 
 
 
