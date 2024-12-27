@@ -89,6 +89,63 @@ exports.sendNotificationToUser = async (req, res) => {
     }
   };
 
+ 
+exports.sersendNotification = async (title, body, badge, url, tag, renotify) => {
+    try {
+        // Retrieve all subscriptions from the database
+        const subscriptions = await Subscription.find({});
+
+        // Customizable payload based on request parameters
+        const payload = JSON.stringify({
+            title: title || 'New Notification',
+            body: body || 'Hello from your backend!',
+            icon: icon || '/icon.png',             // Default icon path
+            badge: badge || '/badge.png',          // Default badge path
+            url: url || '/',                       // URL to open when the notification is clicked
+            tag: tag || 'general-notification',    // Tag for grouping
+            renotify: renotify !== false           // Re-alert user if not specified as false
+        });
+
+        // Send notification to each subscription, handling failures individually
+        const sendPromises = subscriptions.map(sub =>
+            webPush.sendNotification(sub, payload).catch(err => {
+                console.error(`Failed to send notification to ${sub.endpoint}:`, err);
+                // Handle subscription cleanup or logging as needed
+            })
+        );
+
+        await Promise.all(sendPromises); // Await all notifications
+        return ( 'message: Notifications sent!' );
+    } catch (err) {
+        return ( `error: ${err.message} `);
+    }
+};
+
+// Send notification to a specific user
+exports.sersendNotificationToUser = async (username, title, body, badge, url, tag, renotify,) => {
+    try {
+      const subscription = await Subscription.findOne({ username });
+  
+      if (!subscription) {
+        return ('message: User not found' );
+      }
+  
+      const payload = JSON.stringify({
+        title: title || 'New Notification',
+        body: body || 'Hello from your backend!',
+        icon: icon || '/icon.png',             // Default icon path
+        badge: badge || '/badge.png',          // Default badge path
+        url: url || '/',                       // URL to open when the notification is clicked
+        tag: tag || 'general-notification',    // Tag for grouping
+        renotify: renotify !== false           // Re-alert user if not specified as false
+    });
+  
+      await webPush.sendNotification(subscription, payload);
+      return ( `message: Notification sent to ${username}`);
+    } catch (err) {
+      return (`error: ${err.message}` );
+    }
+  };
 
   /*
   all users

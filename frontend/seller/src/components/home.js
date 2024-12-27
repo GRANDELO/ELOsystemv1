@@ -9,11 +9,13 @@ import ProductOwner from './productowner';
 import ProductPerformance from './productperfomance';
 import Settings from './settings';
 import ShopSettings from './shopSettings';
+import Displayorder from './displayorder';
 import Footer from './Footer';
 import FeedbackForm from './Feedback';
 import Withdrawal from './withdrawal';
 import { getUsernameFromToken } from '../utils/auth';
 import './styles/Home.css';
+import { BsBoxFill } from "react-icons/bs";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -177,7 +179,7 @@ const Home = () => {
 
           {/* Shop Settings Section */}
           <section className={`home-shop-settings-section ${uiState.shopSettings ? 'active' : ''}`}>
-            <ShopSettings />
+            <Displayorder />
           </section>
         </div>
         )
@@ -196,6 +198,9 @@ const Home = () => {
           {unreadNotifications > 0 && (
             <span className="salesp-notification-count">{unreadNotifications}</span>
           )}
+        </button>
+        <button className="salesp-toggle-button" onClick={() => toggleVisibility('shopSettings')}>
+          <BsBoxFill />
         </button>
       </div>
 
