@@ -122,7 +122,7 @@ exports.sersendNotification = async (title, body, badge, url, tag, renotify) => 
 };
 
 // Send notification to a specific user
-exports.sersendNotificationToUser = async (username, title, body, badge, url, tag, renotify,) => {
+exports.sersendNotificationToUser = async (username, title, body, icon, badge, url, tag, renotify,) => {
     try {
       const subscription = await Subscription.findOne({ username });
   

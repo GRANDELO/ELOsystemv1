@@ -89,6 +89,7 @@ exports.createOrder = async (req, res) => {
         'New Order Alert', 
         `You have a new order for one of your products!`, 
         '', 
+        '', 
         `https://baze-seller.web.app/home`, 
         `New Order Notification`, 
         true
