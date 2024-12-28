@@ -15,8 +15,12 @@ const Register = () => {
     username: '',
     dateOfBirth: '',
     gender: '',
-    town: '',
-    townspecific: '',
+    locations: 
+    {
+      town: "",
+      area: "",
+    },
+
 
   });
   const [currentStep, setCurrentStep] = useState(1); // State to manage the current step
@@ -62,8 +66,11 @@ const Register = () => {
       username: formData.username.trim(),
       dateOfBirth: formData.dateOfBirth.trim(),
       gender: formData.gender.trim(),
-      town: selectedTown,
-      townspecific: selectedArea, 
+      locations: 
+        {
+          town: selectedTown,
+          area: selectedArea,
+        },
     };
 
     try {
@@ -110,7 +117,7 @@ const Register = () => {
           const idnumberValid = /^\d{7,8}$/.test(formData.idnumber.trim());
           return phonenumberValid && emailValid && idnumberValid;
         case 3:
-          return formData.dateOfBirth && formData.gender && selectedTown && selectedArea;
+          return formData.dateOfBirth && formData.gender && selectedTown && selectedArea ;
         case 4:
           const passwordValid = formData.password.trim().length >= 8 &&
           /[A-Z]/.test(formData.password.trim()) &&
@@ -124,7 +131,8 @@ const Register = () => {
     };
   
     setIsNextEnabled(validateStep());
-  }, [formData, currentStep]);
+  }, [formData, currentStep, selectedTown, selectedArea,]);
+
   
   return (
     <div className="container">
@@ -283,8 +291,9 @@ const Register = () => {
             </select>
           </>
       )}
-                <button type="button" onClick={previousStep}>Back</button>
-                <button type="button" onClick={nextStep} disabled={!isNextEnabled}>Next</button>
+
+        <button type="button" onClick={previousStep}>Back</button>
+        <button type="button" onClick={nextStep} disabled={!isNextEnabled}>Next</button>
         </div>
       )}
       {currentStep === 4 && (

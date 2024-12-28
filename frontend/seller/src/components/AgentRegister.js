@@ -119,7 +119,7 @@ const Register = () => {
           const idnumberValid = /^\d{7,8}$/.test(formData.idnumber.trim());
           return phonenumberValid && emailValid && idnumberValid;
         case 3:
-          return formData.dateOfBirth && formData.gender && selectedTown && selectedArea;
+          return formData.dateOfBirth && formData.gender && selectedTown && selectedArea && selectedAreaspe;
         case 4:
           const passwordValid = formData.password.trim().length >= 8 &&
           /[A-Z]/.test(formData.password.trim()) &&
@@ -133,7 +133,7 @@ const Register = () => {
     };
   
     setIsNextEnabled(validateStep());
-  }, [formData, currentStep]);
+  }, [formData, currentStep, selectedTown, selectedArea, selectedAreaspe]);
   
   const handleAreasepChange = (e) => {
     setSelectedAreaspe(e.target.value);

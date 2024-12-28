@@ -25,7 +25,6 @@ const deliveryPersonnelSchema = new mongoose.Schema({
     {
       town: { type: String },
       area: { type: String },
-      specific: { type: String },
     },
   packeges: [{
     boxid: {type: String, required: true},
