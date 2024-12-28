@@ -14,13 +14,12 @@ const Register = () => {
     dateOfBirth: '',
     gender: '',
     category: '',
-    locations: [
+    locations: 
       {
         town: "",
         area: "",
         specific: "",
       },
-    ],
   });
 
 
@@ -66,13 +65,13 @@ const Register = () => {
       dateOfBirth: formData.dateOfBirth.trim(),
       gender: formData.gender.trim(),
       category: formData.category.trim(),
-      locations: [
+      locations: 
         {
           town: selectedTown,
           area: selectedArea,
           specific: formData.locations.specific,
         },
-      ],
+
     };
 
     try {

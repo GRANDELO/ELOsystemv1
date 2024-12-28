@@ -21,13 +21,13 @@ const UserSchema = new mongoose.Schema({
   amount: { type: Number, default: undefined},
   logoUrl: { type: String },
   backgroundUrl: { type: String },
-  locations: [
+  locations: 
     {
       town: { type: String },
       area: { type: String },
       specific: { type: String },
     },
-  ],
+
 
 }, { timestamps: true });
 
