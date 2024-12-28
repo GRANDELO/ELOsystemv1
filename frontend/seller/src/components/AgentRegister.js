@@ -15,8 +15,12 @@ const Register = () => {
     username: '',
     dateOfBirth: '',
     gender: '',
-    town: '',
-    townspecific: '',
+    locations: 
+    {
+      town: "",
+      area: "",
+      specific: "",
+    },
 
   });
   const [currentStep, setCurrentStep] = useState(1); // State to manage the current step
@@ -27,6 +31,7 @@ const Register = () => {
   const [selectedTown, setSelectedTown] = useState('');
   const [areas, setAreas] = useState([]);
   const [selectedArea, setSelectedArea] = useState('');
+  const [selectedAreaspe, setSelectedAreaspe] = useState('');
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -62,8 +67,12 @@ const Register = () => {
       username: formData.username.trim(),
       dateOfBirth: formData.dateOfBirth.trim(),
       gender: formData.gender.trim(),
-      town: selectedTown,
-      townspecific: selectedArea, 
+      locations: 
+        {
+          town: selectedTown,
+          area: selectedArea,
+          specific: selectedAreaspe,
+        },
     };
 
     try {
@@ -126,6 +135,10 @@ const Register = () => {
     setIsNextEnabled(validateStep());
   }, [formData, currentStep]);
   
+  const handleAreasepChange = (e) => {
+    setSelectedAreaspe(e.target.value);
+  };
+
   return (
     <div className="container">
       <h2>Register</h2>
@@ -274,6 +287,21 @@ const Register = () => {
             </select>
           </>
       )}
+
+        <label>
+            Specific:
+            <input
+              type="text"
+              value={selectedAreaspe}
+              placeholder={
+                selectedArea
+                  ? `Your area within ${selectedArea}`
+                  : "Enter the specific area"
+              }
+              onChange={handleAreasepChange}
+            />
+        </label>
+
                 <button type="button" onClick={previousStep}>Back</button>
                 <button type="button" onClick={nextStep} disabled={!isNextEnabled}>Next</button>
         </div>

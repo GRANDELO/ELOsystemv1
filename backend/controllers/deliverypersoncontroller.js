@@ -12,7 +12,7 @@ const Withdrawal = require('../models/Withdrawal');
 const {b2cRequestHandler} = require("./mpesaController");
 
 const registerUser = async (req, res) => {
-  const { firstName, lastName, email, password, confirmPassword, phoneNumber, idnumber, username, dateOfBirth, gender, town, townspecific } = req.body;
+  const { firstName, lastName, email, password, confirmPassword, phoneNumber, idnumber, username, dateOfBirth, gender, locations } = req.body;
 
   const isDateWithinRange = (date, minYears, maxYears) => {
     const today = new Date();
@@ -117,6 +117,7 @@ const registerUser = async (req, res) => {
       resetPasswordToken: undefined,
       resetPasswordExpires: undefined,
       amount: 0,
+      locations,
     });
     await user.save();
 

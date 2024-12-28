@@ -7,6 +7,7 @@
 
   /* Dark theme variables */
   --bg-color-dark: rgba(30, 30, 47, 0.9);
+  --btn-disabled: rgba(58, 78, 91, 0.9);
   --text-color-dark: #ffffff;
   --link-color-dark: #3f51b5;
   --overlay-dark: rgba(31, 31, 31, 0.856);
@@ -131,6 +132,11 @@ button:focus {
 
 button.active {
   background-color: var(--button-hover-bg);
+}
+
+button:disabled {
+  background-color: var(--btn-disabled);
+  cursor:not-allowed;
 }
 
 /* Input styles */

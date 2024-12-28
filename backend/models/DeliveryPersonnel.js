@@ -12,8 +12,6 @@ const deliveryPersonnelSchema = new mongoose.Schema({
   dateOfBirth: { type: Date, required: true },
   gender: { type: String, required: true },
   category: { type: String, required: true },
-  town: { type: String, required: true },
-  townspecificroute: { type: String, required: true },
   deliveryPersonnumber: {type: String, required: true},
   verificationCode: { type: String },
   isVerified: { type: Boolean, default: false },
@@ -23,7 +21,12 @@ const deliveryPersonnelSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   active: { type: Boolean, default: false },
   amount: { type: Number, default: undefined},
-
+  locations: 
+    {
+      town: { type: String },
+      area: { type: String },
+      specific: { type: String },
+    },
   packeges: [{
     boxid: {type: String, required: true},
     processedDate: { type: Date, default: Date.now },
