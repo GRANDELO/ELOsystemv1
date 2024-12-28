@@ -108,8 +108,6 @@ const registerUser = async (req, res) => {
       dateOfBirth: formattedDateOfBirth,
       gender,
       category: "Agent",
-      town,
-      townspecific,
       agentnumber,
       verificationCode: alphanumericCode,
       isVerified: false,
