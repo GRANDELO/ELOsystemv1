@@ -13,12 +13,35 @@ const Register = () => {
     username: '',
     dateOfBirth: '',
     gender: '',
-    category: ''
+    category: '',
   });
+  const [locations, setLocations] = useState([
+    { town: "", area: [""], specific: [""] },
+  ]);
+
+
   const [currentStep, setCurrentStep] = useState(1); // State to manage the current step
   const [isNextEnabled, setIsNextEnabled] = useState(false); // State to manage next button status
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
+  const [towns, setTowns] = useState([]);
+  const [selectedTown, setSelectedTown] = useState('');
+  const [areas, setAreas] = useState([]);
+  const [selectedArea, setSelectedArea] = useState('');
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await axios.get('https://elosystemv1.onrender.com/api/locations');
+        setTowns(response.data);
+      } catch (err) {
+        console.error('Failed to fetch locations:', err);
+        setMessage(err.response?.data?.message || 'Failed to fetch locations');
+      }
+    };
+
+    fetchLocations();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,7 +61,8 @@ const Register = () => {
       username: formData.username.trim(),
       dateOfBirth: formData.dateOfBirth.trim(),
       gender: formData.gender.trim(),
-      category: formData.category.trim()
+      category: formData.category.trim(),
+      locations: locations
     };
 
     try {
@@ -84,6 +108,60 @@ const Register = () => {
     setIsNextEnabled(validateStep());
   }, [formData, currentStep]);
   
+  const handleTownChange = (index, e) => {
+    const selectedTown = e.target.value;
+    const town = towns.find(t => t.town === selectedTown);
+  
+    // Update the specific location
+    setLocations(prevLocations => {
+      const updatedLocations = [...prevLocations];
+      updatedLocations[index] = {
+        ...updatedLocations[index],
+        town: selectedTown,
+        area: town ? town.areas : [""],
+        specific: [""], // Reset specific areas when the town changes
+      };
+      return updatedLocations;
+    });
+  };
+  
+  const handleAreaChange = (index, e) => {
+    const selectedArea = e.target.value;
+  
+    // Update the specific area
+    setLocations(prevLocations => {
+      const updatedLocations = [...prevLocations];
+      updatedLocations[index] = {
+        ...updatedLocations[index],
+        area: [selectedArea],
+        specific: [""], // Reset specific areas when the area changes
+      };
+      return updatedLocations;
+    });
+  };
+  
+  const handleSpecificChange = (index, e) => {
+    const specificValue = e.target.value;
+  
+    // Update the specific value
+    setLocations(prevLocations => {
+      const updatedLocations = [...prevLocations];
+      updatedLocations[index] = {
+        ...updatedLocations[index],
+        specific: [specificValue],
+      };
+      return updatedLocations;
+    });
+  };
+  
+  // Add a new location section
+  const addNewLocation = () => {
+    setLocations(prevLocations => [
+      ...prevLocations,
+      { town: "", area: [""], specific: [""] },
+    ]);
+  };
+
   return (
     <div className="container">
       <h2>Register</h2>
@@ -192,6 +270,61 @@ const Register = () => {
         </div>
       )}
       {currentStep === 3 && (
+        <>
+        {locations.map((location, index) => (
+          <div key={index}>
+            <label>
+              Town:
+              <select
+                value={location.town}
+                onChange={(e) => handleTownChange(index, e)}
+              >
+                <option value="">Select a town</option>
+                {towns.map((town, i) => (
+                  <option key={i} value={town.town}>
+                    {town.town}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label>
+              Area:
+              <select
+                value={location.area[0]}
+                onChange={(e) => handleAreaChange(index, e)}
+                disabled={!location.town}
+              >
+                <option value="">Select an area</option>
+                {location.area.map((area, i) => (
+                  <option key={i} value={area}>
+                    {area}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label>
+              Specific:
+              <input
+                type="text"
+                  placeholder={
+                    location.area[0]
+                      ? `Your area within ${location.area[0]}`
+                      : "Enter the specific area"
+                  }
+                value={location.specific[0]}
+                onChange={(e) => handleSpecificChange(index, e)}
+                disabled={!location.area.length || !location.town}
+              />
+            </label>
+          </div>
+        ))}
+                  <button type="button" onClick={previousStep}>Back</button>
+                  <button type="button" onClick={nextStep} >Next</button>
+        </>
+      )}
+      {currentStep === 4 && (
         <div className="formsep">
           <label>Date of Birth:</label>
           <input

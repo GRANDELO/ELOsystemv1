@@ -39,7 +39,7 @@ const OrderingPage = () => {
     const fetchProduct = async () => {
       setLoading(true);
       setError('');
-      sessionStorage.setItem('currentpage', `coreorder?sellerOrderId=${sellerOrderId}&productId=${productId}`);
+      sessionStorage.setItem('currentpage', `/coreorder?sellerOrderId=${sellerOrderId}&productId=${productId}`);
       try {
         const response = await axiosInstance.get(`/products/${productId}`);
         setProduct(response.data);
@@ -174,7 +174,7 @@ const OrderingPage = () => {
           setMessage('Payment initiated successfully!');
           handleClearCart();
           setTimeout(() => {
-            navigate('/salespersonhome');
+            navigate('/');
           }, 3000);
         } catch (error) {
           setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
@@ -183,7 +183,7 @@ const OrderingPage = () => {
       } else {
         await handleClearCart();
         setTimeout(() => {
-          navigate('/salespersonhome');
+          navigate('/');
         }, 3000);
       }
 

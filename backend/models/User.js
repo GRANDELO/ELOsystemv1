@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const Town = require('./location');
 
 const UserSchema = new mongoose.Schema({
   fullName: { type: String, required: true },
@@ -20,6 +21,13 @@ const UserSchema = new mongoose.Schema({
   amount: { type: Number, default: undefined},
   logoUrl: { type: String },
   backgroundUrl: { type: String },
+  locations: [
+    {
+      town: { type: String },
+      area: [{ type: String }],
+      specific: [{ type: String }],
+    },
+  ],
 
 }, { timestamps: true });
 

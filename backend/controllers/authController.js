@@ -8,7 +8,7 @@ const sendEmail = require('../services/emailService');
 require('dotenv').config();
 
 const registerUser = async (req, res) => {
-  const { fullName, email, password, confirmPassword, phoneNumber, username, dateOfBirth, gender, category } = req.body;
+  const { fullName, email, password, confirmPassword, phoneNumber, username, dateOfBirth, gender, category, locations } = req.body;
 
   const isDateWithinRange = (date, minYears, maxYears) => {
     const today = new Date();
@@ -108,6 +108,7 @@ const registerUser = async (req, res) => {
       amount: userAmount,
       backgroundUrl: " ",
       logoUrl: " ",
+      locations,
     });
     await user.save();
 

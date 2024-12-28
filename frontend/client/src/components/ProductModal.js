@@ -392,7 +392,7 @@ const ProductModal = ({ product, show, handleClose }) => {
                 <div className="qr-section">
                   <QRCodeCanvas
                     id="qrCode"
-                    value={`https://grandelo.web.app/coreorder?sellerOrderId=${sellerOrderId}&productId=${product._id}`}
+                    value={`https://baze-link.web.app/coreorder?sellerOrderId=${sellerOrderId}&productId=${product._id}`}
                     size={150}
                   />
                   <Button variant="primary" onClick={downloadQRCode}>
