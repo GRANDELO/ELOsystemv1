@@ -688,7 +688,7 @@ const addOrderToAgentPackages = async (req, res) => {
     });
 
     // Update the order's properties
-    order.currentplace = `${agent.town}, ${agent.townspecific}`;
+    order.currentplace = `${agent.locations.town}, ${agent.locations.area}, ${agent.locations.specific}`;
     order.isDeliveryInProcess = true;
 
     // Save both documents

@@ -114,7 +114,7 @@ const addBoxToAgentPackages = async (req, res) => {
       addedOrders.push(order.orderNumber); // Track added orders
 
       // Update the order's properties
-      orderRecord.currentplace = `${agent.town}, ${agent.townspecific}`;
+      orderRecord.currentplace = `${agent.locations.town}, ${agent.locations.area}, ${agent.locations.specific}`;
       orderRecord.packed = true;
       await orderRecord.save(); // Save the updated order
     }

@@ -97,6 +97,7 @@ const groupOrdersForAllAgents = async () => {
         // Step 6: Create a new box if:
         // - No box exists, OR
         // - The existing box is already packed
+
         if (!box || box.packed) {
           box = new Box({
             boxNumber:  `${uuidv4()}_${timeSlot}_${agentnumber}`,
@@ -104,7 +105,7 @@ const groupOrdersForAllAgents = async () => {
             destination,
             items: [{ orderNumber }], // Add the current order
             agentnumber,
-            currentplace: agent.townspecific,
+            currentplace: `${agent.locations.town}, ${agent.locations.area}, ${agent.locations.specific}`,
             packingDate: new Date(),
             packed: false,
             deliveryPerson: "non assigned",
