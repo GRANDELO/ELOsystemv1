@@ -24,8 +24,8 @@ const UserSchema = new mongoose.Schema({
   locations: [
     {
       town: { type: String },
-      area: [{ type: String }],
-      specific: [{ type: String }],
+      area: { type: String },
+      specific: { type: String },
     },
   ],
 

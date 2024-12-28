@@ -14,10 +14,14 @@ const Register = () => {
     dateOfBirth: '',
     gender: '',
     category: '',
+    locations: [
+      {
+        town: "",
+        area: "",
+        specific: "",
+      },
+    ],
   });
-  const [locations, setLocations] = useState([
-    { town: "", area: [""], specific: [""] },
-  ]);
 
 
   const [currentStep, setCurrentStep] = useState(1); // State to manage the current step
@@ -62,7 +66,13 @@ const Register = () => {
       dateOfBirth: formData.dateOfBirth.trim(),
       gender: formData.gender.trim(),
       category: formData.category.trim(),
-      locations: locations
+      locations: [
+        {
+          town: selectedTown,
+          area: selectedArea,
+          specific: formData.locations.specific,
+        },
+      ],
     };
 
     try {
@@ -108,58 +118,15 @@ const Register = () => {
     setIsNextEnabled(validateStep());
   }, [formData, currentStep]);
   
-  const handleTownChange = (index, e) => {
+  const handleTownChange = (e) => {
     const selectedTown = e.target.value;
+    setSelectedTown(selectedTown);
     const town = towns.find(t => t.town === selectedTown);
-  
-    // Update the specific location
-    setLocations(prevLocations => {
-      const updatedLocations = [...prevLocations];
-      updatedLocations[index] = {
-        ...updatedLocations[index],
-        town: selectedTown,
-        area: town ? town.areas : [""],
-        specific: [""], // Reset specific areas when the town changes
-      };
-      return updatedLocations;
-    });
+    setAreas(town ? town.areas : []);
   };
-  
-  const handleAreaChange = (index, e) => {
-    const selectedArea = e.target.value;
-  
-    // Update the specific area
-    setLocations(prevLocations => {
-      const updatedLocations = [...prevLocations];
-      updatedLocations[index] = {
-        ...updatedLocations[index],
-        area: [selectedArea],
-        specific: [""], // Reset specific areas when the area changes
-      };
-      return updatedLocations;
-    });
-  };
-  
-  const handleSpecificChange = (index, e) => {
-    const specificValue = e.target.value;
-  
-    // Update the specific value
-    setLocations(prevLocations => {
-      const updatedLocations = [...prevLocations];
-      updatedLocations[index] = {
-        ...updatedLocations[index],
-        specific: [specificValue],
-      };
-      return updatedLocations;
-    });
-  };
-  
-  // Add a new location section
-  const addNewLocation = () => {
-    setLocations(prevLocations => [
-      ...prevLocations,
-      { town: "", area: [""], specific: [""] },
-    ]);
+
+  const handleAreaChange = (e) => {
+    setSelectedArea(e.target.value);
   };
 
   return (
@@ -207,6 +174,44 @@ const Register = () => {
             <p style={{ color: 'red', fontSize: 'smaller' }}>Username must be at least 4 characters long and contain only letters, numbers, or underscores.</p>
           )}
 
+          <label>Town</label>
+            <select as="select" value={selectedTown} onChange={handleTownChange}>
+              <option value="">Select Town</option>
+              {towns.map((town) => (
+                <option key={town.town} value={town.town}>
+                  {town.town}
+                </option>
+              ))}
+            </select>
+
+
+          {selectedTown && (
+              <>
+                <label>Area</label>
+                <select as="select" value={selectedArea} onChange={handleAreaChange}>
+                  <option value="">Select Area</option>
+                  {areas.map((area) => (
+                    <option key={area} value={area}>
+                      {area}
+                    </option>
+                  ))}
+                </select>
+              </>
+          )}
+
+        <label>
+              Specific:
+              <input
+                type="text"
+                placeholder={
+                  selectedArea
+                    ? `Your area within ${selectedArea}`
+                    : "Enter the specific area"
+                }
+                value={formData.locations.specific}
+                onChange={handleChange}
+              />
+            </label>
           <button type="button" onClick={nextStep} disabled={!isNextEnabled}>Next</button>
         </div>
       )}
@@ -270,61 +275,6 @@ const Register = () => {
         </div>
       )}
       {currentStep === 3 && (
-        <>
-        {locations.map((location, index) => (
-          <div key={index}>
-            <label>
-              Town:
-              <select
-                value={location.town}
-                onChange={(e) => handleTownChange(index, e)}
-              >
-                <option value="">Select a town</option>
-                {towns.map((town, i) => (
-                  <option key={i} value={town.town}>
-                    {town.town}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label>
-              Area:
-              <select
-                value={location.area[0]}
-                onChange={(e) => handleAreaChange(index, e)}
-                disabled={!location.town}
-              >
-                <option value="">Select an area</option>
-                {location.area.map((area, i) => (
-                  <option key={i} value={area}>
-                    {area}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label>
-              Specific:
-              <input
-                type="text"
-                  placeholder={
-                    location.area[0]
-                      ? `Your area within ${location.area[0]}`
-                      : "Enter the specific area"
-                  }
-                value={location.specific[0]}
-                onChange={(e) => handleSpecificChange(index, e)}
-                disabled={!location.area.length || !location.town}
-              />
-            </label>
-          </div>
-        ))}
-                  <button type="button" onClick={previousStep}>Back</button>
-                  <button type="button" onClick={nextStep} >Next</button>
-        </>
-      )}
-      {currentStep === 4 && (
         <div className="formsep">
           <label>Date of Birth:</label>
           <input
