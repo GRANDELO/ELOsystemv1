@@ -142,21 +142,19 @@ const groupOrdersForAllAgents = async () => {
   }
 };
 
+const keepServerActive = (url) => {
+  const req = https.get(url, (res) => {
+    console.log(`Pinged ${url} - Status: ${res.statusCode}`);
+  });
 
-const keepServerActive = async (url) => { // Default interval: 5 minutes
-    const req = https.get(url, (res) => {
-      console.log(`Pinged ${url} - Status: ${res.statusCode}`);
-    });
+  req.on('error', (err) => {
+    console.error(`Error pinging ${url}:`, err.message);
+  });
 
-    req.on('error', (err) => {
-      console.error(`Error pinging ${url}:`, err.message);
-    });
+  req.end();
+};
 
-    req.end();
-}
-
-// Usage
-setInterval(keepServerActive('https://elosystemv1.onrender.com'), 30000);
+setInterval(() => keepServerActive('https://elosystemv1.onrender.com'), 30000);
 
 setInterval(groupOrdersForAllAgents, 30000);
 setInterval(processPendingJobs, 60000);
