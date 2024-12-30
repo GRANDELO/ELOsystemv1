@@ -6,6 +6,7 @@ const Box = require('./models/box'); // Box model
 const User = require('./models/agents'); // User model with agent's info
 const { v4: uuidv4 } = require('uuid');
 const { generateVerificationCode } = require('./services/verificationcode');
+const https = require('https');
 
 const processPendingJobs = async () => {
     try {
@@ -142,8 +143,21 @@ const groupOrdersForAllAgents = async () => {
 };
 
 
+function keepServerActive(url, interval = 300000) { // Default interval: 5 minutes
+  setInterval(() => {
+    const req = https.get(url, (res) => {
+      console.log(`Pinged ${url} - Status: ${res.statusCode}`);
+    });
 
-  
-  
+    req.on('error', (err) => {
+      console.error(`Error pinging ${url}:`, err.message);
+    });
+
+    req.end();
+  }, interval);
+}
+
+// Usage
+keepServerActive('https://elosystemv1.onrender.com');
 setInterval(groupOrdersForAllAgents, 30000);
 setInterval(processPendingJobs, 60000);

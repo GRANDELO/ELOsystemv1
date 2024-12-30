@@ -7,6 +7,7 @@ import { getUsernameFromToken } from '../utils/auth';
 import './styles/OrderingPage.css'; // Add the custom CSS
 
 const OrderingPage = () => {
+  const [locations, setLocations] = useState([]);
   const username = getUsernameFromToken();
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,6 +21,8 @@ const OrderingPage = () => {
   const [selectedTown, setSelectedTown] = useState('');
   const [areas, setAreas] = useState([]);
   const [selectedArea, setSelectedArea] = useState('');
+  const [specificAreas, setSpecificAreas] = useState([]);
+  const [selectedSpecificArea, setSelectedSpecificArea] = useState('');
   const [others, setOthers] = useState(false);
   const navigate = useNavigate();
   
@@ -44,6 +47,30 @@ const OrderingPage = () => {
   }, [username]);
 
   useEffect(() => {
+    const fetchagentLocations = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const response = await fetch('https://elosystemv1.onrender.com/api/locationsroutes'); // Replace with your actual endpoint
+        const data = await response.json();
+        if (data.success) {
+          setLocations(data.locations);
+
+          // Extract unique towns
+          const uniqueTowns = [...new Set(data.locations.map((loc) => loc.locations?.town))];
+          setTowns(uniqueTowns.filter((town) => town)); // Exclude null or undefined towns
+        } else {
+          setError('Failed to fetch locations. Please try again later.');
+        }
+      } catch (err) {
+        setError('An error occurred while fetching locations.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchagentLocations();
+
     const fetchLocations = async () => {
       try {
         const response = await axiosInstance.get('/locations');
@@ -56,6 +83,40 @@ const OrderingPage = () => {
 
     fetchLocations();
   }, []);
+
+  const handleagentTownChange = (e) => {
+    const town = e.target.value;
+    setSelectedTown(town);
+
+    // Filter areas based on selected town
+    const filteredAreas = locations
+      .filter((loc) => loc.locations?.town === town)
+      .map((loc) => loc.locations.area);
+
+    setAreas([...new Set(filteredAreas)]);
+    setSelectedArea('');
+    setSpecificAreas([]);
+    setSelectedSpecificArea('');
+  };
+
+  // Handle area selection
+  const handleagentAreaChange = (e) => {
+    const area = e.target.value;
+    setSelectedArea(area);
+
+    // Filter specific locations based on selected area
+    const filteredSpecificAreas = locations
+      .filter((loc) => loc.locations?.town === selectedTown && loc.locations?.area === area)
+      .map((loc) => loc.locations.specific);
+
+    setSpecificAreas([...new Set(filteredSpecificAreas)]);
+    setSelectedSpecificArea('');
+  };
+
+  // Handle specific area selection
+  const handleSpecificAreaChange = (e) => {
+    setSelectedSpecificArea(e.target.value);
+  };
 
   const handlePaymentMethodChange = (e) => {
     setPaymentMethod(e.target.value);
@@ -142,7 +203,7 @@ const OrderingPage = () => {
           return total + price * item.quantity;
         }, 0),
         paymentMethod,
-        destination: `${selectedTown}, ${selectedArea}`,
+        destination: `${selectedTown}, ${selectedArea}, ${selectedSpecificArea || 'Town'}`,
         orderDate: new Date().toISOString(),
         username,
         
@@ -261,7 +322,69 @@ const OrderingPage = () => {
 
       {/* Delivery Destination */}
       {!others ? (
-        <p>wewewe</p>
+        <>
+          {/* Town Selector */}
+          <div>
+            <label htmlFor="town">Town:</label>
+            <select
+              id="town"
+              value={selectedTown}
+              onChange={handleagentTownChange}
+              disabled={loading || towns.length === 0}
+            >
+              <option value="">-- Select Town --</option>
+              {towns.map((town, index) => (
+                <option key={index} value={town}>
+                  {town}
+                </option>
+              ))}
+            </select>
+            {towns.length === 0 && !loading && <p>No towns available.</p>}
+          </div>
+
+          {/* Area Selector */}
+          {areas.length > 0 && (
+            <div>
+              <label htmlFor="area">Area:</label>
+              <select
+                id="area"
+                value={selectedArea}
+                onChange={handleagentAreaChange}
+                disabled={!selectedTown}
+              >
+                <option value="">-- Select Area --</option>
+                {areas.map((area, index) => (
+                  <option key={index} value={area}>
+                    {area}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Show message if no areas are available */}
+          {selectedTown && areas.length === 0 && !loading && <p>No areas available for the selected town.</p>}
+
+          {/* Specific Area Selector */}
+          {specificAreas.length > 0 && (
+            <div>
+              <label htmlFor="specific">Specific Area:</label>
+              <select
+                id="specific"
+                value={selectedSpecificArea}
+                onChange={handleSpecificAreaChange}
+                disabled={!selectedArea}
+              >
+                <option value="">-- Select Specific Area --</option>
+                {specificAreas.map((specific, index) => (
+                  <option key={index} value={specific}>
+                    {specific}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+        </>
       ):(
         <Form.Group className='model'>
         <Form.Label className='Label' >Town</Form.Label>

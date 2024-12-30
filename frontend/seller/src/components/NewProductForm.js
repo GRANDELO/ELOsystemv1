@@ -129,7 +129,7 @@ const NewProductForm = () => {
     collaborators: [],
     features: [],
     variations: [
-      {
+      { 
         color: '',
         size: [''],
         material: '',

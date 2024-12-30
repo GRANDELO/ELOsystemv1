@@ -22,6 +22,7 @@ import Agentdash from './components/agentdash';
 import AgentLogout from './components/agentLogout';
 import Agentsettings from './components/Agentsettings';
 
+import Talk from './components/talk';
 
 import DeliveryLogout from './components/deliveryLogout';
 import DeliveryLogin from './components/deliveryLogin';
@@ -34,6 +35,7 @@ import Deliverydisp from './components/deliverydisp';
 import Deliverydash from './components/deliverydash';
 
 import MM from './components/mm';
+import Generators from './components/generators';
 
 import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
@@ -127,8 +129,10 @@ const App = () => {
           <Route path="/agentdash" element={<Agentdash />} />
           <Route path="/agentLogout" element={<AgentLogout />} />
           <Route path="/agentsettings" element={<Agentsettings />} />
-
+          
           <Route path="/MM" element={<MM />} />
+          <Route path="/generators" element={<Generators />} />
+          <Route path="/Talk" element={<Talk />} />
           
           <Route path="/deliveryLogin" element={<DeliveryLogin />} />
           <Route path="/deliveryRegister" element={<DeliveryRegister />} />

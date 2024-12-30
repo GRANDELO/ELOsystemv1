@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import './styles/ProductModal.css';
 import ReviewList from "./ReviewList";
+import ReactQuill from "react-quill";
 
 const ProductModal = ({ product, show, handleClose }) => {
   const [message, setMessage] = useState('');
@@ -128,7 +129,15 @@ const ProductModal = ({ product, show, handleClose }) => {
     setRefreshReviews((prev) => !prev); // Trigger refresh
   };
 
-
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ["bold", "italic", "underline"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "image"],
+      ["clean"],
+    ],
+  };
   const { discountedPrice, discountAmount } = calculateDiscountedPrice(product);
 
   return (
@@ -235,7 +244,20 @@ const ProductModal = ({ product, show, handleClose }) => {
               min="0"
               max="100"
             />
-          ) : (
+          ) : updatedField === ''  ?
+          (
+            <>
+                <label>Description:</label>
+                <ReactQuill
+                  className="npfdiv"
+                  theme="snow"
+                  value={updatedValue}
+                  onChange={(e) => setUpdatedValue(e.target.value)}
+                  modules={modules}
+                  placeholder="Write an engaging product description..."
+                />
+            </>
+          ):(
             <Form.Control
               className="Select"
               type="text"

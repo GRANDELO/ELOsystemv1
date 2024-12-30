@@ -1,14 +1,20 @@
 import axiosInstance from './axiosInstance';
 import { QRCodeCanvas } from 'qrcode.react';
-import React, { useEffect, useState } from 'react'; 
+import React, { useEffect, useState, useRef } from 'react'; 
 import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { useCart } from '../contexts/CartContext';
 import { getUsernameFromToken } from '../utils/auth';
 import './styles/ProductModal.css';
 import ReviewList from "./ReviewList";
+import ProductsDetail from "./ProductsDetail";
+import Productimage from "./productimage";
+
 import AddEditReview from "./AddEditReview";
+import ico from "./images/log.png";
+import QRCode from "qrcode";
 
 const ProductModal = ({ product, show, handleClose }) => {
+  const canvasRef = useRef();
   const { dispatch } = useCart();
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -23,7 +29,7 @@ const ProductModal = ({ product, show, handleClose }) => {
   const [loading, setLoading] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState({});
   const [filteredVariations, setFilteredVariations] = useState(product.variations || []); 
-  
+  const [showcore, setShowcore ] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [reviewToEdit, setReviewToEdit] = useState(null);
   const currentUser = getUsernameFromToken(); // Replace with getUsernameFromToken();
@@ -50,7 +56,11 @@ const ProductModal = ({ product, show, handleClose }) => {
     };
   }, [show, handleClose]);
   
-  
+  useEffect(() => {
+    generateQRCode();
+  }, [sellerOrderId, product]);
+
+
   // Handle the image index change every 4 seconds if product has multiple images
   useEffect(() => {
     if (product?.images?.length > 1) {
@@ -99,6 +109,7 @@ const ProductModal = ({ product, show, handleClose }) => {
       setLoginPrompt('You have to sign in to complete the order.');
       return;
     }
+    setShowcore(!showcore);
     setShowMpesaInput(true); 
     setMessage('');
     setError('');
@@ -155,15 +166,7 @@ const ProductModal = ({ product, show, handleClose }) => {
     window.URL.revokeObjectURL(url);
   };
 
-  const downloadQRCode = () => {
-    setLoading(true);
-    const qrCodeUrl = document.getElementById('qrCode').toDataURL('image/png');
-    const link = document.createElement('a');
-    link.href = qrCodeUrl;
-    link.download = `${product.name}_QR.png`;
-    link.click();
-    setLoading(false);
-  };
+
 
   if (!product) return null;
 
@@ -214,6 +217,59 @@ const ProductModal = ({ product, show, handleClose }) => {
       productId: product._id, // Ensure productId is included
     }));
   };
+
+
+
+
+
+
+
+
+  const generateQRCode = async () => {
+    try {
+      const canvas = canvasRef.current;
+      const qrCodeData = `https://baze-link.web.app/coreorder?sellerOrderId=${sellerOrderId}&productId=${product._id}`;
+
+      // Generate QR code
+      await QRCode.toCanvas(canvas, qrCodeData, {
+        width: 300, // Adjust QR code size
+        margin: 2,
+        errorCorrectionLevel: "H",
+      });
+
+      // Draw the logo in the center
+      const context = canvas.getContext("2d");
+      const img = new Image();
+      img.src = ico;
+
+      img.onload = () => {
+        const logoSize = canvas.width * 0.2; // Logo size is 20% of QR code width
+        const x = (canvas.width - logoSize) / 2;
+        const y = (canvas.height - logoSize) / 2;
+
+        // Optional: Add a white background behind the logo for better contrast
+        context.fillStyle = "white";
+        context.fillRect(x - 5, y - 5, logoSize + 10, logoSize + 10);
+
+        // Draw the logo
+        context.drawImage(img, x, y, logoSize, logoSize);
+      };
+    } catch (error) {
+      console.error("Failed to generate QR code:", error);
+    }
+  };
+
+  const downloadQRCode = () => {
+    const canvas = canvasRef.current;
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png");
+    link.download = "qr-code.png";
+    link.click();
+  };
+
+
+
+
   
   return (
     <Modal
@@ -234,7 +290,9 @@ const ProductModal = ({ product, show, handleClose }) => {
       <Modal.Header closeButton>
         <Modal.Title className="modal-title">{product.name}</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+
+      {!showcore ? (
+        <Modal.Body>
         <div className="product-details-container">
           {/* Product Image Section */}
           <div className="product-image-container">
@@ -368,43 +426,61 @@ const ProductModal = ({ product, show, handleClose }) => {
               onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
             />
           </Form.Group>
-
-          {product.price > 500 && (
-            <div className="core-sell-section">
-              <Button variant="warning" onClick={handleCoreSellButtonClick}>
-                Core Sell
-              </Button>
-              {showMpesaInput && (
-                <Form.Group controlId="mpesaNumber">
-                  <Form.Label>MPesa Number</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter MPesa number"
-                    value={mpesaNumber}
-                    onChange={(e) => setMpesaNumber(e.target.value)}
-                  />
-                  <Button variant="success" onClick={handleCoreSell}>
-                    Confirm Core Sell
-                  </Button>
-                </Form.Group>
-              )}
-              {showQrCode && sellerOrderId && (
-                <div className="qr-section">
-                  <QRCodeCanvas
-                    id="qrCode"
-                    value={`https://baze-link.web.app/coreorder?sellerOrderId=${sellerOrderId}&productId=${product._id}`}
-                    size={150}
-                  />
-                  <Button variant="primary" onClick={downloadQRCode}>
-                  {loading ? "Downloading..." : "Download QR Code"}
-                    
-                  </Button>
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </Modal.Body>
+      ): (
+        <>
+          {product.price > 500 && (
+          <div className="core-sell-section">
+
+            {showMpesaInput && (
+              <Form.Group controlId="mpesaNumber">
+                <Form.Label>MPesa Number</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter MPesa number"
+                  value={mpesaNumber}
+                  onChange={(e) => setMpesaNumber(e.target.value)}
+                />
+                <Button variant="success" onClick={handleCoreSell}>
+                  Confirm Core Sell
+                </Button>
+              </Form.Group>
+            )}
+            {showQrCode && sellerOrderId && (
+              <div style={{ textAlign: "center" }}>
+              <canvas ref={canvasRef} />
+              <button
+                onClick={downloadQRCode}
+                style={{
+                  marginTop: "20px",
+                  padding: "10px 20px",
+                  background: "blue",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Download QR Code
+              </button>
+              <ProductsDetail product={product} />
+              <Productimage product={product}  />
+              </div>
+              
+
+            )}
+          </div>
+        )}
+        </>
+
+      )}
+
+
+
+
+
+
       {loginPrompt && (
         <Alert variant="warning" className="ordcore-alert">
           {loginPrompt} <a href="/login">Sign In</a> or <a href="/register">Register</a>
@@ -413,6 +489,10 @@ const ProductModal = ({ product, show, handleClose }) => {
         {message && <Alert variant="success">{message}</Alert>}
         {error && <Alert variant="danger">{error}</Alert>}
       <Modal.Footer>
+        <Button variant="warning" onClick={handleCoreSellButtonClick}>
+        {showcore ? "Back" : "Core Sell"}
+          
+        </Button>
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
