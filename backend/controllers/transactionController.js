@@ -1,4 +1,5 @@
 const Transaction = require("../models/Transaction");
+const mongoose = require('mongoose');
 
 exports.createTransaction = async (req, res) => {
   const { description, accountId, debit, credit } = req.body;
@@ -42,6 +43,8 @@ exports.getTransactionsByAccount = async (req, res) => {
 /**
  * Get Trial Balance
  */
+
+
 exports.getTrialBalance = async (req, res) => {
   try {
     // Aggregate the transactions to calculate total debits and credits for each account
@@ -55,36 +58,47 @@ exports.getTrialBalance = async (req, res) => {
       },
       {
         $lookup: {
-          from: 'accounts', // Collection name for accounts
+          from: 'accounts', // Correct collection name for accounts
           localField: '_id',
           foreignField: '_id',
           as: 'accountDetails',
         },
       },
       {
-        $unwind: '$accountDetails', // Unwind the account details array
+        $unwind: {
+          path: '$accountDetails',
+          preserveNullAndEmptyArrays: true, // Ensure accounts without details are preserved
+        },
       },
       {
         $project: {
-          accountName: '$accountDetails.name', // Include the account name
-          accountType: '$accountDetails.type', // Include the account type
+          accountName: { $ifNull: ['$accountDetails.name', 'Unknown'] }, // Default name if missing
+          accountType: { $ifNull: ['$accountDetails.type', 'Unknown'] }, // Default type if missing
           totalDebit: 1,
           totalCredit: 1,
         },
       },
     ]);
 
-    // Add a validation step for trial balance equality
+    // Safeguard for empty trial balance
+    if (!trialBalance || trialBalance.length === 0) {
+      return res.status(404).json({
+        message: 'No transactions found to generate the trial balance.',
+      });
+    }
+
+    // Calculate total debits and credits
     const totalDebits = trialBalance.reduce((sum, acc) => sum + acc.totalDebit, 0);
     const totalCredits = trialBalance.reduce((sum, acc) => sum + acc.totalCredit, 0);
 
-    const isBalanced = totalDebits === totalCredits;
+    // Check if trial balance is balanced
+    const isBalanced = totalDebits.toFixed(2) === totalCredits.toFixed(2);
 
     // Respond with trial balance details
     res.status(200).json({
       trialBalance,
-      totalDebits,
-      totalCredits,
+      totalDebits: totalDebits.toFixed(2), // Format to 2 decimal places
+      totalCredits: totalCredits.toFixed(2), // Format to 2 decimal places
       isBalanced,
       message: isBalanced
         ? 'The trial balance is balanced.'
