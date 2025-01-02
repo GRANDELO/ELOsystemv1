@@ -12,7 +12,7 @@ const TrialBalance = () => {
   // Fetch trial balance from the backend
   const fetchTrialBalance = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/transactions/trial-balance'); // Adjust API URL as needed
+      const response = await axios.get('https://elosystemv1.onrender.com/api/transactions/trialbalance'); // Adjust API URL as needed
       const { trialBalance, totalDebits, totalCredits, isBalanced, message } = response.data;
 
       setTrialBalance(trialBalance);
