@@ -42,8 +42,12 @@ exports.getTransactionsByAccount = async (req, res) => {
 
 
 
+
 exports.getTrialBalance = async (req, res) => {
   try {
+
+    res.set('Cache-Control', 'no-store');
+
     const trialBalance = await Transaction.aggregate([
       {
         $group: {
