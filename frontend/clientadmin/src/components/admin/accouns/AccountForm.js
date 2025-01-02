@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import '../styles/accform.css';
 
 const AccountForm = ({ fetchAccounts }) => {
   const [name, setName] = useState('');
@@ -18,14 +19,25 @@ const AccountForm = ({ fetchAccounts }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Account Name:</label>
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+    <form className="account-form" onSubmit={handleSubmit}>
+      <div className="form-group">
+        <label htmlFor="accountName">Account Name:</label>
+        <input
+          id="accountName"
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
       </div>
-      <div>
-        <label>Account Type:</label>
-        <select value={type} onChange={(e) => setType(e.target.value)} required>
+      <div className="form-group">
+        <label htmlFor="accountType">Account Type:</label>
+        <select
+          id="accountType"
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          required
+        >
           <option value="">Select Account Type</option>
           <option value="Asset">Asset</option>
           <option value="Liability">Liability</option>
@@ -34,7 +46,9 @@ const AccountForm = ({ fetchAccounts }) => {
           <option value="Expense">Expense</option>
         </select>
       </div>
-      <button type="submit">Create Account</button>
+      <button type="submit" className="submit-button">
+        Create Account
+      </button>
     </form>
   );
 };

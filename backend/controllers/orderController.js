@@ -11,6 +11,7 @@ const {b2cRequestHandler} = require("./mpesaController");
 const CoreSellOrder = require('../models/CoreSellOrder');
 const { generateVerificationCode } = require('../services/verificationcode');
 const { sersendNotificationToUser } = require('./pushNotificationController');
+const Transaction = require("../models/Transaction");
 
 
 // Create Order
@@ -689,6 +690,14 @@ const TransactionLedgerfuc = async (products, orderNumber) => {
     financialRecord = new CompanyFinancials({ totalIncome: 0, netBalance: 0, transactions: [] });
     await financialRecord.save();
   }
+
+  const newTransaction = new Transaction({ 
+    description: `Earnings from order ${orderNumber}`, 
+    account: "67769ab83726b6a2d038ef9b", 
+    debit: totalCompanyEarnings, 
+    credit: 0, 
+  });
+  await newTransaction.save();
 
   const updateResult = await CompanyFinancials.updateOne(
     { _id: financialRecord._id },

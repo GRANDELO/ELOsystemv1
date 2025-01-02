@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import '../styles/TransactionForm.css'; // Assuming you'll create this CSS file
 
 const TransactionForm = ({ fetchTransactions }) => {
   const [description, setDescription] = useState('');
@@ -24,10 +25,9 @@ const TransactionForm = ({ fetchTransactions }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const response = await axios.get('https://elosystemv1.onrender.com/api/accounts');
-        setAccounts(response.data);
-
-      await axios.post('https://elosystemv1.onrender.com/api/transactions', { description, accountId, debit, credit });
+      await axios.post('https://elosystemv1.onrender.com/api/transactions', { 
+        description, accountId, debit, credit 
+      });
       fetchTransactions();
       setDescription('');
       setAccountId('');
@@ -39,19 +39,25 @@ const TransactionForm = ({ fetchTransactions }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
+    <form onSubmit={handleSubmit} className="transaction-form">
+      <h3>Create Transaction</h3>
+      <div className="form-group">
         <label>Description:</label>
         <input
           type="text"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          placeholder="Enter transaction description"
           required
         />
       </div>
-      <div>
+      <div className="form-group">
         <label>Account:</label>
-        <select value={accountId} onChange={(e) => setAccountId(e.target.value)} required>
+        <select
+          value={accountId}
+          onChange={(e) => setAccountId(e.target.value)}
+          required
+        >
           <option value="">Select Account</option>
           {(accounts || []).map((account) => (
             <option key={account._id} value={account._id}>
@@ -60,23 +66,25 @@ const TransactionForm = ({ fetchTransactions }) => {
           ))}
         </select>
       </div>
-      <div>
+      <div className="form-group">
         <label>Debit:</label>
         <input
           type="number"
           value={debit}
           onChange={(e) => setDebit(e.target.value)}
+          placeholder="Enter debit amount"
         />
       </div>
-      <div>
+      <div className="form-group">
         <label>Credit:</label>
         <input
           type="number"
           value={credit}
           onChange={(e) => setCredit(e.target.value)}
+          placeholder="Enter credit amount"
         />
       </div>
-      <button type="submit">Create Transaction</button>
+      <button type="submit" className="submit-btn">Create Transaction</button>
     </form>
   );
 };

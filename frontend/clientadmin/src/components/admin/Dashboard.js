@@ -7,6 +7,8 @@ import Footer from './Footer';
 import UserChart from './UserChart';
 import Header from './header';
 import HR from './hr/hrdash';
+import Accouns from './accouns/accountsdash';
+
 import Sales from './sales/Salespg';
 import Setting from './settings';
 import AdminFeedback from '../feedback';
@@ -94,7 +96,12 @@ const Dashboard = () => {
                     >
                         Feedback
                     </button>
-
+                    <button
+                        className={`dashad-nav-button ${view === 'Accouns' ? 'dashad-active' : ''}`}
+                        onClick={() => setView('Accouns')}
+                    >
+                        Accouns
+                    </button>
                 </nav>
 
                 <div className="dashad-content">
@@ -142,6 +149,7 @@ const Dashboard = () => {
                     {view === 'HR' && <HR />}
                     {view === 'reports' && <Reports />}
                     {view === 'feedback' && <AdminFeedback />}
+                    {view === 'Accouns' && <Accouns />}
                 </div>
                 
             </div>
