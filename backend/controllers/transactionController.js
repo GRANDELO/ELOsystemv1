@@ -1,5 +1,4 @@
 const Transaction = require("../models/Transaction");
-const mongoose = require('mongoose');
 
 exports.createTransaction = async (req, res) => {
   const { description, accountId, debit, credit } = req.body;
@@ -43,70 +42,49 @@ exports.getTransactionsByAccount = async (req, res) => {
 /**
  * Get Trial Balance
  */
-
-
 exports.getTrialBalance = async (req, res) => {
   try {
-    // Check if there are transactions in the database
-    const transactionCount = await Transaction.countDocuments();
-    if (transactionCount === 0) {
-      return res.status(404).json({
-        message: 'No transactions found. Unable to generate trial balance.',
-      });
-    }
-
-    // Aggregate the transactions
+    // Aggregate the transactions to calculate total debits and credits for each account
     const trialBalance = await Transaction.aggregate([
       {
         $group: {
           _id: '$accountId', // Group by accountId
-          totalDebit: { $sum: '$debit' }, // Sum all debits
-          totalCredit: { $sum: '$credit' }, // Sum all credits
+          totalDebit: { $sum: '$debit' }, // Sum of all debits for the account
+          totalCredit: { $sum: '$credit' }, // Sum of all credits for the account
         },
       },
       {
         $lookup: {
-          from: 'accounts', // Correct collection name
+          from: 'accounts', // Collection name for accounts
           localField: '_id',
           foreignField: '_id',
           as: 'accountDetails',
         },
       },
       {
-        $unwind: {
-          path: '$accountDetails',
-          preserveNullAndEmptyArrays: true, // Ensure accounts without details are included
-        },
+        $unwind: '$accountDetails', // Unwind the account details array
       },
       {
         $project: {
-          accountName: { $ifNull: ['$accountDetails.name', 'Unknown'] },
-          accountType: { $ifNull: ['$accountDetails.type', 'Unknown'] },
+          accountName: '$accountDetails.name', // Include the account name
+          accountType: '$accountDetails.type', // Include the account type
           totalDebit: 1,
           totalCredit: 1,
         },
       },
     ]);
 
-    // Validate the trial balance results
-    if (!trialBalance || trialBalance.length === 0) {
-      return res.status(404).json({
-        message: 'No transactions found to generate the trial balance.',
-      });
-    }
-
-    // Calculate total debits and credits
+    // Add a validation step for trial balance equality
     const totalDebits = trialBalance.reduce((sum, acc) => sum + acc.totalDebit, 0);
     const totalCredits = trialBalance.reduce((sum, acc) => sum + acc.totalCredit, 0);
 
-    // Check if trial balance is balanced
-    const isBalanced = totalDebits.toFixed(2) === totalCredits.toFixed(2);
+    const isBalanced = totalDebits === totalCredits;
 
-    // Return the trial balance results
+    // Respond with trial balance details
     res.status(200).json({
       trialBalance,
-      totalDebits: totalDebits.toFixed(2),
-      totalCredits: totalCredits.toFixed(2),
+      totalDebits,
+      totalCredits,
       isBalanced,
       message: isBalanced
         ? 'The trial balance is balanced.'
@@ -114,12 +92,8 @@ exports.getTrialBalance = async (req, res) => {
     });
   } catch (error) {
     console.error('Error calculating trial balance:', error);
-    res.status(500).json({
-      message: 'Error calculating trial balance',
-      error: error.message,
-    });
+    res.status(500).json({ message: 'Error calculating trial balance', error });
   }
 };
-
 
 
