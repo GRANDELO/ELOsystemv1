@@ -16,6 +16,7 @@ import TransactionForm from './components/admin/accouns/TransactionForm';
 import TransactionList from './components/admin/accouns/TransactionList';
 import ProfitCalculator from './components/admin/accouns/ProfitCalculator';
 import Accountsdash from './components/admin/accouns/accountsdash';
+import TrialBalance from './components/admin/accouns/TrialBalance';
 
 
 import Dashboard from './components/admin/Dashboard';
@@ -91,6 +92,7 @@ const App = () => {
             <Route path="/transactionList" element={<TransactionList />} />
             <Route path="/profitCalculator" element={<ProfitCalculator />} />
             <Route path="/accountsdash" element={<Accountsdash />} />
+            <Route path="/trialBalance" element={<TrialBalance />} />
 
             
             <Route path="/employies" element={<Employies />} />
