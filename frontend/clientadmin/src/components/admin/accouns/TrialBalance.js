@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './TrialBalance.css'; // Import the CSS file for styling
+import '../styles/TrialBalance.css'; // Import the CSS file for styling
 
 const TrialBalance = () => {
   const [trialBalance, setTrialBalance] = useState([]);
