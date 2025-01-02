@@ -42,7 +42,7 @@ exports.getTransactionsByAccount = async (req, res) => {
 
 
 
-const getTrialBalance = async (req, res) => {
+exports.getTrialBalance = async (req, res) => {
   try {
     const trialBalance = await Transaction.aggregate([
       {
@@ -107,9 +107,7 @@ const getTrialBalance = async (req, res) => {
   }
 };
 
-module.exports = {
-  getTrialBalance,
-};
+
 
 
 

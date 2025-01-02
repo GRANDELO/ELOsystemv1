@@ -12,10 +12,19 @@ const TrialBalance = () => {
 
   const fetchTrialBalance = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/transactions/trialbalance');
+      const response = await axios.get(
+        'https://elosystemv1.onrender.com/api/transactions/trialbalance'
+      );
+
       if (response.data) {
-        const { trialBalance = [], totalDebits = 0, totalCredits = 0, isBalanced = false, message = '' } = response.data;
-  
+        const {
+          trialBalance = [],
+          totalDebits = 0,
+          totalCredits = 0,
+          isBalanced = false,
+          message = '',
+        } = response.data;
+
         setTrialBalance(trialBalance);
         setTotalDebits(parseFloat(totalDebits));
         setTotalCredits(parseFloat(totalCredits));
@@ -26,59 +35,50 @@ const TrialBalance = () => {
       }
     } catch (err) {
       console.error('Error fetching trial balance:', err);
-      setMessage('Failed to load trial balance. Please check the backend or try again later.');
+      setMessage(
+        'Failed to load trial balance. Please check the backend or try again later.'
+      );
       setTrialBalance([]);
     } finally {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     fetchTrialBalance();
   }, []);
 
   if (loading) {
-    return <p>Loading trial balance...</p>;
+    return <div>Loading...</div>;
   }
 
   return (
-    <div className="trial-balance-container">
+    <div>
       <h2>Trial Balance</h2>
-      <p>{message}</p>
-
-      <table className="trial-balance-table">
+      {message && <p>{message}</p>}
+      <table>
         <thead>
           <tr>
             <th>Account Name</th>
             <th>Account Type</th>
-            <th>Total Debit</th>
-            <th>Total Credit</th>
+            <th>Debits</th>
+            <th>Credits</th>
           </tr>
         </thead>
         <tbody>
-          {trialBalance.map((account) => (
-            <tr key={account._id || account.accountName}>
-              <td>{account.accountName}</td>
-              <td>{account.accountType}</td>
-              <td>{account.totalDebit?.toFixed(2) || '0.00'}</td>
-              <td>{account.totalCredit?.toFixed(2) || '0.00'}</td>
+          {trialBalance.map((entry, index) => (
+            <tr key={index}>
+              <td>{entry.accountName}</td>
+              <td>{entry.accountType}</td>
+              <td>{entry.totalDebit.toFixed(2)}</td>
+              <td>{entry.totalCredit.toFixed(2)}</td>
             </tr>
           ))}
         </tbody>
-        <tfoot>
-          <tr>
-            <td colSpan="2">Totals</td>
-            <td>{totalDebits.toFixed(2)}</td>
-            <td>{totalCredits.toFixed(2)}</td>
-          </tr>
-          <tr>
-            <td colSpan="4" className={isBalanced ? 'balanced' : 'not-balanced'}>
-              {isBalanced ? 'Balanced' : 'Not Balanced'}
-            </td>
-          </tr>
-        </tfoot>
       </table>
+      <h3>Total Debits: {totalDebits.toFixed(2)}</h3>
+      <h3>Total Credits: {totalCredits.toFixed(2)}</h3>
+      <h3>Status: {isBalanced ? 'Balanced' : 'Not Balanced'}</h3>
     </div>
   );
 };
