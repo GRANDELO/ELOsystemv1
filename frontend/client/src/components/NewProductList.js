@@ -135,7 +135,7 @@ const NewProductList = () => {
     const fetchProducts = async () => {
       try {
         const response = await axiosInstance.get('/products');
-        setProducts(response.data.products);
+        setProducts(response.data.products.sort(() => Math.random() - 0.5));
         setLoading(false);
       } catch (err) {
         setError(err.message);
