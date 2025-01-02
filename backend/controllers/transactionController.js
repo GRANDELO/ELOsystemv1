@@ -41,76 +41,45 @@ exports.getTransactionsByAccount = async (req, res) => {
 
 
 
-
-
-exports.getTrialBalance = async (req, res) => {
+async function calculateTrialBalance() {
   try {
-
-    res.set('Cache-Control', 'no-store');
-
     const trialBalance = await Transaction.aggregate([
       {
         $group: {
-          _id: '$account',
-          totalDebit: { $sum: '$debit' },
-          totalCredit: { $sum: '$credit' },
+          _id: "$account",  // Group by account
+          totalDebit: { $sum: "$debit" },  // Sum of debits
+          totalCredit: { $sum: "$credit" },  // Sum of credits
         },
       },
       {
         $lookup: {
-          from: 'accounts', // Ensure 'accounts' matches your collection name
-          localField: '_id',
-          foreignField: '_id',
-          as: 'accountDetails',
+          from: "accounts",  // Assuming you have an Account model
+          localField: "_id",  // Match the account id
+          foreignField: "_id",  // From the Account collection
+          as: "accountDetails",
         },
       },
-      { $unwind: { path: '$accountDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $unwind: "$accountDetails",  // Unwind the account details to get the account info
+      },
       {
         $project: {
-          accountName: { $ifNull: ['$accountDetails.name', 'Unknown'] },
-          accountType: { $ifNull: ['$accountDetails.type', 'Unknown'] },
+          account: "$accountDetails.name",  // Assuming Account has a 'name' field
           totalDebit: 1,
           totalCredit: 1,
+          balance: { $subtract: ["$totalDebit", "$totalCredit"] },  // Calculate balance (debit - credit)
         },
       },
     ]);
 
-    if (trialBalance.length === 0) {
-      return res.status(200).json({
-        message: 'No transactions found. Trial balance is empty.',
-        trialBalance: [],
-        totalDebits: 0,
-        totalCredits: 0,
-        isBalanced: true,
-      });
-    }
-
-    const totalDebits = trialBalance.reduce(
-      (sum, entry) => sum + entry.totalDebit,
-      0
-    );
-    const totalCredits = trialBalance.reduce(
-      (sum, entry) => sum + entry.totalCredit,
-      0
-    );
-
-    const isBalanced = totalDebits === totalCredits;
-
-    res.status(200).json({
-      message: isBalanced ? 'Trial balance is balanced.' : 'Trial balance is not balanced.',
-      trialBalance,
-      totalDebits,
-      totalCredits,
-      isBalanced,
-    });
+    return trialBalance;
   } catch (error) {
-    console.error('Error generating trial balance:', error);
-    res.status(500).json({
-      message: 'Error generating trial balance. Please try again later.',
-    });
+    console.error("Error calculating trial balance:", error);
+    throw error;
   }
-};
+}
 
+module.exports = { calculateTrialBalance };
 
 
 
