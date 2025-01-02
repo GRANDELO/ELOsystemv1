@@ -698,6 +698,7 @@ const TransactionLedgerfuc = async (products, orderNumber) => {
           transactionType: 'income',
           amount: totalCompanyEarnings,
           description: `Earnings from order ${orderNumber}`
+          
         }
       },
       $inc: {
