@@ -10,6 +10,13 @@ import Reports from './components/Reports';
 import Users from './components/User';
 import UserChart from './components/admin/UserChart';
 
+import AccountForm from './components/admin/accouns/AccountForm';
+import AccountList from './components/admin/accouns/AccountList';
+import TransactionForm from './components/admin/accouns/TransactionForm';
+import TransactionList from './components/admin/accouns/TransactionList';
+import ProfitCalculator from './components/admin/accouns/ProfitCalculator';
+
+
 import Dashboard from './components/admin/Dashboard';
 import Loginadm from './components/admin/Login';
 import Logistics from './components/admin/Logistics';
@@ -76,6 +83,12 @@ const App = () => {
             <Route path="/users" element={<Users />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/sales" element={<Sales />} />
+
+            <Route path="/accountForm" element={<AccountForm />} />
+            <Route path="/accountList" element={<AccountList />} />
+            <Route path="/transactionForm" element={<TransactionForm />} />
+            <Route path="/transactionList" element={<TransactionList />} />
+            <Route path="/profitCalculator" element={<ProfitCalculator />} />
 
             <Route path="/employies" element={<Employies />} />
             <Route path="/hr" element={<Hr />} />

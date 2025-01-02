@@ -17,6 +17,15 @@ exports.createTransaction = async (req, res) => {
   }
 };
 
+exports.getAllTransactions = async (req, res) => {
+    try {
+      const transactions = await Transaction.find().populate('accountId', 'name type');
+      res.status(200).json(transactions);
+    } catch (err) {
+      res.status(500).json({ error: 'Error fetching transactions', details: err.message });
+    }
+  };
+
 exports.getTransactionsByAccount = async (req, res) => {
   const { accountId } = req.params;
 
