@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import '../styles/TrialBalance.css'; // Import the CSS file for styling
+import '../styles/TrialBalance.css';
 
 const TrialBalance = () => {
   const [trialBalance, setTrialBalance] = useState([]);
@@ -8,12 +8,14 @@ const TrialBalance = () => {
   const [totalCredits, setTotalCredits] = useState(0);
   const [isBalanced, setIsBalanced] = useState(false);
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  // Fetch trial balance from the backend
   const fetchTrialBalance = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/transactions/trialbalance'); // Adjust API URL as needed
-      const { trialBalance, totalDebits, totalCredits, isBalanced, message } = response.data;
+      const response = await axios.get('https://elosystemv1.onrender.com/api/transactions/trialbalance');
+      console.log(response.data); // Debugging
+
+      const { trialBalance = [], totalDebits = 0, totalCredits = 0, isBalanced = false, message = '' } = response.data;
 
       setTrialBalance(trialBalance);
       setTotalDebits(totalDebits);
@@ -22,13 +24,20 @@ const TrialBalance = () => {
       setMessage(message);
     } catch (err) {
       console.error('Error fetching trial balance:', err);
+      setMessage('Failed to load trial balance. Please try again later.');
+      setTrialBalance([]); // Ensure trialBalance is an empty array
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Fetch data on component mount
   useEffect(() => {
     fetchTrialBalance();
   }, []);
+
+  if (loading) {
+    return <p>Loading trial balance...</p>;
+  }
 
   return (
     <div className="trial-balance-container">
@@ -46,11 +55,11 @@ const TrialBalance = () => {
         </thead>
         <tbody>
           {trialBalance.map((account) => (
-            <tr key={account._id}>
+            <tr key={account._id || account.accountName}>
               <td>{account.accountName}</td>
               <td>{account.accountType}</td>
-              <td>{account.totalDebit.toFixed(2)}</td>
-              <td>{account.totalCredit.toFixed(2)}</td>
+              <td>{account.totalDebit?.toFixed(2) || '0.00'}</td>
+              <td>{account.totalCredit?.toFixed(2) || '0.00'}</td>
             </tr>
           ))}
         </tbody>
