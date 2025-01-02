@@ -13,23 +13,26 @@ const TrialBalance = () => {
   const fetchTrialBalance = async () => {
     try {
       const response = await axios.get('https://elosystemv1.onrender.com/api/transactions/trialbalance');
-      console.log(response.data); // Debugging
-
-      const { trialBalance = [], totalDebits = 0, totalCredits = 0, isBalanced = false, message = '' } = response.data;
-
-      setTrialBalance(trialBalance);
-      setTotalDebits(totalDebits);
-      setTotalCredits(totalCredits);
-      setIsBalanced(isBalanced);
-      setMessage(message);
+      if (response.data) {
+        const { trialBalance = [], totalDebits = 0, totalCredits = 0, isBalanced = false, message = '' } = response.data;
+  
+        setTrialBalance(trialBalance);
+        setTotalDebits(parseFloat(totalDebits));
+        setTotalCredits(parseFloat(totalCredits));
+        setIsBalanced(isBalanced);
+        setMessage(message);
+      } else {
+        throw new Error('Invalid response structure');
+      }
     } catch (err) {
       console.error('Error fetching trial balance:', err);
-      setMessage('Failed to load trial balance. Please try again later.');
-      setTrialBalance([]); // Ensure trialBalance is an empty array
+      setMessage('Failed to load trial balance. Please check the backend or try again later.');
+      setTrialBalance([]);
     } finally {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchTrialBalance();
