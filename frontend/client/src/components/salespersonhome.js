@@ -306,27 +306,21 @@ const Home = () => {
         {isSettingsVisible && (
           <section className="salesp-settings-section">
             <Settings />
-            <button className="salesp-toggle-settings" onClick={toggleSettings}>
-              <IoClose />
-            </button>
+
           </section>
         )}
         {/* Display Order Section */}
         {isOrderVisible && (
           <section className="salesp-order-section">
             <Displayorder />
-            <button className="salesp-toggle-order" onClick={toggleOrder}>
-              <IoClose />
-            </button>
+
           </section>
         )}
         {/* Notifications Section */}
         {isNotificationsVisible && (
           <section className="salesp-notifications-section">
             <Notifications username={username} onMarkAsRead={() => setUnreadCount((count) => count - 1)} />
-            <button className="salesp-toggle-notifications" onClick={toggleNotifications}>
-              <IoClose />
-            </button>
+
           </section>
         )}
         {/* Cart Section */}
@@ -346,9 +340,7 @@ const Home = () => {
         {isFeedbackVisible && (
           <section  className="salesp-settings-section">
             <FeedbackForm />
-            <button onClick={toggleFeedback}>
-              <IoClose />
-            </button>
+
           </section>
         )}
         {/* QR Scanner Section */}

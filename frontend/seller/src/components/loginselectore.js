@@ -26,6 +26,7 @@ const LoginPage = () => {
           break;
         default:
           alert("Failed to login. This platform is for delivery people, sellers, and agents only.");
+          navigate('/logout')
       }
     };
 

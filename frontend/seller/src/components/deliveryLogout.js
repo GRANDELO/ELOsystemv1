@@ -37,10 +37,7 @@ const Logout = () => {
         setLogoutMessage(response.data.message);
 
         // Redirect to login page after a delay to show the message
-        setTimeout(() => {
-          
-          navigate('/');
-        }, 3000);
+        navigate('/');
       } catch (error) {
         console.error('Error logging out:', error);
         setLogoutMessage('Error logging out. Please try again.');

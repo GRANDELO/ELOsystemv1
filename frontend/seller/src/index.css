@@ -55,6 +55,16 @@
   --header-font-size: 2.2rem;
 }
 
+.spinne_r {
+  width: 20px;
+  height: 20px;
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  color: var(--text-color-light);
+  border-top: 5px solid var(--text-color-light);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
 body, html {
   margin: 0;
   padding: 0;
@@ -109,6 +119,10 @@ a:hover {
 
 /* Button styles */
 button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   background-color: var(--button-bg);
   color: var(--button-text-color);
   border: none;
