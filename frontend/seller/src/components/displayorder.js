@@ -1,170 +1,119 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { getUsernameFromToken } from '../utils/auth';
-import './styles/displayorder.css';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { getUsernameFromToken } from "../utils/auth";
+import './styles/orderdisp.css';
 
-const OrdersPage = () => {
-  const [orders, setOrders] = useState([]);
-  const [filteredOrders, setFilteredOrders] = useState([]);
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [mpesaPhoneNumber, setMpesaPhoneNumber] = useState('');
-  const [message, setMessage] = useState('');
-  const [showDelivered, setShowDelivered] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [deliveredCurrentPage, setDeliveredCurrentPage] = useState(1);
-
+const PendingOrders = () => {
   const username = getUsernameFromToken();
-  const ordersPerPage = 6;
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [currentImageIndex, setCurrentImageIndex] = useState({}); // To track the slideshow state per product
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  useEffect(() => {
-    const sortedOrders = [...orders].sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
-    const filtered = sortedOrders.filter(order => showDelivered ? order.isDelivered : !order.isDelivered);
-    setFilteredOrders(filtered);
-  }, [orders, showDelivered, currentPage, deliveredCurrentPage]);
-
-  const fetchOrders = async () => {
-    try {
-      const response = await axios.get(`https://elosystemv1.onrender.com/api/orders/my/${username}`);
-      setOrders(Array.isArray(response.data) ? response.data : []);
-    } catch (error) {
-      console.error('Error fetching orders:', error);
-    }
-  };
-
-  const handleOrderClick = (order) => {
-    setSelectedOrder(selectedOrder === order ? null : order);
-    setMessage('');
-    setMpesaPhoneNumber('');
-  };
-
-  const handleMpesaPhoneNumberChange = (e) => {
-    setMpesaPhoneNumber(e.target.value);
-  };
-
-  const initiatePayment = async (inorderid) => {
-    if (!selectedOrder) return;
-    const payload = {
-      phone: mpesaPhoneNumber,
-      amount: selectedOrder.totalPrice.toFixed(0),
-      orderid: inorderid,
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get(
+          `https://elosystemv1.onrender.com/api/orders/mypending/${username}`
+        );
+        setOrders(response.data);
+      } catch (err) {
+        console.error("Error fetching orders:", err);
+        setError("Failed to fetch orders. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/mpesa/lipa', payload, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
+    fetchOrders();
+  }, [username]);
+
+  useEffect(() => {
+    // Automatically cycle through images for each product every 3 seconds
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => {
+        const updatedIndex = { ...prev };
+        orders.forEach((order) => {
+          order.products.forEach((product) => {
+            const productId = product._id;
+            const imageCount = product.image.length;
+            if (imageCount > 1) {
+              updatedIndex[productId] =
+                (updatedIndex[productId] + 1 || 1) % imageCount;
+            }
+          });
+        });
+        return updatedIndex;
       });
-      setMessage('Payment initiated successfully!');
-      console.log(response.data);
-    } catch (error) {
-      setMessage('Payment initiation failed: ' + (error.response ? error.response.data.message : error.message));
-      console.error('Error:', error);
-    }
-  };
+    }, 2000);
 
-  const confirmDelivery = async (orderId) => {
-    try {
-      const response = await axios.post(`https://elosystemv1.onrender.com/api/order2/${orderId}/deliverypatcher`);
-      setMessage('Delivery confirmed successfully!');
-      console.log(response.data);
-    } catch (error) {
-      setMessage('Delivery confirmation failed: ' + (error.response ? error.response.data.message : error.message));
-      console.error('Error:', error);
-    }
-  };
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, [orders]);
 
-  // Pagination
-  const indexOfLastOrder = (showDelivered ? deliveredCurrentPage : currentPage) * ordersPerPage;
-  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
+  if (loading) {
+    return <p>Loading orders...</p>;
+  }
 
-  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+  if (error) {
+    return <p>{error}</p>;
+  }
 
-  const handlePageChange = (page) => {
-    if (showDelivered) setDeliveredCurrentPage(page);
-    else setCurrentPage(page);
-  };
+  if (orders.length === 0) {
+    return <p>No pending orders found.</p>;
+  }
 
   return (
-    <div className="dsord-orders-page">
-      <h1>My Orders</h1>
-      
-      {/* Toggle Delivered Section */}
-      <button onClick={() => {
-        setShowDelivered(!showDelivered);
-        setCurrentPage(1);
-        setDeliveredCurrentPage(1);
-      }}>
-        {showDelivered ? 'Show Pending Orders' : 'Show Delivered Orders'}
-      </button>
-      
-      {currentOrders.length === 0 ? (
-        <p>No {showDelivered ? 'delivered' : 'pending'} orders found.</p>
-      ) : (
-        <ul className="dsord-orders-list">
-          {currentOrders.map((order) => (
-            <li key={order._id} className="dsord-order-item">
-              <div onClick={() => handleOrderClick(order)} className="dsord-order-summary">
-                <p>Order Date: {new Date(order.orderDate).toLocaleDateString()}</p>
-                <p>Status: {order.isDelivered ? 'Delivered' : order.isDeliveryInProcess ? 'In Process' : 'Pending'}</p>
-                <p>Total: ${order.totalPrice?.toFixed(2) ?? 'N/A'}</p>
-              </div>
-              {selectedOrder === order && (
-                <div className="dsord-order-details">
-                  {!order.paid ? (
-                    <div className="dsord-payment-section">
-                      <label>M-Pesa Phone Number</label>
-                      <input
-                        type="text"
-                        value={mpesaPhoneNumber}
-                        onChange={handleMpesaPhoneNumberChange}
-                        placeholder="2547XXXXXXXX"
-                      />
-                      <button 
-                        onClick={() => initiatePayment(order.orderNumber)} 
-                        className="dsord-action-button"
-                      >
-                        Pay Now
-                      </button>
-                    </div>
-                  ) : (
-                    <button 
-                      onClick={() => confirmDelivery(order.orderNumber)} 
-                      className="dsord-action-button"
-                    >
-                      Confirm Delivery
-                    </button>
+    <div className="divmain">
+      <h1>Pending Orders</h1>
+      {orders.map((order) => (
+        <div key={order.orderId} className="order">
+          <h2>Order ID: {order.orderId}</h2>
+          <div className="products">
+            {order.products.map((product) => (
+              <div key={product._id} className="product">
+                <div className="product-image">
+                  {product.image.length > 0 && (
+                    <img
+                      src={
+                        product.image[currentImageIndex[product._id] || 0]
+                      }
+                      alt={product.name}
+                    />
                   )}
-                  
-                  {message && <p className="dsord-message">{message}</p>}
                 </div>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {/* Pagination Controls */}
-      {totalPages > 1 && (
-        <div className="dsord-pagination">
-          {[...Array(totalPages)].map((_, index) => (
-            <button
-              key={index + 1}
-              onClick={() => handlePageChange(index + 1)}
-              className={index + 1 === (showDelivered ? deliveredCurrentPage : currentPage) ? 'active' : ''}
-            >
-              {index + 1}
-            </button>
-          ))}
+                <div className="product-details">
+                  <h3>{product.name}</h3>
+                  <p>Category: {product.category}</p>
+                  <p>Price: KES {product.price.toLocaleString()}</p>
+                  <p>Quantity: {product.quantity}</p>
+                  <p>
+                    Variance:
+                    {product.variance && product.variance.length > 0 ? (
+                      <ul>
+                        {product.variance.map((variation, index) => (
+                          <li key={index}>
+                            {variation.color && `Color: ${variation.color}`}
+                            {variation.size &&
+                              variation.size.length > 0 &&
+                              `, Size: ${variation.size.join(", ")}`}
+                            {variation.material &&
+                              `, Material: ${variation.material}`}
+                            {variation.model && `, Model: ${variation.model}`}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      " N/A"
+                    )}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      )}
+      ))}
     </div>
   );
 };
 
-export default OrdersPage;
+export default PendingOrders;

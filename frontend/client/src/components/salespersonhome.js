@@ -11,6 +11,7 @@ import { getUsernameFromToken, getcategoryFromToken } from '../utils/auth';
 import Cart from './Cart';
 import AppDownloadQRIcon from './qrCode';
 import Footer from './Footer';
+import Qrscaner from './qrscaner';
 import NewProductList from './NewProductList';
 import Displayorder from './displayorder';
 import Header from './header';
@@ -19,6 +20,7 @@ import Settings from './settings';
 import FeedbackForm from './Feedback';
 import './styles/salespersonhome.css';
 import { Alert} from 'react-bootstrap';
+import { useIsMobile } from '../utils/mobilecheck';
 
 const Home = () => {
   const [cart, setCart] = useState([]);
@@ -39,8 +41,9 @@ const Home = () => {
   const [isFeedbackVisible, setIsFeedbackVisible] = useState(false); 
   const [isQrScannerVisible, setIsQrScannerVisible] = useState(false); // QR Scanner State
   const [qrResult, setQrResult] = useState('');
- 
-  
+  const [setnavop, setsetnavop] = useState(false);
+  const isMobile = useIsMobile();
+
   useEffect(() => {
     // If apptoken is set, use it to set the token and navigate based on the app category
     if (apptoken) {
@@ -95,23 +98,18 @@ const Home = () => {
   const handleLogout = () => {
     navigate('/logout');
   };
-  const toggleFeedback = () => {
-    if (!username) {
-      setLoginPrompt('You have to sign in to send feedback.');
-      return;
-    }
-    setIsFeedbackVisible(!isFeedbackVisible);
-    
-  };
-
+  
 
   // Handle back button press
   useEffect(() => {
-    const handlePopState = () => {
+    const handlePopState = async () => {
+      setIsQrScannerVisible(false);
       setIsOrderVisible(false);
       setIsCartVisible(false);
+      setIsFeedbackVisible(false);
       setIsSettingsVisible(false);
       setIsNotificationsVisible(false);// If no floating sections are open, navigate back
+      
     };
 
     window.addEventListener('popstate', handlePopState);
@@ -120,59 +118,100 @@ const Home = () => {
     };
   }, [ navigate]);
 
-  const toggleCart = () => {
+
+    const toggleFeedback = async () => {
+    if (!username) {
+      setLoginPrompt('You have to sign in to send feedback.');
+      return;
+    }
+    
+    setIsFeedbackVisible(!isFeedbackVisible);
+    setIsOrderVisible(false);
+    setIsCartVisible(false);
+    setIsSettingsVisible(false);
+    setIsNotificationsVisible(false);
+    setIsQrScannerVisible(false);
+    setsetnavop(!isFeedbackVisible);
+  };
+  const toggleCart = async () => {
     if (!username) {
       setLoginPrompt('You have to sign in to open the cart.');
       return;
     }
     fetchCart();
+    setIsFeedbackVisible(false);
     setIsCartVisible(!isCartVisible);
     setIsSettingsVisible(false);
     setIsOrderVisible(false);
     setIsNotificationsVisible(false);
+    setIsQrScannerVisible(false);
+    setsetnavop(!isCartVisible);
   };
 
-  const toggleSettings = () => {
+  const toggleSettings = async () => {
     if (!username) {
       setLoginPrompt('You have to sign in to open settings.');
       return;
     }
+
+    setIsFeedbackVisible(false);
     setIsSettingsVisible(!isSettingsVisible);
     setIsCartVisible(false);
     setIsOrderVisible(false);
     setIsNotificationsVisible(false);
+    setIsQrScannerVisible(false);
+    setsetnavop(!isSettingsVisible);
   };
 
-  const toggleOrder = () => {
+  const toggleOrder = async () => {
     if (!username) {
       setLoginPrompt('You have to sign in to access your order.');
       return;
     }
+
+    setIsFeedbackVisible(false);
     setIsOrderVisible(!isOrderVisible);
     setIsCartVisible(false);
     setIsSettingsVisible(false);
     setIsNotificationsVisible(false);
+    setIsQrScannerVisible(false);
+    setsetnavop(!isOrderVisible);
   };
 
-  const toggleNotifications = () => {
+  const toggleNotifications = async () => {
     if (!username) {
       setLoginPrompt('You have to sign in to view your notifications.');
       return;
     }
+
+    setIsFeedbackVisible(false);
     fetchUnreadNotifications();
     setIsNotificationsVisible(!isNotificationsVisible);
     setIsCartVisible(false);
     setIsSettingsVisible(false);
     setIsOrderVisible(false);
+    setIsQrScannerVisible(false);
+    setsetnavop(!isNotificationsVisible);
   };
+
+  const toggleQRScanner = async () => {
+
+    setIsQrScannerVisible(!isQrScannerVisible);
+    setIsFeedbackVisible(false);
+    fetchUnreadNotifications();
+    setIsNotificationsVisible(false);
+    setIsCartVisible(false);
+    setIsSettingsVisible(false);
+    setIsOrderVisible(false);
+    setsetnavop(!isQrScannerVisible);
+  };
+  
 
   const toggleNav = () => {
     setIsNavVisible(!isNavVisible);
   };
 
-  const toggleQRScanner = () => {
-    setIsQrScannerVisible(!isQrScannerVisible);
-  };
+
 
   return (
     <div className="salesp-home">
@@ -182,7 +221,83 @@ const Home = () => {
           {loginPrompt} <a href="/login">Sign In</a> or <a href="/register">Register</a>
         </Alert>
       )}
-      <main className="salesp-main">
+
+      {isMobile ? (
+              <main className="salesp-main">
+                {!setnavop ?
+                (
+                  <div className="salesp-home-intro">
+                      <NewProductList />
+                  </div>
+                ):
+                (
+                  <>
+                    {/* Settings Section */}
+                    {isSettingsVisible && (
+                      <section className="salesp-settings-section">
+                        <Settings />
+                        <button className="salesp-toggle-settings" onClick={toggleSettings}>
+                          <IoClose />
+                        </button>
+                      </section>
+                    )}
+                    {/* Display Order Section */}
+                    {isOrderVisible && (
+                      <section className="salesp-order-section">
+                        <Displayorder />
+                        <button className="salesp-toggle-order" onClick={toggleOrder}>
+                          <IoClose />
+                        </button>
+                      </section>
+                    )}
+                    {/* Notifications Section */}
+                    {isNotificationsVisible && (
+                      <section className="salesp-notifications-section">
+                        <Notifications username={username} onMarkAsRead={() => setUnreadCount((count) => count - 1)} />
+                        <button className="salesp-toggle-notifications" onClick={toggleNotifications}>
+                          <IoClose />
+                        </button>
+                      </section>
+                    )}
+                    {/* Cart Section */}
+                    {isCartVisible && (
+                      <div className="salesp-order-section">
+                        {!loading && !error ? (
+                          cart.length > 0 ? (
+                            <Cart cart={cart} setCart={setCart} />
+                          ) : (
+                            <p>Your cart is empty.</p>
+                          )
+                        ) : null}
+                      </div>
+            
+                    )}
+                    {/* Feedback Section */}
+                    {isFeedbackVisible && (
+                      <section  className="salesp-settings-section">
+                        <FeedbackForm />
+                        <button onClick={toggleFeedback}>
+                          <IoClose />
+                        </button>
+                      </section>
+                    )}
+                    {/* QR Scanner Section */}
+                    {isQrScannerVisible && (
+                      <div className="salesp-settings-section">
+                        <h4>Scan QR Code</h4>
+                        <Qrscaner/>
+                        <p>Scanned Result: {qrResult}</p>
+                        <button onClick={toggleQRScanner}>
+                          <IoClose /> Close Scanner
+                        </button>
+                      </div>
+                    )}
+                  </>
+                )}
+
+            </main>
+      ):(
+        <main className="salesp-main">
         <div className="salesp-home-intro">
           <NewProductList />
         </div>
@@ -191,62 +306,48 @@ const Home = () => {
         {isSettingsVisible && (
           <section className="salesp-settings-section">
             <Settings />
-            <button className="salesp-toggle-settings" onClick={toggleSettings}>
-              <IoClose />
-            </button>
+
           </section>
         )}
-
         {/* Display Order Section */}
         {isOrderVisible && (
           <section className="salesp-order-section">
             <Displayorder />
-            <button className="salesp-toggle-order" onClick={toggleOrder}>
-              <IoClose />
-            </button>
+
           </section>
         )}
-
         {/* Notifications Section */}
         {isNotificationsVisible && (
           <section className="salesp-notifications-section">
             <Notifications username={username} onMarkAsRead={() => setUnreadCount((count) => count - 1)} />
-            <button className="salesp-toggle-notifications" onClick={toggleNotifications}>
-              <IoClose />
-            </button>
+
           </section>
         )}
-
         {/* Cart Section */}
         {isCartVisible && (
           <div className="salesp-order-section">
-            {!loading && !error && cart.length > 0 && <Cart cart={cart} setCart={setCart} />}
+            {!loading && !error ? (
+              cart.length > 0 ? (
+                <Cart cart={cart} setCart={setCart} />
+              ) : (
+                <p>Your cart is empty.</p>
+              )
+            ) : null}
           </div>
+
         )}
-        
         {/* Feedback Section */}
         {isFeedbackVisible && (
           <section  className="salesp-settings-section">
             <FeedbackForm />
-            <button onClick={toggleFeedback}>
-              <IoClose />
-            </button>
+
           </section>
         )}
         {/* QR Scanner Section */}
         {isQrScannerVisible && (
-          <div className="qr-scanner-container">
+          <div className="salesp-settings-section">
             <h4>Scan QR Code</h4>
-            <AppDownloadQRIcon
-              onResult={(result, error) => {
-                if (result) {
-                  setQrResult(result?.text);
-                  setIsQrScannerVisible(false);
-                }
-                if (error) console.error('QR Error:', error);
-              }}
-              style={{ width: '100%' }}
-            />
+            <Qrscaner/>
             <p>Scanned Result: {qrResult}</p>
             <button onClick={toggleQRScanner}>
               <IoClose /> Close Scanner
@@ -254,6 +355,8 @@ const Home = () => {
           </div>
         )}
       </main>
+      )}
+
 
       {/* Floating Buttons for Toggle */}
       <div className="salesp-floating-buttons">
@@ -275,7 +378,7 @@ const Home = () => {
                       <FaBell />
                       {unreadCount > 0 && <span className="salesp-notification-count">{unreadCount}</span>}
                     </button>
-                    <button className="salesp-toggle-button">
+                    <button className="salesp-toggle-button" onClick={toggleQRScanner}>
                       <AiOutlineQrcode />
                     </button>
                     <button className="salesp-toggle-button"  onClick={toggleFeedback}>

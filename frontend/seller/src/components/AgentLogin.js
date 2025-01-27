@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getUsernameFromToken, getcategoryFromToken } from '../utils/auth';
 import './styles/Login.css';
-
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -14,6 +14,7 @@ const Login = () => {
   const token = localStorage.getItem('token');
   const apptoken = localStorage.getItem('apptoken');
   const appcat = localStorage.getItem('appcat');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // If apptoken is set, use it to set the token and navigate based on the app category
@@ -21,12 +22,12 @@ const Login = () => {
       localStorage.setItem('token', apptoken);
       if (appcat) {
         switch (appcat.trim().toLowerCase()) {
-          case 'seller':
+          case 'agent':
             sessionStorage.setItem('username', getUsernameFromToken());
-            navigate('/home');
+            navigate('/agentdash');
             break;
           default:
-            setMessage('Failed to login, This is for sellers only.');
+            setMessage('Failed to login, This is for Agents only.');
             break;
         }
       }
@@ -55,7 +56,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
-
+    setLoading(true);
     try {
       const response = await axios.post('https://elosystemv1.onrender.com/api/agent/login', {
         username: username.trim(),
@@ -67,17 +68,18 @@ const Login = () => {
       sessionStorage.setItem('amount', response.data.amount);
       localStorage.setItem('apptoken', response.data.token);
       localStorage.setItem('appcat', response.data.category.trim().toLowerCase());
-
+      setLoading(false);
       const category = response.data.category.trim().toLowerCase();
-      if (category === 'seller')
+      if (category === 'agent')
       {
         sessionStorage.setItem('username', response.data.username);
-        navigate('/home');
-      }else if (category === 'Salesperson'){
-        setMessage('Failed to login, This is for sellers only.');
+        navigate('/agentdash');
+      }else{
+        setMessage('Failed to login, This is for Agents only.');
       }
 
     } catch (error) {
+      setLoading(false);
       if (error.response && error.response.data) {
         setMessage(error.response.data.message);
       } else {
@@ -93,11 +95,13 @@ const Login = () => {
   const sendRecovEmail = async (e) => {
     e.preventDefault();
     setMessage('');
-
+    setLoading(true);
     try {
       const response = await axios.post('https://elosystemv1.onrender.com/api/agent/recoverpassword', { username });
       setMessage(response.data.message);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       if (error.response && error.response.data) {
         setMessage(error.response.data.message);
       } else {
@@ -135,10 +139,14 @@ const Login = () => {
                 className="toggle-password"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? 'Hide' : 'Show'}
+                {showPassword ? <FaRegEyeSlash/> : <FaRegEye/>}
               </button>
             </div>
-            <button type="submit">Login</button>
+            <button type="submit">
+              {loading ? 
+                    <div className="spinne_r"></div>
+                  : "Login"}  
+            </button>
             <button type="button" onClick={handleRecoverPassword}>Forgot Password</button>
             <p>Verify your account <Link to="/agentVerification">Verify Account</Link></p>
             <p>If you don't have an account <Link to="/agentRegister">Register</Link></p>
@@ -154,7 +162,9 @@ const Login = () => {
               onChange={(e) => setUsername(e.target.value)}
               required
             />
-            <button type="submit">Recover password</button>
+            <button type="submit">
+            {loading ? <div className="spinne_r"></div>: "Recover password"}  
+            </button>
             <button type="button" onClick={handleRecoverPassword}>Back</button>
           </div>
         )}

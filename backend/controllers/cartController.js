@@ -19,6 +19,7 @@ exports.getCart = async (req, res) => {
         return {
           product,
           quantity: item.quantity,
+          variant: item.variant,
         };
       })
     );
@@ -37,7 +38,7 @@ exports.getCart = async (req, res) => {
 
 exports.addToCart = async (req, res) => {
   try {
-    const { username, productId, quantity } = req.body; // Get username from the request body
+    const { username, productId, quantity, variant } = req.body; // Get username from the request body
     let cart = await Cart.findOne({ user: username });
 
     if (cart) {
@@ -45,12 +46,12 @@ exports.addToCart = async (req, res) => {
       if (itemIndex > -1) {
         cart.items[itemIndex].quantity += quantity;
       } else {
-        cart.items.push({ product: productId, quantity });
+        cart.items.push({ product: productId, quantity, variant });
       }
     } else {
       cart = new Cart({
         user: username,
-        items: [{ product: productId, quantity }],
+        items: [{ product: productId, quantity, variant }],
       });
     }
     await cart.save();

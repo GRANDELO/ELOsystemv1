@@ -135,7 +135,7 @@ const NewProductList = () => {
     const fetchProducts = async () => {
       try {
         const response = await axiosInstance.get('/products');
-        setProducts(response.data.products);
+        setProducts(response.data.products.sort(() => Math.random() - 0.5));
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -352,7 +352,7 @@ const NewProductList = () => {
                       </p>
                     </>
                   ) : (
-                    <h4>Ksh {product.price.toFixed(2)}</h4>
+                    <h4 className='product-prices'>Ksh {product.price.toFixed(2)}</h4>
                   )}
                 </div>
               </div>

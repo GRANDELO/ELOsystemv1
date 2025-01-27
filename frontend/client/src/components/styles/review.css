@@ -2,8 +2,8 @@
 .revp-container {
     font-family: Arial, sans-serif;
     padding: 20px;
-    background-color: #f9f9f9;
-    color: #333;
+    background-color: var(--bg-color-light);
+    color: var(--text-color-light);
     max-width: 800px;
     margin: 0 auto;
     border-radius: 10px;
@@ -12,14 +12,14 @@
   
   .revp-header {
     text-align: center;
-    color: #1d4ed8;
+    color: var(--text-color-light);
     margin-bottom: 20px;
   }
   
   .revp-add-edit-container {
     margin-bottom: 20px;
     padding: 15px;
-    background-color: #ffffff;
+    background-color: var(--overlay-light);
     border: 1px solid #e1e1e1;
     border-radius: 8px;
   }
@@ -32,7 +32,7 @@
   .revp-review-item {
     margin-bottom: 15px;
     padding: 15px;
-    background-color: #ffffff;
+    background-color: var(--overlay-light);
     border: 1px solid #e1e1e1;
     border-radius: 8px;
     position: relative;
@@ -51,12 +51,12 @@
   .revp-review-content {
     font-size: 16px;
     margin-bottom: 10px;
-    color: #555;
+    color:var(--text-color-light);
   }
   
   .revp-review-author {
     font-size: 14px;
-    color: #888;
+    color: var(--text-color-light);
   }
   
   .revp-buttons {
@@ -68,17 +68,13 @@
   .revp-button {
     font-size: 14px;
     padding: 8px 12px;
-    color: #fff;
-    background-color: #1d4ed8;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
   
-  .revp-button:hover {
-    background-color: #174ab0;
-  }
+
   
   .revp-delete-button {
     background-color: #d11a2a;

@@ -1,0 +1,92 @@
+/* General Styles */
+.packages-container {
+  max-width: 800px;
+  margin: 40px auto;
+  background: var(  --bg-color-light);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.page-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: var(  --input-text-color);
+  text-align: center;
+}
+
+/* Filter Buttons */
+.filter-buttons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.filter-button {
+  padding: 10px 15px;
+  margin: 0 5px;
+  border: none;
+  border-radius: 5px;
+  color: var(--input-text-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+
+
+/* Package List */
+.packages-list {
+  list-style: none;
+  padding: 0;
+}
+
+.package-card {
+  margin: 15px 0;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: var(  --overlay-light);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.package-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.package-card p {
+  margin: 5px 0;
+  font-size: 16px;
+  color: var(--input-text-color);
+}
+
+.package-card strong {
+  color: var(--input-text-color);
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 8px 12px;
+
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.pagination button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-size: 16px;
+  color: var(--input-text-color);
+}

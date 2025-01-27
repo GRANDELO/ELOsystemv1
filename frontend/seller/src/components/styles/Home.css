@@ -1,3 +1,13 @@
+:root {
+  /* Light theme variables */
+
+}
+
+[data-theme="dark"] {
+  
+
+}
+
 /* General Styles for Home Page */
 .home {
   display: flex;
@@ -7,15 +17,6 @@
   font-family: 'Poppins', sans-serif;
   color: #333;
   overflow-x: hidden;
-  background-color: #f7f9fc;
-}
-
-.home-footer {
-  background-color: #333;
-  color: white;
-  padding: 20px;
-  text-align: center;
-  font-size: 0.9rem;
 }
 
 .home-main {
@@ -26,38 +27,16 @@
 
 /* User Section */
 .home-user-section {
-  background-color: #f7f9fc;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 20px;
   max-width: 300px;
 }
 
-/* Settings Buttons */
-.home-settings-button {
-  background-color: #0056b3;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin: 5px;
-}
-
-.home-settings-button:hover {
-  background-color: #003e80;
-}
-
-.home-settings-button.active {
-  background-color: #003e80;
-}
-
 /* Intro Section */
 .home-intro {
   flex-grow: 1;
-  background-color: #fff;
+  background-color: var(--overlay-light);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -84,27 +63,9 @@
   align-items: center;
   min-height: 100px;
   font-size: 18px;
-  color: #666;
+  color: var(--loading);
 }
 
-/* Product Card Section */
-.home-product-card {
-  background-color: white;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
-}
-
-.home-product-card:hover {
-  transform: translateY(-5px);
-}
-
-.home-product-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-}
 
 /* Settings and Notifications Sections */
 .home-settings-section,
@@ -118,7 +79,7 @@
 
 .home-settings-section div{
     margin: 10px;
-    background-color: rgba(0, 78, 155, 0.288);
+    background-color: var(--overlay-light);
 }
 
 .home-settings-section.active,
@@ -127,20 +88,6 @@
   display: flex;
 }
 
-.home-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-}
-
-.home-overlay.active {
-  display: block;
-}
 
 /* Floating Buttons */
 .salesp-floating-buttons {
@@ -149,19 +96,20 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  font-size: 14px;
   z-index: 1000000;
-  bottom: 60px;
+  bottom: 90px;
   
 }
 
 .salesp-toggle-button {
+  position: relative;
   width: 50px;
   height: 50px;
-  background-color: #0056b3;
   color: white;
   border: none;
   border-radius: 50%;
-  font-size: 18px;
+  font-size: 2rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -171,26 +119,37 @@
 }
 
 .salesp-toggle-button:hover {
-  background-color: #003e80;
   transform: scale(1.1);
+  font-size: 2rem;
 }
+
 
 .salesp-notification-count {
   position: absolute;
-  top: 5px;
-  right: 5px;
-  background: red;
+  top: 0;
+  right: 2px;
+  background-color: red;
   color: white;
   font-size: 12px;
+  font-weight: bold;
+  padding: 3px 6px;
   border-radius: 50%;
-  padding: 2px 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .home-main {
+    padding: 0px;
+  }
   .home-toggle-buttons {
     flex-direction: column;
     align-items: center;
+
   }
 
   .home-settings-button {
@@ -198,7 +157,7 @@
   }
 
   .salesp-floating-buttons {
-    bottom: 60px;
+    bottom: 90px;
     right: 10px;
   }
 
@@ -213,7 +172,7 @@
   .home-settings-section div{
     margin: 10px;
     align-items: center;
-    background-color: rgba(0, 78, 155, 0.288);
+    background-color: var(--overlay-light);
 }
 
   /*
@@ -238,32 +197,7 @@
   
 }
 /* General styles */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-}
 
-.container {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 16px;
-}
-
-.main-content {
-  flex: 1;
-  padding: 16px;
-}
-
-
-
-/* Styles for larger screens */
-@media (min-width: 768px) {
-  .container {
-    flex-wrap: nowrap;
-  }
-
-
-}
 
 /* Styles for smaller screens */
 @media (max-width: 767px) {
@@ -279,25 +213,6 @@ body {
   }
 }
 
-.toggle-btn {
-  position: fixed;
-  bottom: 60px;
-  right: 10px;
-  z-index: 1001;
-  padding: 10px 15px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  display: none; /* Hidden on larger screens */
-}
-
-@media (max-width: 767px) {
-  .toggle-btn {
-    display: block;
-  }
-}
 
 /* Hide floating section when toggled */
 .hidden {

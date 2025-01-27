@@ -1,0 +1,56 @@
+.trial-balance-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .trial-balance-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .trial-balance-container p {
+    text-align: center;
+    font-size: 1.1em;
+    color: #555;
+  }
+  
+  .trial-balance-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .trial-balance-table th,
+  .trial-balance-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .trial-balance-table th {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  .trial-balance-table tfoot tr td {
+    font-weight: bold;
+  }
+  
+  .balanced {
+    color: green;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .not-balanced {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+  }
+  

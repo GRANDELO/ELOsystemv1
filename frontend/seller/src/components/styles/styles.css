@@ -122,34 +122,3 @@ a:hover {
   padding-right: 40px;
 }
 
-.toggle-password {
-  position: absolute;
-  background: none;
-  color: #555;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  outline: none;
-  width: 0px;
-  height: 0px;
-  left: 70%;
-  top: 3%;
-}
-.toggle-password:hover
-{
-  background: none;
-  width: 0px;
-  height: 0px;
-  position: absolute;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  outline: none;
-  left: 70%;
-  top: 3%;
-}
-
-.toggle-password:focus {
-  outline: none;
-}

@@ -272,8 +272,7 @@ const NewProductForm = () => {
         <option value="collaborator">Collaborator</option>
       </select>
 
-      {newProduct.type === 'collaborator' && (
-        <div>
+      <div>
           <h4>Collaborators</h4>
           {newProduct.collaborators.map((collaborator, index) => (
             <div key={index}>
@@ -307,7 +306,6 @@ const NewProductForm = () => {
             Add Collaborator
           </button>
         </div>
-      )}
 
       <label>
         Images:

@@ -1,0 +1,104 @@
+/* General container styles */
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    font-family: "Poppins", sans-serif;
+    background: var(  --bg-color-light);
+    overflow: hidden;
+  }
+  
+  /* Sidebar styles */
+  .dashboard-sidebar {
+    width: 300px;
+    background: var( --overlay-light);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    gap: 20px;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .dashboard-sidebar button {
+    width: 100%;
+    border-radius: 10px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 10px;
+    transition: all 0.3s ease;
+  }
+  
+  .dashboard-sidebar button:hover {
+    transform: scale(1.05);
+  }
+  
+  .dashboard-sidebar button:focus {
+    outline: none;
+    color: white;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.8);
+  }
+  
+  .dashboard-sidebar button i {
+    font-size: 20px;
+  }
+  
+  /* Active button styling */
+  .dashboard-sidebar button.active {
+    background: #007bff;
+    color: white;
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+  }
+  
+  /* Content area styles */
+  .dashboard-content {
+    flex-grow: 1;
+    background: var(--bg-color-light);
+    padding: 30px;
+    border-radius: 20px 0 0 20px;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  /* Smooth content fade-in */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .dashboard-container {
+      flex-direction: column;
+    }
+  
+    .dashboard-sidebar {
+      flex-direction: column;
+      width: 100%;
+      gap: 10px;
+      border-right: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      overflow-x: auto;
+    }
+
+  
+    .dashboard-content {
+      padding: 15px;
+      border-radius: 0;
+      box-shadow: none;
+    }
+  }
+  

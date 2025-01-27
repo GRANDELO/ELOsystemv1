@@ -1,14 +1,20 @@
 import axiosInstance from './axiosInstance';
 import { QRCodeCanvas } from 'qrcode.react';
-import React, { useEffect, useState } from 'react'; 
+import React, { useEffect, useState, useRef } from 'react'; 
 import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { useCart } from '../contexts/CartContext';
 import { getUsernameFromToken } from '../utils/auth';
 import './styles/ProductModal.css';
 import ReviewList from "./ReviewList";
+import ProductsDetail from "./ProductsDetail";
+import Productimage from "./productimage";
+
 import AddEditReview from "./AddEditReview";
+import ico from "./images/log.png";
+import QRCode from "qrcode";
 
 const ProductModal = ({ product, show, handleClose }) => {
+  const canvasRef = useRef();
   const { dispatch } = useCart();
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -20,7 +26,10 @@ const ProductModal = ({ product, show, handleClose }) => {
   const username = getUsernameFromToken();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loginPrompt, setLoginPrompt] = useState('');
-
+  const [loading, setLoading] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState({});
+  const [filteredVariations, setFilteredVariations] = useState(product.variations || []); 
+  const [showcore, setShowcore ] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [reviewToEdit, setReviewToEdit] = useState(null);
   const currentUser = getUsernameFromToken(); // Replace with getUsernameFromToken();
@@ -47,6 +56,11 @@ const ProductModal = ({ product, show, handleClose }) => {
     };
   }, [show, handleClose]);
   
+  useEffect(() => {
+    generateQRCode();
+  }, [sellerOrderId, product]);
+
+
   // Handle the image index change every 4 seconds if product has multiple images
   useEffect(() => {
     if (product?.images?.length > 1) {
@@ -71,14 +85,20 @@ const ProductModal = ({ product, show, handleClose }) => {
         setError('Quantity must be at least 1');
         return;
       }
-
+      setLoading(true);
+      console.log("Selected Variations:", selectedVariant);
       const addResponse = await axiosInstance.post('/cart/cart/add', 
-        { username, productId: product._id, quantity }
+        { username, productId: product._id, quantity, variant: selectedVariant,  }
       );
 
       setMessage(addResponse.data.message);
-
+      setTimeout(() => {
+        setLoading(false);
+        handleClose();
+      }, 2000);
+      
     } catch (err) {
+      setLoading(false);
       console.error('Failed to add to cart:', err);
       setError(err.response?.data?.message || 'Failed to add to cart');
     }
@@ -89,6 +109,7 @@ const ProductModal = ({ product, show, handleClose }) => {
       setLoginPrompt('You have to sign in to complete the order.');
       return;
     }
+    setShowcore(!showcore);
     setShowMpesaInput(true); 
     setMessage('');
     setError('');
@@ -145,13 +166,7 @@ const ProductModal = ({ product, show, handleClose }) => {
     window.URL.revokeObjectURL(url);
   };
 
-  const downloadQRCode = () => {
-    const qrCodeUrl = document.getElementById('qrCode').toDataURL('image/png');
-    const link = document.createElement('a');
-    link.href = qrCodeUrl;
-    link.download = `${product.name}_QR.png`;
-    link.click();
-  };
+
 
   if (!product) return null;
 
@@ -195,6 +210,67 @@ const ProductModal = ({ product, show, handleClose }) => {
 
   const { discountedPrice, discountAmount } = calculateDiscountedPrice(product);
 
+  const handleVariantChange = (type, value) => {
+    setSelectedVariant((prev) => ({
+      ...prev,
+      [type]: value, // Add or update the selected field
+      productId: product._id, // Ensure productId is included
+    }));
+  };
+
+
+
+
+
+
+
+
+  const generateQRCode = async () => {
+    try {
+      const canvas = canvasRef.current;
+      const qrCodeData = `https://baze-link.web.app/coreorder?sellerOrderId=${sellerOrderId}&productId=${product._id}`;
+
+      // Generate QR code
+      await QRCode.toCanvas(canvas, qrCodeData, {
+        width: 300, // Adjust QR code size
+        margin: 2,
+        errorCorrectionLevel: "H",
+      });
+
+      // Draw the logo in the center
+      const context = canvas.getContext("2d");
+      const img = new Image();
+      img.src = ico;
+
+      img.onload = () => {
+        const logoSize = canvas.width * 0.2; // Logo size is 20% of QR code width
+        const x = (canvas.width - logoSize) / 2;
+        const y = (canvas.height - logoSize) / 2;
+
+        // Optional: Add a white background behind the logo for better contrast
+        context.fillStyle = "white";
+        context.fillRect(x - 5, y - 5, logoSize + 10, logoSize + 10);
+
+        // Draw the logo
+        context.drawImage(img, x, y, logoSize, logoSize);
+      };
+    } catch (error) {
+      console.error("Failed to generate QR code:", error);
+    }
+  };
+
+  const downloadQRCode = () => {
+    const canvas = canvasRef.current;
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png");
+    link.download = "qr-code.png";
+    link.click();
+  };
+
+
+
+
+  
   return (
     <Modal
       className="custom-modal"
@@ -207,15 +283,16 @@ const ProductModal = ({ product, show, handleClose }) => {
         setShowMpesaInput(false);
         setSellerOrderId('');
         setMpesaNumber('');
+        setSelectedVariant({});
+        setFilteredVariations(product.variations || []);
       }}
     >
       <Modal.Header closeButton>
         <Modal.Title className="modal-title">{product.name}</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
-        {message && <Alert variant="success">{message}</Alert>}
-        {error && <Alert variant="danger">{error}</Alert>}
 
+      {!showcore ? (
+        <Modal.Body>
         <div className="product-details-container">
           {/* Product Image Section */}
           <div className="product-image-container">
@@ -232,7 +309,11 @@ const ProductModal = ({ product, show, handleClose }) => {
 
           {/* Product Info Section */}
           <div className="product-info">
-            <p className="product-description">{product.description}</p>
+          <div
+            className="product-description"
+            dangerouslySetInnerHTML={{ __html: product.description }}
+          ></div>
+
             <p className="product-category">Category: {product.category}</p>
             {product.label && <span className="product-badge">{product.label}</span>}
 
@@ -251,6 +332,75 @@ const ProductModal = ({ product, show, handleClose }) => {
                 <p className="new-price">Ksh {product.price.toFixed(2)}</p>
               )}
             </div>
+
+            <div className="product-features">
+              {product.features && product.features.length > 0 ? (
+                
+                <ul>
+                  <h3>Features:</h3>
+                  {product.features.map((feature, index) => (
+                    <li key={index}>
+                      <strong>{feature.type}:</strong> {feature.specification}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                ""
+              )}
+            </div>
+
+            <div className="product-variations">
+              {product.variations && product.variations.length > 0 ? (
+                <>
+                  <h3>Select Your Variations:</h3>
+                  {['color', 'size', 'material', 'style'].map((field, index) => (
+                    <div key={field} className="variant-selection">
+                      <label htmlFor={field}>
+                        {field.charAt(0).toUpperCase() + field.slice(1)}:
+                      </label>
+                      <select
+                        id={field}
+                        name={field}
+                        onChange={(e) => handleVariantChange(field, e.target.value)}
+                        value={selectedVariant[field] || ''}
+                        disabled={
+                          index > 0 &&
+                          !selectedVariant[Object.keys(selectedVariant)[index - 1]]
+                        }
+                      >
+                        <option value="" disabled>
+                          Select {field.charAt(0).toUpperCase() + field.slice(1)}
+                        </option>
+
+                        {field === 'size' ? (
+                          [
+                            ...new Set(filteredVariations.flatMap((variation) => variation.size)),
+                          ].map((size, idx) => (
+                            <option key={idx} value={size}>
+                              {size}
+                            </option>
+                          ))
+                        ) : (
+                          filteredVariations
+                            .map((variation) => variation[field])
+                            .filter((value, i, self) => self.indexOf(value) === i)
+                            .map((option, idx) => (
+                              <option key={idx} value={option}>
+                                {option}
+                              </option>
+                            ))
+                        )}
+                      </select>
+                    </div>
+                  ))}
+                </>
+              ) : (
+                ""
+              )}
+            </div>
+
+
+
           </div>
         </div>
 
@@ -276,53 +426,79 @@ const ProductModal = ({ product, show, handleClose }) => {
               onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
             />
           </Form.Group>
-
-          {product.price > 500 && (
-            <div className="core-sell-section">
-              <Button variant="warning" onClick={handleCoreSellButtonClick}>
-                Core Sell
-              </Button>
-              {showMpesaInput && (
-                <Form.Group controlId="mpesaNumber">
-                  <Form.Label>MPesa Number</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter MPesa number"
-                    value={mpesaNumber}
-                    onChange={(e) => setMpesaNumber(e.target.value)}
-                  />
-                  <Button variant="success" onClick={handleCoreSell}>
-                    Confirm Core Sell
-                  </Button>
-                </Form.Group>
-              )}
-              {showQrCode && sellerOrderId && (
-                <div className="qr-section">
-                  <QRCodeCanvas
-                    id="qrCode"
-                    value={`https://grandelo.web.app/coreorder?sellerOrderId=${sellerOrderId}&productId=${product._id}`}
-                    size={150}
-                  />
-                  <Button variant="primary" onClick={downloadQRCode}>
-                    Download QR Code
-                  </Button>
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </Modal.Body>
+      ): (
+        <>
+          {product.price > 500 && (
+          <div className="core-sell-section">
+
+            {showMpesaInput && (
+              <Form.Group controlId="mpesaNumber">
+                <Form.Label>MPesa Number</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter MPesa number"
+                  value={mpesaNumber}
+                  onChange={(e) => setMpesaNumber(e.target.value)}
+                />
+                <Button variant="success" onClick={handleCoreSell}>
+                  Confirm Core Sell
+                </Button>
+              </Form.Group>
+            )}
+            {showQrCode && sellerOrderId && (
+              <div style={{ textAlign: "center" }}>
+              <canvas ref={canvasRef} />
+              <button
+                onClick={downloadQRCode}
+                style={{
+                  marginTop: "20px",
+                  padding: "10px 20px",
+                  background: "blue",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Download QR Code
+              </button>
+              <ProductsDetail product={product} />
+              <Productimage product={product}  />
+              </div>
+              
+
+            )}
+          </div>
+        )}
+        </>
+
+      )}
+
+
+
+
+
+
       {loginPrompt && (
         <Alert variant="warning" className="ordcore-alert">
           {loginPrompt} <a href="/login">Sign In</a> or <a href="/register">Register</a>
         </Alert>
       )}
+        {message && <Alert variant="success">{message}</Alert>}
+        {error && <Alert variant="danger">{error}</Alert>}
       <Modal.Footer>
+        <Button variant="warning" onClick={handleCoreSellButtonClick}>
+        {showcore ? "Back" : "Core Sell"}
+          
+        </Button>
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
         <Button variant="primary" onClick={handleAddToCart}>
-          Add to Cart
+        {loading ? "Adding..." : "Add to Cart"}
+          
         </Button>
       </Modal.Footer>
     </Modal>

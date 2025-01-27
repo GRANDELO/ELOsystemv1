@@ -17,8 +17,25 @@ import Loginselectore from './components/loginselectore';
 import Agentpros from './components/agentpros';
 import Agentinput from './components/agentinput';
 import Agentboxdisp from './components/agentboxdisp';
+import Agentboxinput from './components/agentboxinput';
+import Agentdash from './components/agentdash';
+import AgentLogout from './components/agentLogout';
+import Agentsettings from './components/Agentsettings';
 
+import Talk from './components/talk';
 
+import DeliveryLogout from './components/deliveryLogout';
+import DeliveryLogin from './components/deliveryLogin';
+import DeliveryRegister from './components/deliveryRegister';
+import DeliverySuccess from './components/deliverySuccess';
+import Deliverypasswordreset from './components/deliverypasswordreset';
+import DeliveryVerification from './components/deliveryVerification';
+import Deliveryaccept from './components/deliveryaccept';
+import Deliverydisp from './components/deliverydisp';
+import Deliverydash from './components/deliverydash';
+
+import MM from './components/mm';
+import Generators from './components/generators';
 
 import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
@@ -44,7 +61,8 @@ import Upload from './components/upload';
 
 import ChatList from "./components/ChatList";
 import ChatDetails from "./components/ChatDetails";
-
+import Colabonewproduct from "./components/colabonewproduct";
+import ThemeProvider from "./ThemeContext";
 import './main.css';
 
 const socket = io('https://elosystemv1.onrender.com');
@@ -82,10 +100,14 @@ const App = () => {
   }, []);
 
   return (
+    <ThemeProvider>
     <Router>
       <div className="App">
         <Routes>
           {/* Public routes */}
+          
+          <Route path="/colabonewproduct" element={<Colabonewproduct />} />
+
           <Route path="/sellerlogin" element={<Login />} />
           <Route path="/registerseller" element={<Register />} />
           <Route path="/success" element={<Success />} />
@@ -103,7 +125,25 @@ const App = () => {
           <Route path="/agentpros" element={<Agentpros />} />
           <Route path="/agentinput" element={<Agentinput />} />
           <Route path="/agentboxdisp" element={<Agentboxdisp />} />
-
+          <Route path="/agentboxinput" element={<Agentboxinput />} />
+          <Route path="/agentdash" element={<Agentdash />} />
+          <Route path="/agentLogout" element={<AgentLogout />} />
+          <Route path="/agentsettings" element={<Agentsettings />} />
+          
+          <Route path="/MM" element={<MM />} />
+          <Route path="/generators" element={<Generators />} />
+          <Route path="/Talk" element={<Talk />} />
+          
+          <Route path="/deliveryLogin" element={<DeliveryLogin />} />
+          <Route path="/deliveryRegister" element={<DeliveryRegister />} />
+          <Route path="/deliverySuccess" element={<DeliverySuccess />} />
+          <Route path="/deliverypasswordreset" element={<Deliverypasswordreset />} />
+          <Route path="/deliveryVerification" element={<DeliveryVerification />} />
+          <Route path="/deliveryaccept" element={<Deliveryaccept />} />
+          <Route path="/deliverydisp" element={<Deliverydisp />} />
+          <Route path="/deliveryLogout" element={<DeliveryLogout />} />
+          <Route path="/deliverydash" element={<Deliverydash />} />
+          
           
           <Route path="/chatall" element={<ChatList />} />
           <Route path="/chat/:chatId" element={<ChatDetails />} />
@@ -135,9 +175,11 @@ const App = () => {
             <Route path="/productperfomance" element={<Productperfomance />} />
 
           </Route>
+        
         </Routes>
       </div>
     </Router>
+    </ThemeProvider>
   );
 };
 

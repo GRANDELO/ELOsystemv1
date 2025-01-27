@@ -6,8 +6,9 @@ const boxSchema = new mongoose.Schema({
     type: String,
     default: uuidv4, 
   },
+  boxid: {type: String, required: true},
   items: [{
-    orderNumber: {type: String,default: uuidv4, },
+    orderNumber: {type: String, required: true },
   }],
   agentnumber: {type: String, required: true},
   destination: { type: String, required: true },

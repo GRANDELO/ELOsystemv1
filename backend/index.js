@@ -32,6 +32,7 @@ const cartRoutes = require('./routes/cart');
 const orderRoutes = require('./routes/orders');
 const orderRoute2 = require('./routes/order2');
 const locations = require('./routes/locations');
+const locationsroutes = require('./routes/locationsroutes');
 const mpesaRoutes = require('./routes/mpesaRoutes');
 const newmpesaRoutes = require('./routes/newmpesaRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
@@ -43,6 +44,9 @@ const chatRoutes = require('./routes/chatRoutes');
 const reviewRoutes = require("./routes/review");
 const feed = require('./routes/feedRoutes');
 const agentsroutes = require('./routes/agentsroutes');
+const Deliveryroutes = require('./routes/deliveryroutes');
+const accountRoutes = require("./routes/accountRoutes");
+const transactionRoutes = require("./routes/transactionRoutes");
 
 
 const uploadDir = path.join(__dirname, 'uploads');
@@ -55,7 +59,7 @@ if (!fs.existsSync(uploadDir)) {
 const app = express();
 
 app.set('trust proxy', true);
-const allowedOrigins = ['https://grandelo.web.app', 'https://baze-link.web.app', 'https://bazelinkadmin.web.app', 'https://baze-seller.web.app', 'http://localhost:3000'];
+const allowedOrigins = ['https://www.bazelink.co.ke', 'https://grandelo.web.app', 'https://baze-link.web.app', 'https://bazelinkadmin.web.app', 'https://baze-seller.web.app', 'http://localhost:3000'];
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
@@ -176,6 +180,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/order2', orderRoute2);
 app.use('/api', productRoutes);
 app.use(locations);
+app.use(locationsroutes);
 app.use('/api/mpesa', mpesaRoutes); 
 app.use('/api/newpay', newmpesaRoutes);
 app.use('/api/employees', employeeRoutes);
@@ -188,7 +193,9 @@ app.use('/api/chat', chatRoutes);
 app.use("/api/review", reviewRoutes);
 app.use('/api/feedback', feed);
 app.use('/api/agent', agentsroutes);
-
+app.use('/api/delivery', Deliveryroutes);
+app.use("/api/accounts", accountRoutes);
+app.use("/api/transactions", transactionRoutes);
 
 app.use((req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);

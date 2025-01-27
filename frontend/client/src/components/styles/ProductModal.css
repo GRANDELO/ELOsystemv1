@@ -3,7 +3,18 @@
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   border: none;
-  background-color: #ffffff;
+  background-color: var(--bg-color-light);
+
+}
+
+.custom-modal .modal-body {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: none;
+  background-color: var(--bg-color-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .custom-modal .modal-header {
@@ -13,10 +24,71 @@
 .custom-modal .modal-title {
   font-size: 2rem;  /* Larger for better visibility */
   font-weight: 700;  /* Bold weight for emphasis */
-  color: #333;
+  color: var(--input-text-color);
   margin-bottom: 15px;  /* Add space below the name */
   line-height: 1.4;  /* Improved line-height for readability */
 }
+
+.custom-modal .product-description {
+ background-color: var(--bg-color-light);
+ color: var(--input-text-color);
+}
+
+.custom-modal .product-features {
+  background-color: var(--bg-color-light);
+  color: var(--input-text-color);
+
+ }
+ .custom-modal .product-features h3 {
+    font-weight: bold;
+ }
+ 
+
+ .custom-modal .product-variations h3 {
+  font-weight: bold;
+}
+.custom-modal select{
+  color: var(--input-text-color);
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 5px;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--input-text-color);
+  font-size: 1rem;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.custom-modal label{
+  color: var(--input-text-color);
+
+}
+.custom-modal select:hover{
+  color: var(--input-text-color);
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 5px;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--input-text-color);
+  font-size: 1rem;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.custom-modal .Select:focus{
+  border-color: var(--input-focus-border);
+  outline: none;
+  background-color: #f2f2f2; /* Light background on focus */
+  color: #333;
+}
+
+.custom-modal .product-category {
+  color: var(--input-text-color);
+  font-weight: bold;
+  font-size: large;
+ }
 
 .product-images {
   text-align: center;
@@ -48,27 +120,10 @@
   margin: 0;
 }
 
-.old-price {
-  color: #757575;
-  text-decoration: line-through;
-  font-size: 1rem;
-}
-
-.new-price {
-  color: #f44336;
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.discount-amount {
-  font-size: 1.1rem;
-  color: #4caf50;
-  margin-top: 10px;
-}
 
 .product-badge {
   background-color: #2196f3;
-  color: #fff;
+  color: var(--input-text-color);
   padding: 5px 12px;
   font-size: 0.875rem;
   border-radius: 20px;
@@ -79,23 +134,18 @@
   margin-top: 30px;
 }
 
-button {
-  border-radius: 50px;
-  padding: 10px 20px;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
-}
 
-button:hover {
-  background-color: #2196f3;
-}
+
 
 button:focus {
   outline: none;
 }
 
+
 .mt-3 {
+  width: 100%;
   margin-top: 1.5rem;
+  color: var(--input-text-color);
 }
 
 .qr-section {
@@ -111,28 +161,6 @@ button:focus {
   margin-top: 15px;
 }
 
-.product-info-download {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-}
-
-.product-info-download button {
-  padding: 12px 20px;
-  background-color: #4caf50;
-  border: none;
-  color: #fff;
-  font-size: 1rem;
-  border-radius: 50px;
-}
-
-.product-info-download button:hover {
-  background-color: #388e3c;
-}
-
-.old-price {
-  text-decoration: line-through;
-}
 
 .review-action-btns {
   display: flex;
@@ -225,12 +253,7 @@ button:focus {
   }
 }
 
-.custom-modal .modal-title {
-  font-size: 1.8rem;
-  font-weight: bold;
-  text-align: center;
-  color: #333;
-}
+
 
 .product-details-container {
   display: flex;
@@ -241,6 +264,7 @@ button:focus {
 
 .product-image-container {
   text-align: center;
+  background-color: var(--bg-color-light);
   margin-bottom: 1rem;
 }
 
@@ -285,21 +309,6 @@ button:focus {
   margin-top: 10px;
 }
 
-.old-price {
-  font-size: 1rem;
-  color: #999;
-}
-
-.new-price {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #4caf50;
-}
-
-.discount-info {
-  font-size: 0.9rem;
-  color: #ff5722;
-}
 
 .product-actions {
   margin-top: 20px;

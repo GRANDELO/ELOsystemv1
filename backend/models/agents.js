@@ -12,8 +12,6 @@ const AgentsSchema = new mongoose.Schema({
   dateOfBirth: { type: Date, required: true },
   gender: { type: String, required: true },
   category: { type: String, required: true },
-  town: { type: String, required: true },
-  townspecific: { type: String, required: true },
   agentnumber: {type: String, required: true},
   verificationCode: { type: String },
   isVerified: { type: Boolean, default: false },
@@ -23,9 +21,14 @@ const AgentsSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   active: { type: Boolean, default: false },
   amount: { type: Number, default: undefined},
-
+  locations: 
+    {
+      town: { type: String },
+      area: { type: String },
+      specific: { type: String },
+    },
   packeges: [{
-    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Order', required: true },
+    productId: { type: String, required: true },
     processedDate: { type: Date, default: Date.now },
     ispacked: { type: Boolean, default: false },
   }],

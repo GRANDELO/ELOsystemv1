@@ -54,7 +54,7 @@ const ProductsDetail = () => {
 
     alert('Product added to cart!');
   };
-
+ 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error fetching product: {error}</div>;
 

@@ -9,6 +9,10 @@ const ProductPerformance = require('../models/ProductPerformance');
 const {increateNotification} = require('./notificationController');
 const {b2cRequestHandler} = require("./mpesaController");
 const CoreSellOrder = require('../models/CoreSellOrder');
+const { generateVerificationCode } = require('../services/verificationcode');
+const { sersendNotificationToUser } = require('./pushNotificationController');
+const Transaction = require("../models/Transaction");
+
 
 // Create Order
 exports.createOrder = async (req, res) => {
@@ -20,7 +24,8 @@ exports.createOrder = async (req, res) => {
     orderDate,
     username,
     orderReference,
-    sellerOrderId // Add sellerOrderId directly here
+    sellerOrderId,
+    
   } = req.body;
 
   try {
@@ -49,26 +54,54 @@ exports.createOrder = async (req, res) => {
 
     // Find an available delivery person with role "delivery" and status "available"
     const deliveryPerson = await Employee.findOne({ role: 'delivery', status: 'available' }).sort({ createdAt: 1 });
+    const orderNumber = 'ORD' + generateVerificationCode(6);
 
-    // Create the order, conditionally include sellerOrderId only if it is provided
+    // Extract product IDs from items and find the respective product owners
+    const productIds = items.map(item => item.productId); // Assuming each item contains a productId
+    const products = await Product.find({ _id: { $in: productIds } }); // Fetch product details
+    const productOwners = [...new Set(products.map(product => product.username))]; // Get unique usernames of owners
+
+    // Create the order
     const orderData = {
       items,
+      orderNumber,
       totalPrice,
       paymentMethod,
       paid: false,
       destination,
       orderDate,
       username,
-      deliveryPerson: deliveryPerson ? deliveryPerson._id : null,
       isDeliveryInProcess: false,
       isDelivered: false,
       packed: false,
+      
       orderReference,
       ...(sellerOrderId && { sellerOrderId }), // Only add sellerOrderId if it exists
     };
 
     const order = new Order(orderData);
     await order.save();
+
+    // Send notifications to product owners
+    for (const owner of productOwners) {
+      console.log(owner)
+      await sersendNotificationToUser(
+        owner, 
+        'New Order Alert', 
+        `You have a new order for one of your products!`, 
+        '', 
+        '', 
+        `https://baze-seller.web.app/home`, 
+        `New Order Notification`, 
+        true
+      );
+
+      await increateNotification(
+        owner,
+        `You have a new order for one of your products!`,
+        `New Order Notification`, 
+      )
+    }
 
     res.status(201).json({ message: 'Order created successfully', order });
   } catch (err) {
@@ -111,6 +144,61 @@ exports.getMyOrder = async (req, res) => {
   }
 };
 
+
+exports.getMyPendingOrder = async (req, res) => {
+  try {
+    // Step 1: Fetch orders that are not packed
+    const { username } = req.params;
+    const orders = await Order.find({ currentplace: "Waiting for delivery." }).lean(); // Fetch all orders with the currentplace
+    console.log('Fetched Orders:', orders.length); // Log the number of fetched orders
+
+    if (orders.length === 0) {
+      return res.json([]); // Return empty if no orders found
+    }
+
+    // Step 2: Extract product IDs from all orders
+    const productIds = orders.flatMap(order =>
+      order.items.map(item => item.productId)
+    );
+
+    // Step 3: Fetch product details that belong to the username
+    const products = await Product.find({ _id: { $in: productIds }, username }).lean(); // Filter products by username
+
+    // Step 4: Create a map for quick product lookup
+    const productMap = {};
+    products.forEach(product => {
+      productMap[product._id] = { // Use product._id instead of productId
+        name: product.name,
+        category: product.category,
+        image: product.images,
+        price: product.price,
+      };
+    });
+
+    // Step 5: Format the response with order details and filtered products
+    const orderProductDetails = orders.map(order => {
+      const formattedProducts = order.items
+        .filter(item => productMap[item.productId]) // Only include products that match the username
+        .map(item => ({
+          ...productMap[item.productId], // Get the product details from the map
+          quantity: item.quantity, // Include the quantity from the order
+          variance: item.variations,
+        }));
+
+      return {
+        orderId: order.orderNumber,
+        products: formattedProducts,
+      };
+    }).filter(order => order.products.length > 0); // Exclude orders with no matching products
+    console.log(orderProductDetails);
+    res.json(orderProductDetails);
+  } catch (error) {
+    console.error('Failed to fetch unpacked order products:', error);
+    res.status(500).json({ message: 'Failed to fetch unpacked order products', error: error.message });
+  }
+};
+
+
 exports.updateOrderStatus = async (req, res) => {
   const { orderId } = req.params; // Get order ID from request parameters
   const { isDeliveryInProcess } = req.body; // Status update from request body
@@ -138,7 +226,8 @@ exports.updateOrderStatus = async (req, res) => {
 exports.getUnpackedOrderProducts = async (req, res) => {
   try {
     // Step 1: Fetch orders that are not packed
-    const orders = await Order.find({ packed: false }).lean(); // Using .lean() for better performance
+    const { username } = req.params; 
+    const orders = await Order.find({ currentplace: "Waiting for delivery." }).lean(); // Using .lean() for better performance
     console.log('Fetched Orders:', orders.length); // Log the number of fetched orders
 
     if (orders.length === 0) {
@@ -227,7 +316,7 @@ exports.deliverypatcher = async (req, res) => {
 
 exports.getUnpa = async (req, res) => {
   const totalAmount = 80; // Sample total amount for the order
-  const orderNumber = 'c52e5793-a814-4087-aaf3-32365273769c'; // Sample order number
+  const orderNumber = 'ORD788104'; // Sample order number
 
   // Sample products array with the new field structure
   const products = [
@@ -354,7 +443,7 @@ exports.sendOrderReceiptEmail = async (orderNumber) => {
           <li style="margin-bottom: 15px;">
             <strong>${product.name}</strong> (Category: ${product.category}) x${product.quantity} @ ${product.price} each
             <div style="text-align: center; margin-top: 10px;">
-              <a href="https://grandelo.web.app/review?productId=${productid}" 
+              <a href="https://baze-link.web.app/review?productId=${productid}" 
                  style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px;">
                 Review this product
               </a>
@@ -457,7 +546,7 @@ const sendOrderReceiptEmail = async (orderNumber) => {
     ${formattedProducts
       .map(
         (product) =>
-          `https://grandelo.web.app/review?productId=${product.productid}`
+          `https://baze-link.web.app/review?productId=${product.productid}`
       )
       .join('\n')}
     
@@ -526,33 +615,30 @@ const TransactionLedgerfuc = async (products, orderNumber) => {
   const sellerOrderId = order ? order.sellerOrderId : undefined;
   const coreseller = sellerOrderId ? await CoreSellOrder.findOne({ sellerOrderId }) : null;
 
-  const defaultSellerPercentage = 0.8;
-  const defaultCompanyPercentage = 0.2;
-  const sellerPercentage = sellerOrderId ? 0.8 : defaultSellerPercentage;
-  const coSellerPercentage = sellerOrderId ? 0.1 : 0;
-  const companyPercentage = sellerOrderId ? 0.1 : defaultCompanyPercentage;
-
   const earningsData = {};
+
+  // Function to calculate the percentage based on price
+  const getPercentage = (price) => {
+    if (price < 250) return 0.15; // 15%
+    if (price < 500) return 0.12; // 12%
+    if (price < 1000) return 0.10; // 10%
+    if (price < 5000) return 0.08; // 8%
+    return 0.05; // 5% for prices above 5000
+  };
 
   for (const product of products) {
     const { username, price, quantity, discount, discountpersentage } = product;
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-    console.log(discount);
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-    console.log(price);
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-    console.log(username);
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-    console.log(quantity);
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-    console.log(discountpersentage);
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+
     // Check for discount and calculate the effective price
     const effectivePrice = discount
       ? price * (1 - (discountpersentage / 100)) // Apply percentage discount
       : price;
-      
-      console.log(effectivePrice);
+
+    const companyBasePercentage = getPercentage(price); // Get percentage based on price
+    const sellerPercentage =  1 - companyBasePercentage; 
+    const coSellerPercentage = sellerOrderId ? companyBasePercentage / 4 : 0; // Co-seller gets 1/4 of companyBasePercentage
+    const companyPercentage = sellerOrderId ? (companyBasePercentage * 3) / 4 : companyBasePercentage; // Adjusted company percentage
+
     const sellerEarnings = effectivePrice * quantity * sellerPercentage;
     const coSellerEarnings = sellerOrderId ? effectivePrice * quantity * coSellerPercentage : 0;
     const companyEarnings = effectivePrice * quantity * companyPercentage;
@@ -605,6 +691,14 @@ const TransactionLedgerfuc = async (products, orderNumber) => {
     await financialRecord.save();
   }
 
+  const newTransaction = new Transaction({ 
+    description: `Earnings from order ${orderNumber}`, 
+    account: "67769ab83726b6a2d038ef9b", 
+    debit: totalCompanyEarnings, 
+    credit: 0, 
+  });
+  await newTransaction.save();
+
   const updateResult = await CompanyFinancials.updateOne(
     { _id: financialRecord._id },
     {
@@ -613,6 +707,7 @@ const TransactionLedgerfuc = async (products, orderNumber) => {
           transactionType: 'income',
           amount: totalCompanyEarnings,
           description: `Earnings from order ${orderNumber}`
+          
         }
       },
       $inc: {
@@ -627,6 +722,8 @@ const TransactionLedgerfuc = async (products, orderNumber) => {
   const message = `Sales processed successfully for order ${orderNumber}. Total company earnings: $${totalCompanyEarnings.toFixed(2)}`;
   return { message };
 };
+
+
 
 const notifyOutOfStockAndDelete = async () => {
   try {

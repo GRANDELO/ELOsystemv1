@@ -1,0 +1,84 @@
+.transaction-form {
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+  }
+  
+  .transaction-form h3 {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+  }
+  
+  .form-group input,
+  .form-group select {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  .form-group input:focus,
+  .form-group select:focus {
+    border-color: #007bff;
+  }
+  
+  .submit-btn {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .submit-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  @media (max-width: 500px) {
+    .transaction-form {
+      padding: 15px;
+    }
+  
+    .transaction-form h3 {
+      font-size: 1.5rem;
+    }
+  
+    .form-group input,
+    .form-group select {
+      font-size: 0.9rem;
+    }
+  
+    .submit-btn {
+      font-size: 0.9rem;
+    }
+  }
+  

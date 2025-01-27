@@ -44,14 +44,23 @@ const NewProductDetails =  ({ id }) => {
 
   return (
     <div>
-      <div key={product._id} className="product-card">
-        <div className="product-image-wrapper">
-          <img src={imageSrc} alt={product.name} className="product-image" />
-          {product.isNew && <span className="product-badge new-badge">New</span>}
-          {product.isOnSale && <span className="product-badge sale-badge">Sale</span>}
-        </div>
+      <div key={product._id} className="product-details-container">
+      <div className="product-image-containe">
+            {product?.images?.length > 0 ? (
+              <img
+                src={product.images[currentImageIndex]}
+                alt={`product-image-${currentImageIndex}`}
+                className="product-imager"
+              />
+            ) : (
+              <p className="no-image-text">No images available for this product.</p>
+            )}
+          </div>
         <h3>{product.name}</h3>
-        <p>{product.description}</p>
+        <div
+            className="product-description"
+            dangerouslySetInnerHTML={{ __html: product.description }}
+          ></div>
       </div>
     </div>
   );

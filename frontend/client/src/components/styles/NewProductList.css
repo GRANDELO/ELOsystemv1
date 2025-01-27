@@ -2,9 +2,8 @@
 :root {
   --primary-color: #6c5ce7;
   --secondary-color: #74b9ff;
-  --secondaryh-color: #50a7ff;
-  --background-light: rgba(255, 255, 255, 0.95);
-  --background-dark: rgba(0, 0, 0, 0.7);
+  --background-light: var(--bg-color-light);
+  --background-dark: var(--bg-color-dark);
   --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
   --card-shadow-hover: 0 12px 30px rgba(0, 0, 0, 0.2);
   --blur: 8px;
@@ -15,24 +14,30 @@
   --font-secondary: 'Roboto', sans-serif;
   --gradient-primary: linear-gradient(45deg, #6c5ce7, #74b9ff);
   --gradient-success: linear-gradient(45deg, #00b894, #55efc4);
-  --gradient-danger: linear-gradient(45deg, #d63031, #ff7675);
+  --gradient-danger: linear-gradient(45deg, #d63031, #a17171);
   --gradient-warning: linear-gradient(45deg, #fdcb6e, #ffeaa7);
   --button-color: #6c5ce7;
   --button-hover: #5e4cc1;
   --button-active: #4e3c9e;
+
+  --price: #028521;
+  --old-price: #ff1900;
+  --new-price: #00ba19;
+  --discountamount: #0a7a38;
+}
+
+[data-theme="dark"] {
+  --background-light: var(--background-dark);
+  --text-dark: var(--text-light);
+  --gradient-warning: linear-gradient(45deg, #005081, #005db4);
+  --price: #30d646;
+  --old-price: #ff1900;
+  --new-price: #00ff22;
+  --discountamount: #109d4a;
 }
 
 /* General Styles */
-body {
-  font-family: var(--font-primary);
-  margin: 0;
-  padding: 0;
-  background: #f9f9f9;
-  color: var(--text-dark);
-  line-height: 1.5;
-  overflow-x: hidden;
-  min-width: 100vw;
-}
+
 
 h1, h2, h3, h4, h5 {
   margin: 0;
@@ -50,19 +55,16 @@ h1, h2, h3, h4, h5 {
   border-radius: 15px;
   position: sticky;
   top: 0;
-  z-index: 3;
-  
+  z-index: 10;
 }
 
 .product-search {
   width: 100%;
-  max-width: 280px;
   padding: 0.5rem 1rem;
   border-radius: 25px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   outline: none;
   font-size: 0.85rem;
-  background: #f1f1f1;
   transition: background 0.3s ease;
 }
 
@@ -167,18 +169,21 @@ h1, h2, h3, h4, h5 {
   text-transform: capitalize;
 }
 
+
 .product-prices {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 0.6rem;
   text-align: center;
+  font-weight: bold;
   margin-top: auto;
+  color: var(--price);
 }
 
 .old-price {
   font-size: 0.9rem;
-  color: #e74c3c;
+  color: var(--old-price);
   text-decoration: line-through;
 }
 
@@ -187,11 +192,12 @@ h1, h2, h3, h4, h5 {
   color: var(--primary-color);
   font-weight: bold;
   letter-spacing: 0.5px;
+  color: var(--new-price);
 }
 
 .discount-amount {
   font-size: 1rem;
-  color: #27ae60;
+  color: var(--discountamount);
   font-weight: bold;
 }
 
@@ -338,8 +344,6 @@ h1, h2, h3, h4, h5 {
 }
 
 .pagination button {
-  background-color: #007bff; /* Primary button color */
-  color: #fff;
   border: none;
   padding: 8px 12px;
   border-radius: 4px;
@@ -348,12 +352,8 @@ h1, h2, h3, h4, h5 {
   transition: background-color 0.3s ease;
 }
 
-.pagination button:hover {
-  background-color: #0056b3; /* Darker shade for hover */
-}
-
 .pagination button:disabled {
-  background-color: #cccccc; /* Disabled button color */
+  background-color: #8b9fff; /* Disabled button color */
   cursor: not-allowed;
 }
 
@@ -400,8 +400,7 @@ h1, h2, h3, h4, h5 {
 }
 
 .category-btn {
-  background-color: var(--secondary-color);
-  border: 1px solid #ddd;
+  border: none;
   padding: 10px 20px;
   border-radius: 5px;
   font-size: 16px;
@@ -414,7 +413,7 @@ h1, h2, h3, h4, h5 {
 .category-btnn{
   background: none;
   max-width: 30px;
-  color: #333333;
+  color: var(--text-color-light);
   font-size: 20px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
@@ -423,7 +422,7 @@ h1, h2, h3, h4, h5 {
 .category-btnn:hover{
   background: none;
   max-width: 30px;
-  color: #333333;
+  color: var(--text-color-light);
   font-size: 20px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
@@ -431,21 +430,14 @@ h1, h2, h3, h4, h5 {
 
 
 .category-btn:hover {
-  background-color: var(--secondaryh-color);
   transform: translateY(-2px);
 }
 
-.category-btn.active {
-  background-color: #007bff;
-  color: white;
-}
 
 .subcategories {
   margin-top: 10px;
   display: none;
   padding: 10px;
-  background-color: #155cbe94;
-  border: 1px solid #ddd;
   border-radius: 5px;
 }
 
@@ -462,8 +454,6 @@ h1, h2, h3, h4, h5 {
 }
 
 .category-pagination button {
-  background-color: #155cbe94;
-  border: 1px solid #ddd;
   padding: 10px 20px;
   border-radius: 5px;
   font-size: 16px;
@@ -473,10 +463,6 @@ h1, h2, h3, h4, h5 {
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.category-pagination button:hover {
-  background-color: #004996;
-  color: white;
-}
 
 .category-pagination button:disabled {
   background-color: #8bc1fb;

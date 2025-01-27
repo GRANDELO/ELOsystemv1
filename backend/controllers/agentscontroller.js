@@ -7,9 +7,12 @@ const { generateAlphanumericVerificationCode, generateVerificationCode } = requi
 const sendEmail = require('../services/emailService');
 require('dotenv').config();
 const mongoose = require('mongoose');
+const Order = require('../models/Order');
+const Withdrawal = require('../models/Withdrawal');
+const {b2cRequestHandler} = require("./mpesaController");
 
 const registerUser = async (req, res) => {
-  const { firstName, lastName, email, password, confirmPassword, phoneNumber, idnumber, username, dateOfBirth, gender, town, townspecific } = req.body;
+  const { firstName, lastName, email, password, confirmPassword, phoneNumber, idnumber, username, dateOfBirth, gender, locations } = req.body;
 
   const isDateWithinRange = (date, minYears, maxYears) => {
     const today = new Date();
@@ -54,33 +57,59 @@ const registerUser = async (req, res) => {
     Bazelink Support Team`;
 
     const htmlMessage = `
-      <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.8; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
-        <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
-          Welcome to Bazelink, ${username}!
-        </h2>
-        
-        <p style="font-size: 16px; color: #555; text-align: center; margin-top: 0;">
-          Your agent number is ${agentnumber},
-        </p>
-        <p style="font-size: 16px; color: #555; text-align: center; margin-top: 0;">
-          Thank you for registering with us as our agent! To complete your registration, please use the verification code below:
-        </p>
-        <div style="margin: 25px 0; padding: 20px; background-color: #f0f5fc; border: 1px dashed #1d4ed8; text-align: center; border-radius: 8px;">
-          <p style="font-size: 20px; font-weight: bold; color: #1d4ed8; letter-spacing: 1px;">
-            Verification Code: <span style="color: #1d4ed8;">${alphanumericCode}</span>
+      <div style="font-family: 'Roboto', sans-serif; background: linear-gradient(145deg, #ffffff, #f9fafb); padding: 40px; border-radius: 20px; max-width: 700px; margin: auto; border: 2px solid transparent; background-clip: padding-box, border-box; border-image: linear-gradient(to right, #3b82f6, #6d28d9) 1; box-shadow: 0px 12px 35px rgba(0, 0, 0, 0.2);">
+        <!-- Header Section -->
+        <div style="background: linear-gradient(to right, #6d28d9, #3b82f6); padding: 40px; border-radius: 16px; text-align: center; color: white; margin-bottom: 30px; box-shadow: 0px 6px 15px rgba(59, 130, 246, 0.3);">
+          <h1 style="font-size: 32px; margin: 0; font-weight: 700; letter-spacing: 1.5px;">
+            Welcome, ${username}!
+          </h1>
+          <p style="margin-top: 10px; font-size: 18px; font-weight: 500;">
+            We’re excited to have you on board at Bazelink.
           </p>
         </div>
-        <p style="text-align: center;">
-          <a href="https://baze-seller.web.app/agentVerification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+      
+        <!-- Content Section -->
+        <div style="padding: 20px 30px; text-align: center; background: white; border-radius: 16px; box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);">
+          <p style="font-size: 18px; color: #374151; margin: 10px 0;">
+            Your unique agent number is: <span style="font-weight: bold; color: #3b82f6;">${agentnumber}</span>.
+          </p>
+          <p style="font-size: 16px; color: #6b7280; margin: 20px 0;">
+            To activate your account, enter the verification code below:
+          </p>
+      
+          <!-- Verification Code Block -->
+          <div style="margin: 30px auto; padding: 25px; font-size: 24px; font-weight: bold; color: #6d28d9; letter-spacing: 2px; border: 2px dashed #3b82f6; background: linear-gradient(135deg, #e9f2ff, #ffffff); border-radius: 12px; max-width: 320px; box-shadow: 0px 6px 15px rgba(59, 130, 246, 0.1);">
+            ${alphanumericCode}
+          </div>
+      
+          <p style="font-size: 16px; color: #374151; margin-top: 20px;">
+            Click the button below to verify your account:
+          </p>
+      
+          <!-- Verify Button -->
+          <a href="https://baze-seller.web.app/agentVerification" style="display: inline-block; margin-top: 20px; padding: 15px 40px; font-size: 18px; font-weight: bold; color: white; background: linear-gradient(to right, #3b82f6, #6d28d9); text-decoration: none; border-radius: 10px; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0px 4px 15px rgba(59, 130, 246, 0.4);">
             Verify Your Account
           </a>
-        </p>
-        <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
-          If you did not request this, please disregard this email.
-        </p>
-        <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
-          Best regards,<br> Bazelink Support Team
-        </p>
+        </div>
+      
+        <!-- Divider -->
+        <hr style="border: none; height: 1px; background: linear-gradient(to right, #3b82f6, #6d28d9); margin: 40px 0;">
+      
+        <!-- Footer Section -->
+        <div style="text-align: center; color: #6b7280;">
+          <p style="font-size: 14px; margin-bottom: 10px;">
+            If you didn’t request this email, no further action is required.
+          </p>
+          <p style="font-size: 14px;">
+            Need help? Contact us at 
+            <a href="mailto:sup.bazelink@gmail.com" style="color: #3b82f6; text-decoration: none; font-weight: bold;">support@bazelink.co.ke</a>.
+          </p>
+        </div>
+      
+        <!-- Legal Section -->
+        <footer style="margin-top: 30px; text-align: center; font-size: 12px; color: #9ca3af;">
+          <p style="margin: 0;">© 2025 Bazelink Inc. All rights reserved.</p>
+        </footer>
       </div>
     `;
 
@@ -105,8 +134,6 @@ const registerUser = async (req, res) => {
       dateOfBirth: formattedDateOfBirth,
       gender,
       category: "Agent",
-      town,
-      townspecific,
       agentnumber,
       verificationCode: alphanumericCode,
       isVerified: false,
@@ -114,6 +141,7 @@ const registerUser = async (req, res) => {
       resetPasswordToken: undefined,
       resetPasswordExpires: undefined,
       amount: 0,
+      locations
     });
     await user.save();
 
@@ -150,6 +178,7 @@ const login = async (req, res) => {
         username: user.username,
         email: user.email,
         category: user.category,
+        agentnumber: user.agentnumber,
       },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
@@ -212,6 +241,11 @@ const updateEmail = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+    const newuser = await User.findOne({ email: newEmail });
+    if (newuser) {
+      return res.status(404).json({ message: 'Email is in use find a different one' });
+    }
+
 
     user.email = newEmail;
     await user.save();
@@ -257,16 +291,24 @@ const updateEmail = async (req, res) => {
 
 
     try {
-      await sendEmail(email, subject, vermessage, htmlMessage);
+      await sendEmail(user.email, subject, vermessage, htmlMessage);
       console.log('Email sent successfully');
     } catch (error) {
       console.error('Error sending email:', error);
       return res.status(500).json({ message: 'Error sending verification email' });
     }
     try {
-      const token = jwt.sign({ id: user._id, username: user.username, email: user.email, category: user.category }, process.env.JWT_SECRET, {
-        expiresIn: '1h',
-      });
+      const token = jwt.sign(
+        {
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          category: user.category,
+          agentnumber: user.agentnumber,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+      );
   
       res.status(200).json({ message: 'Email updated successfully', token });
     } catch (error) {
@@ -469,15 +511,23 @@ const changeusername = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    let checkuser = await User.findOne({ newUsername });
+    let checkuser = await User.findOne({ username: newUsername });
     if (checkuser) {
       return res.status(400).json({ message: 'Username already exists try a different one.' });
     }
     user.username = newUsername;
     await user.save();
-    const token = jwt.sign({ id: user._id, username: user.username, email: user.email, category: user.category }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
+    const token = jwt.sign(
+      {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        category: user.category,
+        agentnumber: user.agentnumber,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
     res.status(200).json({ message: 'Username updated successfully', token });
   } catch (error) {
     res.status(500).json({ message: 'An error occurred while updating Username' });
@@ -495,9 +545,17 @@ const changepassword = async (req, res) => {
 
     user.password = newPassword;
     await user.save();
-    const token = jwt.sign({ id: user._id, username: user.username, email: user.email, category: user.category }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
+    const token = jwt.sign(
+      {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        category: user.category,
+        agentnumber: user.agentnumber,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
     res.status(200).json({ message: 'Password updated successfully', token});
   } catch (error) {
     res.status(500).json({ message: 'An error occurred while updating password' });
@@ -513,11 +571,24 @@ const changephonenumber = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
+    const newuser = await User.findOne({ phoneNumber: newPhoneNumber });
+    if (newuser) {
+      return res.status(404).json({ message: 'Phone Number is in use by a different agent' });
+    }
+
     user.phoneNumber = newPhoneNumber;
     await user.save();
-    const token = jwt.sign({ id: user._id, username: user.username, email: user.email, category: user.category }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
+    const token = jwt.sign(
+      {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        category: user.category,
+        agentnumber: user.agentnumber,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
     res.status(200).json({ message: 'Phone number updated successfully', token });
   } catch (error) {
     res.status(500).json({ message: 'An error occurred while updating phone number' });
@@ -532,7 +603,7 @@ const changeemail = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    let checkuser = await User.findOne({ newEmail });
+    let checkuser = await User.findOne({ email: newEmail });
     if (checkuser) {
       return res.status(400).json({ message: 'Email already exists try a different one.' });
     }
@@ -586,9 +657,17 @@ const changeemail = async (req, res) => {
       console.error('Error sending email:', error);
       return res.status(500).json({ message: 'Error sending verification email' });
     }
-    const token = jwt.sign({ id: user._id, username: user.username, email: user.email, category: user.category }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
+    const token = jwt.sign(
+      {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        category: user.category,
+        agentnumber: user.agentnumber,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
     res.status(200).json({ message: 'Email updated successfully', token});
   } catch (error) {
     res.status(500).json({ message: 'An error occurred while updating Email' });
@@ -605,51 +684,115 @@ const addOrderToAgentPackages = async (req, res) => {
       return res.status(400).json({ error: "Agent number and Order ID are required." });
     }
 
-    // Check if the orderId is a valid ObjectId
-    if (!mongoose.Types.ObjectId.isValid(orderId)) {
-      return res.status(400).json({ error: "Invalid Order ID format." });
+    // Find the order by orderNumber
+    const order = await Order.findOne({ orderNumber: orderId });
+    if (!order) {
+      return res.status(400).json({ error: "Invalid Order." });
     }
 
     // Find the agent by agentnumber
     const agent = await User.findOne({ agentnumber });
-
     if (!agent) {
       return res.status(404).json({ error: "Agent not found." });
     }
 
-        // Check if the order already exists in the packages array
-        const orderExists = agent.packeges.some(
-          (package) => package.productId.toString() === orderId
-        );
-    
-        if (orderExists) {
-          return res
-            .status(400)
-            .json({ error: "Order already exists under this agent." });
-        }
+    // Check if the order already exists in the agent's packages array
+    const orderExists = agent.packeges.some(
+      (package) => package.productId === orderId
+    );
+    if (orderExists) {
+      return res
+        .status(400)
+        .json({ error: "Order already exists under this agent." });
+    }
 
-    // Add the new order to the packages array
+    // Add the new order to the agent's packages
     agent.packeges.push({
       productId: orderId,
       processedDate: new Date(),
       ispacked: false,
     });
 
-    // Save the updated agent document
+    // Update the order's properties
+    order.currentplace = `${agent.locations.town}, ${agent.locations.area}, ${agent.locations.specific}`;
+    order.isDeliveryInProcess = true;
+
+    // Save both documents
     await agent.save();
+    await order.save();
 
     return res.status(200).json({
       message: "Order added successfully to agent packages.",
-      agent,
+      agentnumber,
+      orderId,
+      currentplace: order.currentplace,
+      isDeliveryInProcess: order.isDeliveryInProcess,
     });
   } catch (error) {
     console.error("Error adding order to agent packages:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+// Handle withdrawal logic
+const awithdraw = async (req, res) => {
+  const { username, amount, Phonenumber } = req.body;
+
+  try {
+    // Find the user by username
+    const user = await User.findOne({ agentnumber: username });
+    if (!user) {
+      return res.status(404).json({ message: `User not found ${username}` });
+    }
+
+    // Check if the user has enough balance
+    if (user.amount < amount) {
+      return res.status(400).json({ message: 'Insufficient balance' });
+    }
+
+    // Deduct the withdrawal amount from the user's balance
+    const resp = await b2cRequestHandler(amount, Phonenumber);
+    console.log(resp);
+    
+    user.amount -= amount;
+    await user.save();
+
+    // Record the withdrawal
+    const withdrawal = new Withdrawal({
+      username: user.agentnumber,
+      phonenumber: Phonenumber,
+      amount: amount,
+      balance: user.amount,
+    });
+    await withdrawal.save();
+
+    // Send success response
+    res.status(200).json({ message: 'Withdrawal successful', balance: user.amount });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Get all withdrawals for a specific user
+const agetWithdrawalsByUsername = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const withdrawals = await Withdrawal.find({ agentnumber: username });
+    if (!withdrawals.length) {
+      return res.status(404).json({ message: 'No withdrawals found for this user' });
+    }
+    res.status(200).json({ withdrawals });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 
 module.exports = {
+  awithdraw,
+  agetWithdrawalsByUsername,
   addOrderToAgentPackages,
   registerUser,
   login,

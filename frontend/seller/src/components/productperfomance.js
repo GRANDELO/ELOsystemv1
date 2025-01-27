@@ -71,12 +71,10 @@ const BarChart = () => {
         beginAtZero: true,
         ticks: {
           stepSize: 1,
-          color: "#666",
         },
         title: {
           display: true,
           text: "Sales Count",
-          color: "#333",
           font: {
             size: 14,
           }
@@ -84,7 +82,6 @@ const BarChart = () => {
       },
       x: {
         ticks: {
-          color: "#666",
           font: {
             size: 12,
           }
@@ -106,7 +103,6 @@ const BarChart = () => {
         font: {
           size: 18,
         },
-        color: "#333",
       },
     },
     animation: {

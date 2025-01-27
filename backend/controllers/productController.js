@@ -50,6 +50,8 @@ exports.createProduct = async (req, res) => {
       quantity,
       type,
       collaborators,
+      features,
+      variations,
     } = req.body;
 
 
@@ -77,7 +79,8 @@ exports.createProduct = async (req, res) => {
       images: imageUrls,
       type,
       collaborators: collaboratorData,
-
+      features: JSON.parse(features || "[]"),
+      variations: JSON.parse(variations || "[]"),
     });
 
     await newProduct.save();

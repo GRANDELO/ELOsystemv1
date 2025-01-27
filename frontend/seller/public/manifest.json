@@ -1,37 +1,40 @@
 {
-  "short_name": "BAZELINK",
-  "name": "BAZELINK - Shop Anything, Anywhere",
-  "description": "BAZELINK offers a wide range of products, providing an easy and seamless shopping experience.",
+  "short_name": "BAZE-SELLER",
+  "name": "BAZELINK - Empower Sellers and Delivery Teams",
+  "description": "Manage your store, track deliveries, and grow your business with BAZELINK. Seamlessly handle your shop and earn on our platform.",
   "icons": [
     {
-      "src": "logo.ico",
+      "src": "logo(1).ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.jpeg",
+      "src": "log.jpeg",
       "sizes": "192x192",
-      "type": "image/jpeg"
+      "type": "image/jpeg",
+      "purpose": "any maskable"
     },
     {
-      "src": "logo256.jpeg",
+      "src": "log.jpeg",
       "sizes": "256x256",
-      "type": "image/jpeg"
+      "type": "image/jpeg",
+      "purpose": "any maskable"
     },
     {
-      "src": "logo512.jpeg",
+      "src": "log.jpeg",
       "sizes": "512x512",
-      "type": "image/jpeg"
+      "type": "image/jpeg",
+      "purpose": "any maskable"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#162a38",
-  "background_color": "#162a38",
+  "theme_color": "#162937",
+  "background_color": "#162937",
   "orientation": "portrait",
   "lang": "en",
-  "scope": "/",
-  "categories": ["shopping", "retail", "ecommerce"],
+  "scope": "/sellers",
+  "categories": ["business", "shopping", "productivity"],
   "screenshots": [
     {
       "src": "screenshot1.png",
@@ -47,5 +50,7 @@
   "permissions": [
     "notifications",
     "geolocation"
-  ]
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
 }

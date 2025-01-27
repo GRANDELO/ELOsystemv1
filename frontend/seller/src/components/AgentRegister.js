@@ -15,8 +15,12 @@ const Register = () => {
     username: '',
     dateOfBirth: '',
     gender: '',
-    town: '',
-    townspecific: '',
+    locations: 
+    {
+      town: "",
+      area: "",
+      specific: "",
+    },
 
   });
   const [currentStep, setCurrentStep] = useState(1); // State to manage the current step
@@ -27,6 +31,7 @@ const Register = () => {
   const [selectedTown, setSelectedTown] = useState('');
   const [areas, setAreas] = useState([]);
   const [selectedArea, setSelectedArea] = useState('');
+  const [selectedAreaspe, setSelectedAreaspe] = useState('');
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -62,8 +67,12 @@ const Register = () => {
       username: formData.username.trim(),
       dateOfBirth: formData.dateOfBirth.trim(),
       gender: formData.gender.trim(),
-      town: selectedTown,
-      townspecific: selectedArea, 
+      locations: 
+        {
+          town: selectedTown,
+          area: selectedArea,
+          specific: selectedAreaspe,
+        },
     };
 
     try {
@@ -110,7 +119,7 @@ const Register = () => {
           const idnumberValid = /^\d{7,8}$/.test(formData.idnumber.trim());
           return phonenumberValid && emailValid && idnumberValid;
         case 3:
-          return formData.dateOfBirth && formData.gender && selectedTown && selectedArea;
+          return formData.dateOfBirth && formData.gender && selectedTown && selectedArea && selectedAreaspe;
         case 4:
           const passwordValid = formData.password.trim().length >= 8 &&
           /[A-Z]/.test(formData.password.trim()) &&
@@ -124,8 +133,12 @@ const Register = () => {
     };
   
     setIsNextEnabled(validateStep());
-  }, [formData, currentStep]);
+  }, [formData, currentStep, selectedTown, selectedArea, selectedAreaspe]);
   
+  const handleAreasepChange = (e) => {
+    setSelectedAreaspe(e.target.value);
+  };
+
   return (
     <div className="container">
       <h2>Register</h2>
@@ -274,6 +287,21 @@ const Register = () => {
             </select>
           </>
       )}
+
+        <label>
+            Specific:
+            <input
+              type="text"
+              value={selectedAreaspe}
+              placeholder={
+                selectedArea
+                  ? `Your area within ${selectedArea}`
+                  : "Enter the specific area"
+              }
+              onChange={handleAreasepChange}
+            />
+        </label>
+
                 <button type="button" onClick={previousStep}>Back</button>
                 <button type="button" onClick={nextStep} disabled={!isNextEnabled}>Next</button>
         </div>

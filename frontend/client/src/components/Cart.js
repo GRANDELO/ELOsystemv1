@@ -11,6 +11,7 @@ const Cart = ({ cart, setCart }) => {
   const [error, setError] = useState('');
   const username = getUsernameFromToken();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -18,9 +19,11 @@ const Cart = ({ cart, setCart }) => {
       try {
         const response = await axiosInstance.post('/cart/cart', { username });
         setCart(response.data.items || []);
+        setLoading(false);
       } catch (err) {
         console.error('Failed to fetch cart:', err);
         setError(err.response?.data?.message || 'Failed to fetch cart');
+        setLoading(false);
       }
     };
 
@@ -66,6 +69,8 @@ const Cart = ({ cart, setCart }) => {
     navigate('/order');
   };
 
+  if (loading) return <p>Loading...</p>;
+  
   return (
     <div className="cart">
       <h2>Your Cart</h2>
