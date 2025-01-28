@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "baze-link"
-  }
+  },
+  "targets": {
+    "baze-link": {
+      "hosting": {
+        "baze-link": [
+          "baze-link"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

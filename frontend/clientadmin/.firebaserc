@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "grandelo"
-  }
+  },
+  "targets": {
+    "bazelinkadmin": {
+      "hosting": {
+        "bazeadmin": [
+          "bazeadmin"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

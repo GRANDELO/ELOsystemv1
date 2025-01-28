@@ -8,6 +8,8 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setloading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [recoverpassword, setRecoverPassword] = useState(false);
   const navigate = useNavigate();
@@ -56,7 +58,8 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
-
+    setError('');
+    setloading(true);
     try {
       const response = await axiosInstance.post('/auth/login', {
         username: username.trim(),
@@ -68,7 +71,7 @@ const Login = () => {
       sessionStorage.setItem('amount', response.data.amount);
       localStorage.setItem('apptoken', response.data.token);
       localStorage.setItem('appcat', response.data.category.trim().toLowerCase());
-
+      setloading(false);
       const category = response.data.category.trim().toLowerCase();
       if (category === 'seller') {
         alert('Failed to log in this app is for buyers only.');
@@ -77,10 +80,11 @@ const Login = () => {
         navigate(currentpage ? currentpage : '/');
       }
     } catch (error) {
+      setloading(false);
       if (error.response && error.response.data) {
-        setMessage(error.response.data.message);
+        setError(error.response.data.message);
       } else {
-        setMessage('An error occurred while processing your request.');
+        setError('An error occurred while processing your request.');
       }
     }
   };
@@ -92,15 +96,18 @@ const Login = () => {
   const sendRecovEmail = async (e) => {
     e.preventDefault();
     setMessage('');
-
+    setError('');
+    setloading(true);
     try {
       const response = await axiosInstance.post('/auth/recoverpassword', { username });
       setMessage(response.data.message);
+      setloading(false);
     } catch (error) {
+      setloading(false);
       if (error.response && error.response.data) {
-        setMessage(error.response.data.message);
+        setError(error.response.data.message);
       } else {
-        setMessage('An error occurred while processing your request.');
+        setError('An error occurred while processing your request.');
       }
     }
   };
@@ -137,7 +144,10 @@ const Login = () => {
                 {showPassword ? <FaRegEyeSlash/> : <FaRegEye/>}
               </button>
             </div>
-            <button type="submit">Login</button>
+            <button type="submit">
+            {loading ? "Loging..." : "Login"}
+            </button>
+            
             <button type="button" onClick={handleRecoverPassword}>Forgot Password</button>
             <p>Verify your account <Link to="/verification">Verify Account</Link></p>
             <p>If you don't have an account <Link to="/register">Register</Link></p>
@@ -153,13 +163,17 @@ const Login = () => {
               onChange={(e) => setUsername(e.target.value)}
               required
             />
-            <button type="submit">Recover password</button>
+            <button type="submit">
+            {loading ? "Recovering..." : "Recover password"}
+              
+            </button>
             <button type="button" onClick={handleRecoverPassword}>Back</button>
           </div>
         )}
       </form>
       <div className="divmess">
         {message && <p className="message">{message}</p>}
+        {error && <p className="error">{error}</p>}
       </div>
     </div>
   );

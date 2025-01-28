@@ -21,6 +21,7 @@ import Agentboxinput from './components/agentboxinput';
 import Agentdash from './components/agentdash';
 import AgentLogout from './components/agentLogout';
 import Agentsettings from './components/Agentsettings';
+import Verificationauto from './components/Verificationauto';
 
 import Talk from './components/talk';
 
@@ -115,6 +116,7 @@ const App = () => {
           <Route path="/set" element={<Set />} />
           <Route path="/testHome" element={<Home />} />
           <Route path="/verification" element={<Verification />} />
+          <Route path="/auto" element={<Verificationauto />} />
           <Route path="/agentRegister" element={<AgentRegister />} />
           <Route path="/agentVerification" element={<AgentVerification />} />
           <Route path="/agentLogin" element={<AgentLogin />} />

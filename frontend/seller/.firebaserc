@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "baze-seller"
-  }
+  },
+  "targets": {
+    "baze-seller": {
+      "hosting": {
+        "partners-portal": [
+          "partners-portal"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
