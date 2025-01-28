@@ -348,6 +348,19 @@ const Register = () => {
             <p style={{ color: 'red', fontSize: 'smaller' }}>The passwords don't match!</p>
           )}
 
+          <div className="terms-container">
+            <p>
+              By clicking "<strong>Register,</strong>" you agree to our{' '}
+              <a href="/documents/TERMS OF SERVICE.pdf" target="_blank" rel="noopener noreferrer">
+                Terms of Service
+              </a>{' '}
+              and{' '}
+              <a href="/documents/Privacy Policy.pdf" target="_blank" rel="noopener noreferrer">
+                Privacy Policy
+              </a>.
+            </p>
+          </div>
+
           <button type="button" onClick={previousStep}>Back</button>
           <button type="submit">Register</button>
         </div>

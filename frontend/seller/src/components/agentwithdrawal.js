@@ -40,7 +40,7 @@ const Withdrawal = () => {
 
     try {
       // Send withdrawal request to backend
-      const response = await axios.post('/withdraw/agent', {
+      const response = await axiosInstance.post('/withdraw/agent', {
         username,
         Phonenumber,
         amount: Number(amount),

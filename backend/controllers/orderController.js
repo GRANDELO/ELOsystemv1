@@ -621,9 +621,11 @@ const TransactionLedgerfuc = async (products, orderNumber) => {
   const getPercentage = (price) => {
     if (price < 250) return 0.15; // 15%
     if (price < 500) return 0.12; // 12%
-    if (price < 1000) return 0.10; // 10%
+    if (price < 2000) return 0.10; // 10%
+    if (price < 3000) return 0.09 // 9%
     if (price < 5000) return 0.08; // 8%
-    return 0.05; // 5% for prices above 5000
+    if (price < 100000) return 0.05; // 5%
+    return 0.04; // 5% for prices above 5000
   };
 
   for (const product of products) {
