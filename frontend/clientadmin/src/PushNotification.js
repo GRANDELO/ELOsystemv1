@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './components/axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { getUsernameFromToken } from './utils/auth';
 const publicVapidKey = 'BNK_K1aaB3ntQ_lInFtrXC01vHCZ4lLTCBS37fgOXMzbApF6Y5-mRQ2aIXXTzKpzdn_Rl9uARa8I5gCiz6kqWGE';
@@ -60,7 +60,7 @@ const PushNotification = () => {
           applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
         });
 
-        await axios.post('https://elosystemv1.onrender.com/api/pushnotifications/subscribe', {
+        await axiosInstance.post('/pushnotifications/subscribe', {
           subscription: newSubscription,
           username,
         });
@@ -77,7 +77,7 @@ const PushNotification = () => {
   const unsubscribeUser = async () => {
     try {
       if (subscription) {
-        await axios.post('https://elosystemv1.onrender.com/api/pushnotifications/unsubscribe', { endpoint: subscription.endpoint });
+        await axiosInstance.post('/pushnotifications/unsubscribe', { endpoint: subscription.endpoint });
         await subscription.unsubscribe();
         setIsSubscribed(false);
         setSubscription(null);

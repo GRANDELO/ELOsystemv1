@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
 import '../styles/TransactionForm.css'; // Assuming you'll create this CSS file
 
 const TransactionForm = ({ fetchTransactions }) => {
@@ -11,7 +11,7 @@ const TransactionForm = ({ fetchTransactions }) => {
 
   const fetchAccounts = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/accounts');
+      const response = await axiosInstance.get('/accounts');
       setAccounts(response.data);
     } catch (err) {
       console.error('Error fetching accounts:', err);
@@ -25,7 +25,7 @@ const TransactionForm = ({ fetchTransactions }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('https://elosystemv1.onrender.com/api/transactions', { 
+      await axiosInstance.post('/transactions', { 
         description, accountId, debit, credit 
       });
       fetchTransactions();

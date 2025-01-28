@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Table } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -22,7 +22,7 @@ const LogisticsPage = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/order2/unpacked');
+      const response = await axiosInstance.get('/order2/unpacked');
       setUnpackedOrders(response.data);
     } catch (err) {
       console.error('Failed to fetch unpacked orders:', err);
@@ -34,7 +34,7 @@ const LogisticsPage = () => {
 
   const markOrderAsPacked = async (orderId) => {
     try {
-      await axios.patch(`https://elosystemv1.onrender.com/api/order2/${orderId}/packed`, { packed: true });
+      await axiosInstance.patch(`/order2/${orderId}/packed`, { packed: true });
       setUnpackedOrders((prevOrders) => prevOrders.filter((order) => order.orderId !== orderId));
     } catch (err) {
       console.error('Failed to update order status:', err);

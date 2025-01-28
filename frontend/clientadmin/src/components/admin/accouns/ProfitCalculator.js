@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
 
 const ProfitCalculator = () => {
   const [revenue, setRevenue] = useState(0);
@@ -8,7 +8,8 @@ const ProfitCalculator = () => {
 
   const fetchProfit = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/profit');
+
+      const response = await axiosInstance.get('/profit');
       setRevenue(response.data.revenue);
       setExpenses(response.data.expenses);
       setProfit(response.data.profit);

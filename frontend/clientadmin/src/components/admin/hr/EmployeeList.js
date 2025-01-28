@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
 import { saveAs } from 'file-saver';
 import React, { useEffect, useState } from 'react';
 import Pagination from '../../Pagination';
@@ -25,7 +25,7 @@ const AdminDashboard = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/employees');
+      const response = await axiosInstance.get('/employees');
       setUsers(response.data);
       setFilteredUsers(response.data);
       setError(null);
@@ -36,7 +36,7 @@ const AdminDashboard = () => {
 
   const fetchActiveUsers = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/employees/getactiveemployees');
+      const response = await axiosInstance.get('/employees/getactiveemployees');
       setActiveUsers(response.data);
       setError(null);
     } catch (error) {
@@ -46,7 +46,7 @@ const AdminDashboard = () => {
 
   const fetchDisabledUsers = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/employees/getdisabledemployee');
+      const response = await axiosInstance.get('/employees/getdisabledemployee');
       setDisabledUsers(response.data);
       setError(null);
     } catch (error) {
@@ -56,7 +56,7 @@ const AdminDashboard = () => {
 
   const disableUser = async (userId) => {
     try {
-      await axios.patch(`https://elosystemv1.onrender.com/api/employees/disable/${userId}`);
+      await axiosInstance.patch(`/employees/disable/${userId}`);
       fetchUsers();
       fetchActiveUsers();
       fetchDisabledUsers();
@@ -67,7 +67,7 @@ const AdminDashboard = () => {
 
   const undoDisableUser = async (userId) => {
     try {
-      await axios.patch(`https://elosystemv1.onrender.com/api/employees/undodisable/${userId}`);
+      await axiosInstance.patch(`/employees/undodisable/${userId}`);
       fetchUsers();
       fetchActiveUsers();
       fetchDisabledUsers();

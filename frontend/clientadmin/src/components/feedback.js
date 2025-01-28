@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
 const AdminFeedback = () => {
     const [feedbacks, setFeedbacks] = useState([]);
@@ -8,7 +8,7 @@ const AdminFeedback = () => {
     useEffect(() => {
         const fetchFeedbacks = async () => {
             try {
-                const response = await axios.get('https://elosystemv1.onrender.com/api/feedback');
+                const response = await axiosInstance.get('/feedback');
                 setFeedbacks(response.data);
             } catch (error) {
                 console.error('Error fetching feedback:', error);

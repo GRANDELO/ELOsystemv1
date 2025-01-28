@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Table } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -22,7 +22,7 @@ const LogisticsPage = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.get(`https://elosystemv1.onrender.com/api/orders/${deliveryEid}`);
+      const response = await axiosInstance.get(`/orders/${deliveryEid}`);
       setOrders(response.data);
     } catch (err) {
       console.error('Failed to fetch orders:', err);
@@ -35,7 +35,7 @@ const LogisticsPage = () => {
   // Update the status of the order to 'In Process'
   const updateOrderStatus = async (orderId) => {
     try {
-      const response = await axios.patch(`https://elosystemv1.onrender.com/api/orders/${orderId}/status`, {
+      const response = await axiosInstance.patch(`/orders/${orderId}/status`, {
         isDeliveryInProcess: true,
       });
 

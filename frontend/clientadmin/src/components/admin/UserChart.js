@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../axiosInstance';
 import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from 'chart.js';
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
@@ -19,7 +19,7 @@ const RegistrationGraphPage = () => {
   // Fetch registration data
   const fetchRegistrationGraph = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/users/registration-graph');
+      const response = await axiosInstance.get('/users/registration-graph');
       setRegistrationData(response.data.graphData);
       console.log("Fetched data:", response.data.graphData); // Debugging line
       setError(null);

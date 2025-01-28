@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
 import '../styles/AccountTransactionSystem.css'; // Import the CSS file
 
 const AccountTransactionSystem = () => {
@@ -10,7 +10,7 @@ const AccountTransactionSystem = () => {
   // Fetch all accounts from the API
   const fetchAccounts = async () => {
     try {
-      const { data } = await axios.get('https://elosystemv1.onrender.com/api/accounts');
+      const { data } = await axiosInstance.get('/accounts');
       setAccounts(data);
     } catch (error) {
       console.error('Error fetching accounts:', error);
@@ -20,7 +20,7 @@ const AccountTransactionSystem = () => {
   // Fetch transactions for a specific account
   const fetchTransactions = async (accountId) => {
     try {
-      const { data } = await axios.get(`https://elosystemv1.onrender.com/api/transactions/${accountId}`);
+      const { data } = await axiosInstance.get(`/transactions/${accountId}`);
       setTransactions(data);
     } catch (error) {
       console.error('Error fetching transactions:', error);

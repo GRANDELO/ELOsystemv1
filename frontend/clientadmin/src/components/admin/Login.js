@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../axiosInstance';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './styles/login.css';
@@ -24,7 +24,7 @@ function Login() {
             return;
         }
         try {
-            const response = await axios.post('https://elosystemv1.onrender.com/api/employees/login', formData);
+            const response = await axiosInstance.post('/employees/login', formData);
             setMessage(`Login successful! Welcome, ${response.data.name}`);
             sessionStorage.setItem('firstName', response.data.name);
             sessionStorage.setItem('role', response.data.role);
@@ -54,7 +54,7 @@ function Login() {
     const handleRecoverPassword = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('https://elosystemv1.onrender.com/api/employees/recoverpassword', { username: formData.eid });
+            const response = await axiosInstance.post('/employees/recoverpassword', { username: formData.eid });
             setMessage(response.data.message);
         } catch (error) {
             setMessage(error.response?.data.message || 'An error occurred while processing your request.');

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
 import '../styles/AccountList.css'; // Assuming you'll create this CSS file
 
 const AccountList = () => {
@@ -7,7 +7,7 @@ const AccountList = () => {
 
   const fetchAccounts = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/accounts');
+      const response = await axiosInstance.get('/accounts');
       setAccounts(response.data);
     } catch (err) {
       console.error('Error fetching accounts:', err);

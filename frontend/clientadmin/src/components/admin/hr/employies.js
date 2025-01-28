@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
 import React, { useState } from 'react';
 import '../styles/register.css';
 
@@ -43,7 +43,7 @@ function EmployeeRegistration() {
 
         setIsLoading(true);
         try {
-            const response = await axios.post('https://elosystemv1.onrender.com/api/employees/register', formData);
+            const response = await axiosInstance.post('/employees/register', formData);
             setMessage(`Success: ${response.data.message}`);
         } catch (error) {
             setMessage(`Error: ${error.response?.data.message || 'Registration failed'}`);

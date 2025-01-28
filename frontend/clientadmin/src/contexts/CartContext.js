@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../components/axiosInstance';
 import React, { createContext, useContext, useEffect, useReducer } from 'react';
 
 const CartContext = createContext();
@@ -14,7 +14,7 @@ const cartReducer = (state, action) => {
 
 const fetchCart = async (dispatch) => {
   try {
-    const response = await axios.get('https://elosystemv1.onrender.com/api/cart/cart');
+    const response = await axiosInstance.get('/cart/cart');
     dispatch({ type: 'SET_CART', payload: response.data.items });
   } catch (error) {
     console.error('Failed to fetch cart:', error);

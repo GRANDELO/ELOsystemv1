@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
 import '../styles/accform.css';
 
 const AccountForm = ({ fetchAccounts }) => {
@@ -9,7 +9,7 @@ const AccountForm = ({ fetchAccounts }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('https://elosystemv1.onrender.com/api/accounts', { name, type });
+      await axiosInstance.post('/accounts', { name, type });
       fetchAccounts();
       setName('');
       setType('');

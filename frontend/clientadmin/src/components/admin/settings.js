@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../axiosInstance';
 import React, { useState } from 'react';
 import { FaLock, FaPowerOff } from 'react-icons/fa'; // Import icons from Font Awesome
 import { useNavigate } from 'react-router-dom';
@@ -30,7 +30,7 @@ const Settings = () => {
     }
     
     try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/employees/changepassword', { workID, newPassword });
+      const response = await axiosInstance.post('/employees/changepassword', { workID, newPassword });
       setMessage(response.data.message);  // Display the success message from the backend
       setError('');
       sessionStorage.setItem('admintoken', response.data.token);

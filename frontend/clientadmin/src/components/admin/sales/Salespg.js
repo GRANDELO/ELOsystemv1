@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
 import { saveAs } from 'file-saver';
 import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
@@ -41,7 +41,7 @@ const FinancialSummary = () => {
     const fetchSummary = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('https://elosystemv1.onrender.com/api/financials/summary');
+        const response = await axiosInstance.get('/financials/summary');
         setSummary(response.data);
       } catch (error) {
         const errorMessage = error.response?.status === 404 

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/hr.css';
@@ -20,16 +21,16 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                const totalUsersRes = await axios.get('https://elosystemv1.onrender.com/api/dash/users/count');
+                const totalUsersRes = await axiosInstance.get('/dash/users/count');
                 setTotalUsers(totalUsersRes.data.count);
 
-                const activeUsersRes = await axios.get('https://elosystemv1.onrender.com/api/dash/users/active-count');
+                const activeUsersRes = await axiosInstance.get('/dash/users/active-count');
                 setActiveUsers(activeUsersRes.data.count);
 
-                const response = await axios.get('https://elosystemv1.onrender.com/api/financials/summary');
+                const response = await axiosInstance.get('/financials/summary');
                 setSummary(response.data);
 
-                const activitiesRes = await axios.get('https://elosystemv1.onrender.com/api/dash/activities/recent');
+                const activitiesRes = await axiosInstance.get('/dash/activities/recent');
                 setRecentActivities(activitiesRes.data);
             } catch (err) {
                 console.error('Error fetching dashboard data:', err);

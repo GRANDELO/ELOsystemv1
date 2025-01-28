@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import { saveAs } from 'file-saver';
 import React, { useEffect, useState } from 'react';
 import Pagination from './Pagination';
@@ -28,7 +28,7 @@ const AdminDashboard = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/users/users');
+      const response = await axiosInstance.get('/users/users');
       setUsers(response.data);
       setFilteredUsers(response.data);
       setError(null);
@@ -39,7 +39,7 @@ const AdminDashboard = () => {
 
   const fetchActiveUsers = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/users/active');
+      const response = await axiosInstance.get('/users/active');
       setActiveUsers(response.data);
       setError(null);
     } catch (error) {
@@ -49,7 +49,7 @@ const AdminDashboard = () => {
 
   const fetchDisabledUsers = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/users/disabled');
+      const response = await axiosInstance.get('/users/disabled');
       setDisabledUsers(response.data);
       setError(null);
     } catch (error) {
@@ -59,7 +59,7 @@ const AdminDashboard = () => {
 
   const fetchRegistrationGraph = async () => {
     try {
-      const response = await axios.get('https://elosystemv1.onrender.com/api/users/registration-graph');
+      const response = await axiosInstance.get('/users/registration-graph');
       setRegistrationData(response.data.graphData);
       setError(null);
     } catch (error) {
@@ -69,7 +69,7 @@ const AdminDashboard = () => {
 
   const disableUser = async (userId) => {
     try {
-      await axios.patch(`https://elosystemv1.onrender.com/api/users/disable/${userId}`);
+      await axiosInstance.patch(`/users/disable/${userId}`);
       fetchUsers();
     } catch (error) {
       setError('Failed to disable user');
@@ -78,7 +78,7 @@ const AdminDashboard = () => {
 
   const undoDisableUser = async (userId) => {
     try {
-      await axios.patch(`https://elosystemv1.onrender.com/api/users/undo-disable/${userId}`);
+      await axiosInstance.patch(`/users/undo-disable/${userId}`);
       fetchUsers();
     } catch (error) {
       setError('Failed to enable user');

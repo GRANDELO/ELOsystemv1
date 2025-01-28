@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
 import '../styles/TrialBalance.css'; // Import the CSS file for styling
 
 const TrialBalance = () => {
@@ -12,7 +12,7 @@ const TrialBalance = () => {
   // Fetch trial balance from the backend
   const fetchTrialBalance = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/trial-balance'); // Adjust API URL as needed
+      const response = await axiosInstance.get('/trial-balance'); // Adjust API URL as needed
       const { trialBalance, totalDebits, totalCredits, isBalanced, message } = response.data;
 
       setTrialBalance(trialBalance);
