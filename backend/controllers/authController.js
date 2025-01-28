@@ -218,12 +218,11 @@ const updateEmail = async (req, res) => {
 
 
     user.email = newEmail;
-    await user.save();
     const subject = "Verification - " + user.verificationCode;
 
     const link = user.category === 'Salesperson' 
-    ? `https://www.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}` 
-    : `https://www.partner.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}`;
+    ? `https://www.bazelink.co.ke/auto?email=${email}&code=${user.verificationCode}` 
+    : `https://www.partner.bazelink.co.ke/auto?email=${email}&code=${user.verificationCode}`;
   
     const vermessage = `Dear ${user.username},
 
@@ -281,7 +280,7 @@ const updateEmail = async (req, res) => {
     } catch (error) {
       res.status(500).json({ message: 'An error occurred token' });
     }
-
+    await user.save();
   } catch (error) {
     res.status(500).json({ message: 'An error occurred while updating email' });
   }
@@ -300,8 +299,8 @@ const resendVerificationCode = async (req, res) => {
     const subject = "Verification - " + user.verificationCode;
     
     const link = user.category === 'Salesperson' 
-    ? `https://www.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}` 
-    : `https://www.partner.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}`;
+    ? `https://www.bazelink.co.ke/auto?email=${email}&code=${user.verificationCode}` 
+    : `https://www.partner.bazelink.co.ke/auto?email=${email}&code=${user.verificationCode}`;
   
     const vermessage = `Dear ${user.username},
 
@@ -374,8 +373,8 @@ const newrecoverPassword = async (req, res) => {
     // Send the recovery email
     const subject = 'Password Reset Request';
     const link = user.category === 'Salesperson' 
-    ? `https://www.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}` 
-    : `https://www.partner.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}`;
+    ? `https://www.bazelink.co.ke/reset-password` 
+    : `https://www.partner.bazelink.co.ke/reset-password`;
   
 
     const message = `Dear ${user.username},
@@ -558,8 +557,8 @@ const changeemail = async (req, res) => {
     await user.save();
     const subject = "Verification - " + user.verificationCode;
     const link = user.category === 'Salesperson' 
-    ? `https://www.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}` 
-    : `https://www.partner.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}`;
+    ? `https://www.bazelink.co.ke/auto?email=${email}&code=${user.verificationCode}` 
+    : `https://www.partner.bazelink.co.ke/auto?email=${email}&code=${user.verificationCode}`;
   
 
     const vermessage = `Dear ${user.username},
