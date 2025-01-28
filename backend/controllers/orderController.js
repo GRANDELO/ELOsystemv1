@@ -884,7 +884,7 @@ exports.pricecalc = async (req, res) => {
     }
 
     // Success response
-    res.status(201).json({ message: 'Order price calculated successfully', transcost });
+    res.status(201).json({ message: 'Order price calculated successfully', transcost: transcost.averageTransportCost });
   } catch (error) {
     console.error('Failed to calculate transport price:', error);
     res.status(500).json({ error: error.message || 'Failed to calculate transport price' });
