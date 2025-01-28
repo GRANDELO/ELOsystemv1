@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import './styles/ProductModal.css';
@@ -65,7 +65,7 @@ const ProductModal = ({ product, show, handleClose }) => {
 
     try {
       // Sending the updated field and value to the backend
-      const response = await axios.patch(`https://elosystemv1.onrender.com/api/products/${product._id}`, {
+      const response = await axiosInstance.patch(`/products/${product._id}`, {
         field: updatedField,
         value: updatedValue,
       });
@@ -81,7 +81,7 @@ const ProductModal = ({ product, show, handleClose }) => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`https://elosystemv1.onrender.com/api/products/${product._id}`);
+      await axiosInstance.delete(`/products/${product._id}`);
       setMessage('Product deleted successfully.');
       handleClose(); // Close the modal after deletion
     } catch (err) {
@@ -113,8 +113,8 @@ const ProductModal = ({ product, show, handleClose }) => {
 
   const handleDeleteReview = async (reviewId) => {
     try {
-      await axios.delete(
-        `https://elosystemv1.onrender.com/api/review/delete/${reviewId}`
+      await axiosInstance.delete(
+        `/review/delete/${reviewId}`
       );
       alert("Review deleted successfully!");
       setRefreshReviews((prev) => !prev); // Trigger refresh

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import { jwtDecode } from 'jwt-decode';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -21,7 +21,7 @@ const Logout = () => {
           return;
         }
 
-        const response = await axios.post('https://elosystemv1.onrender.com/api/auth/logout', { username }, {
+        const response = await axiosInstance.post('/auth/logout', { username }, {
 
         });
 

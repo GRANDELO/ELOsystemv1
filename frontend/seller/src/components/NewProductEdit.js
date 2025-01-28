@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ const NewProductEdit = () => {
   useEffect(() => {
     const fetchNewProduct = async () => {
       try {
-        const res = await axios.get(`https://elosystemv1.onrender.com/api/newproducts/${id}`);
+        const res = await axiosInstance.get(`/newproducts/${id}`);
         setNewProduct(res.data);
       } catch (err) {
         console.error(err);
@@ -38,7 +38,7 @@ const NewProductEdit = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.put(`https://elosystemv1.onrender.com/api/newproducts/${id}`, newProduct);
+      const res = await axiosInstance.put(`/newproducts/${id}`, newProduct);
       console.log('NewProduct updated:', res.data);
       navigate(`/newproducts/${id}`);
     } catch (err) {

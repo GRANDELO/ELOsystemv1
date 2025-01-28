@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button } from 'react-bootstrap';
 import { getUsernameFromToken } from '../utils/auth';
@@ -13,7 +13,7 @@ const Notifications = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get(`https://elosystemv1.onrender.com/api/notifications/${username}`);
+        const response = await axiosInstance.get(`/notifications/${username}`);
         setNotifications(response.data);
       } catch (err) {
         setError('Failed to fetch notifications');
@@ -24,7 +24,7 @@ const Notifications = () => {
 
   const markAsRead = async (id) => {
     try {
-      await axios.patch(`https://elosystemv1.onrender.com/api/notifications/${id}/read`);
+      await axiosInstance.patch(`/notifications/${id}/read`);
       setNotifications((prev) =>
         prev.map((notification) =>
           notification._id === id ? { ...notification, isRead: true } : notification
@@ -37,7 +37,7 @@ const Notifications = () => {
 
   const deleteNotification = async (id) => {
     try {
-      await axios.delete(`https://elosystemv1.onrender.com/api/notifications/${id}`);
+      await axiosInstance.delete(`/notifications/${id}`);
       setNotifications((prev) => prev.filter(notification => notification._id !== id));
     } catch (err) {
       setError('Failed to delete notification');

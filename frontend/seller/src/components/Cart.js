@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -15,7 +15,7 @@ const Cart = ({ cart, setCart }) => {
     const fetchCart = async () => {
       setError('');
       try {
-        const response = await axios.post('https://elosystemv1.onrender.com/api/cart/cart', { username });
+        const response = await axiosInstance.post('/cart/cart', { username });
         setCart(response.data.items || []);
       } catch (err) {
         console.error('Failed to fetch cart:', err);
@@ -32,13 +32,13 @@ const Cart = ({ cart, setCart }) => {
     try {
       setMessage('');
       setError('');
-      const removeResponse = await axios.post('https://elosystemv1.onrender.com/api/cart/cart/remove', 
+      const removeResponse = await axiosInstance.post('/cart/cart/remove', 
         { username, productId: product._id }
       );
       setMessage(removeResponse.data.message);
 
       // Refetch the cart after removal
-      const response = await axios.post('https://elosystemv1.onrender.com/api/cart/cart', { username });
+      const response = await axiosInstance.post('/cart/cart', { username });
       setCart(response.data.items || []);
     } catch (err) {
       console.error('Failed to remove from cart:', err);
@@ -50,7 +50,7 @@ const Cart = ({ cart, setCart }) => {
     try {
       setMessage('');
       setError('');
-      const clearResponse = await axios.post('https://elosystemv1.onrender.com/api/cart/cart/clear', 
+      const clearResponse = await axiosInstance.post('/cart/cart/clear', 
         { username }
       );
       setMessage(clearResponse.data.message);

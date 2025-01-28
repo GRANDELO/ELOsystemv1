@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance'
 import React, { useEffect, useRef, useState } from 'react';
 import { getUsernameFromToken } from '../utils/auth';
 
@@ -204,7 +204,7 @@ const NewProductForm = () => {
     });
 
     try {
-      const res = await axios.post('https://elosystemv1.onrender.com/api/products', formData, {
+      const res = await axiosInstance.post('/products', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       console.log('NewProduct created:', res.data);

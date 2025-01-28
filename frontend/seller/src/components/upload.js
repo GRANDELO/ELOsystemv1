@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import React, { useState } from 'react';
 
 const FileUpload = () => {
@@ -15,7 +15,7 @@ const FileUpload = () => {
     formData.append('file', file);
 
     try {
-      const res = await axios.post('https://elosystemv1.onrender.com/upload', formData, {
+      const res = await axiosInstance.post('/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

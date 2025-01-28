@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { FaBell, FaCog } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import Header from './headersell';
 import Notifications from './notification';
 import NewProductForm from './NewProductForm';
@@ -68,7 +68,7 @@ const Home = () => {
   const fetchUnreadNotifications = useCallback(async () => {
     if (username) {
       try {
-        const { data } = await axios.get(`https://elosystemv1.onrender.com/api/notifications/${username}`);
+        const { data } = await axiosInstance.get(`/notifications/${username}`);
         const unreadCount = data.filter((notification) => !notification.isRead).length;
         setUnreadNotifications(unreadCount);
       } catch (error) {

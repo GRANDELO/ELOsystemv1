@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 import { getUsernameFromToken } from "../utils/auth";
 import './styles/orderdisp.css';
 
@@ -13,8 +13,8 @@ const PendingOrders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get(
-          `https://elosystemv1.onrender.com/api/orders/mypending/${username}`
+        const response = await axiosInstance.get(
+          `/orders/mypending/${username}`
         );
         setOrders(response.data);
       } catch (err) {

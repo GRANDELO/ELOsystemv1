@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './styles/styles.css';
@@ -35,7 +35,7 @@ const Register = () => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await axios.get('https://elosystemv1.onrender.com/api/locations');
+        const response = await axiosInstance.get('/locations');
         setTowns(response.data);
       } catch (err) {
         console.error('Failed to fetch locations:', err);
@@ -74,7 +74,7 @@ const Register = () => {
     };
 
     try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/delivery/register', trimmedFormData);
+      const response = await axiosInstance.post('/delivery/register', trimmedFormData);
       setMessage(response.data.message);
       sessionStorage.setItem('email', trimmedFormData.email);
       navigate('/deliveryVerification');

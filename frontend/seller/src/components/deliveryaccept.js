@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import { getdpnoFromToken } from '../utils/auth';
 import './styles/input.css';
 
@@ -15,7 +15,7 @@ const AssignBox = () => {
     setError('');
 
     try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/delivery/acceptpackage', {
+      const response = await axiosInstance.post('/delivery/acceptpackage', {
         deliveryPersonnumber,
         boxId,
       });

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import React, { useEffect, useState } from 'react';
 
 const ImageList = ({ updateList }) => {
@@ -6,7 +6,7 @@ const ImageList = ({ updateList }) => {
 
   const fetchImages = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/images`);
+      const response = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/images`);
       setImages(response.data);
     } catch (error) {
       console.error('Error fetching images:', error);

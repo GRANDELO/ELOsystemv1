@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import React, { useEffect, useState , useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 import PushNotification from '../PushNotification';
@@ -44,7 +44,7 @@ const Settings = () => {
       return;
     } else {
       try {
-        const response = await axios.post('https://elosystemv1.onrender.com/api/delivery/changeusername', { lemail, newUsername });
+        const response = await axiosInstance.post('/delivery/changeusername', { lemail, newUsername });
         setMessage(response.data.message);
         setError(null);
         sessionStorage.setItem('userToken', response.data.token);
@@ -65,7 +65,7 @@ const Settings = () => {
       return;
     } else {
       try {
-        const response = await axios.post('https://elosystemv1.onrender.com/api/delivery/changepassword', { lemail, newPassword });
+        const response = await axiosInstance.post('/delivery/changepassword', { lemail, newPassword });
         setMessage(response.data.message);
         setError(null);
         sessionStorage.setItem('userToken', response.data.token);
@@ -83,7 +83,7 @@ const Settings = () => {
       return;
     } else {
       try {
-        const response = await axios.post('https://elosystemv1.onrender.com/api/delivery/changeemail', { lemail, newEmail });
+        const response = await axiosInstance.post('/delivery/changeemail', { lemail, newEmail });
         setMessage(response.data.message);
         setError(null);
         sessionStorage.setItem('userToken', response.data.token);
@@ -101,7 +101,7 @@ const Settings = () => {
       return;
     } else {
       try {
-        const response = await axios.post('https://elosystemv1.onrender.com/api/delivery/changephonenumber', { lemail, newPhoneNumber });
+        const response = await axiosInstance.post('/delivery/changephonenumber', { lemail, newPhoneNumber });
         setMessage(response.data.message);
         setError(null);
         sessionStorage.setItem('userToken', response.data.token);

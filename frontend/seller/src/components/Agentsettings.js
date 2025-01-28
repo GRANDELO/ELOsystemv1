@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import React, { useEffect, useState , useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 import PushNotification from '../PushNotification';
@@ -43,7 +43,7 @@ const Settings = () => {
       return;
     } else {
       try {
-        const response = await axios.post('https://elosystemv1.onrender.com/api/agent/changeusername', { lemail, newUsername });
+        const response = await axiosInstance.post('/agent/changeusername', { lemail, newUsername });
         setMessage(response.data.message);
         setError(null);
         sessionStorage.setItem('userToken', response.data.token);
@@ -64,7 +64,7 @@ const Settings = () => {
       return;
     } else {
       try {
-        const response = await axios.post('https://elosystemv1.onrender.com/api/agent/changepassword', { lemail, newPassword });
+        const response = await axiosInstance.post('/agent/changepassword', { lemail, newPassword });
         setMessage(response.data.message);
         setError(null);
         sessionStorage.setItem('userToken', response.data.token);
@@ -82,7 +82,7 @@ const Settings = () => {
       return;
     } else {
       try {
-        const response = await axios.post('https://elosystemv1.onrender.com/api/agent/changeemail', { lemail, newEmail });
+        const response = await axiosInstance.post('/agent/changeemail', { lemail, newEmail });
         setMessage(response.data.message);
         setError(null);
         sessionStorage.setItem('userToken', response.data.token);
@@ -100,7 +100,7 @@ const Settings = () => {
       return;
     } else {
       try {
-        const response = await axios.post('https://elosystemv1.onrender.com/api/agent/changephonenumber', { lemail, newPhoneNumber });
+        const response = await axiosInstance.post('/agent/changephonenumber', { lemail, newPhoneNumber });
         setMessage(response.data.message);
         setError(null);
         sessionStorage.setItem('userToken', response.data.token);

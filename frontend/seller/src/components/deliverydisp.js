@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import { getdpnoFromToken } from '../utils/auth';
 import './styles/deliveryPackages.css'; // Import CSS file for styling
 
@@ -19,8 +19,8 @@ const DeliveryPersonPackages = () => {
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        const response = await axios.get(
-          `https://elosystemv1.onrender.com/api/delivery/packages/${deliveryPersonnumber}`
+        const response = await axiosInstance.get(
+          `/delivery/packages/${deliveryPersonnumber}`
         );
         if (response.data.success) {
           const allPackages = response.data.packages;

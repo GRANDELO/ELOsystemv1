@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import axiosInstance from '../components/axiosInstance';
 
 export const getUsernameFromToken = () => {
   const token = sessionStorage.getItem('userToken');
@@ -62,7 +62,7 @@ export const logout = async () => {
       return;
     }
 
-    await axios.post('https://elosystemv1.onrender.com/api/auth/logout', { username }, {
+    await axiosInstance.post('/auth/logout', { username }, {
       headers: {
         'Authorization': token
       }

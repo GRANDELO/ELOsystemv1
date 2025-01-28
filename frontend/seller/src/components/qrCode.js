@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQrcode } from '@fortawesome/free-solid-svg-icons';
 
@@ -11,7 +11,7 @@ function AppDownloadQRIcon() {
     // Replace with your Render service URL
     const fetchQrCode = async () => {
       try {
-        const response = await axios.get('https://elosystemv1.onrender.com/api/notifications');
+        const response = await axiosInstance.get('/notifications');
         setQrCodeData(response.data.qrCodeData);
       } catch (error) {
         console.error('Error fetching QR code:', error);

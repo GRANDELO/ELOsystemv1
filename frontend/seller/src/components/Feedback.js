@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import { getUsernameFromToken } from '../utils/auth';
 
 const FeedbackForm = () => {
@@ -25,7 +25,7 @@ const FeedbackForm = () => {
         }
 
         try {
-            await axios.post('https://elosystemv1.onrender.com/api/feedback/submit', {
+            await axiosInstance.post('/feedback/submit', {
                 username,
                 feedback,
             });

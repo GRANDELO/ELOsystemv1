@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import {
   BarElement,
   CategoryScale,
@@ -24,7 +24,7 @@ const BarChart = () => {
   useEffect(() => {
     const fetchProductPerformance = async () => {
       try {
-        const response = await axios.get(`https://elosystemv1.onrender.com/api/performance/${username}`);
+        const response = await axiosInstance.get(`/performance/${username}`);
         setProductData(response.data);
       } catch (err) {
         setError("No products sold for " + username);

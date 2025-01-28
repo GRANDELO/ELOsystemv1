@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 import { getagentnoFromToken } from '../utils/auth';
 import './styles/input.css';
 
@@ -31,7 +31,7 @@ const AddOrderToAgent = () => {
 
     try {
       // Send POST request to backend
-      const res = await axios.post("https://elosystemv1.onrender.com/api/agent/add-order", {
+      const res = await axiosInstance.post("/agent/add-order", {
         agentnumber: getagentnoFromToken(),
         orderId: formData.orderId,
       });

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import React, { useState } from 'react';
 
 const MpesaPayment = () => {
@@ -14,7 +14,7 @@ const MpesaPayment = () => {
         };
 
         try {
-            const response = await axios.post('https://elosystemv1.onrender.com/api/mpesa/lipa', payload, {
+            const response = await axiosInstance.post('/mpesa/lipa', payload, {
                 headers: {
                     'Content-Type': 'application/json'
                 }

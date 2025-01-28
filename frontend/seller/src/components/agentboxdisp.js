@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 import { getagentnoFromToken } from "../utils/auth";
 import './styles/box.css';
 
@@ -21,8 +21,8 @@ const AgentBoxes = () => {
     setExpandedBox(null);
 
     try {
-      const response = await axios.get(
-        `https://elosystemv1.onrender.com/api/agent/${agentNumber}/boxes`
+      const response = await axiosInstance.get(
+        `/agent/${agentNumber}/boxes`
       );
       setBoxes(response.data.boxes);
     } catch (err) {

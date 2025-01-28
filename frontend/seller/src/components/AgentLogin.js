@@ -1,9 +1,10 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getUsernameFromToken, getcategoryFromToken } from '../utils/auth';
 import './styles/Login.css';
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -58,7 +59,7 @@ const Login = () => {
     setMessage('');
     setLoading(true);
     try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/agent/login', {
+      const response = await axiosInstance.post('/agent/login', {
         username: username.trim(),
         password,
       });
@@ -97,7 +98,7 @@ const Login = () => {
     setMessage('');
     setLoading(true);
     try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/agent/recoverpassword', { username });
+      const response = await axiosInstance.post('/agent/recoverpassword', { username });
       setMessage(response.data.message);
       setLoading(false);
     } catch (error) {

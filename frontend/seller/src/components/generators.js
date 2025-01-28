@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 
 function ProductDescriptionGenerator() {
   const [productName, setProductName] = useState("");
@@ -17,8 +17,8 @@ function ProductDescriptionGenerator() {
 
     try {
       // Make the API request to OpenAI
-      const response = await axios.post(
-        "https://api.openai.com/v1/completions",
+      const response = await axiosInstance.post(
+        "/v1/completions",
         {
           model: "text-davinci-003", // Use the GPT-3 model
           prompt: prompt,

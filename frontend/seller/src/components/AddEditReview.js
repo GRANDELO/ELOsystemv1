@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axiosInstance from "./axiosInstance"
 import './styles/AddEditReview.css'; // Import the CSS file
 
 const AddEditReview = ({
@@ -15,14 +15,14 @@ const AddEditReview = ({
     try {
       if (reviewToEdit) {
         // Edit review
-        await axios.put(
-          `https://elosystemv1.onrender.com/api/review/edit/${reviewToEdit._id}`,
+        await axiosInstance.put(
+          `/review/edit/${reviewToEdit._id}`,
           { rating, comment, currentUser}
         );
         alert("Review updated successfully!");
       } else {
         // Add review
-        await axios.post("https://elosystemv1.onrender.com/api/review/add", {
+        await axiosInstance.post("/review/add", {
           productId,
           userId: currentUser,
           rating,

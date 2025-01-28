@@ -1,5 +1,5 @@
 // src/Withdrawal.js
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import { saveAs } from 'file-saver';
 import React, { useEffect, useState } from 'react';
 import { getUsernameFromToken } from '../utils/auth';
@@ -15,7 +15,7 @@ const Withdrawal = () => {
   useEffect(() => {
     const fetchWithdrawals = async () => {
       try {
-        const response = await axios.get(`https://elosystemv1.onrender.com/api/withdraw/withdrawals/${username}`);
+        const response = await axiosInstance.get(`/withdraw/withdrawals/${username}`);
         setTransactions(response.data.withdrawals);
       } catch (error) {
         console.error('Error fetching transactions:', error);
@@ -40,7 +40,7 @@ const Withdrawal = () => {
 
     try {
       // Send withdrawal request to backend
-      const response = await axios.post('https://elosystemv1.onrender.com/api/withdraw', {
+      const response = await axiosInstance.post('/withdraw', {
         username,
         Phonenumber,
         amount: Number(amount),

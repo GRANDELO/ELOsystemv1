@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import { getUsernameFromToken } from '../utils/auth'; // Assume this retrieves the username from a token
 
 const UploadShopLogo = () => {
@@ -25,8 +25,8 @@ const UploadShopLogo = () => {
     formData.append('background', background); // Attach background
 
     try {
-      const response = await axios.post(
-        'https://elosystemv1.onrender.com/api/updateshoplogoUrl',
+      const response = await axiosInstance.post(
+        '/updateshoplogoUrl',
         formData,
         {
           headers: {
