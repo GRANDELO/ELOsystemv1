@@ -278,17 +278,14 @@ const OrderingPage = () => {
   if (loading) return <p>Loading...</p>;
 
   const handleprice = async () => {
-    if (!selectedTown || !selectedArea || !selectedSpecificArea) {
+    setMessage('');
+    setError('');
+    if (!selectedTown || !selectedArea ) {
       setError('Please select a town, area, and specific area.');
       return;
     }
 
     try {
-      setMessage('');
-      setError('');
-
-
-
       const priceResponse = await axiosInstance.post('/orders/price', { 
         items: cart.map(item => ({
           productId: item.product._id,

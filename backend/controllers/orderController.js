@@ -891,12 +891,26 @@ exports.pricecalc = async (req, res) => {
   }
 };
 
-const calculateTransportCost = async (products, { orderTown, orderSpecificRoute, orderExactDestination }) => {
+const calculateTransportCost = async (products, orderDestination) => {
+  
+  if (!orderDestination || !orderDestination.includes(',')) {
+    throw new Error('Invalid order destination format.');
+  }
+
+  const [orderTown, orderSpecificRoute, orderExactDestination] = orderDestination
+    .split(',')
+    .map(part => part.trim().toLowerCase());
+
+  if (!orderTown || !orderSpecificRoute || !orderExactDestination) {
+    throw new Error('Invalid order destination format: missing town, route, or exact destination.');
+  }
+
   let totalTransportCost = 0;
   let totalProducts = 0;
 
   // Gather all seller usernames
   const sellerUsernames = products.map(product => product.username);
+
   const sellers = await User.find({ username: { $in: sellerUsernames } });
 
   if (!sellers.every(seller => seller.locations)) {
