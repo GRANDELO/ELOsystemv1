@@ -919,9 +919,14 @@ const calculateTransportCost = async (products, orderDestination) => {
 
   // Create a lookup object for seller locations
   const sellerLocations = sellers.reduce((acc, seller) => {
-    acc[seller.username] = seller.locations;
+    acc[seller.username] = {
+      town: seller.locations?.town || '',
+      area: seller.locations?.area || '',
+      specific: seller.locations?.specific || '',
+    };
     return acc;
   }, {});
+  
 
   console.log(sellerLocations);
   for (const product of products) {
