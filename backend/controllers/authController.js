@@ -211,19 +211,21 @@ const updateEmail = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+
     const newuser = await User.findOne({ email: newEmail });
     if (newuser) {
-      return res.status(404).json({ message: 'Email is in use find a different one' });
+      return res.status(409).json({ message: 'Email is in use, find a different one' });
     }
 
+    // Ensure verificationCode exists
 
-    
     const subject = "Verification - " + user.verificationCode;
 
-    const link = user.category === 'Salesperson' 
-    ? `https://www.bazelink.co.ke/auto?email=${newEmail}&code=${user.verificationCode}` 
-    : `https://www.partner.bazelink.co.ke/auto?email=${newEmail}&code=${user.verificationCode}`;
-  
+    const link =
+      user.category === 'Salesperson'
+        ? `https://www.bazelink.co.ke/auto?email=${newEmail}&code=${user.verificationCode}`
+        : `https://www.partner.bazelink.co.ke/auto?email=${newEmail}&code=${user.verificationCode}`;
+
     const vermessage = `Dear ${user.username},
 
     Thank you for registering with Bazelink! Please use the following verification code to complete your registration:
@@ -234,60 +236,56 @@ const updateEmail = async (req, res) => {
     
     Best regards,
     Bazelink Support Team`;
-    
 
     const htmlMessage = `
-  <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.8; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
-    <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
-      Welcome to Bazelink, ${user.username}!
-    </h2>
-    <p style="font-size: 16px; color: #555; text-align: center; margin-top: 0;">
-      Thank you for registering with us! To complete your registration, please use the verification code below:
-    </p>
-    <div style="margin: 25px 0; padding: 20px; background-color: #f0f5fc; border: 1px dashed #1d4ed8; text-align: center; border-radius: 8px;">
-      <p style="font-size: 20px; font-weight: bold; color: #1d4ed8; letter-spacing: 1px;">
-        Verification Code: <span style="color: #1d4ed8;">${user.verificationCode}</span>
-      </p>
-    </div>
-    <p style="text-align: center;">
-      <a href=${link} style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
-        Verify Your Account
-      </a>
-    </p>
-    <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
-      If you did not request this, please disregard this email.
-    </p>
-    <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
-      Best regards,<br> Bazelink Support Team
-    </p>
-  </div>
-`;
+      <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.8; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
+        <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
+          Welcome to Bazelink, ${user.username}!
+        </h2>
+        <p style="font-size: 16px; color: #555; text-align: center; margin-top: 0;">
+          Thank you for registering with us! To complete your registration, please use the verification code below:
+        </p>
+        <div style="margin: 25px 0; padding: 20px; background-color: #f0f5fc; border: 1px dashed #1d4ed8; text-align: center; border-radius: 8px;">
+          <p style="font-size: 20px; font-weight: bold; color: #1d4ed8; letter-spacing: 1px;">
+            Verification Code: <span style="color: #1d4ed8;">${user.verificationCode}</span>
+          </p>
+        </div>
+        <p style="text-align: center;">
+          <a href=${link} style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+            Verify Your Account
+          </a>
+        </p>
+        <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
+          If you did not request this, please disregard this email.
+        </p>
+        <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
+          Best regards,<br> Bazelink Support Team
+        </p>
+      </div>
+    `;
 
-
-    try {
-      await sendEmail(newEmail, subject, vermessage, htmlMessage);
-      console.log('Email sent successfully');
-    } catch (error) {
-      console.error('Error sending email:', error);
-      return res.status(500).json({ message: 'Error sending verification email' });
-    }
-    try {
-      const token = jwt.sign({ id: user._id, username: user.username, email: user.email, category: user.category }, process.env.JWT_SECRET, {
-        expiresIn: '1h',
-      });
-  
-      res.status(200).json({ message: 'Email updated successfully', token });
-    } catch (error) {
-      res.status(500).json({ message: 'An error occurred token' });
-    }
-
+    // Update email in the database
     user.email = newEmail;
     await user.save();
 
+    // Send verification email
+    await sendEmail(newEmail, subject, vermessage, htmlMessage);
+    console.log('Email sent successfully');
+
+    // Generate new JWT token
+    const token = jwt.sign(
+      { id: user._id, username: user.username, email: newEmail, category: user.category },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.status(200).json({ message: 'Email updated successfully', token });
   } catch (error) {
+    console.error('Error updating email:', error.message);
     res.status(500).json({ message: 'An error occurred while updating email' });
   }
 };
+
 
 const resendVerificationCode = async (req, res) => {
   const { email } = req.body;
