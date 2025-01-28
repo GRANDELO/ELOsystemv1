@@ -39,13 +39,17 @@ const registerUser = async (req, res) => {
     // Generate verification code and send email
     const alphanumericCode = generateAlphanumericVerificationCode(6);
     const subject = `Verification - ${alphanumericCode}`;
+    const link = category === 'Salesperson' 
+    ? `https://www.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}` 
+    : `https://www.partner.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}`;
+  
     const vermessage = `Dear ${username},
 
     Thank you for registering with Bazelink! Please use the following verification code to complete your registration:
     
     Verification Code: ${alphanumericCode}
     
-    You can also follow this link to verify your account: https://baze-link.web.app/verification
+    You can also follow this link to verify your account: ${link}
     
     Best regards,
     Bazelink Support Team`;
@@ -64,7 +68,7 @@ const registerUser = async (req, res) => {
           </p>
         </div>
         <p style="text-align: center;">
-          <a href="https://baze-link.web.app/verification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+          <a href=${link} style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
             Verify Your Account
           </a>
         </p>
@@ -216,13 +220,18 @@ const updateEmail = async (req, res) => {
     user.email = newEmail;
     await user.save();
     const subject = "Verification - " + user.verificationCode;
+
+    const link = user.category === 'Salesperson' 
+    ? `https://www.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}` 
+    : `https://www.partner.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}`;
+  
     const vermessage = `Dear ${user.username},
 
     Thank you for registering with Bazelink! Please use the following verification code to complete your registration:
     
     Verification Code: ${user.verificationCode}
     
-    You can also follow this link to verify your account: https://baze-link.web.app/verification
+    You can also follow this link to verify your account: ${link}
     
     Best regards,
     Bazelink Support Team`;
@@ -242,7 +251,7 @@ const updateEmail = async (req, res) => {
       </p>
     </div>
     <p style="text-align: center;">
-      <a href="https://baze-link.web.app/verification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+      <a href=${link} style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
         Verify Your Account
       </a>
     </p>
@@ -290,13 +299,17 @@ const resendVerificationCode = async (req, res) => {
 
     const subject = "Verification - " + user.verificationCode;
     
+    const link = user.category === 'Salesperson' 
+    ? `https://www.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}` 
+    : `https://www.partner.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}`;
+  
     const vermessage = `Dear ${user.username},
 
     Thank you for joining Bazelink! Please use the following verification code to complete your registration:
     
     Verification Code: ${user.verificationCode}
     
-    Alternatively, you can follow this link to verify your account: https://grandelo.web.app/verification
+    Alternatively, you can follow this link to verify your account: ${link}
     
     If you did not sign up for this account, please disregard this email.
     
@@ -317,7 +330,7 @@ const resendVerificationCode = async (req, res) => {
         </p>
       </div>
       <p style="text-align: center;">
-        <a href="https://grandelo.web.app/verification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+        <a href=${link} style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
           Verify Your Account
         </a>
       </p>
@@ -360,13 +373,18 @@ const newrecoverPassword = async (req, res) => {
 
     // Send the recovery email
     const subject = 'Password Reset Request';
+    const link = user.category === 'Salesperson' 
+    ? `https://www.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}` 
+    : `https://www.partner.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}`;
+  
+
     const message = `Dear ${user.username},
 
     We received a request to reset your password. To proceed, please use the token provided below:
     
     Password Reset Token: ${user.passwordRecoveryToken}
     
-    Alternatively, you can reset your password by following this link: https://baze-link.web.app/reset-password
+    Alternatively, you can reset your password by following this link: ${link}
     
     This token is valid for 1 hour. If you did not request a password reset, please ignore this message.
     
@@ -387,7 +405,7 @@ const newrecoverPassword = async (req, res) => {
         </p>
       </div>
       <p style="text-align: center;">
-        <a href="https://baze-link.web.app/reset-password" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+        <a href=${link} style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
           Reset Your Password
         </a>
       </p>
@@ -539,13 +557,18 @@ const changeemail = async (req, res) => {
     user.email = newEmail;
     await user.save();
     const subject = "Verification - " + user.verificationCode;
+    const link = user.category === 'Salesperson' 
+    ? `https://www.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}` 
+    : `https://www.partner.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}`;
+  
+
     const vermessage = `Dear ${user.username},
 
     Thank you for registering with Bazelink! Please use the following verification code to complete your registration:
     
     Verification Code: ${user.verificationCode}
     
-    Alternatively, you can follow this link to verify your account: https://baze-link.web.app/verification
+    Alternatively, you can follow this link to verify your account: ${link}
     
     Best regards,
     Bazelink Support Team`;
@@ -564,7 +587,7 @@ const changeemail = async (req, res) => {
       </p>
     </div>
     <p style="text-align: center;">
-      <a href="https://baze-link.web.app/verification" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+      <a href=${link} style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
         Verify Your Account
       </a>
     </p>

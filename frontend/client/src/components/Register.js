@@ -27,11 +27,16 @@ const Register = () => {
   const [isNextEnabled, setIsNextEnabled] = useState(false); // State to manage next button status
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setloading] = useState(false);
   const [towns, setTowns] = useState([]);
   const [selectedTown, setSelectedTown] = useState('');
   const [areas, setAreas] = useState([]);
   const [selectedArea, setSelectedArea] = useState('');
   const [selectedAreaspe, setSelectedAreaspe] = useState('');
+
+  const totalSteps = 4; // Total number of steps
+  const stepTimeEstimate = 2; // Estimate 2 minutes per step
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -40,7 +45,7 @@ const Register = () => {
         setTowns(response.data);
       } catch (err) {
         console.error('Failed to fetch locations:', err);
-        setMessage(err.response?.data?.message || 'Failed to fetch locations');
+        setError(err.response?.data?.message || 'Failed to fetch locations');
       }
     };
 
@@ -54,7 +59,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
-
+    setloading(true);
     // Trim the form data before sending it
     const trimmedFormData = {
       fullName: formData.fullName.trim(),
@@ -79,9 +84,11 @@ const Register = () => {
       const response = await axios.post('https://elosystemv1.onrender.com/api/auth/register', trimmedFormData);
       setMessage(response.data.message);
       sessionStorage.setItem('email', trimmedFormData.email);
+      setloading(false);
       navigate('/verification');
     } catch (error) {
-      setMessage(error.response?.data?.message || 'An error occurred while processing your request.');
+      setloading(false);
+      setError(error.response?.data?.message || 'An error occurred while processing your request.');
     }
   };
 
@@ -139,10 +146,21 @@ const Register = () => {
     setSelectedAreaspe(e.target.value);
   };
 
+  const progressPercentage = (currentStep / totalSteps) * 100;
+  const timeRemaining = stepTimeEstimate * (totalSteps - currentStep);
+
   return (
     <div className="container">
       <h2>Register</h2>
+      <div className="progress-container">
+        <p>Step {currentStep} of {totalSteps}</p>
+        <p>Estimated Time Remaining: {timeRemaining} minutes</p>
+        <div className="progress-bar">
+          <div className="progress-bar-fill" style={{ width: `${progressPercentage}%` }}></div>
+        </div>
+      </div>
       <form onSubmit={handleSubmit}>
+
       {currentStep === 1 && (
 
         <div className="formsep">
@@ -335,7 +353,9 @@ const Register = () => {
         )}
 
           <button type="button" onClick={previousStep}>Back</button>
-          <button type="submit">Register</button>
+          <button type="submit">
+          {loading ? "Registering..." : "Register"}
+          </button>
       </div>
 
       )}
@@ -343,7 +363,8 @@ const Register = () => {
 
       </form>
       <div className="divmess">
-          {message && <p>{message}</p>}
+          {message && <p className="message">{message}</p>}
+          {error && <p className="error">{error}</p>}
       </div>
     </div>
   );

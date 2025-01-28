@@ -9,6 +9,7 @@ import ImageUpload from './components/ImageUpload';
 import Login from './components/Login';
 import Set from './components/set';
 import Review from './components/review';
+import Verificationauto from './components/Verificationauto';
 
 import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
@@ -95,7 +96,8 @@ const App = () => {
           <Route path="/testHome" element={<Home />} />
           <Route path="/verification" element={<Verification />} />
           <Route path="/review" element={<Review />} />
-
+          <Route path="/auto" element={<Verificationauto />} />
+          
           <Route path="/chatall" element={<ChatList />} />
           <Route path="/chat/:chatId" element={<ChatDetails />} />
           {/* Protected routes */}
