@@ -825,13 +825,17 @@ exports.pricecalc = async (req, res) => {
 
     // Input validation
     if (!items || !Array.isArray(items) || !items.length) {
+      console.log("Invalid or missing items array");
       return res.status(400).json({ error: 'Invalid or missing items array' });
     }
     if (!destination) {
+      console.log("Destination is required");
       return res.status(400).json({ error: 'Destination is required' });
     }
     if (!username) {
+      console.log("Username is required");
       return res.status(400).json({ error: 'Username is required' });
+      
     }
 
     // Fetch user

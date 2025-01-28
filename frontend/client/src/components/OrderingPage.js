@@ -309,8 +309,8 @@ const OrderingPage = () => {
       const priceResponse = await axiosInstance.post('/orders/price', { orderDetails });
       setMessage(`Transportation Cost: ${priceResponse.data.transcost}`);
     } catch (err) {
-      console.error('Failed to clear cart:', err);
-      setError(err.response?.data?.message || 'Failed to clear cart');
+      console.error('Failed to get transportation cost:', err);
+      setError(err.response?.data?.message || 'Failed to get transportation cost');
     }
   };
 
