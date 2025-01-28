@@ -221,7 +221,7 @@ const updateEmail = async (req, res) => {
     await user.save();
     const subject = "Verification - " + user.verificationCode;
 
-    const link = category === 'Salesperson' 
+    const link = user.category === 'Salesperson' 
     ? `https://www.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}` 
     : `https://www.partner.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}`;
   
@@ -299,7 +299,7 @@ const resendVerificationCode = async (req, res) => {
 
     const subject = "Verification - " + user.verificationCode;
     
-    const link = category === 'Salesperson' 
+    const link = user.category === 'Salesperson' 
     ? `https://www.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}` 
     : `https://www.partner.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}`;
   
@@ -373,7 +373,7 @@ const newrecoverPassword = async (req, res) => {
 
     // Send the recovery email
     const subject = 'Password Reset Request';
-    const link = category === 'Salesperson' 
+    const link = user.category === 'Salesperson' 
     ? `https://www.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}` 
     : `https://www.partner.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}`;
   
@@ -557,7 +557,7 @@ const changeemail = async (req, res) => {
     user.email = newEmail;
     await user.save();
     const subject = "Verification - " + user.verificationCode;
-    const link = category === 'Salesperson' 
+    const link = user.category === 'Salesperson' 
     ? `https://www.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}` 
     : `https://www.partner.bazelink.co.ke/auto?email=${email}&code=${alphanumericCode}`;
   
