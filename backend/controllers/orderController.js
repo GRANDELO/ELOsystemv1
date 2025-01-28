@@ -891,21 +891,7 @@ exports.pricecalc = async (req, res) => {
   }
 };
 
-
-const calculateTransportCost = async (products, orderDestination) => {
-
-  if (!orderDestination || !orderDestination.includes(',')) {
-    throw new Error('Invalid order destination format.');
-  }
-
-  const [orderTown, orderSpecificRoute, orderExactDestination] = orderDestination
-    .split(',')
-    .map(part => part.trim().toLowerCase());
-
-  if (!orderTown || !orderSpecificRoute || !orderExactDestination) {
-    throw new Error('Invalid order destination format: missing town, route, or exact destination.');
-  }
-
+const calculateTransportCost = async (products, { orderTown, orderSpecificRoute, orderExactDestination }) => {
   let totalTransportCost = 0;
   let totalProducts = 0;
 
@@ -913,29 +899,22 @@ const calculateTransportCost = async (products, orderDestination) => {
   const sellerUsernames = products.map(product => product.username);
   const sellers = await User.find({ username: { $in: sellerUsernames } });
 
-  if (!sellers.length) {
-    throw new Error('No sellers found for the given order.');
+  if (!sellers.every(seller => seller.locations)) {
+    throw new Error('One or more sellers are missing location details.');
   }
 
   // Create a lookup object for seller locations
   const sellerLocations = sellers.reduce((acc, seller) => {
     acc[seller.username] = seller.locations;
-    console.log(seller);
     return acc;
   }, {});
 
-  console.log(sellerLocations);
   for (const product of products) {
     const { username, quantity } = product;
-
     const sellerLocation = sellerLocations[username];
-    if (!sellerLocation) {
-      console.warn(`Seller ${username} location not found, skipping.`);
-      continue;
-    }
 
-    if (!quantity || quantity <= 0) {
-      console.warn(`Invalid quantity for product ${username}, skipping.`);
+    if (!sellerLocation || !quantity || quantity <= 0) {
+      console.warn(`Skipping product from seller ${username} due to missing location or invalid quantity.`);
       continue;
     }
 
@@ -950,11 +929,8 @@ const calculateTransportCost = async (products, orderDestination) => {
 
   const averageTransportCost = totalTransportCost / totalProducts;
 
-  console.log(`Total transport cost: ${totalTransportCost}, Total products: ${totalProducts}`);
-  console.log(`Average transport cost per product: ${averageTransportCost.toFixed(2)}`);
-
   return {
-    message: `Transport cost calculated successfully for order ${orderNumber}.`,
+    message: `Transport cost calculated successfully.`,
     averageTransportCost: averageTransportCost.toFixed(2),
   };
 };
