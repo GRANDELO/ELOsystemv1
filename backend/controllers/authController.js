@@ -68,7 +68,7 @@ const registerUser = async (req, res) => {
           </p>
         </div>
         <p style="text-align: center;">
-          <a href={link} style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+          <a href=${link} style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
             Verify Your Account
           </a>
         </p>
@@ -251,7 +251,7 @@ const updateEmail = async (req, res) => {
       </p>
     </div>
     <p style="text-align: center;">
-      <a href={link} style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+      <a href=${link} style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
         Verify Your Account
       </a>
     </p>
@@ -330,7 +330,7 @@ const resendVerificationCode = async (req, res) => {
         </p>
       </div>
       <p style="text-align: center;">
-        <a href={link} style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+        <a href=${link} style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
           Verify Your Account
         </a>
       </p>
@@ -405,7 +405,7 @@ const newrecoverPassword = async (req, res) => {
         </p>
       </div>
       <p style="text-align: center;">
-        <a href={link} style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+        <a href=${link} style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
           Reset Your Password
         </a>
       </p>
@@ -587,7 +587,7 @@ const changeemail = async (req, res) => {
       </p>
     </div>
     <p style="text-align: center;">
-      <a href={link} style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+      <a href=${link} style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
         Verify Your Account
       </a>
     </p>
