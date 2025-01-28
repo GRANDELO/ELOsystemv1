@@ -217,12 +217,12 @@ const updateEmail = async (req, res) => {
     }
 
 
-    user.email = newEmail;
+    
     const subject = "Verification - " + user.verificationCode;
 
     const link = user.category === 'Salesperson' 
-    ? `https://www.bazelink.co.ke/auto?email=${email}&code=${user.verificationCode}` 
-    : `https://www.partner.bazelink.co.ke/auto?email=${email}&code=${user.verificationCode}`;
+    ? `https://www.bazelink.co.ke/auto?email=${newEmail}&code=${user.verificationCode}` 
+    : `https://www.partner.bazelink.co.ke/auto?email=${newEmail}&code=${user.verificationCode}`;
   
     const vermessage = `Dear ${user.username},
 
@@ -265,7 +265,7 @@ const updateEmail = async (req, res) => {
 
 
     try {
-      await sendEmail(user.email, subject, vermessage, htmlMessage);
+      await sendEmail(newEmail, subject, vermessage, htmlMessage);
       console.log('Email sent successfully');
     } catch (error) {
       console.error('Error sending email:', error);
@@ -280,7 +280,10 @@ const updateEmail = async (req, res) => {
     } catch (error) {
       res.status(500).json({ message: 'An error occurred token' });
     }
+
+    user.email = newEmail;
     await user.save();
+
   } catch (error) {
     res.status(500).json({ message: 'An error occurred while updating email' });
   }
@@ -553,12 +556,11 @@ const changeemail = async (req, res) => {
     if (checkuser) {
       return res.status(400).json({ message: 'Email already exists try a different one.' });
     }
-    user.email = newEmail;
-    await user.save();
+
     const subject = "Verification - " + user.verificationCode;
     const link = user.category === 'Salesperson' 
-    ? `https://www.bazelink.co.ke/auto?email=${email}&code=${user.verificationCode}` 
-    : `https://www.partner.bazelink.co.ke/auto?email=${email}&code=${user.verificationCode}`;
+    ? `https://www.bazelink.co.ke/auto?email=${newEmail}&code=${user.verificationCode}` 
+    : `https://www.partner.bazelink.co.ke/auto?email=${newEmail}&code=${user.verificationCode}`;
   
 
     const vermessage = `Dear ${user.username},
@@ -602,7 +604,7 @@ const changeemail = async (req, res) => {
 
 
     try {
-      await sendEmail(lemail, subject, vermessage, htmlMessage);
+      await sendEmail(newEmail, subject, vermessage, htmlMessage);
       console.log('Email sent successfully');
     } catch (error) {
       console.error('Error sending email:', error);
@@ -611,6 +613,9 @@ const changeemail = async (req, res) => {
     const token = jwt.sign({ id: user._id, username: user.username, email: user.email, category: user.category }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
+    
+    user.email = newEmail;
+    await user.save();
     res.status(200).json({ message: 'Email updated successfully', token});
   } catch (error) {
     res.status(500).json({ message: 'An error occurred while updating Email' });
