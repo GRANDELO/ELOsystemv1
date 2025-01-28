@@ -826,6 +826,7 @@ exports.pricecalc = async (req, res) => {
     // Input validation
     if (!items || !Array.isArray(items) || !items.length) {
       console.log("Invalid or missing items array");
+      console.log(items);
       return res.status(400).json({ error: 'Invalid or missing items array' });
     }
     if (!destination) {

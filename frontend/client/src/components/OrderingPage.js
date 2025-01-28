@@ -283,32 +283,41 @@ const OrderingPage = () => {
       return;
     }
 
+    const orderDetails = {
+      items: cart.map(item => ({
+        productId: item.product._id,
+        quantity: item.quantity,
+        variations: {
+          productId: item.variant.productId,
+          color: item.variant.color,
+          size: item.variant.size,
+          material: item.variant.material,
+          model: item.variant.model,
+        }, 
+        price: item.product.discount 
+          ? item.product.price * (1 - item.product.discountpersentage / 100) // Apply discount if exists
+          : item.product.price
+        
+
+      })), 
+      destination: `${selectedTown}, ${selectedArea}, ${selectedSpecificArea || 'Town'}`,
+      username,
+    };
+    
     try {
       setMessage('');
       setError('');
 
-      const orderDetails = {
-        items: cart.map(item => ({
-          productId: item.product._id,
-          quantity: item.quantity,
-          variations: {
-            productId: item.variant.productId,
-            color: item.variant.color,
-            size: item.variant.size,
-            material: item.variant.material,
-            model: item.variant.model,
-          },
-          price: item.product.discount
-            ? item.product.price * (1 - item.product.discountpersentage / 100) // Apply discount if exists
-            : item.product.price,
-        })),
-        destination: `${selectedTown}, ${selectedArea}, ${selectedSpecificArea || 'Town'}`,
-        username,
-      };
+
 
       const priceResponse = await axiosInstance.post('/orders/price', { orderDetails });
       setMessage(`Transportation Cost: ${priceResponse.data.transcost}`);
     } catch (err) {
+      console.log("***********************");
+      console.log("***********************");
+      console.log(orderDetails);
+      console.log("***********************");
+      console.log("***********************");
       console.error('Failed to get transportation cost:', err);
       setError(err.response?.data?.message || 'Failed to get transportation cost');
     }
