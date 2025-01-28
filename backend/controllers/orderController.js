@@ -821,23 +821,30 @@ const updateProductPerformance = async (productId, productName, seller, saleDate
 
 exports.pricecalc = async (req, res) => {
   try {
-    const {
-      items,
-      destination,
-      username,      
-    } = req.body;
-    // Fetch the order by order number
+    const { items, destination, username } = req.body;
 
-
-    const user = await User.findOne({ username: username }).lean();
-    if (!user) {
-      throw new Error('User not found');
+    // Input validation
+    if (!items || !Array.isArray(items) || !items.length) {
+      return res.status(400).json({ error: 'Invalid or missing items array' });
+    }
+    if (!destination) {
+      return res.status(400).json({ error: 'Destination is required' });
+    }
+    if (!username) {
+      return res.status(400).json({ error: 'Username is required' });
     }
 
-    // Extract product IDs and seller usernames from the order items
-    const productIds = items.map(item => item.productId);
-    const products = await Product.find({ _id: { $in: productIds } });
+    // Fetch user
+    const user = await User.findOne({ username: username }).lean();
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
 
+    // Fetch product details
+    const productIds = items.map(item => item.productId);
+    const products = await Product.find({ _id: { $in: productIds } }).lean();
+
+    // Map product details
     const productMap = {};
     products.forEach(product => {
       productMap[product._id] = {
@@ -845,25 +852,40 @@ exports.pricecalc = async (req, res) => {
         name: product.name,
         category: product.category,
         price: product.price,
-        username: product.username, // Include seller info
+        username: product.username, // Seller info
         discount: product.discount,
         discountpersentage: product.discountpersentage,
       };
     });
 
-    // Format products with details for email content
-    const formattedProducts = items.map(item => ({
-      ...productMap[item.productId],
-      quantity: item.quantity,
-    }));
+    // Format products and handle missing products
+    const formattedProducts = items.map(item => {
+      const product = productMap[item.productId];
+      if (!product) {
+        throw new Error(`Product with ID ${item.productId} not found`);
+      }
+      return {
+        ...product,
+        quantity: item.quantity,
+      };
+    });
 
+    // Calculate transport cost
+    let transcost;
+    try {
+      transcost = await calculateTransportCost(formattedProducts, destination);
+    } catch (err) {
+      throw new Error(`Failed to calculate transport cost: ${err.message}`);
+    }
 
-    const transcost = await calculateTransportCost(formattedProducts, destination);
+    // Success response
     res.status(201).json({ message: 'Order price calculated successfully', transcost });
   } catch (error) {
-    console.error('Failed to send receipt email:', error);
+    console.error('Failed to calculate transport price:', error);
+    res.status(500).json({ error: error.message || 'Failed to calculate transport price' });
   }
 };
+
 
 const calculateTransportCost = async (products, orderDestination) => {
 

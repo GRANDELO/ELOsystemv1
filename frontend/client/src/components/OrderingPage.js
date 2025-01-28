@@ -118,8 +118,9 @@ const OrderingPage = () => {
     setSelectedSpecificArea(e.target.value);
   };
 
-  const handlePaymentMethodChange = (e) => {
+  const handlePaymentMethodChange = async (e) => {
     setPaymentMethod(e.target.value);
+    await handleprice();
   };
 
   const handleMpesaPhoneNumberChange = (e) => {
@@ -140,40 +141,6 @@ const OrderingPage = () => {
     const town = towns.find(t => t.town === selectedTown);
     setAreas(town ? town.areas : []);
 
-    try {
-      setMessage('');
-      setError('');
-
-      const orderDetails = {
-        items: cart.map(item => ({
-          productId: item.product._id,
-          quantity: item.quantity,
-          variations: {
-            productId: item.variant.productId,
-            color: item.variant.color,
-            size: item.variant.size,
-            material: item.variant.material,
-            model: item.variant.model,
-          }, 
-          price: item.product.discount 
-            ? item.product.price * (1 - item.product.discountpersentage / 100) // Apply discount if exists
-            : item.product.price
-          
-
-        })), 
-
-        destination: `${selectedTown}, ${selectedArea}, ${selectedSpecificArea || 'Town'}`,
-        username,
-      };
-
-      const clearResponse = await axiosInstance.post('/orders/price', 
-        { orderDetails }
-      );
-      setMessage(clearResponse.data.transcost);
-    } catch (err) {
-      console.error('Failed to clear cart:', err);
-      setError(err.response?.data?.message || 'Failed to clear cart');
-    }
   };
 
   const handleAreaChange = (e) => {
@@ -309,6 +276,44 @@ const OrderingPage = () => {
   }, 0);
 
   if (loading) return <p>Loading...</p>;
+
+  const handleprice = async () => {
+    if (!selectedTown || !selectedArea || !selectedSpecificArea) {
+      setError('Please select a town, area, and specific area.');
+      return;
+    }
+
+    try {
+      setMessage('');
+      setError('');
+
+      const orderDetails = {
+        items: cart.map(item => ({
+          productId: item.product._id,
+          quantity: item.quantity,
+          variations: {
+            productId: item.variant.productId,
+            color: item.variant.color,
+            size: item.variant.size,
+            material: item.variant.material,
+            model: item.variant.model,
+          },
+          price: item.product.discount
+            ? item.product.price * (1 - item.product.discountpersentage / 100) // Apply discount if exists
+            : item.product.price,
+        })),
+        destination: `${selectedTown}, ${selectedArea}, ${selectedSpecificArea || 'Town'}`,
+        username,
+      };
+
+      const priceResponse = await axiosInstance.post('/orders/price', { orderDetails });
+      setMessage(`Transportation Cost: ${priceResponse.data.transcost}`);
+    } catch (err) {
+      console.error('Failed to clear cart:', err);
+      setError(err.response?.data?.message || 'Failed to clear cart');
+    }
+  };
+
 
   return (
     <div className="ordering-page">
