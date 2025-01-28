@@ -134,11 +134,46 @@ const OrderingPage = () => {
     }
   };
 
-  const handleTownChange = (e) => {
+  const handleTownChange = async (e) => {
     const selectedTown = e.target.value;
     setSelectedTown(selectedTown);
     const town = towns.find(t => t.town === selectedTown);
     setAreas(town ? town.areas : []);
+
+    try {
+      setMessage('');
+      setError('');
+
+      const orderDetails = {
+        items: cart.map(item => ({
+          productId: item.product._id,
+          quantity: item.quantity,
+          variations: {
+            productId: item.variant.productId,
+            color: item.variant.color,
+            size: item.variant.size,
+            material: item.variant.material,
+            model: item.variant.model,
+          }, 
+          price: item.product.discount 
+            ? item.product.price * (1 - item.product.discountpersentage / 100) // Apply discount if exists
+            : item.product.price
+          
+
+        })), 
+
+        destination: `${selectedTown}, ${selectedArea}, ${selectedSpecificArea || 'Town'}`,
+        username,
+      };
+
+      const clearResponse = await axiosInstance.post('/orders/price', 
+        { orderDetails }
+      );
+      setMessage(clearResponse.data.transcost);
+    } catch (err) {
+      console.error('Failed to clear cart:', err);
+      setError(err.response?.data?.message || 'Failed to clear cart');
+    }
   };
 
   const handleAreaChange = (e) => {

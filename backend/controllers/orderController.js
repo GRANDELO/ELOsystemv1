@@ -819,6 +819,117 @@ const updateProductPerformance = async (productId, productName, seller, saleDate
   }
 };
 
+exports.pricecalc = async (req, res) => {
+  try {
+    const {
+      items,
+      destination,
+      username,      
+    } = req.body;
+    // Fetch the order by order number
+
+
+    const user = await User.findOne({ username: username }).lean();
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Extract product IDs and seller usernames from the order items
+    const productIds = items.map(item => item.productId);
+    const products = await Product.find({ _id: { $in: productIds } });
+
+    const productMap = {};
+    products.forEach(product => {
+      productMap[product._id] = {
+        productid: product._id,
+        name: product.name,
+        category: product.category,
+        price: product.price,
+        username: product.username, // Include seller info
+        discount: product.discount,
+        discountpersentage: product.discountpersentage,
+      };
+    });
+
+    // Format products with details for email content
+    const formattedProducts = items.map(item => ({
+      ...productMap[item.productId],
+      quantity: item.quantity,
+    }));
+
+
+    const transcost = await calculateTransportCost(formattedProducts, destination);
+    res.status(201).json({ message: 'Order price calculated successfully', transcost });
+  } catch (error) {
+    console.error('Failed to send receipt email:', error);
+  }
+};
+
+const calculateTransportCost = async (products, orderDestination) => {
+
+  if (!orderDestination || !orderDestination.includes(',')) {
+    throw new Error('Invalid order destination format.');
+  }
+
+  const [orderTown, orderSpecificRoute, orderExactDestination] = orderDestination
+    .split(',')
+    .map(part => part.trim().toLowerCase());
+
+  if (!orderTown || !orderSpecificRoute || !orderExactDestination) {
+    throw new Error('Invalid order destination format: missing town, route, or exact destination.');
+  }
+
+  let totalTransportCost = 0;
+  let totalProducts = 0;
+
+  // Gather all seller usernames
+  const sellerUsernames = products.map(product => product.username);
+  const sellers = await User.find({ username: { $in: sellerUsernames } });
+
+  if (!sellers.length) {
+    throw new Error('No sellers found for the given order.');
+  }
+
+  // Create a lookup object for seller locations
+  const sellerLocations = sellers.reduce((acc, seller) => {
+    acc[seller.username] = seller.location;
+    return acc;
+  }, {});
+
+  for (const product of products) {
+    const { username, quantity } = product;
+
+    const sellerLocation = sellerLocations[username];
+    if (!sellerLocation) {
+      console.warn(`Seller ${username} location not found, skipping.`);
+      continue;
+    }
+
+    if (!quantity || quantity <= 0) {
+      console.warn(`Invalid quantity for product ${username}, skipping.`);
+      continue;
+    }
+
+    const transportCostPerProduct = sellerLocation.town.toLowerCase() === orderTown ? 120 : 160;
+    totalTransportCost += transportCostPerProduct * quantity;
+    totalProducts += quantity;
+  }
+
+  if (totalProducts === 0) {
+    throw new Error('No valid products found to calculate transport cost.');
+  }
+
+  const averageTransportCost = totalTransportCost / totalProducts;
+
+  console.log(`Total transport cost: ${totalTransportCost}, Total products: ${totalProducts}`);
+  console.log(`Average transport cost per product: ${averageTransportCost.toFixed(2)}`);
+
+  return {
+    message: `Transport cost calculated successfully for order ${orderNumber}.`,
+    averageTransportCost: averageTransportCost.toFixed(2),
+  };
+};
+
 
 
 
