@@ -26,6 +26,7 @@ const OrderingPage = () => {
   const [others, setOthers] = useState(false);
   const navigate = useNavigate();
   
+  const [Transportprice, setTransportprice] = useState(0);
   useEffect(() => {
     const fetchCart = async () => {
       setLoading(true);
@@ -203,12 +204,7 @@ const OrderingPage = () => {
         })), 
 
 
-        totalPrice: cart.reduce((total, item) => {
-          const price = item.product.discount
-            ? item.product.price * (1 - item.product.discountpersentage / 100)
-            : item.product.price;
-          return total + price * item.quantity;
-        }, 0),
+        totalPrice: grandTotal.toFixed(2),
         paymentMethod,
         destination: `${selectedTown}, ${selectedArea}, ${selectedSpecificArea || 'Town'}`,
         orderDate: new Date().toISOString(),
@@ -270,21 +266,24 @@ const OrderingPage = () => {
 
   const totalPrice = cart.reduce((total, item) => {
     const price = item.product.discount
-      ?   item.product.price * (1 - item.product.discountpersentage / 100)
+      ? item.product.price * (1 - item.product.discountpersentage / 100)
       : item.product.price;
     return total + price * item.quantity;
   }, 0);
-
+  
+  // Calculate the grand total (total price + transport price)
+  const grandTotal = totalPrice + Number(Transportprice); // Ensure transportprice is a number
+  
   if (loading) return <p>Loading...</p>;
-
+  
   const handleprice = async () => {
     setMessage('');
     setError('');
-    if (!selectedTown || !selectedArea ) {
+    if (!selectedTown || !selectedArea) {
       setError('Please select a town, area, and specific area.');
       return;
     }
-
+  
     try {
       const priceResponse = await axiosInstance.post('/orders/price', { 
         items: cart.map(item => ({
@@ -296,29 +295,26 @@ const OrderingPage = () => {
             size: item.variant.size,
             material: item.variant.material,
             model: item.variant.model,
-          }, 
-          price: item.product.discount 
-            ? item.product.price * (1 - item.product.discountpersentage / 100) // Apply discount if exists
-            : item.product.price
-          
-  
+          },
+          price: item.product.discount
+            ? item.product.price * (1 - item.product.discountpersentage / 100)
+            : item.product.price,
         })), 
         destination: `${selectedTown}, ${selectedArea}, ${selectedSpecificArea || 'Town'}`,
         username,
-       });
-      setMessage(`Transportation Cost: ${priceResponse.data.transcost}`);
+      });
+  
+      // Update transport price as a number
+      setTransportprice(Number(priceResponse.data.transcost || 0));
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to get transportation cost');
     }
   };
 
-
   return (
     <div className="ordering-page">
       <h1>Order Page</h1>
-
-      <h2>Total Price: Ksh {totalPrice.toFixed(2)}</h2>
-      
+     
       {/* Display Cart Items */}
       <div className='detail'>
         <h3>Cart Items</h3>
@@ -360,8 +356,13 @@ const OrderingPage = () => {
             <p>No items in cart.</p>
           )}
         </ul>
+        
+        <p><strong>Total Price:</strong> {totalPrice.toFixed(2)}</p>
+        <p><strong>Transport Price:</strong> {Number(Transportprice).toFixed(2)}</p>
+        <p><strong>Grand Total:</strong> {grandTotal.toFixed(2)}</p>
 
       </div>
+
 
       {/* Delivery Destination */}
       {!others ? (
@@ -467,8 +468,6 @@ const OrderingPage = () => {
 
 
       )}
-
-
 
 
       {/* Payment Method Selection */}

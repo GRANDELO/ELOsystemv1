@@ -2,6 +2,29 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
+
+  "main": "electron.js",
+  "build": {
+    "appId": "com.bazeadmin.desktop",
+    "productName": "bazeadmin",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "build/**/*",
+      "electron.js"
+    ],
+    "mac": {
+      "target": "dmg"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  },
+
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
@@ -38,7 +61,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "electron-start": "react-scripts start & electron .",
+  "electron:build": "electron-builder",
+  "electron-build": "electron-builder"
   },
   "eslintConfig": {
     "extends": [
@@ -59,6 +85,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "electron": "^34.0.1"
   }
 }

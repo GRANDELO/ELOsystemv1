@@ -11,3 +11,6 @@ sdk.dir=/home/tk/Android/Sdk
 cmake.dir=/home/tk/Android/Sdk/cmake
 ndk.dir=/home/tk/Android/Sdk/ndk
 ndk.dir=/home/tk/Android/Sdk/ndk/25.1.8937393
+
+# Ignore Electron build files
+frontend/clientadmin/dist
