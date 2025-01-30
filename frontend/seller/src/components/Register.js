@@ -16,13 +16,16 @@ const Register = () => {
     category: '',
     locations: 
       {
+        county: "",
         town: "",
         area: "",
         specific: "",
       },
   });
 
-
+  const totalSteps = 4; // Total number of steps
+  const stepTimeEstimate = 2; // Estimate 2 minutes per step
+  
   const [currentStep, setCurrentStep] = useState(1); // State to manage the current step
   const [isNextEnabled, setIsNextEnabled] = useState(false); // State to manage next button status
   const navigate = useNavigate();
@@ -32,9 +35,10 @@ const Register = () => {
   const [areas, setAreas] = useState([]);
   const [selectedArea, setSelectedArea] = useState('');
   const [selectedAreaspe, setSelectedAreaspe] = useState('');
-  const [counties, setCounties] = useState('');
+  const [counties, setCounties] = useState([]);
   const [selectedCounty, setSelectedCounty] = useState('');
-  
+  const [error, setError] = useState('');
+
   useEffect(() => {
     const fetchLocations = async () => {
       try {
@@ -42,7 +46,7 @@ const Register = () => {
         setCounties(response.data);
       } catch (err) {
         console.error('Failed to fetch locations:', err);
-        setMessage(err.response?.data?.message || 'Failed to fetch locations');
+        setError(err.response?.data?.message || 'Failed to fetch locations');
       }
     };
   
@@ -85,6 +89,7 @@ const Register = () => {
       category: formData.category.trim(),
       locations: 
         {
+          county: selectedCounty,
           town: selectedTown,
           area: selectedArea,
           specific: selectedAreaspe,
@@ -98,7 +103,7 @@ const Register = () => {
       sessionStorage.setItem('email', trimmedFormData.email);
       navigate('/verification');
     } catch (error) {
-      setMessage(error.response?.data?.message || 'An error occurred while processing your request.');
+      setError(error.response?.data?.message || 'An error occurred while processing your request.');
     }
   };
 
@@ -155,6 +160,10 @@ const Register = () => {
   const handleAreasepChange = (e) => {
     setSelectedAreaspe(e.target.value);
   };
+
+  const progressPercentage = (currentStep / totalSteps) * 100;
+  const timeRemaining = stepTimeEstimate * (totalSteps - currentStep);
+
   const handleCountyChange = (event) => {
     const selectedCountyValue = event.target.value;
     setSelectedCounty(selectedCountyValue);
@@ -172,6 +181,14 @@ const Register = () => {
   return (
     <div className="container">
       <h2>Register</h2>
+      <div className="progress-container">
+        <p>Step {currentStep} of {totalSteps}</p>
+        <p>Estimated Time Remaining: {timeRemaining} minutes</p>
+        <div className="progress-bar">
+          <div className="progress-bar-fill" style={{ width: `${progressPercentage}%` }}></div>
+        </div>
+      </div>
+
       <form onSubmit={handleSubmit}>
       {currentStep === 1 && (
 
@@ -221,62 +238,62 @@ const Register = () => {
       )}
       {currentStep === 2 && (
 
-<>
-  <label>County</label>
-  <select value={selectedCounty} onChange={handleCountyChange}>
-    <option value="">Select County</option>
-    {counties.map((county) => (
-      <option key={county.county} value={county.county}>
-        {county.county}
-      </option>
-    ))}
-  </select>
+      <>
+        <label>County</label>
+        <select value={selectedCounty} onChange={handleCountyChange}>
+          <option value="">Select County</option>
+          {counties.map((county) => (
+            <option key={county.county} value={county.county}>
+              {county.county}
+            </option>
+          ))}
+        </select>
 
-  {selectedCounty && (
-    <>
-      <label>Town</label>
-      <select value={selectedTown} onChange={handleTownChange}>
-        <option value="">Select Town</option>
-        {towns.map((town) => (
-          <option key={town.town} value={town.town}>
-            {town.town}
-          </option>
-        ))}
-      </select>
-    </>
-  )}
+        {selectedCounty && (
+          <>
+            <label>Town</label>
+            <select value={selectedTown} onChange={handleTownChange}>
+              <option value="">Select Town</option>
+              {towns.map((town) => (
+                <option key={town.town} value={town.town}>
+                  {town.town}
+                </option>
+              ))}
+            </select>
+          </>
+        )}
 
-  {selectedTown && (
-    <>
-      <label>Area</label>
-      <select value={selectedArea} onChange={handleAreaChange}>
-        <option value="">Select Area</option>
-        {areas.map((area) => (
-          <option key={area} value={area}>
-            {area}
-          </option>
-        ))}
-      </select>
-    </>
-  )}
+        {selectedTown && (
+          <>
+            <label>Area</label>
+            <select value={selectedArea} onChange={handleAreaChange}>
+              <option value="">Select Area</option>
+              {areas.map((area) => (
+                <option key={area} value={area}>
+                  {area}
+                </option>
+              ))}
+            </select>
+          </>
+        )}
 
-  <label>
-    Specific:
-    <input
-      type="text"
-      value={selectedAreaspe}
-      placeholder={
-        selectedArea
-          ? `Your area within ${selectedArea}`
-          : "Enter the specific area"
-      }
-      onChange={handleAreasepChange}
-    />
-  </label>
+        <label>
+          Specific:
+          <input
+            type="text"
+            value={selectedAreaspe}
+            placeholder={
+              selectedArea
+                ? `Your area within ${selectedArea}`
+                : "Enter the specific area"
+            }
+            onChange={handleAreasepChange}
+          />
+        </label>
 
-  <button type="button" onClick={previousStep}>Back</button>
-  <button type="button" onClick={nextStep} disabled={!isNextEnabled}>Next</button>
-</>
+        <button type="button" onClick={previousStep}>Back</button>
+        <button type="button" onClick={nextStep} disabled={!isNextEnabled}>Next</button>
+      </>
 
 
       )}
@@ -402,7 +419,8 @@ const Register = () => {
 
       </form>
       <div className="divmess">
-          {message && <p>{message}</p>}
+          {message && <p className="message">{message}</p>}
+          {error && <p className="error">{error}</p>}
       </div>
     </div>
   );

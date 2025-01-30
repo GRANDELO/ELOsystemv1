@@ -897,11 +897,11 @@ const calculateTransportCost = async (products, orderDestination) => {
     throw new Error('Invalid order destination format.');
   }
 
-  const [orderTown, orderSpecificRoute, orderExactDestination] = orderDestination
+  const [ordercounty, orderTown, orderSpecificRoute, orderExactDestination] = orderDestination
     .split(',')
     .map(part => part.trim().toLowerCase());
 
-  if (!orderTown || !orderSpecificRoute || !orderExactDestination) {
+  if (!ordercounty || !orderTown || !orderSpecificRoute || !orderExactDestination) {
     throw new Error('Invalid order destination format: missing town, route, or exact destination.');
   }
 
