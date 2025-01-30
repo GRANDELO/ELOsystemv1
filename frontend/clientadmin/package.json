@@ -15,13 +15,17 @@
       "electron.js"
     ],
     "mac": {
+      "icon": "public/logo.ico",
       "target": "dmg"
     },
     "win": {
+      "icon": "public/logo.ico",
       "target": "nsis"
     },
     "linux": {
-      "target": "AppImage"
+      "category": "Utility",
+      "target": ["AppImage"],
+      "icon": "public/logo512.png"
     }
   },
 
