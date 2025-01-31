@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './styles/styles.css';
+import axiosInstance from './axiosInstance';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +17,7 @@ const Register = () => {
     category: '',
     locations: 
       {
+        county: "",
         town: "",
         area: "",
         specific: "",
@@ -38,19 +40,38 @@ const Register = () => {
   const totalSteps = 4; // Total number of steps
   const stepTimeEstimate = 2; // Estimate 2 minutes per step
 
+  const [counties, setCounties] = useState([]);
+  const [selectedCounty, setSelectedCounty] = useState('');
+  
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await axios.get('https://elosystemv1.onrender.com/api/locations');
-        setTowns(response.data);
+        const response = await axiosInstance.get('/locations');
+        setCounties(response.data);
       } catch (err) {
         console.error('Failed to fetch locations:', err);
-        setError(err.response?.data?.message || 'Failed to fetch locations');
+        setMessage(err.response?.data?.message || 'Failed to fetch locations');
       }
     };
-
+  
     fetchLocations();
   }, []);
+  
+  useEffect(() => {
+    if (selectedCounty) {
+      const countyData = counties.find(county => county.county === selectedCounty);
+      setTowns(countyData ? countyData.towns : []);
+    }
+  }, [selectedCounty]);
+  
+  useEffect(() => {
+    if (selectedTown) {
+      const townData = towns.find(town => town.town === selectedTown);
+      setAreas(townData ? townData.areas : []);
+    }
+  }, [selectedTown]);
+  
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -73,6 +94,7 @@ const Register = () => {
       category: formData.category.trim(),
       locations: 
         {
+          county: selectedCounty,
           town: selectedTown,
           area: selectedArea,
           specific: selectedAreaspe,
@@ -81,7 +103,7 @@ const Register = () => {
     };
 
     try {
-      const response = await axios.post('https://elosystemv1.onrender.com/api/auth/register', trimmedFormData);
+      const response = await axiosInstance.post('/auth/register', trimmedFormData);
       setMessage(response.data.message);
       sessionStorage.setItem('email', trimmedFormData.email);
       setloading(false);
@@ -111,7 +133,7 @@ const Register = () => {
           return fullNameValid && emailValid && usernameValid;
         case 2:
 
-          return selectedAreaspe && selectedTown&& selectedArea;
+          return selectedCounty && selectedAreaspe && selectedTown&& selectedArea;
         case 3:
 
           return formData.dateOfBirth && formData.gender && formData.category;
@@ -148,6 +170,20 @@ const Register = () => {
 
   const progressPercentage = (currentStep / totalSteps) * 100;
   const timeRemaining = stepTimeEstimate * (totalSteps - currentStep);
+
+  const handleCountyChange = (event) => {
+    const selectedCountyValue = event.target.value;
+    setSelectedCounty(selectedCountyValue);
+    setSelectedTown(""); // Reset town selection
+    setSelectedArea(""); // Reset area selection
+    setTowns([]); // Clear towns when county changes
+    setAreas([]); // Clear areas when county changes
+  
+    if (selectedCountyValue) {
+      const countyData = counties.find(county => county.county === selectedCountyValue);
+      setTowns(countyData ? countyData.towns : []);
+    }
+  };
 
   return (
     <div className="container">
@@ -210,43 +246,56 @@ const Register = () => {
       {currentStep === 2 && (
 
         <>
-        <label>Town</label>
-        <select as="select" value={selectedTown} onChange={handleTownChange}>
-          <option value="">Select Town</option>
-          {towns.map((town) => (
-            <option key={town.town} value={town.town}>
-              {town.town}
+        <label>County</label>
+        <select value={selectedCounty} onChange={handleCountyChange}>
+          <option value="">Select County</option>
+          {counties.map((county) => (
+            <option key={county.county} value={county.county}>
+              {county.county}
             </option>
           ))}
         </select>
 
+        {selectedCounty && (
+          <>
+            <label>Town</label>
+            <select value={selectedTown} onChange={handleTownChange}>
+              <option value="">Select Town</option>
+              {towns.map((town) => (
+                <option key={town.town} value={town.town}>
+                  {town.town}
+                </option>
+              ))}
+            </select>
+          </>
+        )}
 
         {selectedTown && (
-        <>
-          <label>Area</label>
-          <select as="select" value={selectedArea} onChange={handleAreaChange}>
-            <option value="">Select Area</option>
-            {areas.map((area) => (
-              <option key={area} value={area}>
-                {area}
-              </option>
-            ))}
-          </select>
-        </>
+          <>
+            <label>Area</label>
+            <select value={selectedArea} onChange={handleAreaChange}>
+              <option value="">Select Area</option>
+              {areas.map((area) => (
+                <option key={area} value={area}>
+                  {area}
+                </option>
+              ))}
+            </select>
+          </>
         )}
 
         <label>
-            Specific:
-            <input
-              type="text"
-              value={selectedAreaspe}
-              placeholder={
-                selectedArea
-                  ? `Your area within ${selectedArea}`
-                  : "Enter the specific area"
-              }
-              onChange={handleAreasepChange}
-            />
+          Specific:
+          <input
+            type="text"
+            value={selectedAreaspe}
+            placeholder={
+              selectedArea
+                ? `Your area within ${selectedArea}`
+                : "Enter the specific area"
+            }
+            onChange={handleAreasepChange}
+          />
         </label>
 
         <button type="button" onClick={previousStep}>Back</button>

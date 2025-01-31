@@ -641,17 +641,18 @@ const assignBoxToDeliveryPerson = async (req, res) => {
     }
 
     // Split destination into town and route
-    const [boxTown, boxSpecificRoute, boxexactdestination] = box.destination.split(',').map(part => part.trim().toLowerCase());
+    const [boxcounty, boxTown, boxSpecificRoute, boxexactdestination] = box.destination.split(',').map(part => part.trim().toLowerCase());
 
     // Validate delivery person town and route
 
 
-    if (!deliveryPerson.locations.town || !deliveryPerson.locations.area) {
+    if (!deliveryPerson.locations.county || !deliveryPerson.locations.town || !deliveryPerson.locations.area) {
       return res.status(400).json({ success: false, message: 'Delivery person town or route is not specified' });
     }
 
     // Check for destination mismatch
-    if (deliveryPerson.locations.town.trim().toLowerCase() !== boxTown || 
+    if (deliveryPerson.locations.county.trim().toLowerCase() !== boxcounty ||
+        deliveryPerson.locations.town.trim().toLowerCase() !== boxTown || 
         deliveryPerson.locations.area.trim().toLowerCase() !== boxSpecificRoute) {
       return res.status(400).json({ success: false, message: 'Destination mismatch between delivery person and box' });
     }

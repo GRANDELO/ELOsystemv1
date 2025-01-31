@@ -4,6 +4,7 @@ const orderController = require('../controllers/orderController');
 
 // Routes for Orders
 router.post('/', orderController.createOrder);
+router.post('/price', orderController.pricecalc);
 router.get('/:eid', orderController.getOrder);
 router.get('/my/:username', orderController.getMyOrder);
 router.get('/mypending/:username', orderController.getMyPendingOrder);

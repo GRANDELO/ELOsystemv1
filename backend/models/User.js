@@ -23,6 +23,7 @@ const UserSchema = new mongoose.Schema({
   backgroundUrl: { type: String },
   locations: 
     {
+      county: { type: String },
       town: { type: String },
       area: { type: String },
       specific: { type: String },

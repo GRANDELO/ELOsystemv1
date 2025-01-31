@@ -819,6 +819,141 @@ const updateProductPerformance = async (productId, productName, seller, saleDate
   }
 };
 
+exports.pricecalc = async (req, res) => {
+  try {
+    const { items, destination, username } = req.body;
+
+    // Input validation
+    if (!items || !Array.isArray(items) || !items.length) {
+      console.log("Invalid or missing items array");
+      console.log(items);
+      return res.status(400).json({ error: 'Invalid or missing items array' });
+    }
+    if (!destination) {
+      console.log("Destination is required");
+      return res.status(400).json({ error: 'Destination is required' });
+    }
+    if (!username) {
+      console.log("Username is required");
+      return res.status(400).json({ error: 'Username is required' });
+      
+    }
+
+    // Fetch user
+    const user = await User.findOne({ username: username }).lean();
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Fetch product details
+    const productIds = items.map(item => item.productId);
+    const products = await Product.find({ _id: { $in: productIds } }).lean();
+
+    // Map product details
+    const productMap = {};
+    products.forEach(product => {
+      productMap[product._id] = {
+        productid: product._id,
+        name: product.name,
+        category: product.category,
+        price: product.price,
+        username: product.username, // Seller info
+        discount: product.discount,
+        discountpersentage: product.discountpersentage,
+      };
+    });
+
+    // Format products and handle missing products
+    const formattedProducts = items.map(item => {
+      const product = productMap[item.productId];
+      if (!product) {
+        throw new Error(`Product with ID ${item.productId} not found`);
+      }
+      return {
+        ...product,
+        quantity: item.quantity,
+      };
+    });
+
+    // Calculate transport cost
+    let transcost;
+    try {
+      transcost = await calculateTransportCost(formattedProducts, destination);
+    } catch (err) {
+      throw new Error(`Failed to calculate transport cost: ${err.message}`);
+    }
+
+    // Success response
+    res.status(201).json({ message: 'Order price calculated successfully', transcost: transcost.averageTransportCost });
+  } catch (error) {
+    console.error('Failed to calculate transport price:', error);
+    res.status(500).json({ error: error.message || 'Failed to calculate transport price' });
+  }
+};
+
+const calculateTransportCost = async (products, orderDestination) => {
+  
+  if (!orderDestination || !orderDestination.includes(',')) {
+    throw new Error('Invalid order destination format.');
+  }
+  console.log(orderDestination);
+
+  if (!orderDestination || typeof orderDestination !== 'string') {
+    throw new Error("Failed to calculate transport cost: Order destination is missing or invalid.");
+  }
+  
+  const [ordercounty, orderTown, orderSpecificRoute, orderExactDestination] = orderDestination
+    .split(',')
+    .map(part => part.trim().toLowerCase());
+  
+  if (!ordercounty || !orderTown || !orderSpecificRoute || !orderExactDestination) {
+    throw new Error('Invalid order destination format: missing town, route, or exact destination.');
+  }
+
+  let totalTransportCost = 0;
+  let totalProducts = 0;
+
+  // Gather all seller usernames
+  const sellerUsernames = products.map(product => product.username);
+
+  const sellers = await User.find({ username: { $in: sellerUsernames } });
+
+  if (!sellers.every(seller => seller.locations)) {
+    throw new Error('One or more sellers are missing location details.');
+  }
+
+  // Create a lookup object for seller locations
+  const sellerLocations = sellers.reduce((acc, seller) => {
+    acc[seller.username] = seller.locations;
+    return acc;
+  }, {});
+
+  for (const product of products) {
+    const { username, quantity } = product;
+    const sellerLocation = sellerLocations[username];
+
+    if (!sellerLocation || !quantity || quantity <= 0) {
+      console.warn(`Skipping product from seller ${username} due to missing location or invalid quantity.`);
+      continue;
+    }
+
+    const transportCostPerProduct = sellerLocation.town.toLowerCase() === orderTown ? 120 : 160;
+    totalTransportCost += transportCostPerProduct * quantity;
+    totalProducts += quantity;
+  }
+
+  if (totalProducts === 0) {
+    throw new Error('No valid products found to calculate transport cost.');
+  }
+
+  const averageTransportCost = totalTransportCost / totalProducts;
+
+  return {
+    message: `Transport cost calculated successfully.`,
+    averageTransportCost: averageTransportCost.toFixed(2),
+  };
+};
+
 
 
 

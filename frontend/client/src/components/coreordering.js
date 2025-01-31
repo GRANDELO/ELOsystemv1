@@ -29,7 +29,9 @@ const OrderingPage = () => {
   const queryParams = new URLSearchParams(location.search);
   const productId = queryParams.get('productId');
   const navigate = useNavigate();
-
+  const [counties, setCounties] = useState([]);
+  const [selectedCounty, setSelectedCounty] = useState('');
+  const [Transportprice, setTransportprice] = useState(0);
   const [selectedVariation, setSelectedVariation] = useState({
     productId: "productId",
     color: "",
@@ -100,41 +102,33 @@ const OrderingPage = () => {
     if (productId) fetchProduct();
   }, [productId]);
 
-  useEffect(() => {
-
-    const fetchagentLocations = async () => {
-      setLoading(true);
-      setError('');
-      try {
-        const response = await fetch('https://elosystemv1.onrender.com/api/locationsroutes'); // Replace with your actual endpoint
-        const data = await response.json();
-        if (data.success) {
-          setLocations(data.locations);
-
-          // Extract unique towns
-          const uniqueTowns = [...new Set(data.locations.map((loc) => loc.locations?.town))];
-          setTowns(uniqueTowns.filter((town) => town)); // Exclude null or undefined towns
-        } else {
-          setError('Failed to fetch locations. Please try again later.');
-        }
-      } catch (err) {
-        setError('An error occurred while fetching locations.');
-      } finally {
-        setLoading(false);
+  const fetchagentLocations = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await fetch('https://elosystemv1.onrender.com/api/locationsroutes'); // Replace with your actual endpoint
+      const data = await response.json();
+      if (data.success) {
+        setLocations(data.locations);
+        console.log(data.locations);
+        // Extract unique towns
+        const uniquesetCounties = [...new Set(data.locations.map((loc) => loc.locations?.county))];
+        setCounties(uniquesetCounties.filter((county) => county)); // Exclude null or undefined towns
+      } else {
+        setError('Failed to fetch locations. Please try again later.');
       }
-    };
+    } catch (err) {
+      setError('An error occurred while fetching locations.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
 
     fetchagentLocations();
 
-    const fetchLocations = async () => {
-      try {
-        const response = await axiosInstance.get('/locations');
-        setTowns(response.data);
-      } catch (err) {
-        setError(err.response?.data?.message || 'Failed to fetch locations');
-      }
-    };
-    fetchLocations();
+
   }, []);
 
 
@@ -185,7 +179,37 @@ const OrderingPage = () => {
     }
   }, [product]);
 
-  const handlePaymentMethodChange = (e) => setPaymentMethod(e.target.value);
+  const handlePaymentMethodChange = async (e) => {
+
+    setPaymentMethod(e.target.value);
+    if (!username) {
+      setLoginPrompt('You have to sign in to complete the order.');
+      return;
+    }
+    await handleprice();
+  };
+
+  const handleprice = async () => {
+    setMessage('');
+    setError('');
+    if (!selectedTown || !selectedArea) {
+      setError('Please select a town, area, and specific area.');
+      return;
+    }
+  console.log(`${selectedCounty}, ${selectedTown}, ${selectedArea}, ${selectedSpecificArea} `);
+    try {
+      const priceResponse = await axiosInstance.post('/orders/price', { 
+        items: [{ productId, quantity: 1 }],
+        destination: `${selectedCounty}, ${selectedTown}, ${selectedArea}, ${selectedSpecificArea || 'Town'}`,
+        username,
+      });
+  
+      // Update transport price as a number
+      setTransportprice(Number(priceResponse.data.transcost || 0));
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to get transportation cost');
+    }
+  };
 
   const handleMpesaPhoneNumberChange = (e) => {
     const phoneNumber = e.target.value;
@@ -195,6 +219,8 @@ const OrderingPage = () => {
   };
 
   const calculateDiscountedPrice = () => {
+    if (!product) return { discountedPrice: 0, savedAmount: 0 }; // Prevents errors when product is null
+  
     if (product.discount) {
       const discountPercentage = product.discountpersentage || 0;
       const discountedPrice = product.price - (product.price * discountPercentage) / 100;
@@ -203,8 +229,10 @@ const OrderingPage = () => {
         savedAmount: product.price - discountedPrice,
       };
     }
+  
     return { discountedPrice: product.price, savedAmount: 0 };
   };
+  
 
   const handleClearCart = async () => {
     try {
@@ -233,9 +261,41 @@ const OrderingPage = () => {
     setSelectedArea(e.target.value);
   };
 
+
   const otherschanger = () => {
     setOthers(!others);
+    if (!others){
+      setSelectedCounty("");
+      setSelectedTown(""); // Reset town selection
+      setSelectedArea(""); // Reset area selection
+      setSelectedSpecificArea("");
+      setTowns([]);// Clear towns when county changes
+      setAreas([]); // Clear areas when county changes
+      setSelectedCounty([]);
+      fetchLocations();
+    }else{
+      setSelectedCounty("");
+      setSelectedTown(""); // Reset town selection
+      setSelectedArea(""); // Reset area selection
+      setSelectedSpecificArea("");
+      setTowns([]);// Clear towns when county changes
+      setAreas([]); // Clear areas when county changes
+      setSelectedCounty([]);
+      fetchagentLocations();
+    }
+    
   };
+
+  const fetchLocations = async () => {
+    try {
+      const response = await axiosInstance.get('/locations');
+      setCounties(response.data);
+    } catch (err) {
+      console.error('Failed to fetch locations:', err);
+      setMessage(err.response?.data?.message || 'Failed to fetch locations');
+    }
+  };
+
 
   const handleSubmitOrder = async () => {
     if (!username) {
@@ -253,7 +313,7 @@ const OrderingPage = () => {
         items: [{ productId, quantity: 1 }],
         totalPrice: discountedPrice,
         paymentMethod,
-        destination: `${selectedTown}, ${selectedArea}, ${selectedSpecificArea || 'Town'}`,
+        destination: `${selectedCounty}, ${selectedTown}, ${selectedArea}, ${selectedSpecificArea || 'Town'}`,
         orderDate: new Date().toISOString(),
         username,
         mpesaPhoneNumber: paymentMethod === 'mpesa' ? mpesaPhoneNumber : undefined,
@@ -261,6 +321,7 @@ const OrderingPage = () => {
         sellerOrderId,
         variations: selectedVariation,
       };
+      console.log(orderDetails);
       const response = await axiosInstance.post('/orders', orderDetails);
       setMessage(response.data.message);
 
@@ -305,10 +366,53 @@ const OrderingPage = () => {
   if (loading) return <p>Loading...</p>;
   const { discountedPrice, savedAmount } = calculateDiscountedPrice();
 
+  const handleCountyChange = (event) => {
+    const selectedCountyValue = event.target.value;
+    setSelectedCounty(selectedCountyValue);
+    setSelectedTown(""); // Reset town selection
+    setSelectedArea(""); // Reset area selection
+ // Clear towns when county changes
+    setAreas([]); // Clear areas when county changes
+  
+    if (selectedCountyValue) {
+      const countyData = counties.find(county => county.county === selectedCountyValue);
+      setTowns(countyData ? countyData.towns : []);
+    }
+    
+  };
+
+  const handleCountyChange2 = (event) => {
+    const selectedCountyValue = event.target.value;
+    setSelectedCounty(selectedCountyValue);
+    setSelectedTown(""); // Reset town selection
+    setSelectedArea(""); // Reset area selection
+    setSelectedSpecificArea("");
+    setTowns([]);// Clear towns when county changes
+    setAreas([]); // Clear areas when county changes
+    setSpecificAreas([]);
+    
+    // Get all towns for the selected county
+    const filteredCounty = locations
+        .filter((loc) => loc.locations?.county === selectedCountyValue)
+        .flatMap((loc) => loc.locations.town); // Use flatMap if town is an array
+        const uniqueTowns = filteredCounty.filter((town, index, self) => self.indexOf(town) === index);
+        // Remove duplicates
+
+    setTowns(uniqueTowns); // Update the state
+
+};
+
+
+
+// Calculate the grand total (total price + transport price)
+const grandTotal = discountedPrice + Number(Transportprice); // Ensure transportprice is a number
+
   return (
     <div className="ordcore-ordering-page">
       <h1 className="ordcore-heading">Order Page</h1>
-      <h2 className="ordcore-total-price">Total Price: Ksh {discountedPrice.toFixed(2)}</h2>
+      <h3><strong>Total Price:</strong> {discountedPrice.toFixed(2)}</h3>
+        <h3><strong>Transport Price:</strong> {Number(Transportprice).toFixed(2)}</h3>
+        <h3><strong>Grand Total:</strong> {grandTotal.toFixed(2)}</h3>
 
       {product && (
         <div className="ordcore-product-details">
@@ -446,6 +550,25 @@ const OrderingPage = () => {
         <>
         {/* Town Selector */}
         <div>
+          <label htmlFor="town">County:</label>
+          <select
+            id="town"
+            value={selectedCounty}
+            onChange={handleCountyChange2}
+            disabled={loading || counties.length === 0}
+          >
+            <option value="">-- Select county --</option>
+            {counties.map((countyObj, index) => (
+              <option key={index} value={countyObj.town || countyObj}>
+                {countyObj.county || countyObj}
+              </option>
+            ))}
+          </select>
+          {counties.length === 0 && !loading && <p>No counties available.</p>}
+        </div>
+
+        {towns.length > 0 && (
+        <div>
           <label htmlFor="town">Town:</label>
           <select
             id="town"
@@ -462,7 +585,8 @@ const OrderingPage = () => {
           </select>
           {towns.length === 0 && !loading && <p>No towns available.</p>}
         </div>
-      
+        )}
+
         {/* Area Selector */}
         {areas.length > 0 && (
           <div>
@@ -512,10 +636,34 @@ const OrderingPage = () => {
       
       ):
       (
-        <>
-            <Form.Group className='model'>
-            <Form.Label className='Label' >Town</Form.Label>
-            <Form.Control  className='select' as="select" value={selectedTown} onChange={handleTownChange}>
+
+      <>
+        <Form.Group className='model'>
+          <Form.Label className='Label'>County</Form.Label>
+          <Form.Control
+            className='select'
+            as="select"
+            value={selectedCounty}
+            onChange={handleCountyChange}
+          >
+            <option value="">Select County</option>
+            {counties.map((county) => (
+              <option key={county.county} value={county.county}>
+                {county.county}
+              </option>
+            ))}
+          </Form.Control>
+        </Form.Group>
+
+        {selectedCounty && (
+          <Form.Group className='model'>
+            <Form.Label className='Label'>Town</Form.Label>
+            <Form.Control
+              className='select'
+              as="select"
+              value={selectedTown}
+              onChange={handleTownChange}
+            >
               <option value="">Select Town</option>
               {towns.map((town) => (
                 <option key={town.town} value={town.town}>
@@ -524,24 +672,31 @@ const OrderingPage = () => {
               ))}
             </Form.Control>
           </Form.Group>
+        )}
 
-          {selectedTown && (
-            <Form.Group className='model'>
-              <Form.Label className='Label' >Area</Form.Label>
-              <Form.Control className='select' as="select" value={selectedArea} onChange={handleAreaChange}>
-                <option value="">Select Area</option>
-                {areas.map((area) => (
-                  <option key={area} value={area}>
-                    {area}
-                  </option>
-                ))}
-              </Form.Control>
-            </Form.Group>
-          )}
-          <Button onClick={otherschanger}>
-              Go back to agent locations.
-          </Button>
-        </>
+        {selectedTown && (
+          <Form.Group className='model'>
+            <Form.Label className='Label'>Area</Form.Label>
+            <Form.Control
+              className='select'
+              as="select"
+              value={selectedArea}
+              onChange={handleAreaChange}
+            >
+              <option value="">Select Area</option>
+              {areas.map((area) => (
+                <option key={area} value={area}>
+                  {area}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+        )}
+
+        <Button onClick={otherschanger}>
+          Go back to agent locations.
+        </Button>
+      </>
 
 
       )}

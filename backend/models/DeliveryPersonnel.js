@@ -23,6 +23,7 @@ const deliveryPersonnelSchema = new mongoose.Schema({
   amount: { type: Number, default: undefined},
   locations: 
     {
+      county: { type: String },
       town: { type: String },
       area: { type: String },
     },
