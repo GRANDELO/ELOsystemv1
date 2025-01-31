@@ -2,7 +2,6 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-
   "main": "electron.js",
   "build": {
     "appId": "com.bazeadmin.desktop",
@@ -24,11 +23,12 @@
     },
     "linux": {
       "category": "Utility",
-      "target": ["AppImage"],
+      "target": [
+        "AppImage"
+      ],
       "icon": "public/logo512.png"
     }
   },
-
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
@@ -37,6 +37,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.3.3",
+    "caniuse-lite": "^1.0.30001696",
     "chart.js": "^4.4.6",
     "cors": "^2.8.5",
     "express": "^4.19.2",
@@ -67,8 +68,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron-start": "react-scripts start & electron .",
-  "electron:build": "electron-builder",
-  "electron-build": "electron-builder"
+    "electron:build": "electron-builder",
+    "electron-build": "electron-builder"
   },
   "eslintConfig": {
     "extends": [
