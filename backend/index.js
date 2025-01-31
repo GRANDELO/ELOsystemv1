@@ -17,7 +17,6 @@ const winston = require('winston');
 const { exec } = require('child_process');
 const redis = require('redis');
 const nodemailer = require('nodemailer');
-const { encrypt, decrypt } = require("./cryptoUtils");
 
 require('dotenv').config();
 require('./worker');
@@ -162,41 +161,13 @@ mongoose.set('strictQuery', true);
 // Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URI, {
-    autoIndex: false,
-    tls: true,
+    autoIndex: false, // Disable automatic index creation in production
+    tls: true, // Enforces TLS/SSL for secure connections
     tlsAllowInvalidCertificates: false,
   })
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Could not connect to MongoDB', err));
 
-// After connection, apply encryption and decryption globally
-mongoose.connection.once('open', () => {
-  // Apply global encryption for sensitive fields
-  Object.values(mongoose.models).forEach((model) => {
-    if (model.schema) {
-      model.schema.pre("save", function (next) {
-        // Encrypt fields with sensitive data
-        for (let key in this._doc) {
-          if (this._doc[key] && key.includes("Data")) { // Sensitive field condition
-            this[key] = encrypt(this[key]);  // Apply encryption
-          }
-        }
-        next();
-      });
-
-      model.schema.post("find", function (docs) {
-        // Decrypt fields with sensitive data
-        docs.forEach((doc) => {
-          for (let key in doc._doc) {
-            if (doc._doc[key] && key.includes("Data")) { // Sensitive field condition
-              doc[key] = decrypt(doc[key]); // Apply decryption
-            }
-          }
-        });
-      });
-    }
-  });
-});
 
 // Routes
 app.use('/api/auth', authRoutes);
