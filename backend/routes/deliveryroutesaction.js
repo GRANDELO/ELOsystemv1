@@ -26,14 +26,7 @@ router.get('/unverified', UserController.getUnverifiedUsers);
 
 // Add this import at the top of your file
 // Your existing router code
-router.patch(
-  '/update-payment-price',
-  [
-    check('deliveryPersonId', 'Delivery person ID is required').not().isEmpty(),
-    check('paymentPrice', 'Payment price should be a number').isNumeric()
-  ],
-  UserController.updatePaymentPrice
-);
+router.patch('/update-payment-price',UserController.updatePaymentPrice);
 
 
 module.exports = router;
