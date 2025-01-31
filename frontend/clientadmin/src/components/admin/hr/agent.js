@@ -5,7 +5,7 @@ import Pagination from '../../Pagination';
 import LogsViewer from '../../log'
 import '../../styles/Users.css';
 
-const AdminDashboard = () => {
+const Agent = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [activeUsers, setActiveUsers] = useState([]);
@@ -240,4 +240,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default Agent;
