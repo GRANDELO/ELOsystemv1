@@ -17,6 +17,51 @@ const winston = require('winston');
 const { exec } = require('child_process');
 const redis = require('redis');
 const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+const mongoose = require('mongoose');
+
+const algorithm = 'aes-256-cbc';
+const secretKey = process.env.SECRET_KEY;
+const iv = crypto.randomBytes(16);  // Initialization vector
+
+function encrypt(text) {
+  const cipher = crypto.createCipheriv(algorithm, Buffer.from(secretKey), iv);
+  let encrypted = cipher.update(text);
+  encrypted = Buffer.concat([encrypted, cipher.final()]);
+  return iv.toString('hex') + ':' + encrypted.toString('hex'); // Store IV + encrypted data
+}
+
+function decrypt(text) {
+  const textParts = text.split(':');
+  const iv = Buffer.from(textParts[0], 'hex');
+  const encryptedText = Buffer.from(textParts[1], 'hex');
+  const decipher = crypto.createDecipheriv(algorithm, Buffer.from(secretKey), iv);
+  let decrypted = decipher.update(encryptedText);
+  decrypted = Buffer.concat([decrypted, decipher.final()]);
+  return decrypted.toString();
+}
+
+// Define Schema
+const userSchema = new mongoose.Schema({
+  username: String,
+  email: String,
+  password: String, // Encrypted
+});
+
+// Middleware to encrypt password before saving
+userSchema.pre('save', function (next) {
+  if (this.isModified('password')) {
+    this.password = encrypt(this.password);
+  }
+  next();
+});
+
+// Method to decrypt password
+userSchema.methods.decryptPassword = function () {
+  return decrypt(this.password);
+};
+
+const User = mongoose.model('User', userSchema);
 
 require('dotenv').config();
 require('./worker');
@@ -156,18 +201,6 @@ if (process.env.NODE_ENV === 'production') {
 
 
 const port = process.env.PORT || 5000;
-mongoose.set('strictQuery', true);
-
-// Connect to MongoDB
-mongoose
-  .connect(process.env.MONGO_URI, {
-    autoIndex: false, // Disable automatic index creation in production
-    tls: true, // Enforces TLS/SSL for secure connections
-    tlsAllowInvalidCertificates: false,
-  })
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.error('Could not connect to MongoDB', err));
-
 
 // Routes
 app.use('/api/auth', authRoutes);

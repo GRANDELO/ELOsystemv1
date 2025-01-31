@@ -6,7 +6,7 @@ import ReactQuill from "react-quill";
 import './styles/newproductform.css';
 import categories from './categories.js';
 import axios from 'axios';
-
+require('dotenv').config();
 
 const NewProductForm = () => {
   const lusername = getUsernameFromToken();
