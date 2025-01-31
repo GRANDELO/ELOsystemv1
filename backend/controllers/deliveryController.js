@@ -105,7 +105,7 @@ exports.updatePaymentPrice = async (req, res) => {
     }
 
     // Update the payment price
-    deliveryPerson.paymentPrice = paymentPrice;
+    deliveryPerson.amounttobepaid = paymentPrice;
 
     // Save the updated delivery person data
     await deliveryPerson.save();
