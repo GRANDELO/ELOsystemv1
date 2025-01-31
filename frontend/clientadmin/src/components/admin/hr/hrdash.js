@@ -6,6 +6,7 @@ import '../styles/hr.css';
 import EmployeeList from './EmployeeList';
 import Employies from './employies';
 import Agent from './agent';
+import Deliverypeople from './deliverypeople';
 
 const Dashboard = () => {
     const [view, setView] = useState('users');
@@ -62,11 +63,17 @@ const Dashboard = () => {
                 >
                     Agents
                 </button>
+                <button
+                    className={`hralld-nav-button ${view === 'deliverypeople' ? 'active' : ''}`}
+                    onClick={() => setView('deliverypeople')}
+                >
+                    Delivery Personnel
+                </button>
             </nav>
 
             <div className="hralld-content">
 
-                {view === 'users' && <EmployeeList />}
+                {view === 'deliverypeople' && <Deliverypeople />}
                 {view === 'users' && <EmployeeList />}
                 {view === 'chart' && <Employies />}
                 {view === 'agent' && <Agent />}
