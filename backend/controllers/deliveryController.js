@@ -89,24 +89,24 @@ exports.getUnverifiedUsers = async (req, res) => {
 };
 
 exports.updatePaymentPrice = async (req, res) => {
-  const { deliveryPersonId, paymentPrice } = req.body;
-
-  // Validate the incoming data
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    console.log('Validation errors:', errors.array());  // Log validation errors
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   try {
-    // Ensure the paymentPrice is a valid number
-    if (isNaN(paymentPrice) || paymentPrice < 0) {
+    // Extract data from request body
+    const { deliveryPersonId, paymentPrice } = req.body;
+
+    // Manual validation
+    if (!deliveryPersonId) {
+      console.log('Missing deliveryPersonId');
+      return res.status(400).json({ msg: 'Delivery person ID is required' });
+    }
+
+    if (paymentPrice === undefined || isNaN(paymentPrice) || paymentPrice < 0) {
       console.log(`Invalid payment price: ${paymentPrice}`);
       return res.status(400).json({ msg: 'Invalid payment price. It must be a positive number.' });
     }
 
-    console.log('Fetching delivery person with ID:', deliveryPersonId);
-    // Find the delivery person by their ID
+    console.log(`Fetching delivery person with ID: ${deliveryPersonId}`);
+
+    // Find the delivery person
     const deliveryPerson = await User.findById(deliveryPersonId);
 
     if (!deliveryPerson) {
@@ -114,17 +114,17 @@ exports.updatePaymentPrice = async (req, res) => {
       return res.status(404).json({ msg: 'Delivery person not found' });
     }
 
-    // Update the payment price
+    // Update payment price
     console.log(`Updating payment price for delivery person: ${deliveryPersonId}`);
     deliveryPerson.amounttobepaid = paymentPrice;
 
-    // Save the updated delivery person data
+    // Save updated data
     await deliveryPerson.save();
     console.log('Payment price updated successfully:', deliveryPerson);
 
     res.json({ msg: 'Payment price updated successfully', deliveryPerson });
   } catch (err) {
     console.error('Error updating payment price:', err.message);
-    res.status(500).send('Server Error');
+    res.status(500).json({ msg: 'Server Error' });
   }
 };

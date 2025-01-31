@@ -78,6 +78,7 @@ const Agent = () => {
   };
 
   const undoDisableUser = async (userId) => {
+
     try {
       await axiosInstance.patch(`/delivery/undo-disable/${userId}`);
       fetchUsers();
@@ -88,7 +89,11 @@ const Agent = () => {
 
   const updatePaymentPrice = async (userId) => {
     try {
-      await axiosInstance.patch(`/delivery/update-payment/${userId}`, { paymentPrice });
+      const trimmedFormData = {
+        deliveryPersonId: userId,
+        paymentPrice
+      }
+      await axiosInstance.patch(`/delivery/update-payment`, trimmedFormData );
       setPaymentPrice(''); // Reset input after successful update
       fetchUsers(); // Optionally refresh the user data
     } catch (error) {
