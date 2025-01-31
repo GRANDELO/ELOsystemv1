@@ -5,10 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/hr.css';
 import EmployeeList from './EmployeeList';
 import Employies from './employies';
+import AgentDash from './Agents';
 
 const Dashboard = () => {
     const [view, setView] = useState('users');
     const [totalUsers, setTotalUsers] = useState(0);
+    const [totalAgents, setTotalAgent] = useState(0);
     const [activeUsers, setActiveUsers] = useState(0);
     const [recentActivities, setRecentActivities] = useState([]);
     const navigate = useNavigate();
@@ -29,6 +31,7 @@ const Dashboard = () => {
 
                 const response = await axiosInstance.get('/financials/summary');
                 setSummary(response.data);
+                 
 
                 const activitiesRes = await axiosInstance.get('/dash/activities/recent');
                 setRecentActivities(activitiesRes.data);
@@ -49,6 +52,7 @@ const Dashboard = () => {
                 >
                     Employees
                 </button>
+               
                 <button
                     className={`hralld-nav-button ${view === 'chart' ? 'active' : ''}`}
                     onClick={() => setView('chart')}
@@ -59,6 +63,7 @@ const Dashboard = () => {
 
             <div className="hralld-content">
 
+               
                 {view === 'users' && <EmployeeList />}
                 {view === 'chart' && <Employies />}
             </div>
