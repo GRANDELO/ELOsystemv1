@@ -1,26 +1,21 @@
 const crypto = require("crypto");
 
-// Secret key (store it securely, e.g., in an environment variable)
-const SECRET_KEY = process.env.SECRET_KEY; // Must be 32 bytes
-const IV_LENGTH = 16; // AES block size
+const SECRET_KEY = process.env.SECRET_KEY;
+const IV_LENGTH = 16;
 
-// Encrypt function
 function encrypt(text) {
     let iv = crypto.randomBytes(IV_LENGTH);
     let cipher = crypto.createCipheriv("aes-256-cbc", Buffer.from(SECRET_KEY), iv);
-    let encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    let encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
     return iv.toString("hex") + ":" + encrypted.toString("hex");
 }
 
-// Decrypt function
 function decrypt(text) {
-    let textParts = text.split(":");
-    let iv = Buffer.from(textParts.shift(), "hex");
-    let encryptedText = Buffer.from(textParts.join(":"), "hex");
+    let parts = text.split(":");
+    let iv = Buffer.from(parts.shift(), "hex");
+    let encryptedText = Buffer.from(parts.join(":"), "hex");
     let decipher = crypto.createDecipheriv("aes-256-cbc", Buffer.from(SECRET_KEY), iv);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    let decrypted = Buffer.concat([decipher.update(encryptedText), decipher.final()]);
     return decrypted.toString();
 }
 

@@ -169,28 +169,34 @@ mongoose
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Could not connect to MongoDB', err));
 
-// Middleware to Encrypt/Decrypt Data Globally
-mongoose.Schema.prototype.pre("save", function (next) {
-  // Encrypt sensitive fields
-  for (let key in this._doc) {
-    if (this._doc[key] && key.includes("Data")) {  // This is a condition for sensitive fields
-      this[key] = encrypt(this[key]);
-    }
-  }
-  next();
-});
+// After connection, apply encryption and decryption globally
+mongoose.connection.once('open', () => {
+  // Apply global encryption for sensitive fields
+  mongoose.models.forEach((model) => {
+    if (model.schema) {
+      model.schema.pre("save", function (next) {
+        // Encrypt fields with sensitive data
+        for (let key in this._doc) {
+          if (this._doc[key] && key.includes("Data")) { // Sensitive field condition
+            this[key] = encrypt(this[key]);
+          }
+        }
+        next();
+      });
 
-mongoose.Schema.prototype.post("find", function (docs) {
-  // Decrypt sensitive fields after retrieval
-  docs.forEach((doc) => {
-    for (let key in doc._doc) {
-      if (doc._doc[key] && key.includes("Data")) {  // This is a condition for sensitive fields
-        doc[key] = decrypt(doc[key]);
-      }
+      model.schema.post("find", function (docs) {
+        // Decrypt fields with sensitive data
+        docs.forEach((doc) => {
+          for (let key in doc._doc) {
+            if (doc._doc[key] && key.includes("Data")) { // Sensitive field condition
+              doc[key] = decrypt(doc[key]);
+            }
+          }
+        });
+      });
     }
   });
 });
-
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
