@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/hr.css';
 import EmployeeList from './EmployeeList';
 import Employies from './employies';
-import AgentDash from './Agents';
+import Agent from './agent';
 
 const Dashboard = () => {
     const [view, setView] = useState('users');

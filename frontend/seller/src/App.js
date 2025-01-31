@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { io } from 'socket.io-client';
 
+
 import RequireAuth from './RequireAuth'; // Import the authentication check component
 import ImageList from './components/ImageList';
 import ImageUpload from './components/ImageUpload';
@@ -126,17 +127,22 @@ const App = () => {
           <Route path="/agentSuccess" element={<AgentSuccess />} />
           <Route path="/register" element={<Registerselector />} />
           <Route path="/" element={<Loginselectore />} />
-          <Route path="/agentpros" element={<Agentpros />} />
-          <Route path="/agentinput" element={<Agentinput />} />
-          <Route path="/agentboxdisp" element={<Agentboxdisp />} />
-          <Route path="/agentboxinput" element={<Agentboxinput />} />
-          <Route path="/agentdash" element={<Agentdash />} />
-          <Route path="/agentLogout" element={<AgentLogout />} />
-          <Route path="/agentsettings" element={<Agentsettings />} />
+
+          <Route element={<RequireAuth />} ></Route>
+
+
+
+          <Route path="/agentpros" element={<ProtectedRoute> <Agentpros /> </ProtectedRoute>} />
+          <Route path="/agentinput" element={ <ProtectedRoute> <Agentinput /> </ProtectedRoute>} />
+          <Route path="/agentboxdisp" element={ <ProtectedRoute> <Agentboxdisp /> </ProtectedRoute>} />
+          <Route path="/agentboxinput" element={<ProtectedRoute> <Agentboxinput /> </ProtectedRoute>} />
+          <Route path="/agentdash" element={<ProtectedRoute><Agentdash />  </ProtectedRoute> } />
+          <Route path="/agentLogout" element={<ProtectedRoute> <AgentLogout />  </ProtectedRoute> } />
+          <Route path="/agentsettings" element={<ProtectedRoute><Agentsettings /></ProtectedRoute>} />
           
-          <Route path="/MM" element={<MM />} />
-          <Route path="/generators" element={<Generators />} />
-          <Route path="/Talk" element={<Talk />} />
+          <Route path="/MM" element={<ProtectedRoute> <MM /> </ProtectedRoute>} />
+          <Route path="/generators" element={<ProtectedRoute> < Generators /></ProtectedRoute>} />
+          <Route path="/Talk" element={<ProtectedRoute> <Talk /></ProtectedRoute>} />
           
           <Route path="/deliveryLogin" element={<DeliveryLogin />} />
           <Route path="/deliveryRegister" element={<DeliveryRegister />} />
@@ -144,10 +150,10 @@ const App = () => {
           <Route path="/deliverypasswordreset" element={<Deliverypasswordreset />} />
           <Route path="/deliveryVerification" element={<DeliveryVerification />} />
           <Route path="/deliveryaccept" element={<Deliveryaccept />} />
-          <Route path="/deliverydisp" element={<Deliverydisp />} />
-          <Route path="/deliveryLogout" element={<DeliveryLogout />} />
-          <Route path="/deliverydash" element={<Deliverydash />} />
-          <Route path="/verificationautodeli" element={<Verificationautodeli />} />
+          <Route path="/deliverydisp" element={<ProtectedRoute><Deliverydisp /></ProtectedRoute>} />
+          <Route path="/deliveryLogout" element={<ProtectedRoute> <DeliveryLogout /></ProtectedRoute>} />
+          <Route path="/deliverydash" element={<ProtectedRoute><Deliverydash /></ProtectedRoute>} />
+          <Route path="/verificationautodeli" element={ <Verificationautodeli />} />
           <Route path="/verificationautoagent" element={<Verificationautoagent />} />
 
 
@@ -169,16 +175,17 @@ const App = () => {
 
             <Route path="/logout" element={<Logout />} />
 
-            <Route path="/newproductform" element={<NewProductForm />} />
-            <Route path="/newproductdetail" element={<NewProductDetail />} />
-            <Route path="/newproductedit" element={<NewProductEdit />} />
-            <Route path="/image" element={<Image />} />
-            <Route path="/paymentForm" element={<PaymentForm />} />
-            <Route path="/imageList" element={<ImageList />} />
-            <Route path="/imageUpload" element={<ImageUpload />} />
-            <Route path="/notification" element={<Notification />} />
-            <Route path="/displayorder" element={<Displayorder />} />
-            <Route path="/productperfomance" element={<Productperfomance />} />
+            <ProtectedRoute> </ProtectedRoute>
+            <Route path="/newproductform" element={<ProtectedRoute>  <NewProductForm />  </ProtectedRoute>} />
+            <Route path="/newproductdetail" element={<ProtectedRoute> <NewProductDetail /> </ProtectedRoute>} />
+            <Route path="/newproductedit" element={<ProtectedRoute> <NewProductEdit /> </ProtectedRoute>} />
+            <Route path="/image" element={<ProtectedRoute> <Image />  </ProtectedRoute>} />
+            <Route path="/paymentForm" element={<ProtectedRoute> <PaymentForm /></ProtectedRoute>} />
+            <Route path="/imageList" element={<ProtectedRoute><ImageList /> </ProtectedRoute>} />
+            <Route path="/imageUpload" element={<ProtectedRoute> <ImageUpload /> </ProtectedRoute>} />
+            <Route path="/notification" element={<ProtectedRoute> <Notification /> </ProtectedRoute>} />
+            <Route path="/displayorder" element={<ProtectedRoute><Displayorder />  </ProtectedRoute>} />
+            <Route path="/productperfomance" element={<ProtectedRoute> <Productperfomance /> </ProtectedRoute>} />
 
           </Route>
         
