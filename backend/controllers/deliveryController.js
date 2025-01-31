@@ -1,4 +1,4 @@
-const User = require('../models/agents');
+const User = require('../models/DeliveryPersonnel');
 const mongoose = require('mongoose');
 
 // Show all users

@@ -29,6 +29,7 @@ import Hr from './components/admin/hr/hr';
 import Packingpage from './components/admin/packingpage';
 import Sales from './components/admin/sales/Sales';
 
+import Agent from './components/admin/hr/agent';
 
 import './main.css';
 
@@ -72,7 +73,8 @@ const App = () => {
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<Loginadm />} />
-
+          <Route path="/Agent" element={<Agent />} />
+          
           {/* Protected routes */}
           <Route element={<RequireAuth />} >
             <Route path="/dashboard"
