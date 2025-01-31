@@ -172,7 +172,7 @@ mongoose
 // After connection, apply encryption and decryption globally
 mongoose.connection.once('open', () => {
   // Apply global encryption for sensitive fields
-  mongoose.models.forEach((model) => {
+  Object.values(mongoose.models).forEach((model) => {
     if (model.schema) {
       model.schema.pre("save", function (next) {
         // Encrypt fields with sensitive data
@@ -183,7 +183,7 @@ mongoose.connection.once('open', () => {
         }
         next();
       });
-
+  
       model.schema.post("find", function (docs) {
         // Decrypt fields with sensitive data
         docs.forEach((doc) => {
@@ -196,6 +196,7 @@ mongoose.connection.once('open', () => {
       });
     }
   });
+  
 });
 // Routes
 app.use('/api/auth', authRoutes);
