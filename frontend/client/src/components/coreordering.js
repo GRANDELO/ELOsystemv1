@@ -180,7 +180,12 @@ const OrderingPage = () => {
   }, [product]);
 
   const handlePaymentMethodChange = async (e) => {
+
     setPaymentMethod(e.target.value);
+    if (!username) {
+      setLoginPrompt('You have to sign in to complete the order.');
+      return;
+    }
     await handleprice();
   };
 
@@ -191,7 +196,7 @@ const OrderingPage = () => {
       setError('Please select a town, area, and specific area.');
       return;
     }
-  
+  console.log(`${selectedCounty}, ${selectedTown}, ${selectedArea}, ${selectedSpecificArea} `);
     try {
       const priceResponse = await axiosInstance.post('/orders/price', { 
         items: [{ productId, quantity: 1 }],
