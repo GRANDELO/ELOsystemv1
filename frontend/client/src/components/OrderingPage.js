@@ -29,7 +29,7 @@ const OrderingPage = () => {
   const [selectedCounty, setSelectedCounty] = useState('');
   
   const [Transportprice, setTransportprice] = useState(0);
-  
+
   useEffect(() => {
     const fetchCart = async () => {
       setLoading(true);
@@ -423,11 +423,14 @@ const OrderingPage = () => {
             <p>No items in cart.</p>
           )}
         </ul>
-        
+         <div className='pricecont'>
         <p><strong>Total Price:</strong> {totalPrice.toFixed(2)}</p>
-        <p><strong>Transport Price:</strong> {Number(Transportprice).toFixed(2)}</p>
+        <p>
+          <strong>Transport Price:</strong>{" "}
+          {Transportprice === 0 ? "Enter destination to display charges" : Number(Transportprice).toFixed(2)}
+        </p>
         <p><strong>Grand Total:</strong> {grandTotal.toFixed(2)}</p>
-
+        </div>
       </div>
 
 
