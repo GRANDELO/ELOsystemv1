@@ -5,6 +5,7 @@ import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 import './styles/newproductform.css';
 import categories from './categories.js';
+import axios from 'axios';
 
 
 const NewProductForm = () => {
@@ -34,7 +35,7 @@ const NewProductForm = () => {
     ],
   }
 );
-
+  const [generatingDescription, setGeneratingDescription] = useState(false);
   const [subCategories, setSubCategories] = useState([]);
   const [dragging, setDragging] = useState(false);
   const [message, setMessage] = useState("");
@@ -193,6 +194,40 @@ const NewProductForm = () => {
     }
     setNewProduct({ ...newProduct, variations: updatedVariations });
   };
+
+  const generateDescription = async () => {
+    if (!newProduct.name || !newProduct.category) {
+      seterror("Please provide a product name and category to generate a description.");
+      return;
+    }
+
+    setGeneratingDescription(true);
+    try {
+      
+      const prompt = `Generate a short and engaging product description for a ${newProduct.category} named "${newProduct.name}".`;
+      const response = await axios.post(
+        'https://api.gemini.com/v1/models/gemini-pro:generateContent', // Replace with the actual Gemini API endpoint
+        {
+          prompt: prompt,
+          max_tokens: 100, // Adjust based on your needs
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${GEMINI_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const generatedDescription = response.data.choices[0].text.trim();
+      setNewProduct({ ...newProduct, description: generatedDescription });
+    } catch (err) {
+      seterror("Failed to generate description. Please try again.");
+      console.error("Error generating description:", err);
+    } finally {
+      setGeneratingDescription(false);
+    }
+  };
   
 
   return (
@@ -246,6 +281,14 @@ const NewProductForm = () => {
         modules={modules}
         placeholder="Write an engaging product description..."
       />
+      <button
+          type="button"
+          onClick={generateDescription}
+          disabled={generatingDescription}
+          style={{ padding: '10px', background: '#007bff', color: '#fff', border: 'none', borderRadius: '5px' }}
+        >
+          {generatingDescription ? "Generating..." : "Generate Description"}
+        </button>
 
       <div
       className="npfdiv">
@@ -375,3 +418,6 @@ const NewProductForm = () => {
 };
 
 export default NewProductForm;
+
+
+
