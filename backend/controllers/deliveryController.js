@@ -87,3 +87,32 @@ exports.getUnverifiedUsers = async (req, res) => {
     res.status(500).json({ message: 'Error fetching unverified users', error });
   }
 };
+
+exports.updatePaymentPrice = async (req, res) => {
+  const { deliveryPersonId, paymentPrice } = req.body;
+
+  // Validate the incoming data
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  try {
+    // Find the delivery person by their ID
+    const deliveryPerson = await User.findById(deliveryPersonId);
+    if (!deliveryPerson) {
+      return res.status(404).json({ msg: 'Delivery person not found' });
+    }
+
+    // Update the payment price
+    deliveryPerson.paymentPrice = paymentPrice;
+
+    // Save the updated delivery person data
+    await deliveryPerson.save();
+
+    res.json({ msg: 'Payment price updated successfully', deliveryPerson });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};

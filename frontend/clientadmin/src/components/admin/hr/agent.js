@@ -153,8 +153,9 @@ const Agent = () => {
           <ul className="usal-user-list">
             {currentUsers.map(user => (
               <li key={user._id} className="usal-user-item">
-                <p>Name: {user.fullName}</p>
+                <p>Name: {user.firstName}</p>
                 <p>Email: {user.email}</p>
+                <p>Phone Number: {user.phoneNumber}</p>
                 <p>County: {user.locations.county}</p>
                 <p>Town: {user.locations.town}</p>
                 <p>Area: {user.locations.area}</p>
@@ -211,8 +212,9 @@ const Agent = () => {
           <ul className="usal-user-list">
             {currentActiveUsers.map(user => (
               <li key={user._id} className="usal-user-item">
-                <p>Name: {user.fullName}</p>
+                <p>Name: {user.firstName}</p>
                 <p>Email: {user.email}</p>
+                <p>Phone Number: {user.phoneNumber}</p>
                 <p>County: {user.locations.county}</p>
                 <p>Town: {user.locations.town}</p>
                 <p>Area: {user.locations.area}</p>
@@ -236,8 +238,9 @@ const Agent = () => {
           <ul className="usal-user-list">
             {disabledUsers.map(user => (
               <li key={user._id} className="usal-user-item">
-                <p>Name: {user.fullName}</p>
+                <p>Name: {user.firstName}</p>
                 <p>Email: {user.email}</p>
+                <p>Phone Number: {user.phoneNumber}</p>
                 <p>County: {user.locations.county}</p>
                 <p>Town: {user.locations.town}</p>
                 <p>Area: {user.locations.area}</p>

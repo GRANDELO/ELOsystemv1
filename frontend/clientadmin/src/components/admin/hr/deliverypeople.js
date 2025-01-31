@@ -2,7 +2,7 @@ import axiosInstance from '../../axiosInstance';
 import { saveAs } from 'file-saver';
 import React, { useEffect, useState } from 'react';
 import Pagination from '../../Pagination';
-import LogsViewer from '../../log'
+import LogsViewer from '../../log';
 import '../../styles/Users.css';
 
 const Agent = () => {
@@ -17,6 +17,7 @@ const Agent = () => {
   const [error, setError] = useState(null);
   const [expandedUserId, setExpandedUserId] = useState(null); // Track which user's details are expanded
   const [activeSection, setActiveSection] = useState('all'); // Tracks the active section
+  const [paymentPrice, setPaymentPrice] = useState(''); // State for the payment price
   const usersPerPage = 5;
 
   useEffect(() => {
@@ -82,6 +83,16 @@ const Agent = () => {
       fetchUsers();
     } catch (error) {
       setError('Failed to enable user');
+    }
+  };
+
+  const updatePaymentPrice = async (userId) => {
+    try {
+      await axiosInstance.patch(`/delivery/update-payment/${userId}`, { paymentPrice });
+      setPaymentPrice(''); // Reset input after successful update
+      fetchUsers(); // Optionally refresh the user data
+    } catch (error) {
+      setError('Failed to update payment price');
     }
   };
 
@@ -153,8 +164,10 @@ const Agent = () => {
           <ul className="usal-user-list">
             {currentUsers.map(user => (
               <li key={user._id} className="usal-user-item">
-                <p>Name: {user.fullName}</p>
+                <p>Name: {user.firstName}</p>
                 <p>Email: {user.email}</p>
+                <p>Phone Number: {user.phoneNumber}</p>
+                <p>Vehicle: {user.vehicle_type}</p>
                 <p>County: {user.locations.county}</p>
                 <p>Town: {user.locations.town}</p>
                 <p>Area: {user.locations.area}</p>
@@ -184,6 +197,23 @@ const Agent = () => {
                     >
                       Enable
                     </button>
+                    <form onSubmit={(e) => {
+                      e.preventDefault();
+                      updatePaymentPrice(user._id);
+                    }}>
+                      <div>
+                        <label htmlFor="paymentPrice">Payment Price:</label>
+                        <input
+                          type="number"
+                          id="paymentPrice"
+                          value={paymentPrice}
+                          onChange={(e) => setPaymentPrice(e.target.value)}
+                          placeholder="Enter payment price"
+                        />
+                      </div>
+                      <button type="submit" className="usal-btn usal-btn-update">Update Payment</button>
+                    </form>
+                    {error && <p className="error">{error}</p>}
                   </div>
                 )}
               </li>
@@ -197,12 +227,12 @@ const Agent = () => {
           />
         </section>
       )}
-      {/*logs view */}
+      
+      {/* Logs View */}
       <section>
-        <LogsViewer/>
+        <LogsViewer />
       </section>
       
-
       {/* Active Users Section with Pagination */}
       {activeSection === 'active' && (
         <section className="usal-section">
@@ -210,8 +240,10 @@ const Agent = () => {
           <ul className="usal-user-list">
             {currentActiveUsers.map(user => (
               <li key={user._id} className="usal-user-item">
-                <p>Name: {user.fullName}</p>
+                <p>Name: {user.firstName}</p>
                 <p>Email: {user.email}</p>
+                <p>Phone Number: {user.phoneNumber}</p>
+                <p>Vehicle: {user.vehicle_type}</p>
                 <p>County: {user.locations.county}</p>
                 <p>Town: {user.locations.town}</p>
                 <p>Area: {user.locations.area}</p>
@@ -234,8 +266,10 @@ const Agent = () => {
           <ul className="usal-user-list">
             {disabledUsers.map(user => (
               <li key={user._id} className="usal-user-item">
-                <p>Name: {user.fullName}</p>
+                <p>Name: {user.firstName}</p>
                 <p>Email: {user.email}</p>
+                <p>Phone Number: {user.phoneNumber}</p>
+                <p>Vehicle: {user.vehicle_type}</p>
                 <p>County: {user.locations.county}</p>
                 <p>Town: {user.locations.town}</p>
                 <p>Area: {user.locations.area}</p>
@@ -243,7 +277,6 @@ const Agent = () => {
             ))}
           </ul>
         </section>
-        
       )}
 
     </div>

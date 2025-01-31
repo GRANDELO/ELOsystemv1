@@ -23,5 +23,13 @@ router.get('/disabled', UserController.getDisabledUsers);
 // Show unverified users
 router.get('/unverified', UserController.getUnverifiedUsers);
 
+router.patch(
+    '/update-payment-price',
+    [
+      check('deliveryPersonId', 'Delivery person ID is required').not().isEmpty(),
+      check('paymentPrice', 'Payment price should be a number').isNumeric()
+    ],
+    UserController.updatePaymentPrice
+  );
 
 module.exports = router;
