@@ -178,26 +178,26 @@ mongoose.connection.once('open', () => {
         // Encrypt fields with sensitive data
         for (let key in this._doc) {
           if (this._doc[key] && key.includes("Data")) { // Sensitive field condition
-            this[key] = encrypt(this[key]);
+            this[key] = encrypt(this[key]);  // Apply encryption
           }
         }
         next();
       });
-  
+
       model.schema.post("find", function (docs) {
         // Decrypt fields with sensitive data
         docs.forEach((doc) => {
           for (let key in doc._doc) {
             if (doc._doc[key] && key.includes("Data")) { // Sensitive field condition
-              doc[key] = decrypt(doc[key]);
+              doc[key] = decrypt(doc[key]); // Apply decryption
             }
           }
         });
       });
     }
   });
-  
 });
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
