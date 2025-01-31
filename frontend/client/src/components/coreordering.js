@@ -410,9 +410,6 @@ const grandTotal = discountedPrice + Number(Transportprice); // Ensure transport
   return (
     <div className="ordcore-ordering-page">
       <h1 className="ordcore-heading">Order Page</h1>
-      <h3><strong>Total Price:</strong> {discountedPrice.toFixed(2)}</h3>
-        <h3><strong>Transport Price:</strong> {Number(Transportprice).toFixed(2)}</h3>
-        <h3><strong>Grand Total:</strong> {grandTotal.toFixed(2)}</h3>
 
       {product && (
         <div className="ordcore-product-details">
@@ -700,6 +697,16 @@ const grandTotal = discountedPrice + Number(Transportprice); // Ensure transport
 
 
       )}
+
+        <div className='pricecont'>
+          <p className='Label' ><strong>Total Price:</strong> {discountedPrice.toFixed(2)}</p>
+          <p>
+            <strong>Transport Price:</strong>{" "}
+            {Transportprice === 0 ? "Enter destination to display charges" : Number(Transportprice).toFixed(2)}
+          </p>
+          <p className='Label'><strong>Grand Total:</strong> {grandTotal.toFixed(2)}</p>
+
+        </div>
 
       {/* Payment Method Selection */}
       <Form>
