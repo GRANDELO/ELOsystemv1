@@ -34,6 +34,7 @@ const Login = () => {
       }
     }
 
+    
     // If token exists, store user data and determine navigation
     if (token) {
       sessionStorage.setItem('userToken', token);

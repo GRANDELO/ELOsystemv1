@@ -1,12 +1,12 @@
 import axiosInstance from "./axiosInstance";
-import fs from fs ; 
 import React, { useEffect, useRef, useState } from "react";
 import { getUsernameFromToken } from "../utils/auth";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 import './styles/newproductform.css';
 import categories from './categories.js';
-import axios from 'axios';
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
 
 
 const NewProductForm = () => {
@@ -197,41 +197,42 @@ const NewProductForm = () => {
     setNewProduct({ ...newProduct, variations: updatedVariations });
   };
 
-  const generateDescription = async () => {
-    if (!newProduct.name || !newProduct.category) {
-      seterror("Please provide a product name and category to generate a description.");
-      return;
-    }
+  const GEMINI_API_KEY = "AIzaSyDL0wDHmhqtHZuurZ0tKAfUEBm0n1QIvws";
 
-    setGeneratingDescription(true);
-    try {
+const generateDescription = async () => {
+  if (!newProduct.name || !newProduct.category) {
+    seterror("Please provide a product name and category to generate a description.");
+    setTimeout(() => {
+      seterror(""); // Clear error message after 5 seconds
+    }, 5000);
+    return;
+  }
 
-      const prompt = `Generate a short and engaging product description for a ${newProduct.category} named "${newProduct.name}".`;
-      const response = await axios.post(
-        'https://api.gemini.com/v1/models/gemini-pro:generateContent', // Replace with the actual Gemini API endpoint
-        {
-          prompt: prompt,
-          max_tokens: 100, // Adjust based on your needs
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${process.env.GEMINI_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+  setGeneratingDescription(true);
 
-      const generatedDescription = response.data.choices[0].text.trim();
-      setNewProduct({ ...newProduct, description: generatedDescription });
-    } catch (err) {
-      seterror("Failed to generate description. Please try again.");
-      console.error("Error generating description:", err);
-    } finally {
-      setGeneratingDescription(false);
-    }
-  };
+  try {
+    const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+    const prompt = `Generate a short and engaging product description for a ${newProduct.category} named "${newProduct.name}".`;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const generatedDescription = response.text();
+
+    setNewProduct((prevProduct) => ({
+      ...prevProduct,
+      description: generatedDescription,
+    }));
+
+  } catch (err) {
+    seterror("Failed to generate description. Please try again.");
+    console.error("Error generating description:", err);
+  } finally {
+    setGeneratingDescription(false);
+  }
+};
   
-
   return (
     <form onSubmit={handleSubmit}>
       <input
@@ -274,6 +275,8 @@ const NewProductForm = () => {
         value={newProduct.price}
         onChange={handleChange}
       />
+
+
       <label>Description:</label>
       <ReactQuill
         className="npfdiv"
@@ -291,6 +294,9 @@ const NewProductForm = () => {
         >
           {generatingDescription ? "Generating..." : "Generate Description"}
         </button>
+      
+      {/* Show the error message if validation fails */}
+      {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
 
       <div
       className="npfdiv">
@@ -420,6 +426,3 @@ const NewProductForm = () => {
 };
 
 export default NewProductForm;
-
-
-

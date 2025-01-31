@@ -112,7 +112,7 @@ const OrdersPage = () => {
               <div onClick={() => handleOrderClick(order)} className="dsord-order-summary">
                 <p>Order Date: {new Date(order.orderDate).toLocaleDateString()}</p>
                 <p>Status: {order.isDelivered ? 'Delivered' : order.isDeliveryInProcess ? 'In Process' : 'Pending'}</p>
-                <p>Total: ${order.totalPrice?.toFixed(2) ?? 'N/A'}</p>
+                <p>Total: KES{order.totalPrice?.toFixed(2) ?? 'N/A'}</p>
               </div>
               {selectedOrder === order && (
                 <div className="dsord-order-details">
