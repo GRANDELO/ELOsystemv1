@@ -7,7 +7,7 @@ import ReactQuill from "react-quill";
 import './styles/newproductform.css';
 import categories from './categories.js';
 import axios from 'axios';
-require('dotenv').config();
+
 
 const NewProductForm = () => {
   const lusername = getUsernameFromToken();
@@ -215,7 +215,7 @@ const NewProductForm = () => {
         },
         {
           headers: {
-            'Authorization': `Bearer ${GEMINI_API_KEY}`,
+            'Authorization': `Bearer ${process.env.GEMINI_API_KEY}`,
             'Content-Type': 'application/json',
           },
         }
