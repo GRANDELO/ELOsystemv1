@@ -6,7 +6,7 @@ import ReactQuill from "react-quill";
 import './styles/newproductform.css';
 import categories from './categories.js';
 import axios from 'axios';
-
+require('dotenv').config();
 
 const NewProductForm = () => {
   const lusername = getUsernameFromToken();
@@ -35,6 +35,7 @@ const NewProductForm = () => {
     ],
   }
 );
+
   const [generatingDescription, setGeneratingDescription] = useState(false);
   const [subCategories, setSubCategories] = useState([]);
   const [dragging, setDragging] = useState(false);
@@ -203,7 +204,7 @@ const NewProductForm = () => {
 
     setGeneratingDescription(true);
     try {
-      
+
       const prompt = `Generate a short and engaging product description for a ${newProduct.category} named "${newProduct.name}".`;
       const response = await axios.post(
         'https://api.gemini.com/v1/models/gemini-pro:generateContent', // Replace with the actual Gemini API endpoint
