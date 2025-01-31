@@ -88,31 +88,46 @@ exports.getUnverifiedUsers = async (req, res) => {
   }
 };
 
+const { validationResult } = require('express-validator');
+const User = require('../models/User'); // Adjust the path as needed
+
 exports.updatePaymentPrice = async (req, res) => {
   const { deliveryPersonId, paymentPrice } = req.body;
 
   // Validate the incoming data
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log('Validation errors:', errors.array());  // Log validation errors
     return res.status(400).json({ errors: errors.array() });
   }
 
   try {
+    // Ensure the paymentPrice is a valid number
+    if (isNaN(paymentPrice) || paymentPrice < 0) {
+      console.log(`Invalid payment price: ${paymentPrice}`);
+      return res.status(400).json({ msg: 'Invalid payment price. It must be a positive number.' });
+    }
+
+    console.log('Fetching delivery person with ID:', deliveryPersonId);
     // Find the delivery person by their ID
     const deliveryPerson = await User.findById(deliveryPersonId);
+
     if (!deliveryPerson) {
+      console.log(`Delivery person not found with ID: ${deliveryPersonId}`);
       return res.status(404).json({ msg: 'Delivery person not found' });
     }
 
     // Update the payment price
+    console.log(`Updating payment price for delivery person: ${deliveryPersonId}`);
     deliveryPerson.amounttobepaid = paymentPrice;
 
     // Save the updated delivery person data
     await deliveryPerson.save();
+    console.log('Payment price updated successfully:', deliveryPerson);
 
     res.json({ msg: 'Payment price updated successfully', deliveryPerson });
   } catch (err) {
-    console.error(err.message);
+    console.error('Error updating payment price:', err.message);
     res.status(500).send('Server Error');
   }
 };
