@@ -50,22 +50,18 @@ const OrderingPage = () => {
   }, [username]);
 
   useEffect(() => {
-    const fetchLocations = async () => {
-      try {
-        const response = await axiosInstance.get('/locations');
-        setCounties(response.data);
-      } catch (err) {
-        console.error('Failed to fetch locations:', err);
-        setMessage(err.response?.data?.message || 'Failed to fetch locations');
-      }
-    };
-  
-    fetchLocations();
+
   }, []);
 
 
   useEffect(() => {
-    const fetchagentLocations = async () => {
+
+
+    fetchagentLocations();
+
+  }, []);
+
+      const fetchagentLocations = async () => {
       setLoading(true);
       setError('');
       try {
@@ -87,27 +83,8 @@ const OrderingPage = () => {
       }
     };
 
-    fetchagentLocations();
 
-  }, []);
-
-  useEffect(() => {
-    if (selectedCounty) {
-      const countyData = counties.find(county => county.county === selectedCounty);
-      setTowns(countyData ? countyData.towns : []);
-    }
-  }, [selectedCounty]);
-  
-  useEffect(() => {
-    if (selectedTown) {
-      const townData = towns.find(town => town.town === selectedTown);
-      setAreas(townData ? townData.areas : []);
-    }
-  }, [selectedTown]);
-  
-
-
-  const handleagentTownChange = (e) => {
+    const handleagentTownChange = (e) => {
     const town = e.target.value;
     setSelectedTown(town);
 
@@ -188,8 +165,40 @@ const OrderingPage = () => {
 
   const otherschanger = () => {
     setOthers(!others);
+    if (!others){
+      setSelectedCounty("");
+      setSelectedTown(""); // Reset town selection
+      setSelectedArea(""); // Reset area selection
+      setSelectedSpecificArea("");
+      setTowns([]);// Clear towns when county changes
+      setAreas([]); // Clear areas when county changes
+      setSelectedCounty([]);
+      fetchLocations();
+    }else{
+      setSelectedCounty("");
+      setSelectedTown(""); // Reset town selection
+      setSelectedArea(""); // Reset area selection
+      setSelectedSpecificArea("");
+      setTowns([]);// Clear towns when county changes
+      setAreas([]); // Clear areas when county changes
+      setSelectedCounty([]);
+      fetchagentLocations();
+    }
+    
   };
 
+
+  const fetchLocations = async () => {
+    try {
+      const response = await axiosInstance.get('/locations');
+      setCounties(response.data);
+    } catch (err) {
+      console.error('Failed to fetch locations:', err);
+      setMessage(err.response?.data?.message || 'Failed to fetch locations');
+    }
+  };
+
+  
   const handleSubmitOrder = async () => {
     setnLoading(true)
     if (!paymentMethod || !selectedTown || !selectedArea || (paymentMethod === 'mpesa' && !mpesaPhoneNumber)) {
@@ -338,14 +347,38 @@ const OrderingPage = () => {
     setSelectedCounty(selectedCountyValue);
     setSelectedTown(""); // Reset town selection
     setSelectedArea(""); // Reset area selection
-    setTowns([]); // Clear towns when county changes
+ // Clear towns when county changes
     setAreas([]); // Clear areas when county changes
   
     if (selectedCountyValue) {
       const countyData = counties.find(county => county.county === selectedCountyValue);
       setTowns(countyData ? countyData.towns : []);
     }
+    
   };
+
+  const handleCountyChange2 = (event) => {
+    const selectedCountyValue = event.target.value;
+    setSelectedCounty(selectedCountyValue);
+    setSelectedTown(""); // Reset town selection
+    setSelectedArea(""); // Reset area selection
+    setSelectedSpecificArea("");
+    setTowns([]);// Clear towns when county changes
+    setAreas([]); // Clear areas when county changes
+    setSpecificAreas([]);
+    
+    // Get all towns for the selected county
+    const filteredCounty = locations
+        .filter((loc) => loc.locations?.county === selectedCountyValue)
+        .flatMap((loc) => loc.locations.town); // Use flatMap if town is an array
+        const uniqueTowns = filteredCounty.filter((town, index, self) => self.indexOf(town) === index);
+        // Remove duplicates
+
+    setTowns(uniqueTowns); // Update the state
+
+};
+
+
 
   return (
     <div className="ordering-page">
@@ -409,7 +442,7 @@ const OrderingPage = () => {
           <select
             id="town"
             value={selectedCounty}
-            onChange={handleCountyChange}
+            onChange={handleCountyChange2}
             disabled={loading || counties.length === 0}
           >
             <option value="">-- Select county --</option>
@@ -422,7 +455,7 @@ const OrderingPage = () => {
           {counties.length === 0 && !loading && <p>No counties available.</p>}
         </div>
 
-
+        {towns.length > 0 && (
         <div>
           <label htmlFor="town">Town:</label>
           <select
@@ -440,7 +473,8 @@ const OrderingPage = () => {
           </select>
           {towns.length === 0 && !loading && <p>No towns available.</p>}
         </div>
-      
+        )}
+
         {/* Area Selector */}
         {areas.length > 0 && (
           <div>
