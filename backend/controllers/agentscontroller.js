@@ -51,7 +51,7 @@ const registerUser = async (req, res) => {
 
     Verification Code: ${alphanumericCode}
     
-    You can also follow this link to verify your account: https://baze-seller.web.app/agentVerification
+    You can also follow this link to verify your account: https://www.partner.bazelink.co.ke/verificationautoagent?email=${email}&code=${alphanumericCode}
     
     Best regards,
     Bazelink Support Team`;
@@ -87,7 +87,7 @@ const registerUser = async (req, res) => {
           </p>
       
           <!-- Verify Button -->
-          <a href="https://baze-seller.web.app/agentVerification" style="display: inline-block; margin-top: 20px; padding: 15px 40px; font-size: 18px; font-weight: bold; color: white; background: linear-gradient(to right, #3b82f6, #6d28d9); text-decoration: none; border-radius: 10px; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0px 4px 15px rgba(59, 130, 246, 0.4);">
+          <a href="https://www.partner.bazelink.co.ke/verificationautoagent?email=${email}&code=${alphanumericCode}" style="display: inline-block; margin-top: 20px; padding: 15px 40px; font-size: 18px; font-weight: bold; color: white; background: linear-gradient(to right, #3b82f6, #6d28d9); text-decoration: none; border-radius: 10px; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0px 4px 15px rgba(59, 130, 246, 0.4);">
             Verify Your Account
           </a>
         </div>
@@ -256,7 +256,7 @@ const updateEmail = async (req, res) => {
     
     Verification Code: ${user.verificationCode}
     
-    You can also follow this link to verify your account: https://baze-seller.web.app/agentRegister
+    You can also follow this link to verify your account: https://www.partner.bazelink.co.ke/verificationautoagent?email=${newEmail}&code=${user.verificationCode}
     
     Best regards,
     Bazelink Support Team`;
@@ -276,7 +276,7 @@ const updateEmail = async (req, res) => {
       </p>
     </div>
     <p style="text-align: center;">
-      <a href="https://baze-seller.web.app/agentRegister" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+      <a href="https://www.partner.bazelink.co.ke/verificationautoagent?email=${newEmail}&code=${user.verificationCode}" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
         Verify Your Account
       </a>
     </p>
@@ -291,7 +291,7 @@ const updateEmail = async (req, res) => {
 
 
     try {
-      await sendEmail(user.email, subject, vermessage, htmlMessage);
+      await sendEmail(newEmail, subject, vermessage, htmlMessage);
       console.log('Email sent successfully');
     } catch (error) {
       console.error('Error sending email:', error);
@@ -309,7 +309,8 @@ const updateEmail = async (req, res) => {
         process.env.JWT_SECRET,
         { expiresIn: '1h' }
       );
-  
+      user.email = newEmail;
+      await user.save();
       res.status(200).json({ message: 'Email updated successfully', token });
     } catch (error) {
       res.status(500).json({ message: 'An error occurred token' });
@@ -338,7 +339,7 @@ const resendVerificationCode = async (req, res) => {
     
     Verification Code: ${user.verificationCode}
     
-    Alternatively, you can follow this link to verify your account: https://baze-seller.web.app/agentRegister
+    Alternatively, you can follow this link to verify your account: https://www.partner.bazelink.co.ke/verificationautoagent?email=${email}&code=${user.verificationCode}
     
     If you did not sign up for this account, please disregard this email.
     
@@ -359,7 +360,7 @@ const resendVerificationCode = async (req, res) => {
         </p>
       </div>
       <p style="text-align: center;">
-        <a href="https://baze-seller.web.app/agentRegister" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+        <a href="https://www.partner.bazelink.co.ke/verificationautoagent?email=${newEmail}&code=${user.verificationCode}" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
           Verify Your Account
         </a>
       </p>
@@ -408,7 +409,7 @@ const newrecoverPassword = async (req, res) => {
     
     Password Reset Token: ${user.passwordRecoveryToken}
     
-    Alternatively, you can reset your password by following this link: https://baze-seller.web.app/agentpasswordreset
+    Alternatively, you can reset your password by following this link: https://www.partner.bazelink.co.ke/agentpasswordreset
     
     This token is valid for 1 hour. If you did not request a password reset, please ignore this message.
     
@@ -429,7 +430,7 @@ const newrecoverPassword = async (req, res) => {
         </p>
       </div>
       <p style="text-align: center;">
-        <a href="https://baze-seller.web.app/agentpasswordreset" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+        <a href="https://www.partner.bazelink.co.ke/agentpasswordreset" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
           Reset Your Password
         </a>
       </p>
@@ -607,8 +608,7 @@ const changeemail = async (req, res) => {
     if (checkuser) {
       return res.status(400).json({ message: 'Email already exists try a different one.' });
     }
-    user.email = newEmail;
-    await user.save();
+
     const subject = "Verification - " + user.verificationCode;
     const vermessage = `Dear ${user.username},
 
@@ -616,7 +616,7 @@ const changeemail = async (req, res) => {
     
     Verification Code: ${user.verificationCode}
     
-    Alternatively, you can follow this link to verify your account: https://baze-seller.web.app/agentRegister
+    Alternatively, you can follow this link to verify your account: https://www.partner.bazelink.co.ke/verificationautoagent?email=${newEmail}&code=${user.verificationCode}
     
     Best regards,
     Bazelink Support Team`;
@@ -635,7 +635,7 @@ const changeemail = async (req, res) => {
       </p>
     </div>
     <p style="text-align: center;">
-      <a href="https://baze-seller.web.app/agentRegister" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
+      <a href="https://www.partner.bazelink.co.ke/verificationautoagent?email=${newEmail}&code=${user.verificationCode}" style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px; margin-top: 15px;">
         Verify Your Account
       </a>
     </p>
@@ -651,7 +651,7 @@ const changeemail = async (req, res) => {
 
 
     try {
-      await sendEmail(lemail, subject, vermessage, htmlMessage);
+      await sendEmail(newEmail, subject, vermessage, htmlMessage);
       console.log('Email sent successfully');
     } catch (error) {
       console.error('Error sending email:', error);
@@ -668,6 +668,8 @@ const changeemail = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
+    user.email = newEmail;
+    await user.save();
     res.status(200).json({ message: 'Email updated successfully', token});
   } catch (error) {
     res.status(500).json({ message: 'An error occurred while updating Email' });
