@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/hr.css';
 import EmployeeList from './EmployeeList';
 import Employies from './employies';
+import Agent from './agent';
 
 const Dashboard = () => {
     const [view, setView] = useState('users');
@@ -55,12 +56,20 @@ const Dashboard = () => {
                 >
                     Register Employee
                 </button>
+                <button
+                    className={`hralld-nav-button ${view === 'agent' ? 'active' : ''}`}
+                    onClick={() => setView('agent')}
+                >
+                    Agents
+                </button>
             </nav>
 
             <div className="hralld-content">
 
                 {view === 'users' && <EmployeeList />}
+                {view === 'users' && <EmployeeList />}
                 {view === 'chart' && <Employies />}
+                {view === 'agent' && <Agent />}
             </div>
         </div>
     );
