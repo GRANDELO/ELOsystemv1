@@ -21,6 +21,7 @@ const nodemailer = require('nodemailer');
 require('dotenv').config();
 require('./worker');
 
+const agentRoutes = require('./routes/agentRoutes');
 const pushNotificationRoutes = require('./routes/pushNotifications');
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
@@ -170,6 +171,8 @@ mongoose
 
 
 // Routes
+
+app.use('/api/agents', agentRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/uemployeez', uemployeezRoutes);

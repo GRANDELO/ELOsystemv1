@@ -59,6 +59,12 @@ const Dashboard = () => {
                 >
                     Register Employee
                 </button>
+                <button
+                    className={`hralld-nav-button ${view === 'agent' ? 'active' : ''}`}
+                    onClick={() => setView('agent')}
+                >
+                    Agents
+                </button>
             </nav>
 
             <div className="hralld-content">
@@ -66,6 +72,7 @@ const Dashboard = () => {
                
                 {view === 'users' && <EmployeeList />}
                 {view === 'chart' && <Employies />}
+                {view === 'agent' && <Agent />}
             </div>
         </div>
     );

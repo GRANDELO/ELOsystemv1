@@ -25,6 +25,8 @@ import Verificationauto from './components/Verificationauto';
 
 import Talk from './components/talk';
 
+import Verificationautodeli from './components/Verificationautodeli';
+import Verificationautoagent from './components/Verificationautoagent';
 import DeliveryLogout from './components/deliveryLogout';
 import DeliveryLogin from './components/deliveryLogin';
 import DeliveryRegister from './components/deliveryRegister';
@@ -145,8 +147,10 @@ const App = () => {
           <Route path="/deliverydisp" element={<Deliverydisp />} />
           <Route path="/deliveryLogout" element={<DeliveryLogout />} />
           <Route path="/deliverydash" element={<Deliverydash />} />
-          
-          
+          <Route path="/verificationautodeli" element={<Verificationautodeli />} />
+          <Route path="/verificationautoagent" element={<Verificationautoagent />} />
+
+
           <Route path="/chatall" element={<ChatList />} />
           <Route path="/chat/:chatId" element={<ChatDetails />} />
           {/* Protected routes */}
