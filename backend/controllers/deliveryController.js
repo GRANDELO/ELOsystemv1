@@ -88,9 +88,6 @@ exports.getUnverifiedUsers = async (req, res) => {
   }
 };
 
-const { validationResult } = require('express-validator');
-const User = require('../models/User'); // Adjust the path as needed
-
 exports.updatePaymentPrice = async (req, res) => {
   const { deliveryPersonId, paymentPrice } = req.body;
 
