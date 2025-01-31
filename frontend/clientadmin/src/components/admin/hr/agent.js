@@ -213,6 +213,10 @@ const Agent = () => {
               <li key={user._id} className="usal-user-item">
                 <p>Name: {user.fullName}</p>
                 <p>Email: {user.email}</p>
+                <p>County: {user.locations.county}</p>
+                <p>Town: {user.locations.town}</p>
+                <p>Area: {user.locations.area}</p>
+                <p>specific: {user.locations.specific}</p>
               </li>
             ))}
           </ul>
@@ -234,6 +238,10 @@ const Agent = () => {
               <li key={user._id} className="usal-user-item">
                 <p>Name: {user.fullName}</p>
                 <p>Email: {user.email}</p>
+                <p>County: {user.locations.county}</p>
+                <p>Town: {user.locations.town}</p>
+                <p>Area: {user.locations.area}</p>
+                <p>specific: {user.locations.specific}</p>
               </li>
             ))}
           </ul>

@@ -28,7 +28,7 @@ const Agent = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axiosInstance.get('/agents/users');
+      const response = await axiosInstance.get('/delivery/users');
       setUsers(response.data);
       setFilteredUsers(response.data);
       setError(null);
@@ -39,7 +39,7 @@ const Agent = () => {
 
   const fetchActiveUsers = async () => {
     try {
-      const response = await axiosInstance.get('/agents/active');
+      const response = await axiosInstance.get('/delivery/active');
       setActiveUsers(response.data);
       setError(null);
     } catch (error) {
@@ -49,7 +49,7 @@ const Agent = () => {
 
   const fetchDisabledUsers = async () => {
     try {
-      const response = await axiosInstance.get('/agents/disabled');
+      const response = await axiosInstance.get('/delivery/disabled');
       setDisabledUsers(response.data);
       setError(null);
     } catch (error) {
@@ -59,7 +59,7 @@ const Agent = () => {
 
   const fetchRegistrationGraph = async () => {
     try {
-      const response = await axiosInstance.get('/agents/registration-graph');
+      const response = await axiosInstance.get('/delivery/registration-graph');
       setRegistrationData(response.data.graphData);
       setError(null);
     } catch (error) {
@@ -69,7 +69,7 @@ const Agent = () => {
 
   const disableUser = async (userId) => {
     try {
-      await axiosInstance.patch(`/agents/disable/${userId}`);
+      await axiosInstance.patch(`/delivery/disable/${userId}`);
       fetchUsers();
     } catch (error) {
       setError('Failed to disable user');
@@ -78,7 +78,7 @@ const Agent = () => {
 
   const undoDisableUser = async (userId) => {
     try {
-      await axiosInstance.patch(`/agents/undo-disable/${userId}`);
+      await axiosInstance.patch(`/delivery/undo-disable/${userId}`);
       fetchUsers();
     } catch (error) {
       setError('Failed to enable user');
@@ -158,7 +158,6 @@ const Agent = () => {
                 <p>County: {user.locations.county}</p>
                 <p>Town: {user.locations.town}</p>
                 <p>Area: {user.locations.area}</p>
-                <p>specific: {user.locations.specific}</p>
 
                 {/* Show 'More' button to expand user options */}
                 <button
@@ -213,6 +212,9 @@ const Agent = () => {
               <li key={user._id} className="usal-user-item">
                 <p>Name: {user.fullName}</p>
                 <p>Email: {user.email}</p>
+                <p>County: {user.locations.county}</p>
+                <p>Town: {user.locations.town}</p>
+                <p>Area: {user.locations.area}</p>
               </li>
             ))}
           </ul>
@@ -234,6 +236,9 @@ const Agent = () => {
               <li key={user._id} className="usal-user-item">
                 <p>Name: {user.fullName}</p>
                 <p>Email: {user.email}</p>
+                <p>County: {user.locations.county}</p>
+                <p>Town: {user.locations.town}</p>
+                <p>Area: {user.locations.area}</p>
               </li>
             ))}
           </ul>
