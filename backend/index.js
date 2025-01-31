@@ -17,6 +17,7 @@ const winston = require('winston');
 const { exec } = require('child_process');
 const redis = require('redis');
 const nodemailer = require('nodemailer');
+const { encrypt, decrypt } = require("./cryptoUtils");
 
 require('dotenv').config();
 require('./worker');
@@ -161,13 +162,34 @@ mongoose.set('strictQuery', true);
 // Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URI, {
-    autoIndex: false, // Disable automatic index creation in production
-    tls: true, // Enforces TLS/SSL for secure connections
+    autoIndex: false,
+    tls: true,
     tlsAllowInvalidCertificates: false,
   })
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Could not connect to MongoDB', err));
 
+// Middleware to Encrypt/Decrypt Data Globally
+mongoose.Schema.prototype.pre("save", function (next) {
+  // Encrypt sensitive fields
+  for (let key in this._doc) {
+    if (this._doc[key] && key.includes("Data")) {  // This is a condition for sensitive fields
+      this[key] = encrypt(this[key]);
+    }
+  }
+  next();
+});
+
+mongoose.Schema.prototype.post("find", function (docs) {
+  // Decrypt sensitive fields after retrieval
+  docs.forEach((doc) => {
+    for (let key in doc._doc) {
+      if (doc._doc[key] && key.includes("Data")) {  // This is a condition for sensitive fields
+        doc[key] = decrypt(doc[key]);
+      }
+    }
+  });
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
