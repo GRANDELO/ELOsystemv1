@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { getUsernameFromToken } from '../utils/auth';
 import './styles/OrderingPage.css'; // Add the custom CSS
-
+ 
 const OrderingPage = () => {
   const [locations, setLocations] = useState([]);
   const username = getUsernameFromToken();
@@ -29,6 +29,7 @@ const OrderingPage = () => {
   const [selectedCounty, setSelectedCounty] = useState('');
   
   const [Transportprice, setTransportprice] = useState(0);
+  
   useEffect(() => {
     const fetchCart = async () => {
       setLoading(true);
@@ -49,9 +50,6 @@ const OrderingPage = () => {
     }
   }, [username]);
 
-  useEffect(() => {
-
-  }, []);
 
 
   useEffect(() => {
