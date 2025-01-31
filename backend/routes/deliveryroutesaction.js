@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const UserController = require('../controllers/deliveryController');
-const { check } = require('express-validator');
 
 // Show all users
 router.get('/users', UserController.getAllUsers);
