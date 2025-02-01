@@ -175,18 +175,6 @@ const App = () => {
 
             <Route path="/logout" element={<Logout />} />
 
-<<<<<<< HEAD
-            <Route path="/newproductform" element={<>  <NewProductForm />  </>} />
-            <Route path="/newproductdetail" element={<> <NewProductDetail /> </>} />
-            <Route path="/newproductedit" element={<> <NewProductEdit /> </>} />
-            <Route path="/image" element={<> <Image />  </>} />
-            <Route path="/paymentForm" element={<> <PaymentForm /></>} />
-            <Route path="/imageList" element={<><ImageList /> </>} />
-            <Route path="/imageUpload" element={<> <ImageUpload /> </>} />
-            <Route path="/notification" element={<> <Notification /> </>} />
-            <Route path="/displayorder" element={<><Displayorder />  </>} />
-            <Route path="/productperfomance" element={<> <Productperfomance /> </>} />
-=======
             
             <Route path="/newproductform" element={<ProtectedRoute>  <NewProductForm />  </ProtectedRoute>} />
             <Route path="/newproductdetail" element={<ProtectedRoute> <NewProductDetail /> </ProtectedRoute>} />
@@ -198,7 +186,6 @@ const App = () => {
             <Route path="/notification" element={<ProtectedRoute> <Notification /> </ProtectedRoute>} />
             <Route path="/displayorder" element={<ProtectedRoute><Displayorder />  </ProtectedRoute>} />
             <Route path="/productperfomance" element={<ProtectedRoute> <Productperfomance /> </ProtectedRoute>} />
->>>>>>> refs/remotes/origin/main
 
           </Route>
         
