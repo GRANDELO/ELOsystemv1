@@ -19,6 +19,7 @@ exports.createOrder = async (req, res) => {
   const {
     items,
     totalPrice,
+    orderNumber,
     paymentMethod,
     destination,
     orderDate,
@@ -54,7 +55,7 @@ exports.createOrder = async (req, res) => {
 
     // Find an available delivery person with role "delivery" and status "available"
     const deliveryPerson = await Employee.findOne({ role: 'delivery', status: 'available' }).sort({ createdAt: 1 });
-    const orderNumber = 'ORD' + generateVerificationCode(6);
+    const orderNumberm = 'ORD' + generateVerificationCode(6);
 
     // Extract product IDs from items and find the respective product owners
     const productIds = items.map(item => item.productId); // Assuming each item contains a productId
