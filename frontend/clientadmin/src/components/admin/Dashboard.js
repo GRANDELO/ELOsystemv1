@@ -29,8 +29,18 @@ const Dashboard = () => {
 
     const fetchDestinations = async () => {
         try {
-            const response = await axiosInstance.get('/api/destinations'); // API call to fetch destinations
-            setDestinations(response.data.data || []); // Set the fetched data
+            const response = await axiosInstance.get('/destinations'); // API call to fetch destinations
+            console.log('Backend Response:', response.data.data); 
+            const destinationsArray = Object.keys(response.data.data || {}).map(key => {
+                const [origin, destination] = key.split('-');
+                return {
+                  origin,
+                  destination,
+                  products: response.data.data[key] // Array of products for this origin-destination pair
+                };
+              });
+              
+            setDestinations(destinationsArray); // Set the fetched data
         } catch (error) {
             console.error('Error fetching destinations:', error);
         }
