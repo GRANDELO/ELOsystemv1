@@ -89,7 +89,7 @@ const addBoxToAgentPackages = async (req, res) => {
 
     // Iterate through the items in the box
     for (const order of bitems) {
-      const orderRecord = await Order.findOne({ orderNumber: order.orderNumber });
+      const orderRecord = await Order.findOne({ "items.pOrderNumbe": order.orderNumber });
       if (!orderRecord) {
         skippedOrders.push(order.orderNumber); // Skip if the order doesn't exist
         continue;
