@@ -19,11 +19,21 @@ const Dashboard = () => {
     const [totalUsers, setTotalUsers] = useState(0);
     const [activeUsers, setActiveUsers] = useState(0);
     const [recentActivities, setRecentActivities] = useState([]);
+    const [destinations, setDestinations] = useState([]);
     const navigate = useNavigate();
     const [summary, setSummary] = useState(null);
 
     const handleLogout = () => {
         navigate('/admnLogout');
+    };
+
+    const fetchDestinations = async () => {
+        try {
+            const response = await axiosInstance.get('/api/destinations'); // API call to fetch destinations
+            setDestinations(response.data.data || []); // Set the fetched data
+        } catch (error) {
+            console.error('Error fetching destinations:', error);
+        }
     };
 
     useEffect(() => {
@@ -47,6 +57,12 @@ const Dashboard = () => {
 
         fetchDashboardData();
     }, []);
+
+    useEffect(() => {
+        if (view === 'destinations') {
+            fetchDestinations(); // Fetch destinations when the Destinations view is active
+        }
+    }, [view])
 
     return (
         <div>
@@ -102,6 +118,12 @@ const Dashboard = () => {
                     >
                         Accouns
                     </button>
+                    <button
+                        className={`dashad-nav-button ${view === 'destinations' ? 'dashad-active' : ''}`}
+                        onClick={() => setView('destinations')}
+                    >
+                        Destinations
+                    </button>
                 </nav>
 
                 <div className="dashad-content">
@@ -150,6 +172,22 @@ const Dashboard = () => {
                     {view === 'reports' && <Reports />}
                     {view === 'feedback' && <AdminFeedback />}
                     {view === 'Accouns' && <Accouns />}
+                    {view === 'destinations' && (
+                        <div className="dashad-destinations-section">
+                            <h2>Destinations</h2>
+                            {destinations.length === 0 ? (
+                                <p>No destinations available.</p>
+                            ) : (
+                                <ul>
+                                    {destinations.map((destination, index) => (
+                                        <li key={index}>
+                                            <strong>Origin:</strong> {destination.origin} - <strong>Destination:</strong> {destination.destination} - <strong>Products:</strong> {destination.products.join(', ')}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+                    )}
                 </div>
                 
             </div>

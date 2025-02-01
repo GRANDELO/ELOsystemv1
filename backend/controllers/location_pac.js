@@ -11,10 +11,14 @@ const groupProductsByOriginAndDestination = async () => {
 
     // Step 2: Group by origin and destination
     const groupedProducts = orders.reduce((acc, order) => {
-      const { origin, destination } = order; // Assuming origin and destination are in the order model
+      const { currentplace, destination } = order; // Assuming origin and destination are in the order model
 
+      if (!currentplace || !destination) {
+        console.warn('Missing currentplace or destination for order:', order);
+        return acc;
+    }
       // Use a unique key combining origin and destination
-      const key = `${origin.county}-${destination.county}`;
+      const key = `${currentplace}-${destination}`;
 
       if (!acc[key]) {
         acc[key] = [];
