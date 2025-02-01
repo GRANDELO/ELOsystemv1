@@ -728,7 +728,7 @@ const addOrderToAgentPackages = async (req, res) => {
         $set: { "items.$.pCurrentPlace": `${agent.locations.town}, ${agent.locations.area}, ${agent.locations.specific}` } 
       }
     );
-    
+    order.currentplace = `${agent.locations.town}, ${agent.locations.area}, ${agent.locations.specific}`;    
     order.isDeliveryInProcess = true;
 
     // Save both documents
@@ -747,6 +747,7 @@ const addOrderToAgentPackages = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 // Handle withdrawal logic
 const awithdraw = async (req, res) => {
   const { username, amount, Phonenumber } = req.body;
