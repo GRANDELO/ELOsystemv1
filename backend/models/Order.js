@@ -28,7 +28,7 @@ const orderSchema = new mongoose.Schema({
   CheckoutRequestID: { type: String},
   orderReference: { type: String, required: true },
   sellerOrderId: { type: String, default: undefined},
-  currentplace: { type: String, default: "Waiting for delivery." },
+  currentplace: { type: String, required: true, default: "Waiting for delivery." },
 
 });
 
