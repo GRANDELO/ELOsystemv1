@@ -228,7 +228,7 @@ const OrderingPage = () => {
 
     console.log("Generated Order Number:", orderNumber);
 
-    let num = 0;
+    let num = 1;
 
     try {
       const orderDetails = {

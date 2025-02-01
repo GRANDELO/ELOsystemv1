@@ -297,6 +297,19 @@ const OrderingPage = () => {
   };
 
 
+  const generateVerificationCode = (length) => {
+    let code = '';
+    const possible = '0123456789';
+  
+    for (let i = 0; i < length; i++) {
+      code += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+  
+    return code;
+  };
+  
+
+
   const handleSubmitOrder = async () => {
     if (!username) {
       setLoginPrompt('You have to sign in to complete the order.');
@@ -307,10 +320,16 @@ const OrderingPage = () => {
       return;
     }
     const orderReference = uuidv4(); 
+    const orderNumber  = generateVerificationCode(8);
+
+    console.log("Generated Order Number:", orderNumber);
+
+    let num = 1;
+
     const { discountedPrice } = calculateDiscountedPrice();
     try {
       const orderDetails = {
-        items: [{ productId, quantity: 1 }],
+        items: [{ productId, pOrderNumbe: orderNumber + "-PRD" + num++, quantity: 1 }],
         totalPrice: grandTotal,
         paymentMethod,
         destination: `${selectedCounty}, ${selectedTown}, ${selectedArea}, ${selectedSpecificArea || 'Town'}`,
