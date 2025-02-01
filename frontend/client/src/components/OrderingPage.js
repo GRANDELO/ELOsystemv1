@@ -228,16 +228,14 @@ const OrderingPage = () => {
 
     console.log("Generated Order Number:", orderNumber);
 
-    let num = 1;
-    const pOrderNumbe =  orderNumber + "-PRD" + num;
-
+    let num = 0;
 
     try {
       const orderDetails = {
         items: cart.map(item => ({
           productId: item.product._id,
           quantity: item.quantity,
-          pOrderNumbe: pOrderNumbe,
+          pOrderNumbe: orderNumber + "-PRD" + num++,
           variations: {
             productId: item.variant.productId,
             color: item.variant.color,
