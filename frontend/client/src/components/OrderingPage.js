@@ -270,7 +270,7 @@ const OrderingPage = () => {
             const payload = 
             {
                 phone: mpesaPhoneNumber,
-                amount: totalPrice.toFixed(0),
+                amount: grandTotal.toFixed(0),
                 orderReference: orderReference
             };
 

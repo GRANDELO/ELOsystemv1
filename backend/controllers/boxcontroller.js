@@ -89,7 +89,7 @@ const addBoxToAgentPackages = async (req, res) => {
 
     // Iterate through the items in the box
     for (const order of bitems) {
-      const orderRecord = await Order.findOne({ orderNumber: order.orderNumber });
+      const orderRecord = await Order.findOne({ "items.pOrderNumbe": order.orderNumber });
       if (!orderRecord) {
         skippedOrders.push(order.orderNumber); // Skip if the order doesn't exist
         continue;
@@ -118,6 +118,12 @@ const addBoxToAgentPackages = async (req, res) => {
       addedOrders.push(order.orderNumber); // Track added orders
 
       // Update the order's properties
+      await Order.updateOne(
+        { "items.pOrderNumbe": order.orderNumber }, // Find the order with the matching pOrderNumbe
+        { 
+          $set: { "items.$.pCurrentPlace": `${agent.locations.town}, ${agent.locations.area}, ${agent.locations.specific}` } 
+        }
+      ); 
       orderRecord.currentplace = `${agent.locations.county}, ${agent.locations.town}, ${agent.locations.area}, ${agent.locations.specific}`;
       orderRecord.packed = true;
       await orderRecord.save(); // Save the updated order
