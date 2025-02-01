@@ -175,7 +175,7 @@ const App = () => {
 
             <Route path="/logout" element={<Logout />} />
 
-            <ProtectedRoute> </ProtectedRoute>
+            
             <Route path="/newproductform" element={<ProtectedRoute>  <NewProductForm />  </ProtectedRoute>} />
             <Route path="/newproductdetail" element={<ProtectedRoute> <NewProductDetail /> </ProtectedRoute>} />
             <Route path="/newproductedit" element={<ProtectedRoute> <NewProductEdit /> </ProtectedRoute>} />

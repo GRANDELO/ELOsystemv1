@@ -196,6 +196,18 @@ const OrderingPage = () => {
     }
   };
 
+  const generateVerificationCode = (length) => {
+    let code = '';
+    const possible = '0123456789';
+  
+    for (let i = 0; i < length; i++) {
+      code += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+  
+    return code;
+  };
+  
+
   
   const handleSubmitOrder = async () => {
     setnLoading(true)
@@ -212,12 +224,20 @@ const OrderingPage = () => {
     }
 
     const orderReference = uuidv4(); // Generate unique order ref
+    const orderNumber  = generateVerificationCode(8);
+
+    console.log("Generated Order Number:", orderNumber);
+
+    let num = 1;
+    const pOrderNumbe =  orderNumber + "-PRD" + num;
+
 
     try {
       const orderDetails = {
         items: cart.map(item => ({
           productId: item.product._id,
           quantity: item.quantity,
+          pOrderNumbe: pOrderNumbe,
           variations: {
             productId: item.variant.productId,
             color: item.variant.color,
@@ -228,7 +248,7 @@ const OrderingPage = () => {
           price: item.product.discount 
             ? item.product.price * (1 - item.product.discountpersentage / 100) // Apply discount if exists
             : item.product.price
-          
+           
 
         })), 
 
@@ -241,7 +261,7 @@ const OrderingPage = () => {
         
         mpesaPhoneNumber: paymentMethod === 'mpesa' ? mpesaPhoneNumber : undefined,
         orderReference,
-        
+        orderNumber,
       };
       console.log(orderDetails)
       const response = await axiosInstance.post('/orders', orderDetails);
