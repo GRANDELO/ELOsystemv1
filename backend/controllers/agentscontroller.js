@@ -687,10 +687,12 @@ const addOrderToAgentPackages = async (req, res) => {
     }
 
     // Find the order by orderNumber
-    const order = await Order.findOne({ orderNumber: orderId });
+    const order = await Order.findOne({ "items.pOrderNumbe": orderId });
+
     if (!order) {
       return res.status(400).json({ error: "Invalid Order." });
     }
+    
 
     // Find the agent by agentnumber
     const agent = await User.findOne({ agentnumber });
