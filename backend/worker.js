@@ -81,7 +81,7 @@ const groupOrdersForAllAgents = async () => {
           continue;
         }
 
-        const { destination, orderNumber } = order;
+        const { destination } = order;
         const timeSlot = getTimeSlot(processedDate); // Helper function to determine time slot
         const date = processedDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
 
@@ -104,7 +104,7 @@ const groupOrdersForAllAgents = async () => {
             boxNumber:  `${uuidv4()}_${timeSlot}_${agentnumber}`,
             boxid: generateVerificationCode(6),
             destination,
-            items: [{ orderNumber }], // Add the current order
+            items: [{ orderId }], // Add the current order
             agentnumber,
             currentplace: `${agent.locations.town}, ${agent.locations.area}, ${agent.locations.specific}`,
             packingDate: new Date(),
@@ -115,8 +115,8 @@ const groupOrdersForAllAgents = async () => {
           await box.save();
         } else {
           // Add the order to the existing box if it's not already added
-          if (!box.items.some((item) => item.orderNumber === orderNumber)) {
-            box.items.push({ orderNumber });
+          if (!box.items.some((item) => item.orderNumber === orderId)) {
+            box.items.push({ orderId });
             await box.save();
           }
         }
