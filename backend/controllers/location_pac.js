@@ -32,7 +32,7 @@ const groupProductsByOriginAndDestination = async () => {
           variations: item.variations,
           orderNumber: order.orderNumber,
           totalPrice: order.totalPrice,
-          origin,
+          origin: currentplace,
           destination,
         });
       });
