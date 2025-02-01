@@ -104,7 +104,7 @@ const groupOrdersForAllAgents = async () => {
             boxNumber:  `${uuidv4()}_${timeSlot}_${agentnumber}`,
             boxid: generateVerificationCode(6),
             destination,
-            items: [{ orderId }], // Add the current order
+            items: [{ orderNumber: orderId }], // Add the current order
             agentnumber,
             currentplace: `${agent.locations.town}, ${agent.locations.area}, ${agent.locations.specific}`,
             packingDate: new Date(),
@@ -116,7 +116,7 @@ const groupOrdersForAllAgents = async () => {
         } else {
           // Add the order to the existing box if it's not already added
           if (!box.items.some((item) => item.orderNumber === orderId)) {
-            box.items.push({ orderId });
+            box.items.push({ orderNumber: orderId });
             await box.save();
           }
         }
