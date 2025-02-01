@@ -67,10 +67,11 @@ const PendingOrders = () => {
       <h1>Pending Orders</h1>
       {orders.map((order) => (
         <div key={order.orderId} className="order">
-          <h2>Order ID: {order.orderId}</h2>
+          
           <div className="products">
             {order.products.map((product) => (
               <div key={product._id} className="product">
+                <h2>Order ID: {product.pOrderId}</h2>
                 <div className="product-image">
                   {product.image.length > 0 && (
                     <img

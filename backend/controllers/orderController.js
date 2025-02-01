@@ -185,6 +185,7 @@ exports.getMyPendingOrder = async (req, res) => {
           ...productMap[item.productId], // Get the product details from the map
           quantity: item.quantity, // Include the quantity from the order
           variance: item.variations,
+          pOrderId: item.pOrderNumbe,
         }));
 
       return {
