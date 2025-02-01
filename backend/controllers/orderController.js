@@ -56,7 +56,7 @@ exports.createOrder = async (req, res) => {
 
     // Find an available delivery person with role "delivery" and status "available"
     const deliveryPerson = await Employee.findOne({ role: 'delivery', status: 'available' }).sort({ createdAt: 1 });
-    const orderNumberm = 'ORD' + generateVerificationCode(6);
+    const orderNumber = 'ORD' + generateVerificationCode(6);
 
     // Extract product IDs from items and find the respective product owners
     const productIds = items.map(item => item.productId); // Assuming each item contains a productId
@@ -822,21 +822,6 @@ const updateProductPerformance = async (productId, productName, seller, saleDate
 
 };
 
-//test for ordering
-export const generateVerificationCode = (length) => {
-  let code = '';
-  const possible = '0123456789';
-
-  for (let i = 0; i < length; i++) {
-    code += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-
-  return code;
-};
-
-
-const code = generateVerificationCode(6);
-console.log(code); // Example output: "573829"
 
 exports.pricecalc = async (req, res) => {
   try {

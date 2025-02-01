@@ -311,7 +311,7 @@ const OrderingPage = () => {
     try {
       const orderDetails = {
         items: [{ productId, quantity: 1 }],
-        totalPrice: discountedPrice,
+        totalPrice: grandTotal,
         paymentMethod,
         destination: `${selectedCounty}, ${selectedTown}, ${selectedArea}, ${selectedSpecificArea || 'Town'}`,
         orderDate: new Date().toISOString(),
@@ -330,7 +330,7 @@ const OrderingPage = () => {
             const payload = 
             {
                 phone: mpesaPhoneNumber,
-                amount: discountedPrice.toFixed(0),
+                amount: grandTotal.toFixed(2),
                 orderReference: orderReference
             };
 
