@@ -103,6 +103,10 @@ const addBoxToAgentPackages = async (req, res) => {
       if (orderExists) {
         skippedOrders.push(order.orderNumber); // Skip if already added
         continue;
+      }else{
+        const oldbal = agent.amount || 0;
+        const newbal = oldbal + 20;
+        agent.amount = newbal;
       }
 
       // Add the order to the agent's packages

@@ -706,6 +706,10 @@ const addOrderToAgentPackages = async (req, res) => {
       return res
         .status(400)
         .json({ error: "Order already exists under this agent." });
+    }else{
+      const oldbal = agent.amount || 0;
+      const newbal = oldbal + 20;
+      agent.amount = newbal;
     }
 
     // Add the new order to the agent's packages
