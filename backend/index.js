@@ -33,6 +33,7 @@ const newproductRoutes = require('./routes/newproductRoutes');
 const cartRoutes = require('./routes/cart');
 const orderRoutes = require('./routes/orders');
 const orderRoute2 = require('./routes/order2');
+const Destination = require('./routes/destinations');
 const locations = require('./routes/locations');
 const locationsroutes = require('./routes/locationsroutes');
 const mpesaRoutes = require('./routes/mpesaRoutes');
@@ -172,7 +173,7 @@ mongoose
 
 
 // Routes
-
+app.use('./api/destination', Destination);
 app.use('/api/delivery', deliveryroutesaction);
 app.use('/api/agents', agentRoutes);
 app.use('/api/auth', authRoutes);

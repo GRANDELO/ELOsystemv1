@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Destinantions =  require('../controllers/location_pac');
+
 
 const townsAndAreas1 = [
   { region: 'Nairobi', County: 'Nairobi', town: 'Rongai', areas: ['Bomas', 'Maasai Lodge', 'Tumaini', 'Kware', 'Rimpa', 'Gataka', 'Mericho', 'Acacia Estate', 'Laiser Hill' ]},
@@ -7527,7 +7527,7 @@ const townsAndAreas =[
   
   
   ]
-router.get('/api/destinations', Destinantions.groupProductsByOriginAndDestination);
+
 router.get('/api/locations', (req, res) => {
   res.json(townsAndAreas);
 });
