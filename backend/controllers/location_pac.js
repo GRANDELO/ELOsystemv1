@@ -20,32 +20,68 @@ const groupProductsByOriginAndDestination = async () => {
       // Use a unique key combining origin and destination
       const key = `${currentplace}-${destination}`;
 
-      if (!acc[key]) {
-        acc[key] = [];
-      }
+      // if (!acc[key]) {
+      //   acc[key] = [];
+      // }
 
       // Add products in this order to the group
-      order.items.forEach((item) => {
-        acc[key].push({
-          productId: item.productId,
-          quantity: item.quantity,
-          variations: item.variations,
-          orderNumber: order.orderNumber,
-          totalPrice: order.totalPrice,
-          origin: currentplace,
-          destination,
-        });
-      });
+//       order.items.forEach((item) => {
+//         acc[key].push({
+//           productId: item.productId,
+          
+//           orderNumber: order.orderNumber,
+//           totalPrice: order.totalPrice,
+//           origin: currentplace,
+//           destination,
+//         });
+//       });
 
-      return acc;
-    }, {});
+//       return acc;
+//     }, {});
 
-    // Step 3: Return grouped products
-    return groupedProducts;
-  } catch (error) {
-    console.error("Error grouping products by origin and destination:", error);
-    throw error;
+//     // Step 3: Return grouped products
+//     return groupedProducts;
+//   } catch (error) {
+//     console.error("Error grouping products by origin and destination:", error);
+//     throw error;
+//   }
+// };
+
+if (!acc[key]) {
+  acc[key] = {
+    origin: currentplace,
+    destination,
+    products: [],
+  };
+}
+
+// Add products in this order to the group
+order.items.forEach((item) => {
+  if (item.productId) {
+    acc[key].products.push({
+      productId: item.productId._id,
+      productName: item.productId.name || "Unknown Product",
+      orderNumber: order.orderNumber,
+      totalPrice: order.totalPrice,
+    });
   }
+});
+
+return acc;
+}, {});
+
+// Step 3: Transform groupedProducts into an array for easier frontend usage
+const result = Object.keys(groupedProducts).map((key) => ({
+origin: groupedProducts[key].origin,
+destination: groupedProducts[key].destination,
+products: groupedProducts[key].products,
+}));
+
+return result;
+} catch (error) {
+console.error("Error grouping products by origin and destination:", error);
+throw error;
+}
 };
 
 module.exports = {

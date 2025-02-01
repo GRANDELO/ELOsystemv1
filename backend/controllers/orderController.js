@@ -10,6 +10,7 @@ const {increateNotification} = require('./notificationController');
 const {b2cRequestHandler} = require("./mpesaController");
 const CoreSellOrder = require('../models/CoreSellOrder');
 const { generateVerificationCode } = require('../services/verificationcode');
+
 const { sersendNotificationToUser } = require('./pushNotificationController');
 const Transaction = require("../models/Transaction");
 
@@ -818,7 +819,24 @@ const updateProductPerformance = async (productId, productName, seller, saleDate
     console.error('Failed to update product performance:', error);
     return { error: 'Failed to update product performance' };
   }
+
 };
+
+//test for ordering
+export const generateVerificationCode = (length) => {
+  let code = '';
+  const possible = '0123456789';
+
+  for (let i = 0; i < length; i++) {
+    code += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+
+  return code;
+};
+
+
+const code = generateVerificationCode(6);
+console.log(code); // Example output: "573829"
 
 exports.pricecalc = async (req, res) => {
   try {
@@ -891,6 +909,7 @@ exports.pricecalc = async (req, res) => {
     res.status(500).json({ error: error.message || 'Failed to calculate transport price' });
   }
 };
+
 
 const calculateTransportCost = async (products, orderDestination) => {
   
