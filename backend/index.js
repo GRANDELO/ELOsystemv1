@@ -173,7 +173,7 @@ mongoose
 
 
 // Routes
-app.use('/destination', Destination);
+app.use('/api', Destination);
 app.use('/api/delivery', deliveryroutesaction);
 app.use('/api/agents', agentRoutes);
 app.use('/api/auth', authRoutes);
