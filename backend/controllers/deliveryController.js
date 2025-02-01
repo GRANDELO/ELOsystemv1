@@ -87,3 +87,44 @@ exports.getUnverifiedUsers = async (req, res) => {
     res.status(500).json({ message: 'Error fetching unverified users', error });
   }
 };
+
+exports.updatePaymentPrice = async (req, res) => {
+  try {
+    // Extract data from request body
+    const { deliveryPersonId, paymentPrice } = req.body;
+
+    // Manual validation
+    if (!deliveryPersonId) {
+      console.log('Missing deliveryPersonId');
+      return res.status(400).json({ msg: 'Delivery person ID is required' });
+    }
+
+    if (paymentPrice === undefined || isNaN(paymentPrice) || paymentPrice < 0) {
+      console.log(`Invalid payment price: ${paymentPrice}`);
+      return res.status(400).json({ msg: 'Invalid payment price. It must be a positive number.' });
+    }
+
+    console.log(`Fetching delivery person with ID: ${deliveryPersonId}`);
+
+    // Find the delivery person
+    const deliveryPerson = await User.findById(deliveryPersonId);
+
+    if (!deliveryPerson) {
+      console.log(`Delivery person not found with ID: ${deliveryPersonId}`);
+      return res.status(404).json({ msg: 'Delivery person not found' });
+    }
+
+    // Update payment price
+    console.log(`Updating payment price for delivery person: ${deliveryPersonId}`);
+    deliveryPerson.amounttobepaid = paymentPrice;
+
+    // Save updated data
+    await deliveryPerson.save();
+    console.log('Payment price updated successfully:', deliveryPerson);
+
+    res.json({ msg: 'Payment price updated successfully', deliveryPerson });
+  } catch (err) {
+    console.error('Error updating payment price:', err.message);
+    res.status(500).json({ msg: 'Server Error' });
+  }
+};

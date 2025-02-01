@@ -115,6 +115,7 @@ const registerUser = async (req, res) => {
       resetPasswordToken: undefined,
       resetPasswordExpires: undefined,
       amount: 0,
+      amounttobepaid: 0,
       locations,
     });
     await user.save();

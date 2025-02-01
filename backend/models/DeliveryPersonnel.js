@@ -21,6 +21,7 @@ const deliveryPersonnelSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   active: { type: Boolean, default: false },
   amount: { type: Number, default: undefined},
+  amounttobepaid: { type: Number, default: undefined},
   locations: 
     {
       county: { type: String },
