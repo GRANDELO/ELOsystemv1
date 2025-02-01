@@ -29,22 +29,12 @@ const Footer = () => {
         {/* Section 1: Company Information */}
         <div style={styles.section}>
           <h4>About Us</h4>
-          <p>Grandelo, Nairobi</p>
-          <p>Email: grandeloltd1@gmail.com</p>
-          <p>Phone: +254 799169720</p>
+          <p>Bazelink, Nairobi</p>
+          <p>Email: bazelink.ltd@gmail.com</p>
+          <p>Phone: 116293386</p>
         </div>
 
-        {/* Section 2: Quick Links */}
-        <div style={styles.section}>
-          <h4>Quick Links</h4>
-          <ul style={styles.linkList}>
-            <li><a href="/" aria-label="Navigate to Home">Home</a></li>
-            <li><a href="/services" aria-label="Navigate to Services">Services</a></li>
-            <li><a href="/contact" aria-label="Navigate to Contact Us">Contact Us</a></li>
-            <li><a href="/about" aria-label="Navigate to About Us">About Us</a></li>
-          </ul>
-        </div>
-
+        
         {/* Section 3: Follow Us */}
         <div style={styles.section}>
           <h4>Follow Us</h4>

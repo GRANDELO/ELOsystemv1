@@ -170,7 +170,6 @@ const Dashboard = () => {
                                     <li><a href="/sales">Sales</a></li>
                                     <li><a href="/reports">Reports</a></li>
                                     <li><a href="/hr">HR</a></li>
-                                    <li><a href="/feedback">Feedback</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -184,19 +183,31 @@ const Dashboard = () => {
                     {view === 'Accouns' && <Accouns />}
                     {view === 'destinations' && (
                         <div className="dashad-destinations-section">
-                            <h2>Destinations</h2>
-                            {destinations.length === 0 ? (
-                                <p>No destinations available.</p>
-                            ) : (
-                                <ul>
-                                    {destinations.map((destination, index) => (
-                                        <li key={index}>
-                                            <strong>Origin:</strong> {destination.origin} - <strong>Destination:</strong> {destination.destination} - <strong>Products:</strong> {destination.products.join(', ')}
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </div>
+                        <h2>Destinations</h2>
+                        {destinations.length === 0 ? (
+                          <p>No destinations available.</p>
+                        ) : (
+                          <ul>
+                            {destinations.map((destination, index) => (
+                              <li key={index}>
+                                <strong>Origin:</strong> {destination.origin} -{" "}
+                                <strong>Destination:</strong> {destination.destination} -{" "}
+                                <strong>Products:</strong>{" "}
+                                {destination.products.length > 0 ? (
+                                  destination.products.map((product, productIndex) => (
+                                    <span key={productIndex}>
+                                      {product.productName} (Order #{product.orderNumber}, KES{product.totalPrice})
+                                      {productIndex !== destination.products.length - 1 ? ", " : ""}
+                                    </span>
+                                  ))
+                                ) : (
+                                  <em>No products</em>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
                     )}
                 </div>
                 
