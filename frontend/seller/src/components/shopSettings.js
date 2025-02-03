@@ -1,68 +1,70 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import axiosInstance from './axiosInstance';
 import { getUsernameFromToken } from '../utils/auth';
 
-const UploadShopLogo = () => {
+
+const UpdateImages = () => {
   const username = getUsernameFromToken();
   const [logo, setLogo] = useState(null);
   const [background, setBackground] = useState(null);
-  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  const handleFileChange = (e, setFile) => {
-    if (e.target.files.length > 0) {
-      setFile(e.target.files[0]);
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    if (name === 'logo' && files.length > 0) {
+      setLogo(files[0]);
+    } else if (name === 'background' && files.length > 0) {
+      setBackground(files[0]);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!logo || !background) {
-      setMessage('Please upload both logo and background images.');
+      setError('Both logo and background images are required');
       return;
     }
 
     const formData = new FormData();
-    formData.append('username', username);
-    formData.append('logo', logo);
-    formData.append('background', background);
-
-    // Debugging: Log FormData entries
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
-    }
+    formData.append('images', logo);
+    formData.append('images', background);
 
     try {
-      const response = await axiosInstance.post('/updateShopLogo', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-        transformRequest: [(data) => data],
+      const response = await axiosInstance.put(`update-images/${username}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
-      setMessage(response.data.message || 'Images uploaded successfully.');
-      console.log('Response:', response.data);
-    } catch (error) {
-      console.error('Error uploading images:', error);
-      setMessage(error.response?.data?.message || 'Error uploading images.');
+      setSuccess(response.data.message);
+      setLogo(null);
+      setBackground(null);
+    } catch (err) {
+      setError('Error updating images');
+      console.error(err);
     }
   };
 
   return (
     <div>
-      <h2>Upload Shop Logo and Background</h2>
+      <h3>Update Logo and Background Images</h3>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {success && <p style={{ color: 'green' }}>{success}</p>}
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Logo:</label>
-          <input type="file" onChange={(e) => handleFileChange(e, setLogo)} accept="image/*" required />
+          <label htmlFor="logo">Logo Image:</label>
+          <input type="file" name="logo" accept="image/*" onChange={handleFileChange} />
         </div>
         <div>
-          <label>Background:</label>
-          <input type="file" onChange={(e) => handleFileChange(e, setBackground)} accept="image/*" required />
+          <label htmlFor="background">Background Image:</label>
+          <input type="file" name="background" accept="image/*" onChange={handleFileChange} />
         </div>
-        <button type="submit">Upload</button>
+        <button type="submit">Update Images</button>
       </form>
-      {message && <p>{message}</p>}
     </div>
   );
 };
 
-export default UploadShopLogo;
+export default UpdateImages;

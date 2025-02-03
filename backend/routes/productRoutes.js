@@ -15,6 +15,8 @@ router.post(
     ]),
     productController.updateshoplogoUrl
   );
+  
+router.put('/update-images/:username', upload.array('images', 2), updateUserImages); // Expecting 2 images: logo and background
 
 router.get('/products', productController.getAllProducts);
 router.get('/images/:filename', productController.getImage);
