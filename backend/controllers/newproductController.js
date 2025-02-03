@@ -1,4 +1,5 @@
 const NewProduct = require('../models/newproductModel');
+const Shop = require('../models/User');
 
 const { v4: uuidv4 } = require('uuid');
 const { bucket } = require('../config/firebase');
@@ -38,13 +39,16 @@ exports.updateShopLogoController = async function (req, res) {
     }
 
     // Upload the logo and background images to Firebase
-    const logoUrl = await uploadFile(req.files.logo[0]);
-    const backgroundUrl = await uploadFile(req.files.background[0]);
-
+// Upload the logo and background images to Firebase
+      const logoUrl = await uploadFile(req.files.logo[0]);
+      const backgroundUrl = await uploadFile(req.files.background[0]);
+      console.log("Logo URL:", logoUrl);
+      console.log("Background URL:", backgroundUrl);
+      
     // Save the URLs to the database (Firestore or your DB)
     const updatedShop = await Shop.findOneAndUpdate(
       { username }, // Find the shop by its username
-      { logoUrl, backgroundUrl }, // Update the logo and background URLs
+      { logoUrl: logoUrl, backgroundUrl: backgroundUrl }, // Update the logo and background URLs
       { new: true, upsert: true } // Return the updated document and create one if it doesn't exist
     );
 
