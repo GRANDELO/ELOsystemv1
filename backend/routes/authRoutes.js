@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerUser, login, verifyUser, updateEmail, resendVerificationCode, newrecoverPassword, resetPassword, changeusername, changepassword, changephonenumber, changeemail, logout} = require('../controllers/authController');
+const { getUserImages, registerUser, login, verifyUser, updateEmail, resendVerificationCode, newrecoverPassword, resetPassword, changeusername, changepassword, changephonenumber, changeemail, logout} = require('../controllers/authController');
 const router = express.Router();
 
 
@@ -15,4 +15,6 @@ router.post('/changepassword', changepassword);
 router.post('/changephonenumber', changephonenumber);
 router.post('/changeemail', changeemail);
 router.post('/logout', logout);
+router.get('/get-images/:username', getUserImages);
+
 module.exports = router;
