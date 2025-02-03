@@ -620,6 +620,27 @@ const changeemail = async (req, res) => {
   }
 };
 
+const getUserImages = async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    // Find the user by username and return only the necessary fields
+    const user = await User.findOne({ username }).select('logoUrl backgroundUrl');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({
+      logoUrl: user.logoUrl,
+      backgroundUrl: user.backgroundUrl
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+}
+
 module.exports = {
   registerUser,
   login,
@@ -633,4 +654,5 @@ module.exports = {
   changephonenumber,
   changeemail,
   logout,
+  getUserImages,
 };
