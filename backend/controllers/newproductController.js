@@ -31,6 +31,7 @@ exports.updateShopLogoController = async function (req, res) {
   const { username } = req.body;
 
   try {
+    console.log("Received re quest", req.body, req.files);
     // Validate required fields
     if (!req.files || !req.files.logo || !req.files.background) {
       return res.status(400).json({ message: 'Logo and background are required.' });
