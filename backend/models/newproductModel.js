@@ -37,6 +37,13 @@ const newproductSchema = new Schema({
   image: {
     type: String, // Store image URL
   },
+  logo: {
+    type: String,
+
+  },
+  background: {
+    type: String,
+  }
 }, { timestamps: true });
 
 const NewProduct = mongoose.model('NewProduct', newproductSchema);

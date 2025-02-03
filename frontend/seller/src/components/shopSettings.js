@@ -19,6 +19,7 @@ const UploadShopLogo = () => {
       return;
     }
 
+
     const formData = new FormData();
     formData.append('username', username);
     formData.append('logo', logo); // Attach logo
@@ -26,7 +27,7 @@ const UploadShopLogo = () => {
 
     try {
       const response = await axiosInstance.post(
-        '/updateshoplogoUrl',
+        '/updateShopLogo',
         formData,
         {
           headers: {

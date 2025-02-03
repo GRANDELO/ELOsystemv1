@@ -15,7 +15,7 @@ router.post(
     ]),
     productController.updateshoplogoUrl
   );
-  
+
 router.get('/products', productController.getAllProducts);
 router.get('/images/:filename', productController.getImage);
 router.get('/products/:id', productController.getNewProductById);
