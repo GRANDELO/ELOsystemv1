@@ -10,7 +10,7 @@ const UploadShopLogo = () => {
 
   const handleFileChange = (e, setFile) => {
     if (e.target.files.length > 0) {
-      setFile(e.target.files[0]); // Ensure it's a single file, not an array
+      setFile(e.target.files[0]);
     }
   };
 
@@ -27,9 +27,15 @@ const UploadShopLogo = () => {
     formData.append('logo', logo);
     formData.append('background', background);
 
+    // Debugging: Log FormData entries
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+
     try {
       const response = await axiosInstance.post('/updateShopLogo', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
+        transformRequest: [(data) => data],
       });
 
       setMessage(response.data.message || 'Images uploaded successfully.');
