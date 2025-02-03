@@ -25,6 +25,7 @@ const NewProductList = () => {
   const categories = [
     { id: 'electronics', name: 'Electronics', subCategories: ['Phones', 'Laptops', 'Tablets', 'Headphones', 'Cameras', 'Accessories', 'Wearables', 'Smart Home', 'Gaming Consoles', 'Home Audio', 'Smartwatches', 'Virtual Reality'] },
     { id: 'clothing', name: 'Clothing', subCategories: ['Men', 'Women', 'Kids', 'Footwear', 'Accessories', 'Activewear', 'Outerwear', 'Swimwear', 'Suits', 'Athleisure', 'Plus Size', 'Maternity'] },
+    { id: 'shoes', name: 'Shoes', subCategories: ['Men', 'Women', 'Kids', 'Sneakers', 'Formal', 'Casual', 'Boots', 'Sandals', 'Sports', 'Running', 'Outdoor', 'Slippers'] },
     { id: 'home', name: 'Home', subCategories: ['Furniture', 'Kitchen', 'Decor', 'Bedding', 'Lighting', 'Storage', 'Appliances', 'Cleaning', 'Outdoor Furniture', 'Rugs', 'Curtains', 'Wall Art'] },
     { id: 'beauty', name: 'Beauty', subCategories: ['Skincare', 'Makeup', 'Haircare', 'Fragrances', 'Nail Care', 'Tools', 'Bath & Body', 'Men\'s Grooming', 'Anti-Aging', 'Sun Care', 'Cosmetics', 'Personal Hygiene'] },
     { id: 'health', name: 'Health', subCategories: ['Supplements', 'Vitamins', 'Personal Care', 'Fitness', 'Medical Supplies', 'Wellness', 'First Aid', 'Health Monitoring', 'Weight Management', 'Sleep Aids', 'Sports Medicine', 'Herbal Remedies'] },
@@ -327,6 +328,8 @@ const NewProductList = () => {
             const imageSrc = product.images ? product.images[currentImageIndex] : product.image;
             const { discountedPrice, discountAmount } = calculateDiscountedPrice(product);
 
+            const isOutOfStock = product.quantity === 0;
+
             return (
               <div
                 key={product._id}
@@ -337,6 +340,7 @@ const NewProductList = () => {
                   <img src={imageSrc} alt={product.name} className="product-image" />
                   {product.isNew && <span className="product-badge new-badge">New</span>}
                   {product.isOnSale && <span className="product-badge sale-badge">Sale</span>}
+                  {isOutOfStock && <span className="product-badge sold-out-badge">Sold Out</span>}
                 </div>
                 <h3>{product.name}</h3>
                 {product.lable && <span className={`product-badge label-badge`}>{product.lable}</span>}
@@ -355,6 +359,7 @@ const NewProductList = () => {
                     <h4 className='product-prices'>Ksh {product.price.toFixed(2)}</h4>
                   )}
                 </div>
+                {!isOutOfStock && <p className="stock-info">Stock: {product.quantity}</p>}
               </div>
             );
           })

@@ -1,5 +1,6 @@
 const categories = [
     { id: 'electronics', name: 'Electronics', subCategories: ['Phones', 'Laptops', 'Tablets', 'Headphones', 'Cameras', 'Accessories', 'Wearables', 'Smart Home', 'Gaming Consoles', 'Home Audio', 'Smartwatches', 'Virtual Reality'] },
+    { id: 'shoes', name: 'Shoes', subCategories: ['Men', 'Women', 'Kids', 'Sneakers', 'Formal', 'Casual', 'Boots', 'Sandals', 'Sports', 'Running', 'Outdoor', 'Slippers'] },
     { id: 'clothing', name: 'Clothing', subCategories: ['Men', 'Women', 'Kids', 'Footwear', 'Accessories', 'Activewear', 'Outerwear', 'Swimwear', 'Suits', 'Athleisure', 'Plus Size', 'Maternity'] },
     { id: 'home', name: 'Home', subCategories: ['Furniture', 'Kitchen', 'Decor', 'Bedding', 'Lighting', 'Storage', 'Appliances', 'Cleaning', 'Outdoor Furniture', 'Rugs', 'Curtains', 'Wall Art'] },
     { id: 'beauty', name: 'Beauty', subCategories: ['Skincare', 'Makeup', 'Haircare', 'Fragrances', 'Nail Care', 'Tools', 'Bath & Body', 'Men\'s Grooming', 'Anti-Aging', 'Sun Care', 'Cosmetics', 'Personal Hygiene'] },
