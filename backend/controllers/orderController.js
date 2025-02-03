@@ -932,7 +932,11 @@ const calculateTransportCost = async (products, orderDestination) => {
   for (const product of products) {
     const { username, quantity } = product;
     const sellerLocation = sellerLocations[username];
-
+    console.log("____________________wewe___________________");
+    console.log(username);
+    console.log("____________________wewe___________________");
+    console.log(quantity);
+    console.log("____________________wewe___________________");
     if (!sellerLocation || !quantity || quantity <= 0) {
       console.warn(`Skipping product from seller ${username} due to missing location or invalid quantity.`);
       continue;
@@ -941,6 +945,11 @@ const calculateTransportCost = async (products, orderDestination) => {
     const transportCostPerProduct = sellerLocation.town.toLowerCase() === orderTown ? 120 : 160;
     totalTransportCost += transportCostPerProduct * quantity;
     totalProducts += quantity;
+    console.log("____________________totalProducts___________________");
+    console.log(totalProducts);
+    console.log("____________________quantity___________________");
+    console.log(quantity);
+    console.log("____________________wewe___________________");
   }
 
   if (totalProducts === 0) {
