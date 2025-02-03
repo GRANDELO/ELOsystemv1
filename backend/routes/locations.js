@@ -49,6 +49,7 @@ const townsAndAreas1 = [
 const townsAndAreas =[
   {
     "county": "Kiambu County",
+    "region": 'Central',
     "towns": [
       {
         "town": "Thika",
@@ -212,6 +213,7 @@ const townsAndAreas =[
   },
   {
     "county": "Nyeri County",
+    "region": 'Central',
     "towns": [
       {
         "town": "Nyeri",
@@ -381,6 +383,7 @@ const townsAndAreas =[
   },
   {
     "county": "Murang'a County",
+    "region": 'Central',
     "towns": [
       {
         "town": "Murang'a",
@@ -556,6 +559,7 @@ const townsAndAreas =[
   },
   {
     "county": "Kirinyaga County",
+    "region": 'Central',
     "towns": [
       {
         "town": "Kerugoya",
@@ -681,6 +685,7 @@ const townsAndAreas =[
   },
   {
     "county": "Nairobi County",
+    "region": 'Nairobi',
     "towns": [
       {
         "town": "Nairobi City Centre",

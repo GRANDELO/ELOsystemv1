@@ -3,12 +3,10 @@
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 18px;
     outline: none;
-    width: 0px;
-    height: 0px;
-    left: 90%;
-    top: 7%;
+
+    left: 40%;
+    top: 4%;
   }
   .toggle-password:hover
   {
