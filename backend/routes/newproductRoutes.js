@@ -8,6 +8,7 @@ router.post('/updateShopLogo', (req, res, next) => {
     next();
   },
     newproductController.updateShopLogoController);
+    
 router.get('/newproducts', newproductController.getNewProducts);
 router.get('/newproducts/:id', newproductController.getNewProductById);
 router.put('/newproducts/:id', newproductController.updateNewProduct);

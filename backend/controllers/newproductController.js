@@ -1,4 +1,5 @@
 const NewProduct = require('../models/newproductModel');
+const Shop = require('../models/User');
 
 const { v4: uuidv4 } = require('uuid');
 const { bucket } = require('../config/firebase');
@@ -27,34 +28,32 @@ async function uploadFile(file) {
   });
 }
 
-exports.updateShopLogoController = async function (req, res) {
+
+exports.updateShopLogoController  = async (req, res) => {
+  console.log("Received request body:", req.body);
+  console.log("Received files:", req.files);
+
   const { username } = req.body;
+  if (!req.files || !req.files.logo || !req.files.background) {
+    return res.status(400).json({ message: 'Logo and background are required.' });
+  }
 
   try {
-    console.log("Received re quest", req.body, req.files);
-    // Validate required fields
-    if (!req.files || !req.files.logo || !req.files.background) {
-      return res.status(400).json({ message: 'Logo and background are required.' });
-    }
+    const logoUrl = await uploadFile(req.files.logo);
+    const backgroundUrl = await uploadFile(req.files.background);
 
-    // Upload the logo and background images to Firebase
-    const logoUrl = await uploadFile(req.files.logo[0]);
-    const backgroundUrl = await uploadFile(req.files.background[0]);
-
-    // Save the URLs to the database (Firestore or your DB)
-    const updatedShop = await Shop.findOneAndUpdate(
-      { username }, // Find the shop by its username
-      { logoUrl, backgroundUrl }, // Update the logo and background URLs
-      { new: true, upsert: true } // Return the updated document and create one if it doesn't exist
+    const updatedUser = await User.findOneAndUpdate(
+      { username },
+      { logoUrl, backgroundUrl },
+      { new: true, upsert: true }
     );
 
-    res.status(200).json({ message: 'Files uploaded successfully.', updatedShop});
+    res.status(200).json({ message: 'Files uploaded successfully.', updatedUser });
   } catch (error) {
     console.error('Error uploading files:', error);
     res.status(500).json({ message: 'Error uploading files.', error: error.message });
   }
 };
-
 
 exports.getNewProducts = async (req, res) => {
   try {

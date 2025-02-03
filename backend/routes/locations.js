@@ -1029,6 +1029,21 @@ const townsAndAreas =[
     "county": "Kajiado County",
     "towns": [
       {
+        "town": "Gataka Town",
+        "areas": [
+          "Destiny",
+          "SKL",
+          "SHoppers",
+          "Mulika",
+          "Upendo",
+          "Nalis",
+          "Mosque",
+          "Upedo",
+          "PCEA",
+          "Nashpai",
+        ]
+      },
+      {
         "town": "Kajiado Town",
         "areas": [
           "Kajiado Town Centre",

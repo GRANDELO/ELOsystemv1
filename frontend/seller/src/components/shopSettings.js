@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axiosInstance from './axiosInstance';
-import { getUsernameFromToken } from '../utils/auth'; // Assume this retrieves the username from a token
+import { getUsernameFromToken } from '../utils/auth';
 
 const UploadShopLogo = () => {
   const username = getUsernameFromToken();
@@ -8,8 +8,11 @@ const UploadShopLogo = () => {
   const [background, setBackground] = useState(null);
   const [message, setMessage] = useState('');
 
-  const handleLogoChange = (e) => setLogo(e.target.files[0]);
-  const handleBackgroundChange = (e) => setBackground(e.target.files[0]);
+  const handleFileChange = (e, setFile) => {
+    if (e.target.files.length > 0) {
+      setFile(e.target.files[0]);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,27 +22,27 @@ const UploadShopLogo = () => {
       return;
     }
 
-
     const formData = new FormData();
     formData.append('username', username);
-    formData.append('logo', logo); // Attach logo
-    formData.append('background', background); // Attach background
+    formData.append('logo', logo);
+    formData.append('background', background);
+
+    // Debugging: Log FormData entries
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
 
     try {
-      const response = await axiosInstance.post(
-        '/updateShopLogo',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
+      const response = await axiosInstance.post('/updateShopLogo', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        transformRequest: [(data) => data],
+      });
+
       setMessage(response.data.message || 'Images uploaded successfully.');
       console.log('Response:', response.data);
     } catch (error) {
       console.error('Error uploading images:', error);
-      setMessage('Error uploading images.');
+      setMessage(error.response?.data?.message || 'Error uploading images.');
     }
   };
 
@@ -49,11 +52,11 @@ const UploadShopLogo = () => {
       <form onSubmit={handleSubmit}>
         <div>
           <label>Logo:</label>
-          <input type="file" onChange={handleLogoChange} accept="image/*" required />
+          <input type="file" onChange={(e) => handleFileChange(e, setLogo)} accept="image/*" required />
         </div>
         <div>
           <label>Background:</label>
-          <input type="file" onChange={handleBackgroundChange} accept="image/*" required />
+          <input type="file" onChange={(e) => handleFileChange(e, setBackground)} accept="image/*" required />
         </div>
         <button type="submit">Upload</button>
       </form>

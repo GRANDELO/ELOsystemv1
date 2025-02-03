@@ -21,6 +21,7 @@ const UserSchema = new mongoose.Schema({
   amount: { type: Number, default: undefined},
   logoUrl: { type: String },
   backgroundUrl: { type: String },
+  
   locations: 
     {
       county: { type: String },
