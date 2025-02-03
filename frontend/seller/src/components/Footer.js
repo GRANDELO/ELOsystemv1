@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { FaFacebook, FaTwitter, FaInstagram, FaTiktok, FaArrowUp } from 'react-icons/fa'; // Import social icons
+import { FaFacebook, FaTwitter, FaInstagram, FaTiktok } from 'react-icons/fa'; // Import social icons
+import { FiArrowUp } from "react-icons/fi";
 import './styles/Footer.css';
-import { FiArrowDown, FiArrowUp, FiXCircle } from "react-icons/fi";
+
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   const [email, setEmail] = useState('');
@@ -43,7 +44,17 @@ const Footer = () => {
           <p>Phone: +254 116293386</p>
         </div>
 
-       
+        {/* Quick Links */}
+        <div className="footer-column">
+          <h4>Quick Links</h4>
+          <ul className="footer-links">
+            <li><a href="https://www.partner.bazelink.co.ke" target="_blank" rel="noopener noreferrer">Become a Partner</a></li>
+            <li><a href="https://www.partner.bazelink.co.ke/sellerlogin" target="_blank" rel="noopener noreferrer">Become a Seller</a></li>
+            <li><a href="https://www.partner.bazelink.co.ke/agentLogin" target="_blank" rel="noopener noreferrer">Become an Agent</a></li>
+            <li><a href="https://www.partner.bazelink.co.ke/deliveryLogin" target="_blank" rel="noopener noreferrer">Become a Delivery Person</a></li>
+          </ul>
+        </div>
+
         {/* Social Media */}
         <div className="footer-column">
           <h4>Follow Us</h4>
