@@ -44,7 +44,7 @@ exports.updateShopLogoController = async function (req, res) {
 
     const updatedShop = await Shop.findOneAndUpdate(
       { username },
-      { logoUrl: logoUrl.toString(), backgroundUrl: backgroundUrl.toString() }, // Convert to string
+      { logoUrl: logoUrl, backgroundUrl: backgroundUrl }, // Convert to string
       { new: true, upsert: true }
     );
 
