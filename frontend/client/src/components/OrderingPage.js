@@ -231,7 +231,7 @@ const OrderingPage = () => {
     let num = 1;
 
     try {
-      const orderDetails = {
+       const orderDetails = {
         items: cart.map(item => ({
           productId: item.product._id,
           quantity: item.quantity,

@@ -152,10 +152,19 @@ const NewProductForm = () => {
       console.log('New Product created:', res.data);
       setMessage('Product created successfully');
       setloading(false);
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+  
     } catch (err) {
       setloading(false);
       console.error('Error in createProduct:', err.response?.data || err.message);
       seterror('Error creating product');
+
+      setTimeout(() => {
+        seterror("");
+      }, 5000);
     }
     setloading(false);
   };
@@ -227,6 +236,10 @@ const generateDescription = async () => {
 
   } catch (err) {
     seterror("Failed to generate description. Please try again.");
+    
+    setTimeout(() => {
+      seterror(""); // Clear error message after 5 seconds
+    }, 5000);
     console.error("Error generating description:", err);
   } finally {
     setGeneratingDescription(false);

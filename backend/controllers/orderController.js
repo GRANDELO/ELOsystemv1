@@ -897,6 +897,7 @@ exports.pricecalc = async (req, res) => {
 };
 
 
+
 const calculateTransportCost = async (products, orderDestination) => {
   
   if (!orderDestination || !orderDestination.includes(',')) {
