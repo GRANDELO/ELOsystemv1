@@ -28,32 +28,34 @@ async function uploadFile(file) {
   });
 }
 
-
-exports.updateShopLogoController  = async (req, res) => {
-  console.log("Received request body:", req.body);
-  console.log("Received files:", req.files);
-
+exports.updateShopLogoController = async function (req, res) {
   const { username } = req.body;
-  if (!req.files || !req.files.logo || !req.files.background) {
-    return res.status(400).json({ message: 'Logo and background are required.' });
-  }
 
   try {
-    const logoUrl = await uploadFile(req.files.logo);
-    const backgroundUrl = await uploadFile(req.files.background);
+    console.log("Received request", req.body, req.files);
 
-    const updatedUser = await User.findOneAndUpdate(
+    if (!req.files || !req.files.logo || !req.files.background) {
+      return res.status(400).json({ message: 'Logo and background are required.' });
+    }
+
+    // Ensure file paths are stored as strings, not arrays
+    const logoUrl = await uploadFile(req.files.logo); // Get string URL
+    const backgroundUrl = await uploadFile(req.files.background); // Get string URL
+
+    const updatedShop = await Shop.findOneAndUpdate(
       { username },
-      { logoUrl, backgroundUrl },
+      { logoUrl: logoUrl, backgroundUrl: backgroundUrl }, // Convert to string
       { new: true, upsert: true }
     );
 
-    res.status(200).json({ message: 'Files uploaded successfully.', updatedUser });
+    res.status(200).json({ message: 'Files uploaded successfully.', updatedShop });
   } catch (error) {
     console.error('Error uploading files:', error);
     res.status(500).json({ message: 'Error uploading files.', error: error.message });
   }
 };
+
+
 
 exports.getNewProducts = async (req, res) => {
   try {
