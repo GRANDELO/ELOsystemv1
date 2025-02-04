@@ -7,6 +7,19 @@
       "hosting": {
         "partners-portal": [
           "partners-portal"
+        ],
+        "baze-seller": [
+          "seller"
+        ],
+        "seller": [
+          "baze-seller"
+        ]
+      }
+    },
+    "baze-link": {
+      "hosting": {
+        "partners-portal": [
+          "partners-portal"
         ]
       }
     }
