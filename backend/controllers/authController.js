@@ -207,8 +207,8 @@ const updateEmail = async (req, res) => {
   const { oldEmail, newEmail } = req.body;
 
   try {
-    const user = await User.findOne({ email: oldEmail });
-    if (!user) {
+    const user = await User.findOne({ $or: [{ email: oldEmail }, { username: oldEmail } ] });
+    if (!user) { 
       return res.status(404).json({ message: 'User not found' });
     }
 
