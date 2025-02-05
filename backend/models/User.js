@@ -30,6 +30,18 @@ const UserSchema = new mongoose.Schema({
       specific: { type: String },
     },
 
+  history: {
+    search: {
+      type: Map,
+      of: Number, // Store search counts per category
+      default: {}
+    },
+    click: {
+      type: Map,
+      of: Number, // Store click counts per product ID
+      default: {}
+    }
+  },
 
 }, { timestamps: true });
 

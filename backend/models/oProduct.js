@@ -47,7 +47,11 @@ const productSchema = new mongoose.Schema(
         ref: 'Review', // Reference to the Review model
       }
     ], // New field to store reviews
+    
+    searchCount: { type: Number, default: 0 },  // Aggregate search count for the product
+    clickCount: { type: Number, default: 0 }, 
   },
+
   { timestamps: true }
 );
 

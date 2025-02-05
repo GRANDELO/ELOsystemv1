@@ -275,4 +275,118 @@ exports.updateshoplogoUrl = async (req, res) => {
   }
 };
 
+exports.trackProductInteraction = async (req, res) => {
+  const { userId, productId, category, actionType } = req.body; // actionType can be 'search' or 'click'
 
+  try {
+    // Find the user by ID
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Track the click or search in the user's history
+    if (actionType === 'click') {
+      // Update the click history
+      user.history.click.set(productId, (user.history.click.get(productId) || 0) + 1);
+      
+      // Update the product's click count
+      const product = await Product.findOne({ productId });
+      if (product) {
+        product.clickCount += 1;
+        await product.save();
+      }
+    } else if (actionType === 'search') {
+      // Update the search history
+      user.history.search.set(category, (user.history.search.get(category) || 0) + 1);
+      
+      // Update the products' search counts in the given category
+      const products = await Product.find({ category });
+      products.forEach(async (product) => {
+        product.searchCount += 1;
+        await product.save();
+      });
+    }
+
+    // Save the updated user document
+    await user.save();
+
+    res.status(200).json({ message: "Interaction tracked successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Get combined statistics for search and click histories
+exports.getUserStatistics = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    // Find the user
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Send back combined search and click statistics
+    res.json({
+      searchHistory: user.history.search,
+      clickHistory: user.history.click,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+exports.getFilteredProducts = async (req, res) => {
+  const { userId, category, subCategory, maxPrice, brand } = req.query;
+
+  try {
+    // Fetch user data
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Fetch all products and filter based on user's preferences
+    let filteredProducts = await Product.find();
+
+    // Filter products by category and subcategory if provided
+    if (category) {
+      filteredProducts = filteredProducts.filter(product => product.category.toLowerCase() === category.toLowerCase());
+    }
+
+    if (subCategory) {
+      filteredProducts = filteredProducts.filter(product => product.subCategory.toLowerCase() === subCategory.toLowerCase());
+    }
+
+    // Filter by price and brand if provided
+    if (maxPrice) {
+      filteredProducts = filteredProducts.filter(product => product.price <= maxPrice);
+    }
+
+    if (brand) {
+      filteredProducts = filteredProducts.filter(product => product.brand && product.brand.toLowerCase() === brand.toLowerCase());
+    }
+
+    // Now sort products based on user preferences (search and click history)
+    filteredProducts.sort((a, b) => {
+      // Boost products based on the user's search history
+      const aSearchBoost = user.history.search.get(a.category) || 0;
+      const bSearchBoost = user.history.search.get(b.category) || 0;
+
+      // Boost products based on the user's click history
+      const aClickBoost = user.history.click.get(a.productId) || 0;
+      const bClickBoost = user.history.click.get(b.productId) || 0;
+
+      // Combine search and click boosts
+      const aTotalBoost = aSearchBoost + aClickBoost;
+      const bTotalBoost = bSearchBoost + bClickBoost;
+
+      // Sort products by the combined boost (higher boost comes first)
+      if (aTotalBoost !== bTotalBoost) {
+        return bTotalBoost - aTotalBoost; // prioritize the one with higher boost
+      }
+
+      // Fallback sorting by price or other criteria
+      return a.price - b.price; // (optional: you can add more sorting logic based on other preferences)
+    });
+
+    res.json({ products: filteredProducts });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

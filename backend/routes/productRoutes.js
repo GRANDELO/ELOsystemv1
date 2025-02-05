@@ -24,4 +24,8 @@ router.get('/products/:id', productController.getNewProductById);
 router.patch('/products/:productId', productController.updateProduct);
 router.delete('/products/:productId', productController.deleteProduct);
 
+// Track product searches
+router.post('/track', productController.trackProductInteraction);
+router.get('/filtered', productController.getFilteredProducts);
+
 module.exports = router;

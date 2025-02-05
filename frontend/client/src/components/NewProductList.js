@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ProductModal from './ProductModal';
 import axiosInstance from './axiosInstance';
 import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
-import { storeSearch, getSearchHistory } from '../utils/search';
+import { storeSearch, getSearchHistory, trackProductClick } from '../utils/search';
 import { useIsMobile } from '../utils/mobilecheck';
 import './styles/NewProductList.css';
 
@@ -21,6 +21,10 @@ const NewProductList = () => {
 
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showMoreCategories, setShowMoreCategories] = useState(false);
+  const [filters, setFilters] = useState({
+    maxPrice: Infinity,
+    brand: '',
+  });
 
   const categories = [
     { id: 'electronics', name: 'Electronics', subCategories: ['Phones', 'Laptops', 'Tablets', 'Headphones', 'Cameras', 'Accessories', 'Wearables', 'Smart Home', 'Gaming Consoles', 'Home Audio', 'Smartwatches', 'Virtual Reality'] },
@@ -165,13 +169,41 @@ const NewProductList = () => {
 
     return () => clearInterval(intervalId);
   }, [products]);
+  const trackInteraction = async (userId, productId, category, actionType) => {
+    try {
+      // Sending search or click data to backend for tracking
+      await axiosInstance.post('/track', {
+        userId,
+        productId,
+        category,
+        actionType, // actionType can be either 'search' or 'click'
+      });
+  
+      console.log('Interaction tracked successfully');
+    } catch (error) {
+      console.error('Error tracking interaction:', error);
+    }
+  };
 
+
+//filter search functionality
+  const handleFilterChange = (filterName, value) => {
+   setFilters((prevFilters) => ({
+      ...prevFilters,
+      [filterName]: value,
+    }));
+  };
 
 
   const handleProductClick = (product) => {
     setSelectedProduct(product);
     storeSearch(product.category , product.subCategory)
     setIsModalOpen(true);
+
+    const userId = 'USER_ID'; // You should get the actual userId from session or context
+
+  // Track the click interaction
+    trackProductClick(userId, product._id, product.category);
   };
 
   const closeModal = () => {
@@ -182,6 +214,9 @@ const NewProductList = () => {
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
     setCurrentPage(1); // Reset to first page when searching
+
+    const userId = 'USER_ID'; // You should get the actual userId from session or context
+    trackInteraction(userId, '', '', 'search'); //
   };
 
 
@@ -189,6 +224,9 @@ const NewProductList = () => {
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
     setCurrentPage(1); // Reset to first page when category changes
+
+    const userId = 'USER_ID'; // You should get the actual userId from session or context
+    trackInteraction(userId, '', category, 'search');
   };
 
   const handleShowMoreCategories = () => {
@@ -209,7 +247,8 @@ const NewProductList = () => {
   
   const filterAndSortProducts = () => {
     const searchHistory = getSearchHistory(); // Retrieve search history
-    
+    const clickHistory = JSON.parse(sessionStorage.getItem('clickHistory')) || {};
+
     return products
       .filter((product) => {
         const matchesCategory = selectedCategory
@@ -219,13 +258,25 @@ const NewProductList = () => {
           product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
           product.subCategory?.toLowerCase().includes(searchTerm.toLowerCase());
-        return matchesCategory && matchesSearch;
+
+
+          const matchesMaxPrice = filters.maxPrice
+        ? product.price <= filters.maxPrice
+        : true;
+         const matchesBrand = filters.brand ? product.brand === filters.brand : true;
+          
+        return matchesCategory && matchesSearch && matchesMaxPrice && matchesBrand;
       })
       .sort((a, b) => {
         // Boost products that match the search history
         const aBoost = Array.isArray(searchHistory[a.category]) && searchHistory[a.category].includes(a.subCategory) ? 1 : 0;
         const bBoost = Array.isArray(searchHistory[b.category]) && searchHistory[b.category].includes(b.subCategory) ? 1 : 0;
   
+
+        const aClickBoost = clickHistory[a.id] || 0;
+        const bClickBoost = clickHistory[b.id] || 0;
+
+
         if (aBoost !== bBoost) {
           return bBoost - aBoost; // Prioritize products with higher boost
         }
@@ -236,9 +287,23 @@ const NewProductList = () => {
         return aMatch === bMatch ? 0 : aMatch ? -1 : 1;
       });
   };
+
+  const fetchFilteredProducts = async () => {
+    const userId = 'USER_ID'; // You should get the actual userId from session or context
+    const category = selectedCategory;
+    const filters = { maxPrice: filters.maxPrice, brand: filters.brand };
   
+    try {
+      const response = await axiosInstance.get('/products/filtered', {
+        params: { userId, category, ...filters },
+      });
   
-  
+      const filteredProducts = response.data.products;
+      setSortedProducts(filteredProducts); // Set the filtered products to the state
+    } catch (error) {
+      console.error('Error fetching filtered products:', error);
+    }
+  };
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -271,6 +336,15 @@ const NewProductList = () => {
   const endIdx = startIdx + CATEGORIES_PER_PAGE;
   const currentCategories = categories.slice(startIdx, endIdx);
 
+  
+  const [sortedProducts, setSortedProducts] = useState([]);
+  
+  useEffect(() => {
+      const sorted = filterAndSortProducts();
+       setSortedProducts(sorted);
+    }, [searchTerm, selectedCategory, filters]);
+  
+
 
   if (loading)
     return (
@@ -290,7 +364,45 @@ const NewProductList = () => {
           onChange={handleSearch}
           className="product-search"
         />
+        
+        <input
+          type="number"
+          placeholder="input Price for filter"
+          value={filters.maxPrice || ""}
+          onChange={(e) =>
+            setFilters((prevFilters) => ({
+              ...prevFilters,
+              maxPrice: Number(e.target.value),
+            }))
+          }
+          className="max-price-input no-spinner"
+        />
+        
+           
       </header>
+
+       {/* <div className="advanced-filters">
+          <label>
+            Price Range:
+            <input
+              type="range"
+              min="50"
+              max="99000"
+              value={filters.priceRange[1]}
+              onChange={(e) => handleFilterChange('priceRange', [0, e.target.value])}
+            />
+            <span>KES:{filters.priceRange[1]}</span>
+          </label>
+          <label>
+            Brand:
+            <input
+              type="text"
+              value={filters.brand}
+              onChange={(e) => handleFilterChange('brand', e.target.value)}
+            />
+          </label>
+
+        </div> */}
 
           {/* Categories Section */}
           <div className="categories">

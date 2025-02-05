@@ -50,6 +50,17 @@ export const storeSearch = (category, subcategory)  => {
     sessionStorage.setItem('searchHistory', JSON.stringify(searchHistory));
   }
   
+export const trackProductClick = (productId) => {
+    let clickHistory = JSON.parse(sessionStorage.getItem('clickHistory')) || {};
+  
+    if (clickHistory[productId]) {
+      clickHistory[productId] += 1;
+    } else {
+      clickHistory[productId] = 1;
+    }
+  
+    sessionStorage.setItem('clickHistory', JSON.stringify(clickHistory));
+  };
 export const getSearchHistory = () => {
     return JSON.parse(sessionStorage.getItem('searchHistory')) || {};
   }
