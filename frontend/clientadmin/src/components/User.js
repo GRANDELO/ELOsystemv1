@@ -155,6 +155,8 @@ const AdminDashboard = () => {
               <li key={user._id} className="usal-user-item">
                 <p>Name: {user.fullName}</p>
                 <p>Email: {user.email}</p>
+                <p>Phone number: {user.phoneNumber}</p>
+                <p>Accout type: {user.category}</p>
                 {/* Show 'More' button to expand user options */}
                 <button
                   onClick={() => setExpandedUserId(expandedUserId === user._id ? null : user._id)}

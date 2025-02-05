@@ -93,6 +93,7 @@ function Verification() {
     <div className="container">
       <h2>Verify Your Account</h2>
       <h4>Check your email to get the verification code.</h4>
+      <h4>If you didn't get the email check the spam folder first before requesting for a resend.</h4>
       <form onSubmit={handleVerify}>
         {emailPresent && !editingEmail ? (
           <div>
