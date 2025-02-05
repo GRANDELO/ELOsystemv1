@@ -40,8 +40,15 @@ function Verification() {
 
   const handleEditEmail = () => {
     setEditingEmail(true);
+    setEmailPresent(true);
+  };
+
+  const handleEditEmail2 = () => {
+    setEditingEmail(true);
     setEmailPresent(false);
   };
+  
+  // When you want to update the email
 
   const handleSaveEmail = async () => {
     if(!(/^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/.test(newEmail)))
@@ -51,10 +58,11 @@ function Verification() {
     else
     {
       try {
-        if (!email){
+
+        if (newUsername !== "") {
           setEmail(newUsername);
         }
-        setError(email);
+        
         const response = await axiosInstance.post('/auth/update-email', { oldEmail: email, newEmail });
         if (response.status === 200) {
           setEmail(newEmail);
@@ -62,10 +70,8 @@ function Verification() {
           setEditingEmail(false);
           setEmailPresent(true);
           setError(null);
-          setEmail("");
         }
       } catch (error) {
-        setEmail("");
         if (error.response && error.response.data) {
           setError(error.response.data.message);
         } else {
@@ -169,7 +175,7 @@ function Verification() {
         <button type="submit">Verify</button>
       </form>
       <button type="button" onClick={handleresendEmail}>Resend verification code</button>
-      <button type="button" onClick={handleEditEmail}>Change Email</button>
+      <button type="button" onClick={handleEditEmail2}>Change Email</button>
 
       {error && <p className="error">{error}</p>}
     </div>
