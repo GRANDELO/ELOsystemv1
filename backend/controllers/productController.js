@@ -278,6 +278,10 @@ exports.updateshoplogoUrl = async (req, res) => {
 exports.trackProductInteraction = async (req, res) => {
   const { userId, productId, category, actionType } = req.body; // actionType can be 'search' or 'click'
 
+  if (!userId || !productId || !category || !actionType) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
   try {
     // Find the user by ID
     const user = await User.findById(userId);
@@ -289,7 +293,7 @@ exports.trackProductInteraction = async (req, res) => {
       user.history.click.set(productId, (user.history.click.get(productId) || 0) + 1);
       
       // Update the product's click count
-      const product = await Product.findOne({ productId });
+      const product = await Product.findById(productId);
       if (product) {
         product.clickCount += 1;
         await product.save();
@@ -298,6 +302,7 @@ exports.trackProductInteraction = async (req, res) => {
       // Update the search history
       user.history.search.set(category, (user.history.search.get(category) || 0) + 1);
       
+      await Product.updateMany({ category }, { $inc: { searchCount: 1 } });
       // Update the products' search counts in the given category
       const products = await Product.find({ category });
       products.forEach(async (product) => {
