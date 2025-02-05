@@ -206,6 +206,9 @@ const verifyUser = async (req, res) => {
 const updateEmail = async (req, res) => {
   const { oldEmail, newEmail } = req.body;
 
+  console.log("==============================================");
+  console.log(oldEmail);
+  console.log("==============================================");
   try {
     const user = await User.findOne({ $or: [{ email: oldEmail }, { username: oldEmail } ] });
     if (!user) { 

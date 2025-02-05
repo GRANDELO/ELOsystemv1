@@ -54,6 +54,7 @@ function Verification() {
         if (!email){
           setEmail(newUsername);
         }
+        setError(email);
         const response = await axiosInstance.post('/auth/update-email', { oldEmail: email, newEmail });
         if (response.status === 200) {
           setEmail(newEmail);
@@ -61,13 +62,16 @@ function Verification() {
           setEditingEmail(false);
           setEmailPresent(true);
           setError(null);
+          setEmail("");
         }
       } catch (error) {
+        setEmail("");
         if (error.response && error.response.data) {
           setError(error.response.data.message);
         } else {
           setError('An error occurred while updating the email.');
         }
+        
       }
     }
 
