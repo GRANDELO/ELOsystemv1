@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { io } from 'socket.io-client';
+import { Navigate } from "react-router-dom";
 
 
 import RequireAuth from './RequireAuth'; // Import the authentication check component
@@ -187,7 +188,7 @@ const App = () => {
             <Route path="/productperfomance" element={<> <Productperfomance /> </>} />
 
           </Route>
-        
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
     </Router>

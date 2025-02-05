@@ -1,21 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import axiosInstance from './axiosInstance';
-import { getUsernameFromToken, getcategoryFromToken } from '../utils/auth';
+import { getUsernameFromToken } from '../utils/auth';
+import './styles/headersell.css'; // Import the CSS file for styles
 
 const Header = () => {
   const username = getUsernameFromToken();
-  const [logoUrl, setLogoUrl] = useState('');
-  const [backgroundUrl, setBackgroundUrl] = useState('');
+  
+  // Default Images
+  const defaultLogo = 'https://storage.googleapis.com/grandelo.appspot.com/1738611936978-Free Crochet Patterns for a Farmhouse Kitchen.jpeg';
+  const defaultBackground = 'https://storage.googleapis.com/grandelo.appspot.com/1738612439977-Download Abstract modern blue stripes or rectangle layer overlapping with shadow on dark blue background for free.jpeg';
+
+  const [logoUrl, setLogoUrl] = useState(defaultLogo);
+  const [backgroundUrl, setBackgroundUrl] = useState(defaultBackground);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // Fetch the user's images (logo and background)
     const fetchUserImages = async () => {
       try {
-        const response = await axiosInstance.get(`/users/get-images/${username}`);
-        setLogoUrl(response.data.logoUrl);
-        setBackgroundUrl(response.data.backgroundUrl);
+        const response = await axiosInstance.get(`/auth/get-images/${username}`);
+        console.log("Background URL: ", response.data.backgroundUrl);  // Check URL
+        
+        // If the response contains an empty string, fallback to default images
+        setLogoUrl(response.data.logoUrl && response.data.logoUrl.trim() !== "" ? response.data.logoUrl : defaultLogo);
+        setBackgroundUrl(response.data.backgroundUrl && response.data.backgroundUrl.trim() !== "" ? response.data.backgroundUrl : defaultBackground);
       } catch (err) {
         setError('Error fetching user images');
         console.error(err);
@@ -25,12 +32,27 @@ const Header = () => {
     fetchUserImages();
   }, [username]);
 
+  const getGreeting = () => {
+    const currentHour = new Date().getHours();
+    if (currentHour < 12) return 'Good Morning';
+    if (currentHour < 18) return 'Good Afternoon';
+    if (currentHour < 22) return 'Good Evening';
+    return 'Good Night';
+  };
+
   return (
-    <header style={{ backgroundImage: `url(${backgroundUrl})`, backgroundSize: 'cover', padding: '20px' }}>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <div style={{ textAlign: 'center', color: 'white' }}>
-        {logoUrl && <img src={logoUrl} alt="Logo" style={{ maxWidth: '200px', borderRadius: '50%' }} />}
-        <h1>Welcome to Bazelink</h1>
+    <header className="header">
+      {error && <p className="error">{error}</p>}
+      
+      {/* Background image */}
+      <img src={backgroundUrl} alt="Background" className="background-image" />
+
+      <div className="header-content">
+        <img src={logoUrl} alt="Logo" className="logo" />
+        <div className="text-container">
+          <h1 className="shdr-titles">{`${getGreeting()}`}</h1>
+          <h1 className="shdr-titles">{`Welcome back, ${username}!`}</h1>
+        </div>
       </div>
     </header>
   );

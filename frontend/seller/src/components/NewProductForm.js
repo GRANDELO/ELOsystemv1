@@ -128,6 +128,7 @@ const NewProductForm = () => {
   };
 
   const handleSubmit = async (e) => {
+    
     setloading(true)
     e.preventDefault();
     const formData = new FormData();
@@ -146,21 +147,27 @@ const NewProductForm = () => {
     });
   
     try {
-      const res = await axiosInstance.post('/products', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      console.log('New Product created:', res.data);
-      setMessage('Product created successfully');
-      setloading(false);
+      if (newProduct.images.length === 0){
+        seterror('Error creating product ensure you have uploaded at least one image.');
+      }
+      else{
+        const res = await axiosInstance.post('/products', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        console.log('New Product created:', res.data);
+        setMessage('Product created successfully');
+        setloading(false);
+  
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }
 
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
   
     } catch (err) {
       setloading(false);
       console.error('Error in createProduct:', err.response?.data || err.message);
-      seterror('Error creating product');
+      seterror('Error creating product' , err.response?.data);
 
       setTimeout(() => {
         seterror("");
@@ -303,14 +310,10 @@ const generateDescription = async () => {
           type="button"
           onClick={generateDescription}
           disabled={generatingDescription}
-          style={{ padding: '10px', background: '#007bff', color: '#fff', border: 'none', borderRadius: '5px' }}
         >
           {generatingDescription ? "Generating..." : "Generate Description"}
         </button>
       
-      {/* Show the error message if validation fails */}
-      {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
-
       <div
       className="npfdiv">
         <h4>Features</h4>
@@ -432,7 +435,7 @@ const generateDescription = async () => {
       {loading ? "Creating......" : "Create New Product"}
         
         </button>
-      {message && <p className="success">{message}</p>}
+      {message && <p className="message">{message}</p>}
       {error && <p className="error">{error}</p>}
     </form>
   );

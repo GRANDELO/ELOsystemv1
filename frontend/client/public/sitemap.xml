@@ -11,8 +11,8 @@
   <!-- Subdomains -->
   <url>
     <loc>https://partner.bazelink.co.ke/</loc>
-    <priority>0.9</priority>
-    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <changefreq>daily</changefreq>
   </url>
 
   <!-- Important Pages -->
