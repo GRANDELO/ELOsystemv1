@@ -71,6 +71,8 @@ const Login = () => {
       sessionStorage.setItem('amount', response.data.amount);
       localStorage.setItem('apptoken', response.data.token);
       localStorage.setItem('appcat', response.data.category.trim().toLowerCase());
+
+    
       setloading(false);
       const category = response.data.category.trim().toLowerCase();
       if (category === 'seller') {

@@ -1,6 +1,7 @@
 import axiosInstance from './axiosInstance';
 import React, { useEffect, useState } from 'react';
-import { FaBell, FaBoxOpen, FaCog, FaShoppingCart, FaCommentDots } from 'react-icons/fa'; // Import bell icon for notifications
+import ReactJoyride from 'react-joyride';
+import { FaBell, FaBoxOpen, FaCog, FaShoppingCart, FaCommentDots, FaWhatsapp } from 'react-icons/fa'; // Import bell icon for notifications
 import { FiArrowDown, FiArrowUp, FiXCircle } from "react-icons/fi";
 import { FaMessage } from "react-icons/fa6";
 import { AiOutlineQrcode } from "react-icons/ai";
@@ -9,6 +10,7 @@ import { IoClose } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import { getUsernameFromToken, getcategoryFromToken } from '../utils/auth';
 import Cart from './Cart';
+import WhatsAppButton from './Whatsapp';
 import AppDownloadQRIcon from './qrCode';
 import Footer from './Footer';
 import Qrscaner from './qrscaner';
@@ -39,10 +41,88 @@ const Home = () => {
   const appcat = localStorage.getItem('appcat');
   const [isNavVisible, setIsNavVisible] = useState(false);
   const [isFeedbackVisible, setIsFeedbackVisible] = useState(false); 
+  const [isWhatsappVisible, setIsWhatsappVisible] = useState(false);
   const [isQrScannerVisible, setIsQrScannerVisible] = useState(false); // QR Scanner State
   const [qrResult, setQrResult] = useState('');
   const [setnavop, setsetnavop] = useState(false);
   const isMobile = useIsMobile();
+  const [steps, setSteps] = useState([
+    {
+      target: '.salesp-home-intro',
+      content: 'Welcome to our store! Here you can browse our latest products.',
+      placement: 'center',
+    },
+    {
+      target: '.product-card',
+      content: 'Browse through our products and find what you need!',
+      
+    },
+    {
+      target: '.salesp-toggle-button', // Fixed selector
+      content: 'Click here to open the main navigation menu.',
+      placement: 'left',
+    },
+    {
+      target: '.salesp-toggle-button:first-child', // Fixed selector
+      content: 'This is your cart. Check your added items here.',
+      placement: 'left',
+    },
+    {
+      target: '.salesp-toggle-button:nth-child(2)', // Fixed selector
+      content: 'Access your settings from this button. To change to dark mode, email, password changes',
+      placement: 'left',
+    },
+    {
+      target: '.salesp-toggle-button:nth-child(3)', // Fixed selector
+      content: 'View your orders by clicking here.',
+      placement: 'left',
+    },
+    {
+      target: '.salesp-toggle-button:nth-child(4)', // Fixed selector
+      content: 'Notifications will appear here. Check for updates!',
+      placement: 'left',
+    },
+    {
+      target: '.salesp-toggle-button:nth-child(5)', // Fixed selector
+      content: 'Use this QR Scanner to scan QR codes.',
+      placement: 'left',
+    },
+    {
+      target: '.salesp-toggle-button:nth-child(6)', // Fixed selector
+      content: 'Send us feedback by clicking this button.',
+      placement: 'left',
+    },
+    {
+      target: '.salesp-home-footer',
+      content: 'Don’t forget to check the footer for additional information!',
+    },
+  ]);
+
+  const [isJoyrideActive, setJoyrideActive] = useState(true);
+
+  useEffect(() => {
+    // Delay the Joyride to ensure the DOM is fully rendered
+    const timer = setTimeout(() => {
+      setJoyrideActive(true);
+    }, 2000); // Adjust the delay as needed
+  
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const checkTargets = () => {
+      steps.forEach((step, index) => {
+        const targetElement = document.querySelector(step.target);
+        if (!targetElement) {
+          console.error(`Target not found for step ${index + 1}:`, step.target);
+        }
+      });
+    };
+  
+    checkTargets();
+  }, [steps]);
+
+  
 
   useEffect(() => {
     // If apptoken is set, use it to set the token and navigate based on the app category
@@ -96,6 +176,7 @@ const Home = () => {
     }
   };
   const handleLogout = () => {
+    localStorage.removeItem('hasSeenJoyride');
     navigate('/logout');
   };
   
@@ -103,6 +184,7 @@ const Home = () => {
   // Handle back button press
   useEffect(() => {
     const handlePopState = async () => {
+      setIsFeedbackVisible(false);
       setIsQrScannerVisible(false);
       setIsOrderVisible(false);
       setIsCartVisible(false);
@@ -117,6 +199,25 @@ const Home = () => {
       window.removeEventListener('popstate', handlePopState);
     };
   }, [ navigate]);
+
+  const toggleWhatsApp = async () => {
+
+
+    if (!username) {
+      setLoginPrompt('You have to sign in to send feedback.');
+      return;
+    }
+    setIsWhatsappVisible(!isWhatsappVisible);
+    setIsFeedbackVisible(false);
+    setIsOrderVisible(false);
+    setIsCartVisible(false);
+    setIsSettingsVisible(false);
+    setIsNotificationsVisible(false);
+    setIsQrScannerVisible(false);
+    setsetnavop(!isFeedbackVisible);
+   
+  }
+
 
 
     const toggleFeedback = async () => {
@@ -205,6 +306,32 @@ const Home = () => {
     setIsOrderVisible(false);
     setsetnavop(!isQrScannerVisible);
   };
+
+  useEffect(() => {
+    // Check if the user has already seen the Joyride
+    const hasSeenJoyride = localStorage.getItem('hasSeenJoyride');
+    if (!hasSeenJoyride) {
+      // Delay the Joyride to ensure the DOM is fully rendered
+      const timer = setTimeout(() => {
+        setJoyrideActive(true);
+      }, 2000); // Adjust the delay as needed
+  
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleJoyrideCallback = (data) => {
+    const { status } = data;
+   
+    const finishedStatuses = ['finished', 'skipped'];
+
+    if (finishedStatuses.includes(status)) {
+      setJoyrideActive(false);
+      setIsFeedbackVisible(true); 
+      localStorage.setItem('hasSeenJoyride', 'true');
+    }
+  };
+
   
 
   const toggleNav = () => {
@@ -212,9 +339,18 @@ const Home = () => {
   };
 
 
-
   return (
     <div className="salesp-home">
+      <ReactJoyride
+        steps={steps}
+        continuous
+        showProgress
+        showSkipButton
+        callback={handleJoyrideCallback}
+        run={isJoyrideActive}
+        disableScrolling
+        
+      />
       <Header />
       {loginPrompt && (
         <Alert variant="warning" className="ordcore-alert">
@@ -343,6 +479,13 @@ const Home = () => {
 
           </section>
         )}
+
+        {isWhatsappVisible&& (
+          <section  className="salesp-settings-section">
+            < WhatsAppButton />
+          </section>
+          
+        )}
         {/* QR Scanner Section */}
         {isQrScannerVisible && (
           <div className="salesp-settings-section">
@@ -384,6 +527,9 @@ const Home = () => {
                     <button className="salesp-toggle-button"  onClick={toggleFeedback}>
                       <FaMessage /> {/* Feedback Icon */}
                     </button>
+                    <button className="salesp-toggle-button"  onClick={toggleWhatsApp}>
+                      <FaWhatsapp /> {/* FaWhatsapp Icon */}
+                    </button>
                     <button className="salesp-toggle-button" onClick={toggleNav}>
                       <FiXCircle />
                     </button>
@@ -402,5 +548,6 @@ const Home = () => {
     </div>
   );
 };
+
 
 export default Home;

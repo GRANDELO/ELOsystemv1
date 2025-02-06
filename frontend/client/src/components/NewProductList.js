@@ -6,6 +6,7 @@ import { storeSearch, getSearchHistory, trackProductClick } from '../utils/searc
 import { useIsMobile } from '../utils/mobilecheck';
 import './styles/NewProductList.css';
 import { jwtDecode } from 'jwt-decode';
+import { Range } from 'react-range';
 
 const NewProductList = () => {
   const [products, setProducts] = useState([]);
@@ -23,7 +24,7 @@ const NewProductList = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showMoreCategories, setShowMoreCategories] = useState(false);
   const [filters, setFilters] = useState({
-    maxPrice: Infinity,
+    maxPrice: 500000,
     brand: '',
   });
 
@@ -392,8 +393,7 @@ const NewProductList = () => {
           }
           className="max-price-input no-spinner"
         />
-        
-           
+
       </header>
 
        {/* <div className="advanced-filters">
