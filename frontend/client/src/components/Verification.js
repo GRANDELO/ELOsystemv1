@@ -8,11 +8,10 @@ function Verification() {
   const [newEmail, setNewEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [error, setError] = useState(null);
-  const [message, setMessage] = useState('');
-  const [loading, setloading] = useState(false);
   const [emailPresent, setEmailPresent] = useState(false);
   const [editingEmail, setEditingEmail] = useState(false);
   const navigate = useNavigate();
+  const [newUsername, setNewUsername] = useState('');
 
   useEffect(() => {
     const storedEmail = sessionStorage.getItem('email');
@@ -24,18 +23,13 @@ function Verification() {
 
   const handleVerify = async (e) => {
     e.preventDefault();
-    setError("");
-    setMessage("");
     try {
-      setloading(true);
       const emailToUse = email || newEmail;
       const response = await axiosInstance.post('/auth/verify', { email: emailToUse, verificationCode });
       if (response.status === 200) {
-        setloading(false);
         navigate('/success');
       }
     } catch (error) {
-      setloading(false);
       if (error.response && error.response.data) {
         setError(error.response.data.message);
       } else {
@@ -46,13 +40,17 @@ function Verification() {
 
   const handleEditEmail = () => {
     setEditingEmail(true);
-    setEmailPresent(false);
+    setEmailPresent(true);
   };
 
+  const handleEditEmail2 = () => {
+    setEditingEmail(true);
+    setEmailPresent(false);
+  };
+  
+  // When you want to update the email
+
   const handleSaveEmail = async () => {
-    setloading(true);
-    setError("");
-    setMessage("");
     if(!(/^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/.test(newEmail)))
       {
         setError('Please enter a valid email address (e.g., yourname@gmail.com).');
@@ -60,46 +58,43 @@ function Verification() {
     else
     {
       try {
+
+        if (newUsername !== "") {
+          setEmail(newUsername);
+        }
+        
         const response = await axiosInstance.post('/auth/update-email', { oldEmail: email, newEmail });
         if (response.status === 200) {
           setEmail(newEmail);
-          setloading(false);
           sessionStorage.setItem('email', newEmail);
           setEditingEmail(false);
           setEmailPresent(true);
           setError(null);
-          setMessage("Email updated");
         }
       } catch (error) {
-        setloading(false);
         if (error.response && error.response.data) {
           setError(error.response.data.message);
         } else {
           setError('An error occurred while updating the email.');
         }
+        
       }
     }
 
   };
 
   const handleresendEmail = async () => {
-    setloading(true);
-    setError("");
-    setMessage("");
     try {
       const emailToUse = email || newEmail;
       if (!emailToUse) {
-        setloading(false);
         setError('Enter your email.');
       } else {
         const response = await axiosInstance.post('/auth/resendemail', { email: emailToUse });
         if (response.status === 200) {
-          setloading(false);
-          setMessage('Verification code has been resent.');
+          setError('Verification code has been resent.');
         }
       }
     } catch (error) {
-      setloading(false);
       if (error.response && error.response.data) {
         setError(error.response.data.message);
       } else {
@@ -114,26 +109,45 @@ function Verification() {
       <h4>Check your email to get the verification code.</h4>
       <h4>If you didn't get the email check the spam folder first before requesting for a resend.</h4>
       <form onSubmit={handleVerify}>
+
         {emailPresent && !editingEmail ? (
+          
           <div>
             <label>Email:</label>
             <p>{email}</p>
-            <button type="button" onClick={handleEditEmail}>
-            {loading ? "Changing..." : "Change Email"}
-            </button>
+            <button type="button" onClick={handleEditEmail}>Change Email</button>
           </div>
         ) : editingEmail ? (
           <div>
-            <label>Email:</label>
-            <input
-              type="email"
-              value={newEmail}
-              pattern="/^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/"
-              onChange={(e) => setNewEmail(e.target.value)}
-              required
-            />
-            <button type="button" onClick={handleSaveEmail}>
-            {loading ? "Saveing..." : "Save Email"}</button>
+            {!emailPresent ?(
+              <>
+                <label>Current Username:</label>
+                <input type="text" name="username" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} required />
+              
+                <label>New Email:</label>
+                <input
+                  type="email"
+                  value={newEmail}
+                  pattern="/^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/"
+                  onChange={(e) => setNewEmail(e.target.value)}
+                  required
+                />
+              </>
+            ):(
+              <>
+                  <label>New Email:</label>
+                  <input
+                    type="email"
+                    value={newEmail}
+                    pattern="/^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/"
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    required
+                  />
+              </>
+            )}
+
+
+            <button type="button" onClick={handleSaveEmail}>Save Email</button>
           </div>
         ) : (
           <div>
@@ -158,14 +172,11 @@ function Verification() {
             required
           />
         </div>
-        <button type="submit">
-        {loading ? "Verifying..." : "Verify"}
-        </button>
+        <button type="submit">Verify</button>
       </form>
-      <button type="button" onClick={handleresendEmail}>
-        {loading ? "Resending..." : "Resend verification code"}
-        </button>
-      {message && <p className="message">{message}</p>}
+      <button type="button" onClick={handleresendEmail}>Resend verification code</button>
+      <button type="button" onClick={handleEditEmail2}>Change Email</button>
+
       {error && <p className="error">{error}</p>}
     </div>
   );

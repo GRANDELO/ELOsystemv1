@@ -11,6 +11,7 @@ function Verification() {
   const [emailPresent, setEmailPresent] = useState(false);
   const [editingEmail, setEditingEmail] = useState(false);
   const navigate = useNavigate();
+  const [newUsername, setNewUsername] = useState('');
 
   useEffect(() => {
     const storedEmail = sessionStorage.getItem('email');
@@ -26,7 +27,7 @@ function Verification() {
       const emailToUse = email || newEmail;
       const response = await axiosInstance.post('/agent/verify', { email: emailToUse, verificationCode });
       if (response.status === 200) {
-        navigate('/agentSuccess');
+        navigate('/success');
       }
     } catch (error) {
       if (error.response && error.response.data) {
@@ -39,8 +40,15 @@ function Verification() {
 
   const handleEditEmail = () => {
     setEditingEmail(true);
+    setEmailPresent(true);
+  };
+
+  const handleEditEmail2 = () => {
+    setEditingEmail(true);
     setEmailPresent(false);
   };
+  
+  // When you want to update the email
 
   const handleSaveEmail = async () => {
     if(!(/^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/.test(newEmail)))
@@ -50,6 +58,11 @@ function Verification() {
     else
     {
       try {
+
+        if (newUsername !== "") {
+          setEmail(newUsername);
+        }
+        
         const response = await axiosInstance.post('/agent/update-email', { oldEmail: email, newEmail });
         if (response.status === 200) {
           setEmail(newEmail);
@@ -64,6 +77,7 @@ function Verification() {
         } else {
           setError('An error occurred while updating the email.');
         }
+        
       }
     }
 
@@ -95,7 +109,9 @@ function Verification() {
       <h4>Check your email to get the verification code.</h4>
       <h4>If you didn't get the email check the spam folder first before requesting for a resend.</h4>
       <form onSubmit={handleVerify}>
+
         {emailPresent && !editingEmail ? (
+          
           <div>
             <label>Email:</label>
             <p>{email}</p>
@@ -103,14 +119,34 @@ function Verification() {
           </div>
         ) : editingEmail ? (
           <div>
-            <label>Email:</label>
-            <input
-              type="email"
-              value={newEmail}
-              pattern="/^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/"
-              onChange={(e) => setNewEmail(e.target.value)}
-              required
-            />
+            {!emailPresent ?(
+              <>
+                <label>Current Username:</label>
+                <input type="text" name="username" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} required />
+              
+                <label>New Email:</label>
+                <input
+                  type="email"
+                  value={newEmail}
+                  pattern="/^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/"
+                  onChange={(e) => setNewEmail(e.target.value)}
+                  required
+                />
+              </>
+            ):(
+              <>
+                  <label>New Email:</label>
+                  <input
+                    type="email"
+                    value={newEmail}
+                    pattern="/^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/"
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    required
+                  />
+              </>
+            )}
+
+
             <button type="button" onClick={handleSaveEmail}>Save Email</button>
           </div>
         ) : (
@@ -139,6 +175,8 @@ function Verification() {
         <button type="submit">Verify</button>
       </form>
       <button type="button" onClick={handleresendEmail}>Resend verification code</button>
+      <button type="button" onClick={handleEditEmail2}>Change Email</button>
+
       {error && <p className="error">{error}</p>}
     </div>
   );
