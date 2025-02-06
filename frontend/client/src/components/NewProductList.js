@@ -5,6 +5,7 @@ import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
 import { storeSearch, getSearchHistory, trackProductClick } from '../utils/search';
 import { useIsMobile } from '../utils/mobilecheck';
 import './styles/NewProductList.css';
+import { jwtDecode } from 'jwt-decode';
 
 const NewProductList = () => {
   const [products, setProducts] = useState([]);
@@ -172,17 +173,24 @@ const NewProductList = () => {
 
   //test1
    // Sync session data to backend
-   const syncSessionToBackend = async () => {
+  const syncSessionToBackend = async () => {
     const searchHistory = getSearchHistory();
     const clickHistory = JSON.parse(sessionStorage.getItem('clickHistory')) || {};
-    const userId = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
   
-    if (!userId) {
-      console.error("User ID missing or invalid.");
+    if (!token) {
+      console.error("token missing or invalid.");
       return;
     }
 
-   
+    let userId;
+    try {
+        const decodedToken = jwtDecode(token); // Decode the token
+        userId = decodedToken.id; // Adjust to match your token structure
+    } catch (error) {
+        console.error("Failed to decode token:", error);
+        return;
+    }
 
   
     console.log("Payload being sent", { searchHistory, clickHistory, userId });
@@ -214,14 +222,12 @@ const NewProductList = () => {
   
 
 // Call sync function periodically after component mounts
-useEffect(() => {
-  const intervalId = setInterval(syncSessionToBackend, 30000); // Sync every 30 seconds instead of 5
-  return () => clearInterval(intervalId);
-}, []);
-
-  
-
-
+  useEffect(() => {
+    const intervalId = setInterval(syncSessionToBackend, 30000); // Sync every 30 seconds instead of 5
+    return () => clearInterval(intervalId);
+  },  []);
+ ///
+ 
   
 //filter search functionality
   const handleFilterChange = (filterName, value) => {
@@ -251,7 +257,7 @@ useEffect(() => {
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
-    setCurrentPage(1); // Reset to first page when category changes
+    //setCurrentPage(1); // Reset to first page when category changes
   };
 
   const handleShowMoreCategories = () => {

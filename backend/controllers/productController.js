@@ -295,8 +295,16 @@ exports.trackProductInteraction = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
+    const bulkUpdates = [];
+
     if (actionType === 'click') {
-      user.history.click[productId] = (user.history.click[productId] || 0) + 1;
+      const clickKey = `history.click.${productId}`;
+      bulkUpdates.push({
+        updateOne: {
+          filter: { _id: userId },
+          update: { $inc: { [clickKey]: 1 } },
+        },
+      });
 
       const product = await Product.findById(productId);
       if (product) {
@@ -304,9 +312,19 @@ exports.trackProductInteraction = async (req, res) => {
         await product.save();
       }
     } else if (actionType === 'search') {
-      user.history.search[category] = (user.history.search[category] || 0) + 1;
+      const searchKey = `history.search.${category}`;
+      bulkUpdates.push({
+        updateOne: {
+          filter: { _id: userId },
+          update: { $inc: { [searchKey]: 1 } },
+        },
+      });
 
       await Product.updateMany({ category }, { $inc: { searchCount: 1 } });
+    }
+
+    if (bulkUpdates.length > 0) {
+      await User.bulkWrite(bulkUpdates);
     }
 
     await user.save();
