@@ -71,7 +71,7 @@ h1, h2, h3, h4, h5 {
 
 
 .product-search {
-  width: 100%;
+  width: 80%;
   padding: 0.5rem 1rem;
   border-radius: 25px;
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -80,10 +80,11 @@ h1, h2, h3, h4, h5 {
   transition: background 0.3s ease;
 }
 .max-price-input {
-  width: 100px; /* Optional: Limit the width of the max price input */
+  width: 20%; /* Optional: Limit the width of the max price input */
   padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 25px;
+  font-size: 0.85rem;
 }
 
 .product-search:focus {

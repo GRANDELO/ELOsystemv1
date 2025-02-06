@@ -51,6 +51,7 @@ export const storeSearch = (category, subcategory)  => {
   }
   
 export const trackProductClick = (productId) => {
+    const userId = sessionStorage.getItem('userId');
     let clickHistory = JSON.parse(sessionStorage.getItem('clickHistory')) || {};
   
     if (clickHistory[productId]) {
@@ -60,6 +61,7 @@ export const trackProductClick = (productId) => {
     }
   
     sessionStorage.setItem('clickHistory', JSON.stringify(clickHistory));
+   
   };
 export const getSearchHistory = () => {
     return JSON.parse(sessionStorage.getItem('searchHistory')) || {};

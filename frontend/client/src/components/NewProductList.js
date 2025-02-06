@@ -169,23 +169,60 @@ const NewProductList = () => {
 
     return () => clearInterval(intervalId);
   }, [products]);
-  const trackInteraction = async (userId, productId, category, actionType) => {
-    try {
-      // Sending search or click data to backend for tracking
-      await axiosInstance.post('/track', {
-        userId,
-        productId,
-        category,
-        actionType, // actionType can be either 'search' or 'click'
-      });
+
+  //test1
+   // Sync session data to backend
+   const syncSessionToBackend = async () => {
+    const searchHistory = getSearchHistory();
+    const clickHistory = JSON.parse(sessionStorage.getItem('clickHistory')) || {};
+    const userId = localStorage.getItem('token');
   
-      console.log('Interaction tracked successfully');
+    if (!userId) {
+      console.error("User ID missing or invalid.");
+      return;
+    }
+
+   
+
+  
+    console.log("Payload being sent", { searchHistory, clickHistory, userId });
+  
+    const actions = [
+      ...Object.keys(searchHistory).flatMap(category =>
+        Object.keys(searchHistory[category]).map(subCategory => ({
+          userId,
+          actionType: 'search',
+          category,
+          subCategory,
+        }))
+      ),
+      ...Object.keys(clickHistory).map(productId => ({
+        userId,
+        actionType: 'click',
+        productId,
+      })),
+    ];
+  
+    try {
+      for (const action of actions) {
+        await axiosInstance.post('/track', action);
+      }
     } catch (error) {
-      console.error('Error tracking interaction:', error);
+      console.error('Error syncing session data to backend:', error.response?.data || error);
     }
   };
+  
+
+// Call sync function periodically after component mounts
+useEffect(() => {
+  const intervalId = setInterval(syncSessionToBackend, 30000); // Sync every 30 seconds instead of 5
+  return () => clearInterval(intervalId);
+}, []);
+
+  
 
 
+  
 //filter search functionality
   const handleFilterChange = (filterName, value) => {
    setFilters((prevFilters) => ({
@@ -194,16 +231,11 @@ const NewProductList = () => {
     }));
   };
 
-
   const handleProductClick = (product) => {
     setSelectedProduct(product);
     storeSearch(product.category , product.subCategory)
     setIsModalOpen(true);
 
-    const userId = 'USER_ID'; // You should get the actual userId from session or context
-
-  // Track the click interaction
-    trackProductClick(userId, product._id, product.category);
   };
 
   const closeModal = () => {
@@ -214,19 +246,12 @@ const NewProductList = () => {
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
     setCurrentPage(1); // Reset to first page when searching
-
-    const userId = 'USER_ID'; // You should get the actual userId from session or context
-    trackInteraction(userId, '', '', 'search'); //
+    
   };
-
-
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
     setCurrentPage(1); // Reset to first page when category changes
-
-    const userId = 'USER_ID'; // You should get the actual userId from session or context
-    trackInteraction(userId, '', category, 'search');
   };
 
   const handleShowMoreCategories = () => {
@@ -288,22 +313,6 @@ const NewProductList = () => {
       });
   };
 
-  const fetchFilteredProducts = async () => {
-    const userId = 'USER_ID'; // You should get the actual userId from session or context
-    const category = selectedCategory;
-    const filters = { maxPrice: filters.maxPrice, brand: filters.brand };
-  
-    try {
-      const response = await axiosInstance.get('/products/filtered', {
-        params: { userId, category, ...filters },
-      });
-  
-      const filteredProducts = response.data.products;
-      setSortedProducts(filteredProducts); // Set the filtered products to the state
-    } catch (error) {
-      console.error('Error fetching filtered products:', error);
-    }
-  };
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -367,7 +376,7 @@ const NewProductList = () => {
         
         <input
           type="number"
-          placeholder="input Price for filter"
+          placeholder="filter by Price"
           value={filters.maxPrice || ""}
           onChange={(e) =>
             setFilters((prevFilters) => ({

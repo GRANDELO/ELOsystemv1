@@ -5,6 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 const ProductPerformance = require('../models/ProductPerformance');
 const User = require('../models/User');
 
+
 // Upload a file to Firebase Storage
 // Function to upload multiple files
 async function uploadFiles(files) {
@@ -274,51 +275,47 @@ exports.updateshoplogoUrl = async (req, res) => {
     return res.status(500).json({ message: 'Error uploading images', error: error.message });
   }
 };
-
+//for search
 exports.trackProductInteraction = async (req, res) => {
-  const { userId, productId, category, actionType } = req.body; // actionType can be 'search' or 'click'
+  const { userId, productId, category, actionType } = req.body;
 
-  if (!userId || !productId || !category || !actionType) {
+  if (!userId || !actionType) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
+  if (actionType === 'search' && !category) {
+    return res.status(400).json({ message: "Category is required for search actions" });
+  }
+
+  if (actionType === 'click' && !productId) {
+    return res.status(400).json({ message: "Product ID is required for click actions" });
+  }
+
   try {
-    // Find the user by ID
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Track the click or search in the user's history
     if (actionType === 'click') {
-      // Update the click history
-      user.history.click.set(productId, (user.history.click.get(productId) || 0) + 1);
-      
-      // Update the product's click count
+      user.history.click[productId] = (user.history.click[productId] || 0) + 1;
+
       const product = await Product.findById(productId);
       if (product) {
         product.clickCount += 1;
         await product.save();
       }
     } else if (actionType === 'search') {
-      // Update the search history
-      user.history.search.set(category, (user.history.search.get(category) || 0) + 1);
-      
+      user.history.search[category] = (user.history.search[category] || 0) + 1;
+
       await Product.updateMany({ category }, { $inc: { searchCount: 1 } });
-      // Update the products' search counts in the given category
-      const products = await Product.find({ category });
-      products.forEach(async (product) => {
-        product.searchCount += 1;
-        await product.save();
-      });
     }
 
-    // Save the updated user document
     await user.save();
-
     res.status(200).json({ message: "Interaction tracked successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 // Get combined statistics for search and click histories
 exports.getUserStatistics = async (req, res) => {
