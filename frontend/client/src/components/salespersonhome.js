@@ -331,6 +331,7 @@ const Home = () => {
         run={isJoyrideActive}
         disableScrolling
         spotlightClicks={false}
+        className="custom-joyride"
       />
       <Header />
       {loginPrompt && (
