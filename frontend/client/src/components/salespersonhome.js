@@ -84,11 +84,7 @@ const Home = () => {
       {
         selector: '.salesp-toggle-button:nth-child(6)',
         content: 'Send us feedback by clicking this button.',
-      },
-      {
-        selector: '.salesp-home-footer',
-        content: 'Don’t forget to check the footer for additional information!',
-      },
+      }
     ]
   : [
       {
