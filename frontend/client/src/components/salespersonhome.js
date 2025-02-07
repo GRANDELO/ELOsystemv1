@@ -98,15 +98,19 @@ const Home = () => {
     },
   ]);
 
-  const [isJoyrideActive, setJoyrideActive] = useState(true);
+  const [isJoyrideActive, setJoyrideActive] = useState(false);
 
   useEffect(() => {
-    // Delay the Joyride to ensure the DOM is fully rendered
-    const timer = setTimeout(() => {
-      setJoyrideActive(true);
-    }, 2000); // Adjust the delay as needed
+    // Check if the user has already seen the Joyride
+    const hasSeenJoyride = localStorage.getItem('hasSeenJoyride');
+    if (!hasSeenJoyride) {
+      // Delay the Joyride to ensure the DOM is fully rendered
+      const timer = setTimeout(() => {
+        setJoyrideActive(true);
+      }, 2000); // Adjust the delay as needed
   
-    return () => clearTimeout(timer);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   useEffect(() => {
@@ -200,25 +204,13 @@ const Home = () => {
     };
   }, [ navigate]);
 
+  const phoneNumber = '254116293386'; 
+  const message = 'Hello, I have a question'; 
+  
   const toggleWhatsApp = async () => {
-
-
-    if (!username) {
-      setLoginPrompt('You have to sign in to send feedback.');
-      return;
-    }
-    setIsWhatsappVisible(!isWhatsappVisible);
-    setIsFeedbackVisible(false);
-    setIsOrderVisible(false);
-    setIsCartVisible(false);
-    setIsSettingsVisible(false);
-    setIsNotificationsVisible(false);
-    setIsQrScannerVisible(false);
-    setsetnavop(!isFeedbackVisible);
-   
-  }
-
-
+    const whatsappLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappLink, '_blank');
+  };
 
     const toggleFeedback = async () => {
     if (!username) {
@@ -307,18 +299,7 @@ const Home = () => {
     setsetnavop(!isQrScannerVisible);
   };
 
-  useEffect(() => {
-    // Check if the user has already seen the Joyride
-    const hasSeenJoyride = localStorage.getItem('hasSeenJoyride');
-    if (!hasSeenJoyride) {
-      // Delay the Joyride to ensure the DOM is fully rendered
-      const timer = setTimeout(() => {
-        setJoyrideActive(true);
-      }, 2000); // Adjust the delay as needed
-  
-      return () => clearTimeout(timer);
-    }
-  }, []);
+
 
   const handleJoyrideCallback = (data) => {
     const { status } = data;
@@ -327,12 +308,12 @@ const Home = () => {
 
     if (finishedStatuses.includes(status)) {
       setJoyrideActive(false);
-      setIsFeedbackVisible(true); 
+      setIsFeedbackVisible(false); 
       localStorage.setItem('hasSeenJoyride', 'true');
     }
   };
 
-  
+
 
   const toggleNav = () => {
     setIsNavVisible(!isNavVisible);
@@ -349,7 +330,7 @@ const Home = () => {
         callback={handleJoyrideCallback}
         run={isJoyrideActive}
         disableScrolling
-        
+        spotlightClicks={false}
       />
       <Header />
       {loginPrompt && (
