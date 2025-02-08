@@ -6,7 +6,6 @@ import { storeSearch, getSearchHistory, trackProductClick } from '../utils/searc
 import { useIsMobile } from '../utils/mobilecheck';
 import './styles/NewProductList.css';
 import { jwtDecode } from 'jwt-decode';
-import { Range } from 'react-range';
 
 const NewProductList = () => {
   const [products, setProducts] = useState([]);
@@ -27,6 +26,7 @@ const NewProductList = () => {
     maxPrice: 500000,
     brand: '',
   });
+  const [suggestions, setSuggestions] = useState([]);
 
   const categories = [
     { id: 'electronics', name: 'Electronics', subCategories: ['Phones', 'Laptops', 'Tablets', 'Headphones', 'Cameras', 'Accessories', 'Wearables', 'Smart Home', 'Gaming Consoles', 'Home Audio', 'Smartwatches', 'Virtual Reality'] },

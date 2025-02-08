@@ -410,3 +410,33 @@ exports.getFilteredProducts = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+// controllers/productController.js
+exports.autocomplete = async (req, res) => {
+  const { query } = req.query;
+
+  if (!query || query.length < 2) {
+    return res.status(400).json({ message: "Query must be at least 2 characters long." });
+  }
+
+  try {
+    // Search for products and categories that match the query
+    const products = await Product.find({
+      $or: [
+        { name: { $regex: query, $options: 'i' } }, // Case-insensitive search
+        { category: { $regex: query, $options: 'i' } },
+        { subCategory: { $regex: query, $options: 'i' } },
+      ],
+    }).limit(10); // Limit the number of suggestions
+
+    // Extract relevant data for autocomplete
+    const suggestions = products.map((product) => ({
+      name: product.name,
+      category: product.category,
+      subCategory: product.subCategory,
+    }));
+
+    res.json(suggestions);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

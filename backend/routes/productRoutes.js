@@ -27,5 +27,8 @@ router.delete('/products/:productId', productController.deleteProduct);
 // Track product searches
 router.post('/track', productController.trackProductInteraction);
 router.get('/filtered', productController.getFilteredProducts);
+router.get('/autocomplete', productController.autocomplete);
 
 module.exports = router;
+
+
