@@ -153,7 +153,7 @@ const AdminDashboard = () => {
           <ul className="usal-user-list">
             {currentUsers.map(user => (
               <li key={user._id} className="usal-user-item">
-                <p>Name: {user.fullName}</p>
+                <p>Username: {user.username}</p>
                 <p>Email: {user.email}</p>
                 <p>Phone number: {user.phoneNumber}</p>
                 <p>Accout type: {user.category}</p>
@@ -168,6 +168,7 @@ const AdminDashboard = () => {
                 {expandedUserId === user._id && (
                   <div className="usal-user-options">
                     <p>Status: {user.isDisabled ? 'Disabled' : 'Active'}</p>
+                    <p>Verification Status: {user.isVerified ? 'Yes' : 'No'}</p>
                     <button
                       onClick={() => disableUser(user._id)}
                       className="usal-btn usal-btn-disable"
@@ -195,11 +196,11 @@ const AdminDashboard = () => {
           />
         </section>
       )}
-      {/*logs view */}
+      {/*logs view 
       <section>
         <LogsViewer/>
       </section>
-      
+      */}
 
       {/* Active Users Section with Pagination */}
       {activeSection === 'active' && (

@@ -1,7 +1,8 @@
 import axiosInstance from '../axiosInstance';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './styles/login.css';
+import Cookies from 'js-cookie';
 
 function Login() {
     const navigate = useNavigate();
@@ -17,6 +18,41 @@ function Login() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    useEffect(() => {
+        const token = Cookies.get('admintoken');
+        if (token) {
+
+            const firstName = Cookies.get('firstName');
+            const role = Cookies.get('role');
+            const eid = Cookies.get('eid');
+            sessionStorage.setItem('firstName', firstName);
+            sessionStorage.setItem('role', role);
+            sessionStorage.setItem('eid', eid);
+            sessionStorage.setItem('admintoken', token);
+
+
+          switch (role?.trim().toLowerCase()) {
+            case 'admin':
+              navigate('/dashboard');
+              break;
+            case 'sales_manager':
+              navigate('/sales');
+              break;
+            case 'delivery':
+              navigate('/logistics');
+              break;
+            case 'hr':
+              navigate('/hr');
+              break;
+            case 'packager':
+              navigate('/packingpage');
+              break;
+            default:
+              setMessage('No page assigned. Contact HR for more info.');
+          }
+        }
+      }, [navigate]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (recoverPassword) {
@@ -30,7 +66,10 @@ function Login() {
             sessionStorage.setItem('role', response.data.role);
             sessionStorage.setItem('eid', response.data.workID);
             sessionStorage.setItem('admintoken', response.data.token);
-            localStorage.setItem('admintoken', response.data.token);
+            Cookies.set('admintoken', response.data.token, { expires: 1, secure: true });
+            Cookies.set('firstName', response.data.name, { expires: 1 });
+            Cookies.set('role', response.data.role, { expires: 1 });
+            Cookies.set('eid', response.data.workID, { expires: 1 });
 
             const role = response.data.role.trim().toLowerCase();
             if (role === 'admin') {

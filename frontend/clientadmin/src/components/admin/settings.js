@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { FaLock, FaPowerOff } from 'react-icons/fa'; // Import icons from Font Awesome
 import { useNavigate } from 'react-router-dom';
 import './styles/settings.css';
+import Cookies from 'js-cookie';
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const Settings = () => {
       setMessage(response.data.message);  // Display the success message from the backend
       setError('');
       sessionStorage.setItem('admintoken', response.data.token);
-      localStorage.setItem('admintoken', response.data.token);
+      Cookies.set('admintoken', response.data.token, { expires: 1, secure: true });
     } catch (error) {
       setError(error.response?.data?.message || 'An error occurred while processing your request.');
       setMessage('');  // Clear any success message if an error occurs

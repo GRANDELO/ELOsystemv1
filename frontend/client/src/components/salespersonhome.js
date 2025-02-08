@@ -23,6 +23,7 @@ import FeedbackForm from './Feedback';
 import './styles/salespersonhome.css';
 import { Alert} from 'react-bootstrap';
 import { useIsMobile } from '../utils/mobilecheck';
+import Tour from 'reactour';
 
 const Home = () => {
   const [cart, setCart] = useState([]);
@@ -46,57 +47,98 @@ const Home = () => {
   const [qrResult, setQrResult] = useState('');
   const [setnavop, setsetnavop] = useState(false);
   const isMobile = useIsMobile();
-  const [steps, setSteps] = useState([
-    {
-      target: '.salesp-home-intro',
-      content: 'Welcome to our store! Here you can browse our latest products.',
-      placement: 'center',
-    },
-    {
-      target: '.product-card',
-      content: 'Browse through our products and find what you need!',
-      
-    },
-    {
-      target: '.salesp-toggle-button', // Fixed selector
-      content: 'Click here to open the main navigation menu.',
-      placement: 'left',
-    },
-    {
-      target: '.salesp-toggle-button:first-child', // Fixed selector
-      content: 'This is your cart. Check your added items here.',
-      placement: 'left',
-    },
-    {
-      target: '.salesp-toggle-button:nth-child(2)', // Fixed selector
-      content: 'Access your settings from this button. To change to dark mode, email, password changes',
-      placement: 'left',
-    },
-    {
-      target: '.salesp-toggle-button:nth-child(3)', // Fixed selector
-      content: 'View your orders by clicking here.',
-      placement: 'left',
-    },
-    {
-      target: '.salesp-toggle-button:nth-child(4)', // Fixed selector
-      content: 'Notifications will appear here. Check for updates!',
-      placement: 'left',
-    },
-    {
-      target: '.salesp-toggle-button:nth-child(5)', // Fixed selector
-      content: 'Use this QR Scanner to scan QR codes.',
-      placement: 'left',
-    },
-    {
-      target: '.salesp-toggle-button:nth-child(6)', // Fixed selector
-      content: 'Send us feedback by clicking this button.',
-      placement: 'left',
-    },
-    {
-      target: '.salesp-home-footer',
-      content: 'Don’t forget to check the footer for additional information!',
-    },
-  ]);
+  const initialSteps = isMobile
+  ? [
+      {
+        selector: '.salesp-home-intro',
+        content: 'Welcome to our store! Here you can browse our latest products.',
+      },
+      {
+        selector: '.product-card',
+        content: 'Browse through our products and find what you need!',
+      },
+      {
+        selector: '.salesp-toggle-button',
+        content: 'Click here to open the main navigation menu.',
+      },
+      {
+        selector: '.salesp-toggle-button:first-child',
+        content: 'This is your cart. Check your added items here.',
+      },
+      {
+        selector: '.salesp-toggle-button:nth-child(2)',
+        content: 'Access your settings from this button. To change to dark mode, email, password changes',
+      },
+      {
+        selector: '.salesp-toggle-button:nth-child(3)',
+        content: 'View your orders by clicking here.',
+      },
+      {
+        selector: '.salesp-toggle-button:nth-child(4)',
+        content: 'Notifications will appear here. Check for updates!',
+      },
+      {
+        selector: '.salesp-toggle-button:nth-child(5)',
+        content: 'Use this QR Scanner to scan QR codes.',
+      },
+      {
+        selector: '.salesp-toggle-button:nth-child(6)',
+        content: 'Send us feedback by clicking this button.',
+      }
+    ]
+  : [
+      {
+        target: '.salesp-home-intro',
+        content: 'Welcome to our store! Here you can browse our latest products.',
+        placement: 'center',
+      },
+      {
+        target: '.product-card',
+        content: 'Browse through our products and find what you need!',
+      },
+      {
+        target: '.salesp-toggle-button',
+        content: 'Click here to open the main navigation menu.',
+        placement: 'right',
+      },
+      {
+        target: '.salesp-toggle-button:first-child',
+        content: 'This is your cart. Check your added items here.',
+        placement: 'right',
+      },
+      {
+        target: '.salesp-toggle-button:nth-child(2)',
+        content: 'Access your settings from this button. To change to dark mode, email, password changes',
+        placement: 'right',
+      },
+      {
+        target: '.salesp-toggle-button:nth-child(3)',
+        content: 'View your orders by clicking here.',
+        placement: 'right',
+      },
+      {
+        target: '.salesp-toggle-button:nth-child(4)',
+        content: 'Notifications will appear here. Check for updates!',
+        placement: 'right',
+      },
+      {
+        target: '.salesp-toggle-button:nth-child(5)',
+        content: 'Use this QR Scanner to scan QR codes.',
+        placement: 'right',
+      },
+      {
+        target: '.salesp-toggle-button:nth-child(6)',
+        content: 'Send us feedback by clicking this button.',
+        placement: 'right',
+      },
+      {
+        target: '.salesp-home-footer',
+        content: 'Don’t forget to check the footer for additional information!',
+      },
+    ];
+
+const [steps, setSteps] = useState(initialSteps);
+
 
   const [isJoyrideActive, setJoyrideActive] = useState(false);
 
@@ -125,6 +167,24 @@ const Home = () => {
   
     checkTargets();
   }, [steps]);
+
+  const [isTourActive, setTourActive] = useState(false);
+
+  useEffect(() => {
+    // Check if the user has already seen the tour
+    const hasSeenTour = localStorage.getItem('hasSeenTour');
+    if (!hasSeenTour) {
+      const timer = setTimeout(() => {
+        setTourActive(true);
+      }, 2000); // Adjust delay if needed
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleTourClose = () => {
+    setTourActive(false);
+    localStorage.setItem('hasSeenTour', 'true');
+  };
 
   
 
@@ -302,8 +362,11 @@ const Home = () => {
 
 
   const handleJoyrideCallback = (data) => {
-    const { status } = data;
+    const { action, status } = data;
    
+    if (action === "close") {
+      setJoyrideActive(false); // Hide Joyride
+    }
     const finishedStatuses = ['finished', 'skipped'];
 
     if (finishedStatuses.includes(status)) {
@@ -322,7 +385,21 @@ const Home = () => {
 
   return (
     <div className="salesp-home">
-      <ReactJoyride
+       {isMobile ?(
+        <>
+          <Tour
+            steps={steps}
+            isOpen={isTourActive}
+            onRequestClose={handleTourClose}
+            // Optionally, you can customize styling with props like accentColor:
+            // accentColor="#5cb7b7"
+          />
+
+        </>
+       ):
+       (
+        <>
+        <ReactJoyride
         steps={steps}
         continuous
         showProgress
@@ -330,9 +407,16 @@ const Home = () => {
         callback={handleJoyrideCallback}
         run={isJoyrideActive}
         disableScrolling
+        disableOverflow
         spotlightClicks={false}
         className="custom-joyride"
       />
+       </>
+       )}
+
+
+
+
       <Header />
       {loginPrompt && (
         <Alert variant="warning" className="ordcore-alert">
