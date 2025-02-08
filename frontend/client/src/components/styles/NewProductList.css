@@ -44,6 +44,10 @@
   --old-price: #ff1900;
   --new-price: #00ff22;
   --discountamount: #109d4a;
+  --dropdown-bg: #333;
+  --dropdown-border: #555;
+  --dropdown-text: white;
+  --dropdown-hover-bg: #444;
 }
 
 /* General Styles */
@@ -558,3 +562,32 @@ h1, h2, h3, h4, h5 {
   }
 }
 /* for filter with price */
+.suggestions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background:var(--dropdown-bg, white);
+  border: 1px solid var(--dropdown-border, #ccc);
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.suggestion-item {
+  padding: 10px;
+  cursor: pointer;
+  list-style: none;
+  color: var(--dropdown-text, black)
+}
+.suggestion-item:hover {
+  background-color: var(--dropdown-hover-bg, #f0f0f0);
+}
+.highlight {
+  background-color: yellow;
+  font-weight: bold;
+  color: black;
+}

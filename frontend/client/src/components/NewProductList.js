@@ -23,10 +23,11 @@ const NewProductList = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showMoreCategories, setShowMoreCategories] = useState(false);
   const [filters, setFilters] = useState({
-    maxPrice: 500000,
+    maxPrice: Infinity,
     brand: '',
   });
   const [suggestions, setSuggestions] = useState([]);
+  const [isFocused, setIsFocused] = useState(false);
 
   const categories = [
     { id: 'electronics', name: 'Electronics', subCategories: ['Phones', 'Laptops', 'Tablets', 'Headphones', 'Cameras', 'Accessories', 'Wearables', 'Smart Home', 'Gaming Consoles', 'Home Audio', 'Smartwatches', 'Virtual Reality'] },
@@ -152,6 +153,54 @@ const NewProductList = () => {
 
     fetchProducts();
   }, []);
+
+  // Autocomplete: Fetch suggestions as the user types
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (searchTerm.length < 2) {
+        setSuggestions([]);
+        return;
+      }
+
+      try {
+        const response = await axiosInstance.get('/autocomplete', {
+          params: { query: searchTerm },
+        });
+        setSuggestions(response.data);
+      } catch (error) {
+        console.error('Error fetching suggestions:', error);
+      }
+    };
+
+    const debounceTimer = setTimeout(() => {
+      fetchSuggestions();
+    }, 300); // Debounce for 300ms
+
+    return () => clearTimeout(debounceTimer);
+  }, [searchTerm]);
+
+  const handleSuggestionClick = (suggestion) => {
+    setSearchTerm(suggestion.name); // Set the search term to the clicked suggestion
+    setSuggestions([]); // Clear suggestions
+    setCurrentPage(1);
+    setIsFocused(false);
+    
+  };
+  const highlightMatch = (text, query) => {
+    if (!query) return text;
+  
+    const regex = new RegExp(`(${query})`, 'gi');
+    return text.replace(regex, '<span class="highlight">$1</span>');
+  };
+
+  const handleBlur = () => {
+    setTimeout(() => {
+      if(!isFocused){
+        setSuggestions([]);
+      }
+    }, 200)
+  };
+
 
   useEffect(() => {
     const updateImageIndexes = () => {
@@ -378,8 +427,34 @@ const NewProductList = () => {
           placeholder="Search for products or categories..."
           value={searchTerm}
           onChange={handleSearch}
+          onFocus={() => setIsFocused(true)}
+          onBlur={handleBlur }
           className="product-search"
         />
+        <div
+          className="suggestions-wrapper"
+
+          onMouseDown={(e) => {
+            setIsFocused(true);
+            e.preventDefault()
+          }} // Prevent blur on click
+        >
+        {suggestions.length > 0 && (
+            <ul className="suggestions-dropdown">
+              {suggestions.map((suggestion, index) => (
+                <li
+                  key={index}
+                  onMouseDown={() => handleSuggestionClick(suggestion)}
+                  className="suggestion-item"
+                  dangerouslySetInnerHTML={{
+                    __html: highlightMatch(suggestion.name, searchTerm),
+                  }}
+                >
+                </li>
+              ))}
+            </ul>
+          )}
+          </div>
         
         <input
           type="number"
