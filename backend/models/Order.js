@@ -8,11 +8,6 @@ const orderSchema = new mongoose.Schema({
     quantity: { type: Number, required: true },
     pOrderNumbe: {type: String,required: true },
     pCurrentPlace: { type: String, required: true, default: "Waiting for delivery." },
-    porigin: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: 'User', 
-      required: true 
-    }, 
     variations: [
       {
         productId: { type: mongoose.Schema.Types.ObjectId, ref: 'NewProduct', required: false },
