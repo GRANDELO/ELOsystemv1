@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { groupProductsByOriginAndDestination } =  require('../controllers/location_pac');
+const { planDeliveryLocations, groupProductsByOriginAndDestination } =  require('../controllers/location_pac');
 
 router.get('/destinations', async (req, res) => {
     try {
@@ -11,5 +11,7 @@ router.get('/destinations', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
+
+  router.post('/plan-delivery', planDeliveryLocations);
 
 module.exports = router

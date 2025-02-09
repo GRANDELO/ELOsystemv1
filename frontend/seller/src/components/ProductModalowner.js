@@ -84,6 +84,9 @@ const ProductModal = ({ product, show, handleClose }) => {
       await axiosInstance.delete(`/products/${product._id}`);
       setMessage('Product deleted successfully.');
       handleClose(); // Close the modal after deletion
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000)
     } catch (err) {
       console.error('Failed to delete product:', err);
       setError(err.response?.data?.message || 'Failed to delete product');

@@ -22,7 +22,7 @@ const UpdateImages = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!logo || !background) {
+    if (!logo && !background) {
       setError('Both logo and background images are required');
       return;
     }
@@ -41,6 +41,9 @@ const UpdateImages = () => {
       setSuccess(response.data.message);
       setLogo(null);
       setBackground(null);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000)
     } catch (err) {
       setError('Error updating images');
       console.error(err);
@@ -50,8 +53,7 @@ const UpdateImages = () => {
   return (
     <div>
       <h3>Update Logo and Background Images</h3>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>{success}</p>}
+      
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="logo">Logo Image:</label>
@@ -62,9 +64,12 @@ const UpdateImages = () => {
           <input type="file" name="background" accept="image/*" onChange={handleFileChange} />
         </div>
         <button type="submit">Update Images</button>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {success && <p style={{ color: 'green' }}>{success}</p>}
       </form>
     </div>
   );
 };
 
 export default UpdateImages;
+

@@ -17,3 +17,4 @@ const TownSchema = new mongoose.Schema({
 const Town = mongoose.model("Town", TownSchema);
 
 module.exports = Town;
+

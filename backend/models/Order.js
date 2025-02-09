@@ -8,6 +8,11 @@ const orderSchema = new mongoose.Schema({
     quantity: { type: Number, required: true },
     pOrderNumbe: {type: String,required: true },
     pCurrentPlace: { type: String, required: true, default: "Waiting for delivery." },
+    porigin: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'User', 
+      required: true 
+    }, 
     variations: [
       {
         productId: { type: mongoose.Schema.Types.ObjectId, ref: 'NewProduct', required: false },
@@ -30,6 +35,12 @@ const orderSchema = new mongoose.Schema({
   CheckoutRequestID: { type: String},
   orderReference: { type: String, required: true },
   sellerOrderId: { type: String, default: undefined},
+  origin: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User', 
+    required: true 
+  }, 
+  status: {type:String, enum: ['pending', 'packed', 'in_transit','delivered' ], default: 'pending'},
   currentplace: { type: String, required: true, default: "Waiting for delivery." },
 
 });
@@ -37,3 +48,4 @@ const orderSchema = new mongoose.Schema({
 const Order = mongoose.model('Order', orderSchema);
 
 module.exports = Order;
+

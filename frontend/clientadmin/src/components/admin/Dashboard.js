@@ -29,18 +29,23 @@ const Dashboard = () => {
 
     const fetchDestinations = async () => {
         try {
-            const response = await axiosInstance.get('/destinations'); // API call to fetch destinations
-            console.log('Backend Response:', response.data.data); 
-            const destinationsArray = Object.keys(response.data.data || {}).map(key => {
-                const [origin, destination] = key.split('-');
-                return {
-                  origin,
-                  destination,
-                  products: response.data.data[key] // Array of products for this origin-destination pair
-                };
-              });
-              
-            setDestinations(destinationsArray); // Set the fetched data
+            const response = await axiosInstance.get('/plan-delivery'); // API call to fetch destinations
+            console.log('Backend Response:', response.data.data);
+            
+            const { directRoutes = [], hubRoutes= [] } = response.data.data;
+
+            const processRoutes = ( routes, type) => 
+                routes.map(routes => ({
+                    type,
+                    origin: routes.origin,
+                    destination: routes.destination,
+                    orders: routes.orders,
+                }));
+
+                const directDestinations = processRoutes(directRoutes, 'Direct');
+                const hubDestination = processRoutes(hubRoutes, 'Hub');
+
+                setDestinations([...directDestinations, ...hubDestination]);
         } catch (error) {
             console.error('Error fetching destinations:', error);
         }
@@ -187,35 +192,70 @@ const Dashboard = () => {
                         {destinations.length === 0 ? (
                           <p>No destinations available.</p>
                         ) : (
-                          <ul>
-                            {destinations.map((destination, index) => (
-                              <li key={index}>
-                                <strong>Origin:</strong> {destination.origin} -{" "}
-                                <strong>Destination:</strong> {destination.destination} -{" "}
-                                <strong>Products:</strong>{" "}
-                                {destination.products.length > 0 ? (
-                                  destination.products.map((product, productIndex) => (
-                                    <span key={productIndex}>
-                                      {product.productName} (Order #{product.orderNumber}, KES{product.totalPrice})
-                                      {productIndex !== destination.products.length - 1 ? ", " : ""}
-                                    </span>
-                                  ))
-                                ) : (
-                                  <em>No products</em>
-                                )}
-                              </li>
-                            ))}
-                          </ul>
+                          <div>
+                            <h3>Direct Routes</h3>
+                            {destinations.filter(d => d.type === 'Direct').length === 0 ? (
+                              <p>No direct routes available.</p>
+                            ) : (
+                              <ul>
+                                {destinations
+                                  .filter(d => d.type === 'Direct')
+                                  .map((destination, index) => (
+                                    <li key={index}>
+                                      <strong>Origin:</strong> {destination.origin} -{" "}
+                                      <strong>Destination:</strong> {destination.destination} -{" "}
+                                      <strong>Orders:</strong>{" "}
+                                      {destination.orders.length > 0 ? (
+                                        destination.orders.map((order, orderIndex) => (
+                                          <span key={orderIndex}>
+                                            Order #{order} 
+                                            {orderIndex !== destination.orders.length - 1 ? ", " : ""}
+                                          </span>
+                                        ))
+                                      ) : (
+                                        <em>No orders</em>
+                                      )}
+                                    </li>
+                                  ))}
+                              </ul>
+                            )}
+                      
+                            <h3>Hub Routes</h3>
+                            {destinations.filter(d => d.type === 'Hub').length === 0 ? (
+                              <p>No hub routes available.</p>
+                            ) : (
+                              <ul>
+                                {destinations
+                                  .filter(d => d.type === 'Hub')
+                                  .map((destination, index) => (
+                                    <li key={index}>
+                                      <strong>Origin:</strong> {destination.origin} -{" "}
+                                      <strong>Destination:</strong> {destination.destination} -{" "}
+                                      <strong>Orders:</strong>{" "}
+                                      {destination.orders.length > 0 ? (
+                                        destination.orders.map((order, orderIndex) => (
+                                          <span key={orderIndex}>
+                                            Order #{order} 
+                                            {orderIndex !== destination.orders.length - 1 ? ", " : ""}
+                                          </span>
+                                        ))
+                                      ) : (
+                                        <em>No orders</em>
+                                      )}
+                                    </li>
+                                  ))}
+                              </ul>
+                            )}
+                          </div>
                         )}
                       </div>
                     )}
-                </div>
-                
-            </div>
+                  </div>
+                  </div>
             <Footer/>
         </div>
-
     );
+
 };
 
 export default Dashboard;
