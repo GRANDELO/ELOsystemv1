@@ -1,5 +1,5 @@
 const Order = require("../models/Order"); 
-
+const io = require('socket.io')(server);
 const Route = require('../models/enRouteLocation'); // Import the Route model (to be created)
 const mongoose = require('mongoose');
 
@@ -47,6 +47,7 @@ async function createRoutes(groupedOrders) {
       destination: groupedOrders[key][0].destination,
       orders: groupedOrders[key].map(order => order._id),
       status: 'scheduled',
+      type,
     });
     await route.save();
     routes.push(route);
@@ -87,6 +88,8 @@ const planDeliveryLocations = async (req, res) => {
       );
     }
 
+    io.emit('updateDestinations', { directRoutes, hubRoutes });
+
     // Step 7: Return the transportation plan
     res.status(200).json({
       success: true,
@@ -106,8 +109,30 @@ const planDeliveryLocations = async (req, res) => {
   }
 };
 
+const getDestinations = async(req, res) => {
+  try {
+    const directRoutes = await Route.find({ status: 'scheduled', type: 'Direct' }); // Adjust query as needed
+    const hubRoutes = await Route.find({ status: 'scheduled', type: 'Hub' });
+
+    res.status(200).json({
+      success: true,
+      message: 'Destinations retrieved successfully',
+      data: { directRoutes, hubRoutes },
+    });
+  } catch (error) {
+    console.error('Error fetching destinations:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch destinations',
+      error: error.message,
+    });
+  }
+};
+
+
 module.exports = {
   planDeliveryLocations,
+  getDestinations,
 };
 
 // /**

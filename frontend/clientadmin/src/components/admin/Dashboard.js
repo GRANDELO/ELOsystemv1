@@ -8,11 +8,13 @@ import UserChart from './UserChart';
 import Header from './header';
 import HR from './hr/hrdash';
 import Accouns from './accouns/accountsdash';
-
+import io from 'socket.io-client';
 import Sales from './sales/Salespg';
 import Setting from './settings';
 import AdminFeedback from '../feedback';
 import './styles/Dashboard.css';
+
+const socket = io('https://elosystemv1.onrender.com/api');
 
 const Dashboard = () => {
     const [view, setView] = useState('summary');
@@ -29,24 +31,32 @@ const Dashboard = () => {
 
     const fetchDestinations = async () => {
         try {
-            const response = await axiosInstance.get('/plan-delivery'); // API call to fetch destinations
+            const response = await axiosInstance.post('/plan-delivery'); // API call to fetch destinations
+            //const Des = await axiosInstance.get('/destinations');
             console.log('Backend Response:', response.data.data);
             
             const { directRoutes = [], hubRoutes= [] } = response.data.data;
+
+            socket.on('updateDestinations', ({ directRoutes, hubRoutes }) => {
 
             const processRoutes = ( routes, type) => 
                 routes.map(routes => ({
                     type,
                     origin: routes.origin,
                     destination: routes.destination,
-                    orders: routes.orders,
+                    orders: routes.orders.map(orderId => ({
+                        id: orderId,
+                        status: 'pending',
+                    })),
                 }));
 
                 const directDestinations = processRoutes(directRoutes, 'Direct');
                 const hubDestination = processRoutes(hubRoutes, 'Hub');
 
                 setDestinations([...directDestinations, ...hubDestination]);
-        } catch (error) {
+        });
+        return () => socket.off('updateDestinations')
+    } catch (error) {
             console.error('Error fetching destinations:', error);
         }
     };
