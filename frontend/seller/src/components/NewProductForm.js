@@ -55,32 +55,42 @@ const NewProductForm = () => {
   }, [newProduct.category]);
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-
+    const { name, files } = e.target;
+  
     if (name === "images") {
       const newImages = Array.from(files);
+      // Check if adding these images would exceed the limit
       if (newProduct.images.length + newImages.length > 6) {
         seterror("You can only upload a maximum of 6 images.");
         return;
       }
-
+  
+      // Filter out any files that are not valid images
       const validImages = newImages.filter((file) =>
         ["image/jpeg", "image/png", "image/jpg"].includes(file.type)
       );
-
+  
       if (validImages.length < newImages.length) {
         seterror("Only JPG, JPEG, and PNG files are allowed.");
         return;
       }
-
-      setNewProduct({
-        ...newProduct,
-        images: [...newProduct.images, ...validImages],
-      });
+  
+      // Use functional update for the state
+      setNewProduct((prevProduct) => ({
+        ...prevProduct,
+        images: [...prevProduct.images, ...validImages],
+      }));
+  
+      // Reset the file input so the same files can be selected again if needed
+      fileInputRef.current.value = "";
     } else {
-      setNewProduct({ ...newProduct, [name]: value });
+      setNewProduct((prevProduct) => ({
+        ...prevProduct,
+        [e.target.name]: e.target.value,
+      }));
     }
   };
+  
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -97,9 +107,21 @@ const NewProductForm = () => {
       seterror("Only JPG, JPEG, and PNG files are allowed.");
       return;
     }
-
-    setNewProduct({ ...newProduct, images: [...newProduct.images, ...validImages] });
+    setNewProduct((prevProduct) => ({
+      ...prevProduct,
+      images: [...prevProduct.images, ...validImages],
+    }));
   };
+  
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setDragging(false);
+  };
+
 
   const addFeature = () => {
     setNewProduct({
@@ -113,14 +135,7 @@ const NewProductForm = () => {
     setNewProduct({ ...newProduct, features: updatedFeatures });
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setDragging(true);
-  };
 
-  const handleDragLeave = () => {
-    setDragging(false);
-  };
 
   const handleClick = (e) => {
     e.stopPropagation();
@@ -408,8 +423,7 @@ const generateDescription = async () => {
         onChange={handleChange}
       />
 
-      <label>
-        Images:
+      <div>
         <input
           type="file"
           name="images"
@@ -429,7 +443,9 @@ const generateDescription = async () => {
             ? `${newProduct.images.length}/6 images selected`
             : "Drag and drop images or click to select (max 6)"}
         </div>
-      </label>
+      </div>
+
+
 
       <button type="submit">
       {loading ? "Creating......" : "Create New Product"}

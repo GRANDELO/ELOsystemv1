@@ -141,7 +141,33 @@ const [steps, setSteps] = useState(initialSteps);
 
 
   const [isJoyrideActive, setJoyrideActive] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isInstalled, setIsInstalled] = useState(true);
 
+  useEffect(() => {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstalled(false);
+    });
+
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstalled(true);
+    }
+  }, []);
+
+  const handleInstall = () => {
+    if (deferredPrompt) { // Check if the prompt is available
+      deferredPrompt.prompt(); // Show the prompt
+      deferredPrompt.userChoice.then((choiceResult) => { // Wait for the user's response
+        if (choiceResult.outcome === 'accepted') {
+          setIsInstalled(true); // Mark as installed if accepted
+        }
+        setDeferredPrompt(null); // Clear the prompt so it doesn't show again
+      });
+    }
+  };
+  
   useEffect(() => {
     // Check if the user has already seen the Joyride
     const hasSeenJoyride = localStorage.getItem('hasSeenJoyride');
@@ -385,6 +411,7 @@ const [steps, setSteps] = useState(initialSteps);
 
   return (
     <div className="salesp-home">
+
        {isMobile ?(
         <>
           <Tour
@@ -423,7 +450,14 @@ const [steps, setSteps] = useState(initialSteps);
           {loginPrompt} <a href="/login">Sign In</a> or <a href="/register">Register</a>
         </Alert>
       )}
-
+      {!isInstalled &&
+        (
+          <div className="install-prompt">
+            <p>Install this web app for a better experience.</p>
+            <button onClick={handleInstall}>Install</button>
+          </div>
+        )
+      };
       {isMobile ? (
               <main className="salesp-main">
                 {!setnavop ?

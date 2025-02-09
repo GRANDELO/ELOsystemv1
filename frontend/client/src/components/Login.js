@@ -16,6 +16,33 @@ const Login = () => {
   const token = localStorage.getItem('token');
   const apptoken = localStorage.getItem('apptoken');
   const appcat = localStorage.getItem('appcat');
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isInstalled, setIsInstalled] = useState(true);
+
+  useEffect(() => {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstalled(false);
+    });
+
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstalled(true);
+    }
+  }, []);
+
+  const handleInstall = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          setIsInstalled(true);
+        }
+        setDeferredPrompt(null);
+      });
+    }
+  };
+
 
   useEffect(() => {
     // If apptoken is set, use it to set the token and navigate based on the app category
@@ -116,6 +143,14 @@ const Login = () => {
 
   return (
     <div className="container">
+          {!isInstalled &&
+           (
+              <div className="install-prompt">
+                <p>Install this web app for a better experience.</p>
+                <button onClick={handleInstall}>Install</button>
+              </div>
+            )
+          };
       <form onSubmit={recoverpassword ? sendRecovEmail : handleSubmit}>
         {!recoverpassword ? (
           <div>
