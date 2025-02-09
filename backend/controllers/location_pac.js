@@ -40,7 +40,7 @@ function decideTransportation(groupedOrders, threshold = 10) {
 }
 
 // Helper function to create routes for grouped orders
-async function createRoutes(groupedOrders) {
+async function createRoutes(groupedOrders, threshold = 10) {
   const routes = [];
   for (const key in groupedOrders) {
     const route = new Route({
@@ -71,6 +71,7 @@ const planDeliveryLocations = async (req, res) => {
 
     const orders = await Order.find({
       orderDate: { $gte: timeWindowStart, $lte: currentTime },
+      status: 'pending',
     }).populate('origin destination'); // Populate seller and customer details if needed
 
     console.log('Fetched orders:', orders);
@@ -100,10 +101,10 @@ const planDeliveryLocations = async (req, res) => {
     console.log('Transportation plan:', transportationPlan);
 
     // Step 4: Create routes for direct transportation
-    const directRoutes = await createRoutes(transportationPlan.direct);
+    const directRoutes = await createRoutes(transportationPlan.direct, threshold);
     console.log('Direct routes:', directRoutes);
     // Step 5: Redirect orders to a hub for further consolidation
-    const hubRoutes = await createRoutes(transportationPlan.hub);
+    const hubRoutes = await createRoutes(transportationPlan.hub, threshold);
     console.log('Hub routes:', hubRoutes);
 
     // Step 6: Update order statuses
