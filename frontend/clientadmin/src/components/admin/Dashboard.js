@@ -190,7 +190,7 @@ const Dashboard = () => {
                         <div className="dashad-destinations-section">
                         <h2>Destinations</h2>
                         {destinations.length === 0 ? (
-                          <p>No destinations available.</p>
+                          <p>No  available.</p>
                         ) : (
                           <div>
                             <h3>Direct Routes</h3>

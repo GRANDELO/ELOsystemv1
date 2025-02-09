@@ -1,6 +1,6 @@
 const Order = require("../models/Order"); 
 
-const Route = require('../models/enRoutesLocation'); // Import the Route model (to be created)
+const Route = require('../models/enRouteLocation'); // Import the Route model (to be created)
 const mongoose = require('mongoose');
 
 // Helper function to group orders based on origin and destination
