@@ -698,7 +698,7 @@ const TransactionLedgerfuc = async (products, orderNumber) => {
 
   const newTransaction = new Transaction({ 
     description: `Earnings from order ${orderNumber}`, 
-    account: "67769ab83726b6a2d038ef9b", 
+    account: "67a8847c975a8d041150d67d", 
     debit: totalCompanyEarnings, 
     credit: 0, 
   });
