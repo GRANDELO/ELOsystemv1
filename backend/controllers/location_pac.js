@@ -65,6 +65,10 @@ const planDeliveryLocations = async (req, res) => {
     const currentTime = new Date();
     const timeWindowStart = new Date(currentTime.getTime() - timeWindowMinutes * 60000);
 
+    console.log('Time window start:', timeWindowStart);
+    console.log('Current time:', currentTime);
+
+
     const orders = await Order.find({
       orderDate: { $gte: timeWindowStart, $lte: currentTime },
     }).populate('origin destination'); // Populate seller and customer details if needed

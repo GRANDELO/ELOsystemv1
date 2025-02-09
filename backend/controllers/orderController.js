@@ -71,7 +71,7 @@ exports.createOrder = async (req, res) => {
       paymentMethod,
       paid: false,
       destination,
-      orderDate,
+      orderDate: new Date(),
       username,
       isDeliveryInProcess: false,
       isDelivered: false,
