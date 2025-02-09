@@ -84,6 +84,8 @@ const planDeliveryLocations = async (req, res) => {
         continue; // Skip if seller is not found
       }
 
+      
+
       const location = seller.locations;
       if (location) {
         order.origin = `${location.county || ''}, ${location.town || ''}, ${location.area || ''}, ${location.specific || ''}`;
@@ -92,12 +94,16 @@ const planDeliveryLocations = async (req, res) => {
       }
     }
 
+    
+
 
     // Step 2: Group orders based on origin and destination
     const groupedOrders = groupOrders(orders, timeWindowMinutes);
     console.log('Grouped orders:', groupedOrders);
+
+    const threshold = 10; 
     // Step 3: Decide transportation based on threshold
-    const transportationPlan = decideTransportation(groupedOrders);
+    const transportationPlan = decideTransportation(groupedOrders, threshold);
     console.log('Transportation plan:', transportationPlan);
 
     // Step 4: Create routes for direct transportation
