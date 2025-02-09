@@ -1,5 +1,5 @@
 const Order = require("../models/Order"); 
-const io = require('socket.io')(server);
+const { io } = require('../io');
 const Route = require('../models/enRouteLocation'); // Import the Route model (to be created)
 const mongoose = require('mongoose');
 
