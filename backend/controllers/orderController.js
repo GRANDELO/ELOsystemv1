@@ -27,7 +27,7 @@ exports.createOrder = async (req, res) => {
     username,
     orderReference,
     sellerOrderId,
-    
+
   } = req.body;
 
   try {
