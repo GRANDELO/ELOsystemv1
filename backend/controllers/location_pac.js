@@ -45,8 +45,8 @@ async function createRoutes(groupedOrders) {
   for (const key in groupedOrders) {
     const route = new Route({
       routeId: `ROUTE-${uuidv4()}`,
-      origin: groupedOrders[key][0].origin,
-      destination: groupedOrders[key][0].destination,
+      origin: groupedOrders[key][0].origin || 'Unknown origin',
+      destination: groupedOrders[key][0].destination || 'Unknown destinations',
       orders: groupedOrders[key].map(order => order._id),
       status: 'scheduled',
       type: groupedOrders[key].length >= threshold ? 'direct' : 'hub',
@@ -70,6 +70,9 @@ const planDeliveryLocations = async (req, res) => {
       status: 'pending',
     }).populate('origin destination'); // Populate seller and customer details if needed
 
+    console.log('Fetched orders:', orders);
+
+
     for (let order of orders) {
       const seller = await User.findById(order.origin); // `origin` is the seller ID
       if (!seller) {
@@ -88,15 +91,17 @@ const planDeliveryLocations = async (req, res) => {
 
     // Step 2: Group orders based on origin and destination
     const groupedOrders = groupOrders(orders, timeWindowMinutes);
-
+    console.log('Grouped orders:', groupedOrders);
     // Step 3: Decide transportation based on threshold
     const transportationPlan = decideTransportation(groupedOrders);
+    console.log('Transportation plan:', transportationPlan);
 
     // Step 4: Create routes for direct transportation
     const directRoutes = await createRoutes(transportationPlan.direct);
-
+    console.log('Direct routes:', directRoutes);
     // Step 5: Redirect orders to a hub for further consolidation
     const hubRoutes = await createRoutes(transportationPlan.hub);
+    console.log('Hub routes:', hubRoutes);
 
     // Step 6: Update order statuses
     for (const route of [...directRoutes, ...hubRoutes]) {
@@ -107,6 +112,7 @@ const planDeliveryLocations = async (req, res) => {
     }
 
     io.emit('updateDestinations', { directRoutes, hubRoutes });
+    console.log('Socket emit fired:', { directRoutes, hubRoutes });
 
     // Step 7: Return the transportation plan
     res.status(200).json({

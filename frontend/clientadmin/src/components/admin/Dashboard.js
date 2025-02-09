@@ -37,7 +37,6 @@ const Dashboard = () => {
             
             const { directRoutes = [], hubRoutes= [] } = response.data.data;
 
-            socket.on('updateDestinations', ({ directRoutes, hubRoutes }) => {
 
             const processRoutes = ( routes, type) => 
                 routes.map(routes => ({
@@ -54,12 +53,40 @@ const Dashboard = () => {
                 const hubDestination = processRoutes(hubRoutes, 'Hub');
 
                 setDestinations([...directDestinations, ...hubDestination]);
-        });
-        return () => socket.off('updateDestinations')
-    } catch (error) {
+       } catch (error) {
             console.error('Error fetching destinations:', error);
         }
     };
+
+    useEffect(() => {
+        fetchDestinations();
+    
+        socket.on('updateDestinations', ({ directRoutes, hubRoutes }) => {
+          console.log('Received from socket:', { directRoutes, hubRoutes });
+          const processRoutes = (routes, type) =>
+            routes.map(route => ({
+              type,
+              origin: route.origin,
+              destination: route.destination,
+              orders: route.orders.map(orderId => ({
+                id: orderId,
+                status: 'pending',
+              })),
+            }));
+    
+          const directDestinations = processRoutes(directRoutes, 'Direct');
+          const hubDestination = processRoutes(hubRoutes, 'Hub');
+    
+          setDestinations([...directDestinations, ...hubDestination]);
+        });
+    
+        return () => {
+          socket.off('updateDestinations');
+        };
+      }, []);
+    
+
+    
 
     useEffect(() => {
         const fetchDashboardData = async () => {
