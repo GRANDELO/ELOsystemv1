@@ -2,6 +2,8 @@ const Order = require("../models/Order");
 const { io } = require('../io');
 const Route = require('../models/enRouteLocation'); // Import the Route model (to be created)
 const mongoose = require('mongoose');
+const User = require("../models/User")
+const { v4: uuidv4 } = require("uuid");
 
 // Helper function to group orders based on origin and destination
 function groupOrders(orders, timeWindowMinutes = 60) {
@@ -47,7 +49,7 @@ async function createRoutes(groupedOrders) {
       destination: groupedOrders[key][0].destination,
       orders: groupedOrders[key].map(order => order._id),
       status: 'scheduled',
-      type,
+      type: groupedOrders[key].length >= threshold ? 'direct' : 'hub',
     });
     await route.save();
     routes.push(route);
@@ -67,6 +69,22 @@ const planDeliveryLocations = async (req, res) => {
       orderDate: { $gte: timeWindowStart, $lte: currentTime },
       status: 'pending',
     }).populate('origin destination'); // Populate seller and customer details if needed
+
+    for (let order of orders) {
+      const seller = await User.findById(order.origin); // `origin` is the seller ID
+      if (!seller) {
+        console.warn(`Seller not found for order ID: ${order._id}`);
+        continue; // Skip if seller is not found
+      }
+
+      const location = seller.locations;
+      if (location) {
+        order.origin = `${location.county || ''}, ${location.town || ''}, ${location.area || ''}, ${location.specific || ''}`;
+      } else {
+        order.origin = 'Unknown location';
+      }
+    }
+
 
     // Step 2: Group orders based on origin and destination
     const groupedOrders = groupOrders(orders, timeWindowMinutes);
