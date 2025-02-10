@@ -99,14 +99,21 @@ const planDeliveryLocations = async (req, res) => {
     for (let order of orders) {
       if (!order.origin) {
         const seller = await User.findOne({ username: order.username, category: 'seller' });
-        if (seller && seller.locations) {
-          const { county, town, area } = seller.locations || {};
-          order.origin = { county: county || '', town: town || '', area: area || '' };
-        } else {
-          order.origin = { county: 'Nairobi County', town: 'Nairobi', area: 'CBD' };
-        }
+        const defaultOrigin = { county: 'Nairobi County', town: 'Nairobi', area: 'CBD' };
+
+        order.origin = {
+          county: seller?.locations?.county || defaultOrigin.county,
+          town: seller?.locations?.town || defaultOrigin.town,
+          area: seller?.locations?.area || defaultOrigin.area,
+        };
+      } else {
+    // Fill in missing fields in existing origin
+       order.origin.county = order.origin.county || 'Nairobi County';
+       order.origin.town = order.origin.town || 'Nairobi';
+       order.origin.area = order.origin.area || 'CBD';
+       }
       }
-    }
+
 
     
     // Step 2: Group orders based on origin and destination
