@@ -96,14 +96,28 @@ const planDeliveryLocations = async (req, res) => {
 
 
     for (let order of orders) {
-      const seller = await User.findById(order.origin); // `origin` is the seller ID
-      if (!seller) {
-        console.warn(`Seller not found for order ID: ${order._id}`);
-        order.origin = 'Unknown location' ;
-        continue; // Skip if seller is not found
+      let seller;
+    
+      // Try to fetch the seller using `origin` ObjectId
+      if (mongoose.Types.ObjectId.isValid(order.origin)) {
+        seller = await User.findById(order.origin);
       }
-
-      const { county, town, area, specific } = order.origin.locations || {};
+    
+      // Fallback to fetch seller using `username` if `origin` is invalid or not found
+      if (!seller) {
+        console.warn(`Seller not found for order ID: ${order._id} using origin ObjectId. Trying with username: ${order.username}`);
+        seller = await User.findOne({ username: order.username, category: 'seller' });
+      }
+    
+      // If seller is still not found, assign a default unknown location
+      if (!seller) {
+        console.warn(`Seller not found for order ID: ${order._id} using username: ${order.username}`);
+        order.origin = 'Unknown location';
+        continue;
+      }
+    
+      // Extract seller location and assign it to `order.origin`
+      const { county, town, area, specific } = seller.locations || {};
       order.origin = `${county || ''}, ${town || ''}, ${area || ''}, ${specific || ''}`;
     }
 
