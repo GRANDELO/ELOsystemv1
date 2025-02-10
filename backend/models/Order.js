@@ -32,7 +32,7 @@ const orderSchema = new mongoose.Schema({
   sellerOrderId: { type: String, default: undefined},
   origin: { 
     type: String,
-    default: Nairobi,
+    default: "Nairobi",
   }, 
   status: {type:String, enum: ['pending', 'packed', 'in_transit','delivered' ], default: 'pending'},
   currentplace: { type: String, required: true, default: "Waiting for delivery." },
