@@ -623,7 +623,7 @@ const OrderingPage = () => {
           />
           <Form.Check
             type="radio"
-            label="Cash on Delivery"
+            label="Mpesa on Delivery"
             name="paymentMethod"
             value="cod"
             checked={paymentMethod === 'cod'}

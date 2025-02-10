@@ -59,7 +59,7 @@ async function createRoutes(groupedOrders, threshold = 10) {
 
     const route = new Route({
       routeId: `ROUTE-${uuidv4()}`,
-      origin: orderOrigin,
+      origin: groupedOrders[key][0].origin,
       destination: groupedOrders[key][0].destination || 'Unknown destinations',
       orders: groupedOrders[key].map(order => order._id),
       status: 'scheduled',
@@ -86,7 +86,11 @@ const planDeliveryLocations = async (req, res) => {
     const orders = await Order.find({
       orderDate: { $gte: timeWindowStart, $lte: currentTime },
       status: 'pending',
-    }).populate('origin destination'); // Populate seller and customer details if needed
+    }).populate({
+      path: 'origin',
+      select: 'locations fullname category',
+      match: { category: 'seller'},
+    }); // Populate seller and customer details if needed
 
     console.log('Fetched orders:', orders);
 
@@ -95,22 +99,13 @@ const planDeliveryLocations = async (req, res) => {
       const seller = await User.findById(order.origin); // `origin` is the seller ID
       if (!seller) {
         console.warn(`Seller not found for order ID: ${order._id}`);
-        order.origin = null;
+        order.origin = 'Unknown location' ;
         continue; // Skip if seller is not found
       }
 
-      
-
-      const location = seller.locations;
-      if (location) {
-        order.origin = `${location.county || ''}, ${location.town || ''}, ${location.area || ''}, ${location.specific || ''}`;
-      } else {
-        order.origin = 'Unknown location';
-      }
+      const { county, town, area, specific } = order.origin.locations || {};
+      order.origin = `${county || ''}, ${town || ''}, ${area || ''}, ${specific || ''}`;
     }
-
-    
-
 
     // Step 2: Group orders based on origin and destination
     const groupedOrders = groupOrders(orders, timeWindowMinutes);
