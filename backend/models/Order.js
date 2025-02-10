@@ -31,9 +31,8 @@ const orderSchema = new mongoose.Schema({
   orderReference: { type: String, required: true },
   sellerOrderId: { type: String, default: undefined},
   origin: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
-    default: null,
+    type: String,
+    default: Nairobi,
   }, 
   status: {type:String, enum: ['pending', 'packed', 'in_transit','delivered' ], default: 'pending'},
   currentplace: { type: String, required: true, default: "Waiting for delivery." },

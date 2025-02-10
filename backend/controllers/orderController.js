@@ -63,6 +63,18 @@ exports.createOrder = async (req, res) => {
     const products = await Product.find({ _id: { $in: productIds } }); // Fetch product details
     const productOwners = [...new Set(products.map(product => product.username))]; // Get unique usernames of owners
 
+    const seller = await User.findOne({ username });
+    if (!seller || !seller.locations) {
+      return res.status(404).json({ message: 'Seller or location not found' });
+    }
+
+    const origin = {
+      county: seller.locations.county,
+      town: seller.locations.town,
+      area: seller.locations.area,
+      specific: seller.locations.specific,
+    };
+
     // Create the order
     const orderData = {
       items,
@@ -76,7 +88,8 @@ exports.createOrder = async (req, res) => {
       isDeliveryInProcess: false,
       isDelivered: false,
       packed: false,
-      origin: sellerOrderId,
+      sellerOrderId,
+      origin,
       orderReference,
       ...(sellerOrderId && { sellerOrderId }), // Only add sellerOrderId if it exists
     };
