@@ -45,16 +45,15 @@ async function createRoutes(groupedOrders, threshold = 10) {
   for (const key in groupedOrders) {
     const orders = groupedOrders[key];
     const firstOrder = orders[0];
-
-    // Ensure origin is not null
     const origin = firstOrder.origin || {
       county: 'Nairobi County', // Default location
       town: 'Nairobi',
       area: 'Central',
     };
+   
     const route = new Route({
       routeId: `ROUTE-${uuidv4()}`,
-      origin: groupedOrders[key][0].origin,
+      origin: groupedOrders[key][0].origin._id,
       destination: groupedOrders[key][0].destination || 'Unknown destinations',
       orders: groupedOrders[key].map(order => order._id),
       status: 'scheduled',
