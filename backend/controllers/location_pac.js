@@ -6,7 +6,7 @@ const User = require("../models/User")
 const { v4: uuidv4 } = require("uuid");
 
 // Helper function to group orders based on origin and destination
-function groupOrders(orders, timeWindowMinutes = 60) {
+function groupOrders(orders, timeWindowMinutes = 1440) {
   const groupedOrders = {};
   const currentTime = new Date();
 

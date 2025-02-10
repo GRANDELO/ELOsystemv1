@@ -86,8 +86,6 @@ const Dashboard = () => {
       }, []);
     
 
-    
-
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
@@ -224,70 +222,70 @@ const Dashboard = () => {
                     {view === 'feedback' && <AdminFeedback />}
                     {view === 'Accouns' && <Accouns />}
                     {view === 'destinations' && (
-                        <div className="dashad-destinations-section">
-                        <h2>Destinations</h2>
-                        {destinations.length === 0 ? (
-                          <p>No  available.</p>
-                        ) : (
-                          <div>
-                            <h3>Direct Routes</h3>
-                            {destinations.filter(d => d.type === 'Direct').length === 0 ? (
-                              <p>No direct routes available.</p>
-                            ) : (
-                              <ul>
-                                {destinations
-                                  .filter(d => d.type === 'Direct')
-                                  .map((destination, index) => (
-                                    <li key={index}>
-                                      <strong>Origin:</strong> {destination.origin} -{" "}
-                                      <strong>Destination:</strong> {destination.destination} -{" "}
-                                      <strong>Orders:</strong>{" "}
-                                      {destination.orders.length > 0 ? (
-                                        destination.orders.map((order, orderIndex) => (
-                                          <span key={orderIndex}>
-                                            Order #{order} 
-                                            {orderIndex !== destination.orders.length - 1 ? ", " : ""}
-                                          </span>
-                                        ))
-                                      ) : (
-                                        <em>No orders</em>
-                                      )}
-                                    </li>
-                                  ))}
-                              </ul>
-                            )}
-                      
-                            <h3>Hub Routes</h3>
-                            {destinations.filter(d => d.type === 'Hub').length === 0 ? (
-                              <p>No hub routes available.</p>
-                            ) : (
-                              <ul>
-                                {destinations
-                                  .filter(d => d.type === 'Hub')
-                                  .map((destination, index) => (
-                                    <li key={index}>
-                                      <strong>Origin:</strong> {destination.origin} -{" "}
-                                      <strong>Destination:</strong> {destination.destination} -{" "}
-                                      <strong>Orders:</strong>{" "}
-                                      {destination.orders.length > 0 ? (
-                                        destination.orders.map((order, orderIndex) => (
-                                          <span key={orderIndex}>
-                                            Order #{order} 
-                                            {orderIndex !== destination.orders.length - 1 ? ", " : ""}
-                                          </span>
-                                        ))
-                                      ) : (
-                                        <em>No orders</em>
-                                      )}
-                                    </li>
-                                  ))}
-                              </ul>
-                            )}
-                          </div>
-                        )}
-                      </div>
+                         <div className="dashad-destinations-section">
+                         <h2>Destinations</h2>
+                         {destinations.length === 0 ? (
+                             <p>No available destinations.</p>
+                         ) : (
+                             <div>
+                                 <h3>Direct Routes</h3>
+                                 {destinations.filter(d => d.type === 'Direct').length === 0 ? (
+                                     <p>No direct routes available.</p>
+                                 ) : (
+                                     <ul>
+                                         {destinations
+                                             .filter(d => d.type === 'Direct')
+                                             .map((destination, index) => (
+                                                 <li key={index}>
+                                                     <strong>Origin:</strong> {destination.origin.county}, {destination.origin.town}, {destination.origin.area} -{" "}
+                                                     <strong>Destination:</strong> {destination.destination.county}, {destination.destination.town}, {destination.destination.area} -{" "}
+                                                     <strong>Orders:</strong>{" "}
+                                                     {destination.orders.length > 0 ? (
+                                                         destination.orders.map((order, orderIndex) => (
+                                                             <span key={orderIndex}>
+                                                                 Order #{order.id}
+                                                                 {orderIndex !== destination.orders.length - 1 ? ", " : ""}
+                                                             </span>
+                                                         ))
+                                                     ) : (
+                                                         <em>No orders</em>
+                                                     )}
+                                                 </li>
+                                             ))}
+                                     </ul>
+                                 )}
+             
+                                 <h3>Hub Routes</h3>
+                                 {destinations.filter(d => d.type === 'Hub').length === 0 ? (
+                                     <p>No hub routes available.</p>
+                                 ) : (
+                                     <ul>
+                                         {destinations
+                                             .filter(d => d.type === 'Hub')
+                                             .map((destination, index) => (
+                                                 <li key={index}>
+                                                     <strong>Origin:</strong> {destination.origin.county}, {destination.origin.town}, {destination.origin.area} -{" "}
+                                                     <strong>Destination:</strong> {destination.destination.county}, {destination.destination.town}, {destination.destination.area} -{" "}
+                                                     <strong>Orders:</strong>{" "}
+                                                     {destination.orders.length > 0 ? (
+                                                         destination.orders.map((order, orderIndex) => (
+                                                             <span key={orderIndex}>
+                                                                 Order #{order.id}
+                                                                 {orderIndex !== destination.orders.length - 1 ? ", " : ""}
+                                                             </span>
+                                                         ))
+                                                     ) : (
+                                                         <em>No orders</em>
+                                                     )}
+                                                 </li>
+                                             ))}
+                                     </ul>
+                                 )}
+                             </div>
+                         )}
+                     </div>
                     )}
-                  </div>
+                    </div>
                   </div>
             <Footer/>
         </div>
