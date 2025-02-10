@@ -4,6 +4,6 @@ const { planDeliveryLocations, groupProductsByOriginAndDestination, getDestinati
 
 router.get('/destinations', getDestinations);
 
-  router.post('/plan-delivery', planDeliveryLocations);
+router.post('/plan-delivery', planDeliveryLocations);
 
 module.exports = router

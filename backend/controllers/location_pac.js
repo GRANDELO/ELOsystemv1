@@ -53,7 +53,11 @@ async function createRoutes(groupedOrders, threshold = 10) {
    
     const route = new Route({
       routeId: `ROUTE-${uuidv4()}`,
-      origin: groupedOrders[key][0].origin._id,
+      origin: {
+        county: origin.county,
+        town: origin.town,
+        area: origin.area,
+      },
       destination: groupedOrders[key][0].destination || 'Unknown destinations',
       orders: groupedOrders[key].map(order => order._id),
       status: 'scheduled',
