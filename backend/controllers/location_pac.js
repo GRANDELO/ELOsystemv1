@@ -43,6 +43,15 @@ function decideTransportation(groupedOrders, threshold = 10) {
 async function createRoutes(groupedOrders, threshold = 10) {
   const routes = [];
   for (const key in groupedOrders) {
+    const orders = groupedOrders[key];
+    const firstOrder = orders[0];
+
+    // Ensure origin is not null
+    const origin = firstOrder.origin || {
+      county: 'Nairobi County', // Default location
+      town: 'Nairobi',
+      area: 'Central',
+    };
     const route = new Route({
       routeId: `ROUTE-${uuidv4()}`,
       origin: groupedOrders[key][0].origin,
@@ -82,17 +91,17 @@ const planDeliveryLocations = async (req, res) => {
 
     for (let order of orders) {
       if (!order.origin) {
-        // Find the seller by username
         const seller = await User.findOne({ username: order.username, category: 'seller' });
         if (seller && seller.locations) {
-          const { county, town, area, specific } = seller.locations || {};
-          order.origin = `${county || ''}, ${town || ''}, ${area || ''}, ${specific || ''}`;
+          const { county, town, area } = seller.locations || {};
+          order.origin = { county: county || '', town: town || '', area: area || '' };
         } else {
-          console.warn(`Seller not found for order ID: ${order._id} using username: ${order.username}. Assigning default origin.`);
-          order.origin = 'Nairobi'; // Default location
+          order.origin = { county: 'Nairobi County', town: 'Nairobi', area: 'CBD' };
         }
       }
     }
+
+    
     // Step 2: Group orders based on origin and destination
     const groupedOrders = groupOrders(orders, timeWindowMinutes);
     console.log('Grouped orders:', groupedOrders);
