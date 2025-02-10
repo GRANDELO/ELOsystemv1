@@ -80,14 +80,22 @@ const planDeliveryLocations = async (req, res) => {
     console.log('Time window start:', timeWindowStart);
     console.log('Current time:', currentTime);
 
-
     const orders = await Order.find({
       orderDate: { $gte: timeWindowStart, $lte: currentTime },
       status: 'pending',
-    }).populate('origin'); // Populate seller and customer details if needed
+    }).populate('origin' ); // Populate seller and customer details if needed
 
     console.log('Fetched orders:', orders);
 
+    if (!orders.length) {
+      console.log('No orders found within the given time window.');
+      return res.status(200).json({
+        success: false,
+        message: 'No pending orders found.',
+        data: { directRoutes: [], hubRoutes: [] },
+      });
+    }
+  
     for (let order of orders) {
       if (!order.origin) {
         const seller = await User.findOne({ username: order.username, category: 'seller' });
@@ -103,7 +111,16 @@ const planDeliveryLocations = async (req, res) => {
     
     // Step 2: Group orders based on origin and destination
     const groupedOrders = groupOrders(orders, timeWindowMinutes);
-    console.log('Grouped orders:', groupedOrders);
+    console.log('Grouped orders:', Object.keys(groupedOrders));
+
+    if (!Object.keys(groupedOrders).length) {
+      console.log('No grouped orders found.');
+      return res.status(200).json({
+        success: false,
+        message: 'No grouped orders found.',
+        data: { directRoutes: [], hubRoutes: [] },
+      });
+    }
 
     const threshold = 10; 
     // Step 3: Decide transportation based on threshold
