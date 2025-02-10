@@ -43,9 +43,23 @@ function decideTransportation(groupedOrders, threshold = 10) {
 async function createRoutes(groupedOrders, threshold = 10) {
   const routes = [];
   for (const key in groupedOrders) {
+
+    const orderOrigin = groupedOrders[key][0].origin;
+
+    // Ensure the origin is a valid ObjectId and references an existing User
+    const isValidOrigin = mongoose.Types.ObjectId.isValid(orderOrigin);
+    if (!isValidOrigin) {
+      throw new Error(`Invalid origin ObjectId for order: ${groupedOrders[key][0]._id}`);
+    }
+
+    const user = await User.findById(orderOrigin);
+    if (!user) {
+      throw new Error(`No user found for origin ObjectId: ${orderOrigin}`);
+    }
+
     const route = new Route({
       routeId: `ROUTE-${uuidv4()}`,
-      origin: groupedOrders[key][0].origin || 'Unknown origin',
+      origin: orderOrigin,
       destination: groupedOrders[key][0].destination || 'Unknown destinations',
       orders: groupedOrders[key].map(order => order._id),
       status: 'scheduled',
@@ -81,6 +95,7 @@ const planDeliveryLocations = async (req, res) => {
       const seller = await User.findById(order.origin); // `origin` is the seller ID
       if (!seller) {
         console.warn(`Seller not found for order ID: ${order._id}`);
+        order.origin = null;
         continue; // Skip if seller is not found
       }
 
