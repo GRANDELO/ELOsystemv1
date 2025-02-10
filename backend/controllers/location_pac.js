@@ -98,11 +98,7 @@ const planDeliveryLocations = async (req, res) => {
     for (let order of orders) {
       let seller;
     
-      // Try to fetch the seller using `origin` ObjectId
-      if (mongoose.Types.ObjectId.isValid(order.origin)) {
-        seller = await User.findById(order.origin);
-      }
-    
+      
       // Fallback to fetch seller using `username` if `origin` is invalid or not found
       if (!seller) {
         console.warn(`Seller not found for order ID: ${order._id} using origin ObjectId. Trying with username: ${order.username}`);
