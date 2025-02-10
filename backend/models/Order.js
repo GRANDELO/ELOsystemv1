@@ -33,7 +33,6 @@ const orderSchema = new mongoose.Schema({
   origin: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User', 
-    required: true,
   }, 
   status: {type:String, enum: ['pending', 'packed', 'in_transit','delivered' ], default: 'pending'},
   currentplace: { type: String, required: true, default: "Waiting for delivery." },
