@@ -43,20 +43,6 @@ function decideTransportation(groupedOrders, threshold = 10) {
 async function createRoutes(groupedOrders, threshold = 10) {
   const routes = [];
   for (const key in groupedOrders) {
-
-    const orderOrigin = groupedOrders[key][0].origin;
-
-    // Ensure the origin is a valid ObjectId and references an existing User
-    const isValidOrigin = mongoose.Types.ObjectId.isValid(orderOrigin);
-    if (!isValidOrigin) {
-      throw new Error(`Invalid origin ObjectId for order: ${groupedOrders[key][0]._id}`);
-    }
-
-    const user = await User.findById(orderOrigin);
-    if (!user) {
-      throw new Error(`No user found for origin ObjectId: ${orderOrigin}`);
-    }
-
     const route = new Route({
       routeId: `ROUTE-${uuidv4()}`,
       origin: groupedOrders[key][0].origin,
@@ -94,22 +80,19 @@ const planDeliveryLocations = async (req, res) => {
 
     console.log('Fetched orders:', orders);
 
-
     for (let order of orders) {
-      let seller;
-      seller = await User.findOne({ username: order.username, category: 'seller' });
-
-      if (seller) {
-        // Extract the seller's location
-        const { county, town, area, specific } = seller.locations || {};
-        order.origin = `${county || ''}, ${town || ''}, ${area || ''}, ${specific || ''}`;
-      } else {
-        // If the seller is not found, assign a default origin
-        console.warn(`Seller not found for order ID: ${order._id} using username: ${order.username}. Assigning default origin.`);
-        order.origin = 'Nairobi'; // Replace with your default location
+      if (!order.origin) {
+        // Find the seller by username
+        const seller = await User.findOne({ username: order.username, category: 'seller' });
+        if (seller && seller.locations) {
+          const { county, town, area, specific } = seller.locations || {};
+          order.origin = `${county || ''}, ${town || ''}, ${area || ''}, ${specific || ''}`;
+        } else {
+          console.warn(`Seller not found for order ID: ${order._id} using username: ${order.username}. Assigning default origin.`);
+          order.origin = 'Nairobi'; // Default location
+        }
       }
     }
-      
     // Step 2: Group orders based on origin and destination
     const groupedOrders = groupOrders(orders, timeWindowMinutes);
     console.log('Grouped orders:', groupedOrders);
