@@ -97,26 +97,19 @@ const planDeliveryLocations = async (req, res) => {
 
     for (let order of orders) {
       let seller;
-    
-      
-      // Fallback to fetch seller using `username` if `origin` is invalid or not found
-      if (!seller) {
-        console.warn(`Seller not found for order ID: ${order._id} using origin ObjectId. Trying with username: ${order.username}`);
-        seller = await User.findOne({ username: order.username, category: 'seller' });
-      }
-    
-      // If seller is still not found, assign a default unknown location
-      if (!seller) {
-        console.warn(`Seller not found for order ID: ${order._id} using username: ${order.username}`);
-        order.origin = 'Unknown location';
-        continue;
-      }
-    
-      // Extract seller location and assign it to `order.origin`
-      const { county, town, area, specific } = seller.locations || {};
-      order.origin = `${county || ''}, ${town || ''}, ${area || ''}, ${specific || ''}`;
-    }
+      seller = await User.findOne({ username: order.username, category: 'seller' });
 
+      if (seller) {
+        // Extract the seller's location
+        const { county, town, area, specific } = seller.locations || {};
+        order.origin = `${county || ''}, ${town || ''}, ${area || ''}, ${specific || ''}`;
+      } else {
+        // If the seller is not found, assign a default origin
+        console.warn(`Seller not found for order ID: ${order._id} using username: ${order.username}. Assigning default origin.`);
+        order.origin = 'Nairobi'; // Replace with your default location
+      }
+    }
+      
     // Step 2: Group orders based on origin and destination
     const groupedOrders = groupOrders(orders, timeWindowMinutes);
     console.log('Grouped orders:', groupedOrders);
