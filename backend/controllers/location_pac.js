@@ -84,11 +84,7 @@ const planDeliveryLocations = async (req, res) => {
     const orders = await Order.find({
       orderDate: { $gte: timeWindowStart, $lte: currentTime },
       status: 'pending',
-    }).populate({
-      path: 'origin',
-      select: 'locations fullname category',
-      match: { category: 'seller'},
-    }); // Populate seller and customer details if needed
+    }).populate('origin'); // Populate seller and customer details if needed
 
     console.log('Fetched orders:', orders);
 
