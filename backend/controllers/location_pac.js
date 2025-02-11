@@ -113,8 +113,6 @@ const planDeliveryLocations = async (req, res) => {
        order.origin.area = order.origin.area || 'CBD';
        }
       }
-
-
     
     // Step 2: Group orders based on origin and destination
     const groupedOrders = groupOrders(orders, timeWindowMinutes);

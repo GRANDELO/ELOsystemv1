@@ -7,7 +7,11 @@ const routeSchema = new mongoose.Schema({
     county: { type: String, required: true },
     town: { type: String, required: true },
     area: { type: String, required: true },},
-  destination: { type: String, required: true },
+  destination: { 
+    county: {type: String, required: true},
+    town: {type: String, required: true},
+    area: {type: String, required: true},
+  },
   orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
   status: { type: String, enum: ['scheduled', 'in_transit', 'delivered'], default: 'scheduled' },
   type: {type: String, enum:['direct', 'hub'], required: true},
@@ -16,3 +20,4 @@ const routeSchema = new mongoose.Schema({
 const Route = mongoose.model('Route', routeSchema);
 
 module.exports = Route;
+

@@ -70,6 +70,7 @@ const Dashboard = () => {
               destination: route.destination,
               orders: route.orders.map(orderId => ({
                 id: orderId,
+                //productId: ordersMap[orderId]?.productId,
                 status: 'pending',
               })),
             }));
