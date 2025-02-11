@@ -32,7 +32,6 @@ const Dashboard = () => {
     const fetchDestinations = async () => {
         try {
             const response = await axiosInstance.post('/plan-delivery'); // API call to fetch destinations
-            //const Des = await axiosInstance.get('/destinations');
             console.log('Backend Response:', response.data.data);
             
             const { directRoutes = [], hubRoutes= [] } = response.data.data;
