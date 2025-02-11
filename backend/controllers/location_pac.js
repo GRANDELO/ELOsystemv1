@@ -197,15 +197,6 @@ const planDeliveryLocations = async (req, res) => {
   const directRoutesWithCounts = formatRoutes(directRoutes);
   const hubRoutesWithCounts = formatRoutes(hubRoutes);
   
-  res.status(200).json({
-      success: true,
-      message: 'Delivery locations planned successfully',
-      data: {
-          directRoutes: directRoutesWithCounts,
-          hubRoutes: hubRoutesWithCounts,
-      },
-  });
-  
 
     // Step 7: Return the transportation plan
     res.status(200).json({

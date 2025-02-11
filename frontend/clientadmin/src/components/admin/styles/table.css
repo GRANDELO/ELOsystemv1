@@ -1,0 +1,86 @@
+/* Destinations Section Container */
+.dashad-destinations-section {
+    padding: 1.5rem;
+    background-color: #f7fafc; /* Light gray background */
+    border-radius: 0.5rem; /* Rounded corners */
+  }
+  
+  /* Titles */
+  .dashad-destinations-section h2 {
+    font-size: 2rem; /* 3xl */
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #2d3748; /* Gray-800 */
+  }
+  
+  .dashad-destinations-section h3 {
+    font-size: 1.5rem; /* 2xl */
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #4a5568; /* Gray-700 */
+  }
+  
+  /* Table Styles */
+  .destinations-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow */
+    overflow: hidden;
+    border-radius: 0.5rem; /* Rounded corners */
+  }
+  
+  /* Header Cells */
+  .destinations-table th {
+    background-color: #edf2f7; /* Gray-200 */
+    color: #4a5568; /* Gray-700 */
+    text-align: left;
+    padding: 0.75rem;
+    border-bottom: 2px solid #e2e8f0; /* Gray-300 */
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  
+  /* Body Cells */
+  .destinations-table td {
+    padding: 0.75rem;
+    font-size: 0.875rem; /* Small */
+    color: #2d3748; /* Gray-800 */
+    border-bottom: 1px solid #e2e8f0; /* Light gray border */
+  }
+  
+  /* Alternating Row Colors */
+  .destinations-table tr:nth-child(odd) {
+    background-color: #ffffff; /* White */
+  }
+  
+  .destinations-table tr:nth-child(even) {
+    background-color: #f7fafc; /* Light gray */
+  }
+  
+  /* Grouped Rows */
+  .destinations-table td[rowspan] {
+    background-color: #ebf8ff; /* Blue-100 */
+    font-weight: bold;
+    text-align: center;
+    color: #2b6cb0; /* Blue-700 */
+    vertical-align: middle;
+  }
+  
+  /* Empty Orders Styling */
+  .orders-empty {
+    color: #a0aec0; /* Gray-400 */
+    font-style: italic;
+  }
+  
+  /* Orders Badge */
+  .orders-badge {
+    display: inline-block;
+    background-color: #bee3f8; /* Blue-200 */
+    color: #2b6cb0; /* Blue-700 */
+    font-weight: bold;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem; /* Rounded */
+    margin-right: 0.25rem;
+  }
+  
