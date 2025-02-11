@@ -50,6 +50,12 @@ async function createRoutes(groupedOrders, threshold = 10) {
       town: 'Nairobi',
       area: 'Central',
     };
+
+    const destination = firstOrder.destination || {
+      county: 'Default County', // Provide default values if needed
+      town: 'Default Town',
+      area: 'Default Area',
+    };
    
     const route = new Route({
       routeId: `ROUTE-${uuidv4()}`,
