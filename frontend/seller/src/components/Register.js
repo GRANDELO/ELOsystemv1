@@ -1,6 +1,7 @@
 import axiosInstance from './axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import './styles/styles.css';
 
 const Register = () => {
@@ -37,6 +38,7 @@ const Register = () => {
   const [selectedAreaspe, setSelectedAreaspe] = useState('');
   const [counties, setCounties] = useState([]);
   const [selectedCounty, setSelectedCounty] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -366,6 +368,13 @@ const Register = () => {
           onChange={handleChange}
           required
         />
+        <button
+          type="button"
+          className="toggle-password"
+          onClick={() => setShowPassword(!showPassword)}
+          >
+          {showPassword ? <FaRegEyeSlash/> : <FaRegEye/>}
+        </button>
         {formData.password && formData.password.length < 8 && (
           <p style={{ color: 'red', fontSize: 'smaller' }}>Password must be at least 8 characters long.</p>
         )}

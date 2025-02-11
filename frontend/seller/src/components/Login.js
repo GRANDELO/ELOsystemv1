@@ -14,6 +14,7 @@ const Login = () => {
   const token = localStorage.getItem('token');
   const apptoken = localStorage.getItem('apptoken');
   const appcat = localStorage.getItem('appcat');
+  
   const [loading, setLoading] = useState(false);
 
   // Detect and apply dark mode from localStorage
