@@ -14,6 +14,35 @@ const { generateVerificationCode } = require('../services/verificationcode');
 const { sersendNotificationToUser } = require('./pushNotificationController');
 const Transaction = require("../models/Transaction");
 
+function normalizeDestination(destination) {
+  let normalizedDestination = { county: 'Unknown', town: 'Unknown', area: 'Unknown' };
+
+  if (typeof destination === 'string') {
+    try {
+      // Try parsing if destination is a JSON string
+      normalizedDestination = JSON.parse(destination);
+    } catch (error) {
+      // Split string into parts as fallback
+      const parts = destination.split(',').map(part => part.trim());
+      if (parts.length >= 3) {
+        normalizedDestination = {
+          county: parts[0],
+          town: parts[1],
+          area: parts[2],
+        };
+      }
+    }
+  } else if (typeof destination === 'object') {
+    // Assume destination is already an object
+    normalizedDestination = {
+      county: destination.county || 'Unknown',
+      town: destination.town || 'Unknown',
+      area: destination.area || 'Unknown',
+    };
+  }
+
+  return normalizedDestination;
+}
 
 // Create Order
 exports.createOrder = async (req, res) => {
@@ -75,6 +104,8 @@ exports.createOrder = async (req, res) => {
       specific: seller.locations.specific,
     };
 
+    const normalizedDestination = normalizeDestination(destination);
+
     // Create the order
     const orderData = {
       items,
@@ -82,7 +113,7 @@ exports.createOrder = async (req, res) => {
       totalPrice,
       paymentMethod,
       paid: false,
-      destination,
+      destination: normalizedDestination,
       orderDate: new Date(),
       username,
       isDeliveryInProcess: false,

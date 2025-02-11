@@ -21,7 +21,12 @@ const orderSchema = new mongoose.Schema({
   totalPrice: { type: Number, required: true },
   paymentMethod: { type: String, required: true },
   paid: {type: Boolean, required: true },
-  destination: { type: String, required: true},
+  destination: { 
+    county: { type: String, required: true }, 
+    town: { type: String, required: true }, 
+    area: { type: String, required: true }
+  },
+  
   orderDate: { type: Date, default: Date.now },
   packed: {type: Boolean, defautlt: false},
   isDeliveryInProcess: { type: Boolean, default: false },

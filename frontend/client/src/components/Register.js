@@ -1,6 +1,6 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import './styles/styles.css';
 import axiosInstance from './axiosInstance';
 
@@ -42,6 +42,8 @@ const Register = () => {
 
   const [counties, setCounties] = useState([]);
   const [selectedCounty, setSelectedCounty] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] =useState(false);
   
   useEffect(() => {
     const fetchLocations = async () => {
@@ -75,6 +77,14 @@ const Register = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevState) => !prevState);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword((prevState) => !prevState);
   };
 
   const handleSubmit = async (e) => {
@@ -364,14 +374,25 @@ const Register = () => {
         )}
 
         <label>Password:</label>
+        <div className="password-container">
         <input
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           name="password"
           placeholder="Enter your Password"
           value={formData.password}
           onChange={handleChange}
           required
         />
+        <span
+          onClick={togglePasswordVisibility}
+          className="password-toggle"
+          role="button"
+          tabIndex={0}
+          aria-label={showPassword ? 'Hide password' : 'Show password'}
+        >
+         {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+        </span>
+        </div>
         {formData.password && formData.password.length < 8 && (
           <p style={{ color: 'red', fontSize: 'smaller' }}>Password must be at least 8 characters long.</p>
         )}
@@ -389,14 +410,25 @@ const Register = () => {
         )}
 
         <label>Confirm Password:</label>
+        <div className="password-container">
         <input
-          type="password"
+          type={showConfirmPassword ? 'text' : 'password'}
           name="confirmPassword"
           placeholder="Confirm Password"
           value={formData.confirmPassword}
           onChange={handleChange}
           required
         />
+        <span
+          onClick={toggleConfirmPasswordVisibility}
+          className="password-toggle"
+          role="button"
+          tabIndex={0}
+          aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+        >
+          {showConfirmPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+        </span>
+        </div>
         {formData.password && formData.password !== formData.confirmPassword && (
           <p style={{ color: 'red', fontSize: 'smaller' }}>The passwords don't match!</p>
         )}

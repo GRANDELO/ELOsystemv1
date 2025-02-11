@@ -1,4 +1,4 @@
-.toggle-password {
+/* .toggle-password {
     position: absolute;
     background: none;
     border: none;
@@ -41,5 +41,36 @@
     height: 0px;
     left: 90%;
     top: 7%;
+  } */
+
+  .password-container {
+    display: flex;
+    align-items: center;
+    position: relative; /* Ensure relative positioning for the container */
+    width: 100%;
+  }
+  
+  .password-input {
+    flex: 1; /* Let the input take up most of the space */
+    padding: 10px;
+    padding-right: 40px; /* Add space for the toggle icon */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  
+  .toggle-password {
+    position: absolute; /* Place the toggle icon relative to the container */
+    right: 10px; /* Align the icon to the far right inside the container */
+    top: 50%; /* Center the icon vertically */
+    transform: translateY(-50%); /* Adjust for proper centering */
+    color: #555;
+    font-size: 18px;
+    cursor: pointer; /* Make it interactive */
+  }
+  
+  .toggle-password:hover {
+    color: #000; /* Optional hover effect */
   }
   

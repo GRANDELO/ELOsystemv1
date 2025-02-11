@@ -5,6 +5,37 @@ const mongoose = require('mongoose');
 const User = require("../models/User")
 const { v4: uuidv4 } = require("uuid");
 
+function normalizeDestination(destination) {
+  let normalizedDestination = { county: 'Unknown', town: 'Unknown', area: 'Unknown' };
+
+  if (typeof destination === 'string') {
+    try {
+      // Try parsing if destination is a JSON string
+      normalizedDestination = JSON.parse(destination);
+    } catch (error) {
+      // Split string into parts as fallback
+      const parts = destination.split(',').map(part => part.trim());
+      if (parts.length >= 3) {
+        normalizedDestination = {
+          county: parts[0],
+          town: parts[1],
+          area: parts[2],
+        };
+      }
+    }
+  } else if (typeof destination === 'object') {
+    // Assume destination is already an object
+    normalizedDestination = {
+      county: destination.county || 'Unknown',
+      town: destination.town || 'Unknown',
+      area: destination.area || 'Unknown',
+    };
+  }
+
+  return normalizedDestination;
+}
+
+
 // Helper function to group orders based on origin and destination
 function groupOrders(orders, timeWindowMinutes = 2880) {
   const groupedOrders = {};
@@ -13,31 +44,18 @@ function groupOrders(orders, timeWindowMinutes = 2880) {
   orders.forEach(order => {
     const timeDifference = (currentTime - order.orderDate) / (1000 * 60); // Difference in minutes
     if (timeDifference <= timeWindowMinutes) {
-      let destination = {county: 'Unknown', town: 'Unknown', area: 'Unknown'};
-      try {
-        destination = JSON.parse(order.destination);
-      } catch (error) {
-        console.error(`Invalid destination format for order ${order._id}:`, error);
-        const parts = order.destination.split(',').map(part => part.trim());
-        if (parts.length >= 3) {
-          destination = {
-            county: parts[0],
-            town: parts[1],
-            area: parts[2],
-          };
-        }
-      }
+      const destination = normalizeDestination(order.destination);
 
       const key = `${order.origin.county}-${order.origin.town}-${order.origin.area}-${destination.county}-${destination.town}-${destination.area}`;
-      if (destination.county !== 'Unknown' && destination.town !== 'Unknown' && destination.area !== 'Unknown') {
-        if (!groupedOrders[key]) groupedOrders[key] = [];
-         groupedOrders[key].push(order);
-      }
+      if (!groupedOrders[key]) groupedOrders[key] = [];
+      groupedOrders[key].push(order);
     }
   });
 
   return groupedOrders;
 }
+
+
 
 // Helper function to decide transportation based on threshold
 function decideTransportation(groupedOrders, threshold = 10) {
@@ -66,14 +84,7 @@ async function createRoutes(groupedOrders, threshold = 10) {
       area: 'Central',
     };
 
-    const destinationString = firstOrder.destination;
-    let destination = { county: '', town: '', area: '' }; // Default destination structure
-    try {
-      destination = JSON.parse(destinationString);
-    } catch (error) {
-      console.error(`Invalid destination format for order ${firstOrder._id}:`, error);
-      // Handle invalid format gracefully (e.g., skip the route creation or use a default)
-    }
+    const destination = normalizeDestination(firstOrder.destination);
     
     const route = new Route({
       routeId: `ROUTE-${uuidv4()}`,

@@ -119,11 +119,11 @@ const Login = () => {
         {!recoverpassword ? (
           <div>
             <h2>Login</h2>
-            <label>Username:</label>
+            <label>Business Name:</label>
             <input
               type="text"
               value={username}
-              placeholder="Enter your username"
+              placeholder="Enter your username/Business Name"
               onChange={(e) => setUsername(e.target.value)}
               required
             />
@@ -137,13 +137,15 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <button
-                type="button"
+              <span
                 className="toggle-password"
                 onClick={() => setShowPassword(!showPassword)}
+                role="button"
+                tabIndex="0"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
-                {showPassword ? <FaRegEyeSlash/> : <FaRegEye/>}
-              </button>
+                {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+              </span>
             </div>
             <button type="submit">
               {loading ? 
