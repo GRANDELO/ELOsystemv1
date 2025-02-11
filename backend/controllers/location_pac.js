@@ -98,10 +98,7 @@ async function createRoutes(groupedOrders, threshold = 10) {
         town: destination.town || 'Unknown Town',
         area: destination.area || 'Unknown Area',
       },
-      orders: groupedOrders[key].map(order => ({
-        id: order.id,
-        orderNumber:  order.orderNumber,
-      })),
+      orders: groupedOrders[key].map(order =>  order._id),
       status: 'scheduled',
       type: groupedOrders[key].length >= threshold ? 'direct' : 'hub',
     });
