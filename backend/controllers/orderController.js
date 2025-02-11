@@ -82,11 +82,7 @@ exports.createOrder = async (req, res) => {
       totalPrice,
       paymentMethod,
       paid: false,
-      destination: {
-        county: destination.county,
-        town: destination.town,
-        area: destination.area,
-      },
+      destination,
       orderDate: new Date(),
       username,
       isDeliveryInProcess: false,

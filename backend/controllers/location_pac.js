@@ -13,7 +13,15 @@ function groupOrders(orders, timeWindowMinutes = 2880) {
   orders.forEach(order => {
     const timeDifference = (currentTime - order.orderDate) / (1000 * 60); // Difference in minutes
     if (timeDifference <= timeWindowMinutes) {
-      const key = `${order.origin}-${order.destination}`;
+      let destination = {};
+      try {
+        destination = JSON.parse(order.destination);
+      } catch (error) {
+        console.error(`Invalid destination format for order ${order._id}:`, error);
+        destination = { county: 'Unknown', town: 'Unknown', area: 'Unknown' };
+      }
+
+      const key = `${order.origin.county}-${order.origin.town}-${order.origin.area}-${destination.county}-${destination.town}-${destination.area}`;
       if (!groupedOrders[key]) {
         groupedOrders[key] = [];
       }
@@ -51,12 +59,15 @@ async function createRoutes(groupedOrders, threshold = 10) {
       area: 'Central',
     };
 
-    const destination = firstOrder.destination || {
-      county: 'Default County', // Provide default values if needed
-      town: 'Default Town',
-      area: 'Default Area',
-    };
-   
+    const destinationString = firstOrder.destination;
+    let destination = { county: '', town: '', area: '' }; // Default destination structure
+    try {
+      destination = JSON.parse(destinationString);
+    } catch (error) {
+      console.error(`Invalid destination format for order ${firstOrder._id}:`, error);
+      // Handle invalid format gracefully (e.g., skip the route creation or use a default)
+    }
+    
     const route = new Route({
       routeId: `ROUTE-${uuidv4()}`,
       origin: {
@@ -65,9 +76,9 @@ async function createRoutes(groupedOrders, threshold = 10) {
         area: origin.area,
       },
       destination: {
-        county: destination.county,
-        town: destination.town,
-        area: destination.area,
+        county: destination.county || 'Unknown County',
+        town: destination.town || 'Unknown Town',
+        area: destination.area || 'Unknown Area',
       },
       orders: groupedOrders[key].map(order => order._id),
       status: 'scheduled',
