@@ -42,8 +42,10 @@ const Dashboard = () => {
                     type,
                     origin: routes.origin,
                     destination: routes.destination,
-                    orders: routes.orders.map(orderId => ({
-                        id: orderId,
+                    orderCount: routes.orderCount,
+                    orders: routes.orders.map(order => ({
+                        id: order.id,
+                        orderNumber: order.orderNumber,
                         status: 'pending',
                     })),
                 }));
@@ -67,9 +69,10 @@ const Dashboard = () => {
               type,
               origin: route.origin,
               destination: route.destination,
-              orders: route.orders.map(orderId => ({
-                id: orderId,
-                //productId: ordersMap[orderId]?.productId,
+              orderCount: route.orderCount,
+              orders: route.orders.map(order => ({
+                id: order.id,
+                orderNumber: order.orderNumber,
                 status: 'pending',
               })),
             }));
@@ -239,11 +242,12 @@ const Dashboard = () => {
                                                  <li key={index}>
                                                      <strong>Origin:</strong> {destination.origin.county}, {destination.origin.town}, {destination.origin.area} -{" "}
                                                      <strong>Destination:</strong> {destination.destination.county}, {destination.destination.town}, {destination.destination.area} -{" "}
+                                                     <strong>Number of Orders:</strong> {destination.orderCount} -{" "}
                                                      <strong>Orders:</strong>{" "}
                                                      {destination.orders.length > 0 ? (
                                                          destination.orders.map((order, orderIndex) => (
                                                              <span key={orderIndex}>
-                                                                 Order #{order.id}
+                                                                 Order #{order.orderNumber}
                                                                  {orderIndex !== destination.orders.length - 1 ? ", " : ""}
                                                              </span>
                                                          ))
@@ -266,11 +270,12 @@ const Dashboard = () => {
                                                  <li key={index}>
                                                      <strong>Origin:</strong> {destination.origin.county}, {destination.origin.town}, {destination.origin.area} -{" "}
                                                      <strong>Destination:</strong> {destination.destination.county}, {destination.destination.town}, {destination.destination.area} -{" "}
+                                                     <strong>Number of Orders:</strong> {destination.orderCount} -{" "}
                                                      <strong>Orders:</strong>{" "}
                                                      {destination.orders.length > 0 ? (
                                                          destination.orders.map((order, orderIndex) => (
                                                              <span key={orderIndex}>
-                                                                 Order #{order.id}
+                                                                 Order #{order.orderNumber}
                                                                  {orderIndex !== destination.orders.length - 1 ? ", " : ""}
                                                              </span>
                                                          ))

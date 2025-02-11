@@ -98,7 +98,10 @@ async function createRoutes(groupedOrders, threshold = 10) {
         town: destination.town || 'Unknown Town',
         area: destination.area || 'Unknown Area',
       },
-      orders: groupedOrders[key].map(order => order._id),
+      orders: groupedOrders[key].map(order => ({
+        id: order.id,
+        orderNumber:  order.orderNumber,
+      })),
       status: 'scheduled',
       type: groupedOrders[key].length >= threshold ? 'direct' : 'hub',
     });
@@ -120,6 +123,7 @@ const planDeliveryLocations = async (req, res) => {
     console.log('Current time:', currentTime);
 
     const orders = await Order.find({
+      orderDate: { $gte: timeWindowStart },
       status: 'pending',
     }).populate('origin destination'); // Populate seller and customer details if needed
 
@@ -185,8 +189,27 @@ const planDeliveryLocations = async (req, res) => {
       );
     }
 
+
     io.emit('updateDestinations', { directRoutes, hubRoutes });
     console.log('Socket emit fired:', { directRoutes, hubRoutes });
+
+    const formatRoutes = (routes) => routes.map(route => ({
+      ...route.toObject(),
+      orderCount: route.orders.length,
+  }));
+  
+  const directRoutesWithCounts = formatRoutes(directRoutes);
+  const hubRoutesWithCounts = formatRoutes(hubRoutes);
+  
+  res.status(200).json({
+      success: true,
+      message: 'Delivery locations planned successfully',
+      data: {
+          directRoutes: directRoutesWithCounts,
+          hubRoutes: hubRoutesWithCounts,
+      },
+  });
+  
 
     // Step 7: Return the transportation plan
     res.status(200).json({
