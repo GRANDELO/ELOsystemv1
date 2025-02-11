@@ -13,19 +13,26 @@ function groupOrders(orders, timeWindowMinutes = 2880) {
   orders.forEach(order => {
     const timeDifference = (currentTime - order.orderDate) / (1000 * 60); // Difference in minutes
     if (timeDifference <= timeWindowMinutes) {
-      let destination = {};
+      let destination = {county: 'Unknown', town: 'Unknown', area: 'Unknown'};
       try {
         destination = JSON.parse(order.destination);
       } catch (error) {
         console.error(`Invalid destination format for order ${order._id}:`, error);
-        destination = { county: 'Unknown', town: 'Unknown', area: 'Unknown' };
+        const parts = order.destination.split(',').map(part => part.trim());
+        if (parts.length >= 3) {
+          destination = {
+            county: parts[0],
+            town: parts[1],
+            area: parts[2],
+          };
+        }
       }
 
       const key = `${order.origin.county}-${order.origin.town}-${order.origin.area}-${destination.county}-${destination.town}-${destination.area}`;
-      if (!groupedOrders[key]) {
-        groupedOrders[key] = [];
+      if (destination.county !== 'Unknown' && destination.town !== 'Unknown' && destination.area !== 'Unknown') {
+        if (!groupedOrders[key]) groupedOrders[key] = [];
+         groupedOrders[key].push(order);
       }
-      groupedOrders[key].push(order);
     }
   });
 
