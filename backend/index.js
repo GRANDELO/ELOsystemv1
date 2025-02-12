@@ -17,6 +17,7 @@ const winston = require('winston');
 const { exec } = require('child_process');
 const redis = require('redis');
 const nodemailer = require('nodemailer');
+const blogRoutes = require("./routes/blogRoutes");
 
 require('dotenv').config();
 require('./worker');
@@ -202,6 +203,7 @@ app.use('/api/agent', agentsroutes);
 app.use('/api/delivery', Deliveryroutes);
 app.use("/api/accounts", accountRoutes);
 app.use("/api/transactions", transactionRoutes);
+app.use("/api/blogs", blogRoutes);
 
 app.use((req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);

@@ -1,6 +1,7 @@
 /* Global Styles */
+
   .contain {
-    width: 100%;
+    width: 100vw;
     margin: auto;
   }
   
