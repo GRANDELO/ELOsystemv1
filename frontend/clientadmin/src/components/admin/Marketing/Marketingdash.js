@@ -45,11 +45,6 @@ const Dashboard = () => {
     <div className="dashboard-container">
       <header className="dashboard-header">
         <h1>Marketing Dashboard</h1>
-        <div className="dashboard-stats">
-          <span>Total Users: {totalUsers}</span>
-          <span>Active Users: {activeUsers}</span>
-        </div>
-        <button onClick={handleLogout} className="logout-btn">Logout</button>
       </header>
       <nav className="dashboard-nav">
         <button

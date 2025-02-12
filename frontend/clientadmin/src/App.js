@@ -19,6 +19,10 @@ import Accountsdash from './components/admin/accouns/accountsdash';
 import TrialBalance from './components/admin/accouns/TrialBalance';
 
 import Marketing from './components/admin/Marketing/Marketingdash';
+import BlogHome from "./pages/BlogHome";
+import BlogDetails from "./pages/BlogDetails";
+import CreateBlog from "./pages/CreateBlog";
+import EditBlog from "./pages/EditBlog";
 
 import Dashboard from './components/admin/Dashboard';
 import Loginadm from './components/admin/Login';
@@ -104,7 +108,11 @@ const App = () => {
 
             
             <Route path="/marketing" element={<Marketing />} />
-
+            <Route path="/blogs" element={<BlogHome />} />
+            <Route path="/blog/:id" element={<BlogDetails />} />
+            <Route path="/create" element={<CreateBlog />} />
+            <Route path="/edit/:id" element={<EditBlog />} />
+          
             <Route path="/admnLogout" element={<AdmnLogout />} />
             <Route path="/admpasswordreset" element={<Admpasswordreset />} />
 

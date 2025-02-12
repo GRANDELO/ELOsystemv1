@@ -26,9 +26,7 @@ const BlogList = () => {
       <main className="blog-list-container">
         <div className="top-bar">
           <h2 className="blog-list-title">Latest Blog Posts</h2>
-          <Link to="/create" className="create-post-link">
-            ➕ Create New Post
-          </Link>
+
         </div>
 
         {posts.length > 0 ? (

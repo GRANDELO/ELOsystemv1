@@ -71,9 +71,9 @@ const BlogPost = () => {
         <button onClick={handleDelete} className="btn delete-btn">
           🗑️ Delete
         </button>
-        <Link to="/blogs" className="btn back-btn">
+        <button onClick={() => navigate(-1)} className="btn back-btn">
           ⬅ Back
-        </Link>
+        </button>
       </div>
     </div>
   );

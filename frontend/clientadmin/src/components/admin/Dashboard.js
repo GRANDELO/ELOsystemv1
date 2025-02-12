@@ -7,7 +7,7 @@ import Footer from './Footer';
 import UserChart from './UserChart';
 import Header from './header';
 import HR from './hr/hrdash';
-import MRK from './Marketing/Markingdash';
+import MRK from './Marketing/Marketingdash';
 import Accouns from './accouns/accountsdash';
 import io from 'socket.io-client';
 import Sales from './sales/Salespg';
