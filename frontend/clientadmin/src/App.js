@@ -18,6 +18,7 @@ import ProfitCalculator from './components/admin/accouns/ProfitCalculator';
 import Accountsdash from './components/admin/accouns/accountsdash';
 import TrialBalance from './components/admin/accouns/TrialBalance';
 
+import Marketing from './components/admin/Marketing/Marketingdash';
 
 import Dashboard from './components/admin/Dashboard';
 import Loginadm from './components/admin/Login';
@@ -100,6 +101,9 @@ const App = () => {
             <Route path="/employies" element={<Employies />} />
             <Route path="/hr" element={<Hr />} />
             <Route path="/logistics" element={<Logistics />} />
+
+            
+            <Route path="/marketing" element={<Marketing />} />
 
             <Route path="/admnLogout" element={<AdmnLogout />} />
             <Route path="/admpasswordreset" element={<Admpasswordreset />} />

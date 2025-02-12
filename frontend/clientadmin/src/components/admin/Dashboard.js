@@ -7,11 +7,13 @@ import Footer from './Footer';
 import UserChart from './UserChart';
 import Header from './header';
 import HR from './hr/hrdash';
+import MRK from './Marketing/Markingdash';
 import Accouns from './accouns/accountsdash';
 import io from 'socket.io-client';
 import Sales from './sales/Salespg';
 import Setting from './settings';
 import AdminFeedback from '../feedback';
+
 import './styles/Dashboard.css';
 import './styles/table.css';
 
@@ -189,6 +191,13 @@ const Dashboard = () => {
                     >
                         Destinations
                     </button>
+
+                    <button
+                        className={`dashad-nav-button ${view === 'MRK' ? 'dashad-active' : ''}`}
+                        onClick={() => setView('MRK')}
+                    >
+                        Marketing
+                    </button>
                 </nav>
 
                 <div className="dashad-content">
@@ -225,6 +234,8 @@ const Dashboard = () => {
                                     <li><a href="/sales">Sales</a></li>
                                     <li><a href="/reports">Reports</a></li>
                                     <li><a href="/hr">HR</a></li>
+                                    <li><a href="/marketing">Marketing</a></li>
+                                    
                                 </ul>
                             </div>
                         </div>
@@ -236,6 +247,7 @@ const Dashboard = () => {
                     {view === 'reports' && <Reports />}
                     {view === 'feedback' && <AdminFeedback />}
                     {view === 'Accouns' && <Accouns />}
+                    {view === 'MRK' && <MRK />}
                     {view === 'destinations' && (
                         <div className="dashad-destinations-section">
                         <h2>Destinations</h2>

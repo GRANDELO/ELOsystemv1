@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import hljs from "highlight.js";
-import "highlight.js/styles/github.css"; // Choose your preferred theme
+import "highlight.js/styles/github.css"; // This is optional if you're loading via CDN in index.html
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { createPost, updatePost, fetchPostById } from "../api";
@@ -16,13 +16,6 @@ if (typeof window !== "undefined") {
 const uploadToCloudinary = async (file) => {
   console.log("Uploading file:", file);
   try {
-    // For demonstration, we simulate an upload.
-    // In production, use fetch/axios to post 'file' to your upload endpoint:
-    // const formData = new FormData();
-    // formData.append("file", file);
-    // const response = await fetch("YOUR_UPLOAD_ENDPOINT", { method: "POST", body: formData });
-    // const data = await response.json();
-    // return data.url;
     return new Promise((resolve) => {
       setTimeout(() => {
         const placeholderUrl = "https://via.placeholder.com/300";
@@ -106,10 +99,8 @@ const BlogForm = ({ isEditing }) => {
         console.log("Inserting image with URL:", url);
         const editor = quillRef.current.getEditor();
         const range = editor.getSelection(true);
-        // Insert the image embed and force the editor to update its internal state
         editor.insertEmbed(range.index, "image", url, "user");
         editor.setSelection(range.index + 1, "user");
-        // Update our content state to reflect the new HTML (including the image)
         setContent(editor.root.innerHTML);
       }
     };
@@ -119,31 +110,22 @@ const BlogForm = ({ isEditing }) => {
   const modules = {
     toolbar: {
       container: [
-        // Headings and font selection
         [{ header: [1, 2, 3, 4, 5, 6, false] }, { font: [] }],
-        // Size options and colors
         [{ size: ["small", false, "large", "huge"] }],
         [{ color: [] }, { background: [] }],
-        // Basic text styling
         ["bold", "italic", "underline", "strike"],
-        // Subscript and superscript
         [{ script: "sub" }, { script: "super" }],
-        // Lists, indenting, and alignment
         [{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
         [{ align: [] }],
-        // Block quotes and code blocks with syntax highlighting
         ["blockquote", "code-block"],
-        // Links, images, and video
         ["link", "image", "video"],
-        // Clean formatting
         ["clean"],
       ],
       handlers: {
         image: imageHandler,
       },
     },
-    syntax: true, // Enable syntax highlighting (requires window.hljs)
-    // Uncomment the following if you want image resizing functionality:
+    syntax: true,
     // imageResize: { parchment: ReactQuill.Quill.import("parchment") },
   };
 
