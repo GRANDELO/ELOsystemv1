@@ -74,7 +74,7 @@ const Dashboard = () => {
             <div className="hralld-content">
 
                 {view === 'EditBlog' && <EditBlog />}
-                {view === 'users' && <BlogHome />}
+                {view === 'BlogHome' && <BlogHome />}
                 {view === 'BlogDetails' && <BlogDetails />}
                 {view === 'CreateBlog' && <CreateBlog />}
             </div>
