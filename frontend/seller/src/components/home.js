@@ -29,6 +29,32 @@ const Home = () => {
   });
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const username = getUsernameFromToken();
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isInstalled, setIsInstalled] = useState(true);
+
+  useEffect(() => {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstalled(false);
+    });
+
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstalled(true);
+    }
+  }, []);
+
+  const handleInstall = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          setIsInstalled(true);
+        }
+        setDeferredPrompt(null);
+      });
+    }
+  };
 
   // Toggle visibility for sections
   const toggleVisibility = (section) => {
@@ -112,7 +138,14 @@ const Home = () => {
   return (
     <div className="home">
       <Header />
-
+      {!isInstalled &&
+        (
+          <div className="install-prompt">
+            <p>Install this web app for a better experience.</p>
+            <button onClick={handleInstall}>Install</button>
+          </div>
+        )
+      };
       <main className="home-main">
         {/* Main Content */}
         
