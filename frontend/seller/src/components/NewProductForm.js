@@ -1,5 +1,6 @@
-import axiosInstance from "./axiosInstance";
 import React, { useEffect, useRef, useState } from "react";
+import './styles/NewProductFormShell.css';
+import axiosInstance from "./axiosInstance";
 import { getUsernameFromToken } from "../utils/auth";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
@@ -7,9 +8,21 @@ import './styles/newproductform.css';
 import categories from './categories.js';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+const LinearProgressBar = ({ currentStep, totalSteps }) => {
+  const progressPercentage = (currentStep / totalSteps) * 100;
+  return (
+    <div className="linear-progress-container">
+      <div
+        className="linear-progress-bar"
+        style={{ width: `${progressPercentage}%` }}
+      ></div>
+    </div>
+  );
+};
 
-
-const NewProductForm = () => {
+const NewProductFormShell = () => {
+  const [currentStep, setCurrentStep] = useState(1);
+  const totalSteps = 5;
   const lusername = getUsernameFromToken();
   const fileInputRef = useRef(null);
 
@@ -26,14 +39,7 @@ const NewProductForm = () => {
     type: "",
     collaborators: [],
     features: [],
-    variations: [
-      { 
-        color: '',
-        size: [''],
-        material: '',
-        model: '',
-      },
-    ],
+    variations: [],
   }
 );
 
@@ -267,194 +273,262 @@ const generateDescription = async () => {
     setGeneratingDescription(false);
   }
 };
-  
+
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 1:
+        return (
+          <div className="step-section">
+            <h3>Step 1: Basic Information</h3>
+            <input
+              type="text"
+              name="name"
+              placeholder="Name"
+              value={newProduct.name}
+              onChange={handleChange}
+            />
+            <select
+              name="category"
+              value={newProduct.category}
+              onChange={handleChange}
+            >
+              <option value="">Select Category</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+            <select
+              name="subCategory"
+              value={newProduct.subCategory}
+              onChange={handleChange}
+              disabled={subCategories.length === 0}
+            >
+              <option value="">Select Sub Category</option>
+              {subCategories.map((sub) => (
+                <option key={sub} value={sub}>
+                  {sub}
+                </option>
+              ))}
+            </select>
+            <input
+              type="number"
+              name="price"
+              placeholder="Price"
+              min="1"
+              value={newProduct.price}
+              onChange={handleChange}
+            />
+            <input
+              type="number"
+              name="quantity"
+              placeholder="Quantity"
+              min="1"
+              value={newProduct.quantity}
+              onChange={handleChange}
+            />
+          </div>
+        );
+      case 2:
+        return (
+          <div className="step-section">
+            <h3>Step 2: Description</h3>
+            <ReactQuill
+              className="npfdiv"
+              theme="snow"
+              value={newProduct.description}
+              onChange={handleDescriptionChange}
+              modules={modules}
+              placeholder="Write an engaging product description..."
+            />
+            <button
+              type="button"
+              onClick={generateDescription}
+              disabled={generatingDescription}
+            >
+              {generatingDescription ? "Generating..." : "Generate Description"}
+            </button>
+          </div>
+        );
+      case 3:
+        return (
+          <div className="step-section">
+            <h3>Step 3: Features (optional)</h3>
+            <div
+              className="npfdiv">
+                {newProduct.features.map((feature, index) => (
+                  <div key={index}
+                  
+                  >
+
+                    <input
+                      type="text"
+                      placeholder="Feature Type"
+                      value={feature.type}
+                      onChange={(e) =>
+                        setNewProduct({
+                          ...newProduct,
+                          features: newProduct.features.map((f, i) =>
+                            i === index ? { ...f, type: e.target.value } : f
+                          ),
+                        })
+                      }
+                    />
+                    <input
+                      type="text"
+                      placeholder="Specification"
+                      value={feature.specification}
+                      onChange={(e) =>
+                        setNewProduct({
+                          ...newProduct,
+                          features: newProduct.features.map((f, i) =>
+                            i === index
+                              ? { ...f, specification: e.target.value }
+                              : f
+                          ),
+                        })
+                      }
+                    />
+                    <button type="button" onClick={() => removeFeature(index)}>
+                      Remove
+                    </button>
+                  </div>
+                ))}
+                <button type="button" onClick={addFeature}>
+                  Add Feature
+                </button>
+          </div>
+          </div>
+        );
+      case 4:
+        return (
+          <div className="step-section">
+            <h3>Step 4: Variations (optional)</h3>
+            <div className="npfdiv">
+              {newProduct.variations.map((variation, index) => (
+                <div key={index}>
+                  <input
+                    type="text"
+                    placeholder="Color"
+                    value={variation.color}
+                    onChange={(e) => handleVariationChange(index, 'color', e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Sizes (comma-separated)"
+                    value={variation.size.join(', ')}
+                    onChange={(e) => handleVariationChange(index, 'size', e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Material"
+                    value={variation.material}
+                    onChange={(e) => handleVariationChange(index, 'material', e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Model"
+                    value={variation.model}
+                    onChange={(e) => handleVariationChange(index, 'model', e.target.value)}
+                  />
+                  <button type="button" onClick={() => removeVariation(index)}>
+                    Remove Variation
+                  </button>
+                </div>
+              ))}
+              <button type="button" onClick={addVariation}>
+                Add Variation
+              </button>
+            </div>
+
+          </div>
+        );
+      case 5:
+        return (
+          <div className="step-section">
+            <h3>Step 5: Images</h3>
+            <div>
+              <input
+                type="file"
+                name="images"
+                onChange={handleChange}
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                multiple
+              />
+              <div
+                className={`drop-zone ${dragging ? "dragging" : ""}`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={handleClick}
+              >
+                {newProduct.images.length > 0
+                  ? `${newProduct.images.length}/6 images selected`
+                  : "Drag and drop images or click to select (max 6)"}
+              </div>
+              {error && <p className="error-message">{error}</p>}
+              <div className="thumbnails">
+                {newProduct.images.map((image, index) => {
+                  const imageUrl = URL.createObjectURL(image);
+                  return (
+                    <div key={index} className="thumbnail">
+                      <img src={imageUrl} alt={`Selected ${index}`} />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const handleNext = () => {
+    if (currentStep < totalSteps) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        name="name"
-        placeholder="Name"
-        value={newProduct.name}
-        onChange={handleChange}
-      />
-      <select
-        name="category"
-        value={newProduct.category}
-        onChange={handleChange}
-      >
-        <option value="">Select Category</option>
-        {categories.map((cat) => (
-          <option key={cat.id} value={cat.id}>
-            {cat.name}
-          </option>
-        ))}
-      </select>
-      <select
-        name="subCategory"
-        value={newProduct.subCategory}
-        onChange={handleChange}
-        disabled={subCategories.length === 0}
-      >
-        <option value="">Select Sub Category</option>
-        {subCategories.map((sub) => (
-          <option key={sub} value={sub}>
-            {sub}
-          </option>
-        ))}
-      </select>
-      <input
-        type="number"
-        name="price"
-        placeholder="Price"
-        min="1"
-        value={newProduct.price}
-        onChange={handleChange}
-      />
+    <form onSubmit={handleSubmit} className="new-product-form">
+      <LinearProgressBar currentStep={currentStep} totalSteps={totalSteps} />
+      <div className="step-content">{renderStepContent()}</div>
+      <div className="step-navigation">
+        {currentStep > 1 && (
+          <button type="button" onClick={handleBack}>
+            Back
+          </button>
+        )}
+        {currentStep < totalSteps && (
+          <button type="button" onClick={handleNext}>
+            Next
+          </button>
+        )}
+        {currentStep === totalSteps && (
+          <>
+           <button type="submit">
+               {loading ? "Creating......" : "Create New Product"}
+           </button>
+           {message && <p className="message">{message}</p>}
+           {error && <p className="error">{error}</p>}
+          </>
 
-
-      <label>Description:</label>
-      <ReactQuill
-        className="npfdiv"
-        theme="snow"
-        value={newProduct.description}
-        onChange={handleDescriptionChange}
-        modules={modules}
-        placeholder="Write an engaging product description..."
-      />
-      <button
-          type="button"
-          onClick={generateDescription}
-          disabled={generatingDescription}
-        >
-          {generatingDescription ? "Generating..." : "Generate Description"}
-        </button>
-      
-      <div
-      className="npfdiv">
-        <h4>Features</h4>
-        {newProduct.features.map((feature, index) => (
-          <div key={index}
-          
-          >
-
-            <input
-              type="text"
-              placeholder="Feature Type"
-              value={feature.type}
-              onChange={(e) =>
-                setNewProduct({
-                  ...newProduct,
-                  features: newProduct.features.map((f, i) =>
-                    i === index ? { ...f, type: e.target.value } : f
-                  ),
-                })
-              }
-            />
-            <input
-              type="text"
-              placeholder="Specification"
-              value={feature.specification}
-              onChange={(e) =>
-                setNewProduct({
-                  ...newProduct,
-                  features: newProduct.features.map((f, i) =>
-                    i === index
-                      ? { ...f, specification: e.target.value }
-                      : f
-                  ),
-                })
-              }
-            />
-            <button type="button" onClick={() => removeFeature(index)}>
-              Remove
-            </button>
-          </div>
-        ))}
-        <button type="button" onClick={addFeature}>
-          Add Feature
-        </button>
+        )}
       </div>
-
-      <div
-      className="npfdiv">
-        <h4>Product Variations</h4>
-        {newProduct.variations.map((variation, index) => (
-          <div key={index} >
-            <input
-              type="text"
-              placeholder="Color"
-              value={variation.color}
-              onChange={(e) => handleVariationChange(index, 'color', e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Sizes (comma-separated)"
-              value={variation.size.join(', ')} // Join array back to string for display
-              onChange={(e) => handleVariationChange(index, 'size', e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Material"
-              value={variation.material}
-              onChange={(e) => handleVariationChange(index, 'material', e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Model"
-              value={variation.model}
-              onChange={(e) => handleVariationChange(index, 'model', e.target.value)}
-            />
-            <button type="button" onClick={() => removeVariation(index)}>
-              Remove Variation
-            </button>
-          </div>
-        ))}
-        <button type="button" onClick={addVariation}>
-          Add Variation
-        </button>
-      </div>
-
-      <input
-        type="number"
-        name="quantity"
-        placeholder="Quantity"
-        min="1"
-        value={newProduct.quantity}
-        onChange={handleChange}
-      />
-
-      <div>
-        <input
-          type="file"
-          name="images"
-          onChange={handleChange}
-          ref={fileInputRef}
-          style={{ display: "none" }}
-          multiple
-        />
-        <div
-          className={`drop-zone ${dragging ? "dragging" : ""}`}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          onClick={handleClick}
-        >
-          {newProduct.images.length > 0
-            ? `${newProduct.images.length}/6 images selected`
-            : "Drag and drop images or click to select (max 6)"}
-        </div>
-      </div>
-
-
-
-      <button type="submit">
-      {loading ? "Creating......" : "Create New Product"}
-        
-        </button>
-      {message && <p className="message">{message}</p>}
-      {error && <p className="error">{error}</p>}
     </form>
   );
 };
 
-export default NewProductForm;
+export default NewProductFormShell;
