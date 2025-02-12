@@ -25,11 +25,14 @@ body {
   background-color: var(--container-bg);
   color: var(--text-color);
   line-height: 1.6;
+
 }
 
-/* Container for the blog post page */
+/* Container for the blog post page  */
 .post-container {
   width: 100%;
+  min-width: 100vw;
+  min-height: 100vh;
   margin: 20px;
   background-color: var(--background-color);
   padding: 2rem;

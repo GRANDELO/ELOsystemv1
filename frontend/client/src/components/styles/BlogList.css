@@ -23,15 +23,18 @@ body {
   line-height: 1.6;
 }
 
-/* Page Container */
+/* Page Container  */
 .page-container {
   max-width: 1200px;
-  width: 95%;
+  min-width: 95%;
+  min-width: 100vw;
+  min-height: 100vh;
   margin: 40px auto;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 8px var(--shadow-color);
   background-color: var(--bg-color-light);
+
 }
 
 /* Header */

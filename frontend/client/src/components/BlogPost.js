@@ -65,12 +65,6 @@ const BlogPost = () => {
         dangerouslySetInnerHTML={{ __html: post.content }}
       />
       <div className="post-actions">
-        <Link to={`/edit/${id}`} className="btn edit-btn">
-          ✏️ Edit
-        </Link>
-        <button onClick={handleDelete} className="btn delete-btn">
-          🗑️ Delete
-        </button>
         <Link to="/blogs" className="btn back-btn">
           ⬅ Back
         </Link>
