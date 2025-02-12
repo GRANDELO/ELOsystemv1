@@ -13,6 +13,11 @@ import Review from './components/review';
 import Verificationauto from './components/Verificationauto';
 import Website from './components/website';
 
+import BlogHome from "./pages/BlogHome";
+import BlogDetails from "./pages/BlogDetails";
+import CreateBlog from "./pages/CreateBlog";
+import EditBlog from "./pages/EditBlog";
+
 import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
 import NewProductEdit from './components/NewProductEdit';
@@ -100,6 +105,11 @@ const App = () => {
           <Route path="/review" element={<Review />} />
           <Route path="/auto" element={<Verificationauto />} />
           <Route path="/website" element={<Website />} />
+          
+          <Route path="/blogs" element={<BlogHome />} />
+          <Route path="/blog/:id" element={<BlogDetails />} />
+          <Route path="/create" element={<CreateBlog />} />
+          <Route path="/edit/:id" element={<EditBlog />} />
           
           <Route path="/chatall" element={<ChatList />} />
           <Route path="/chat/:chatId" element={<ChatDetails />} />
