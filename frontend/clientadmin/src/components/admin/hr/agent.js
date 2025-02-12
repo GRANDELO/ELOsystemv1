@@ -200,10 +200,7 @@ const Agent = () => {
         </section>
       )}
       {/*logs view */}
-      <section>
-        <LogsViewer/>
-      </section>
-      
+
 
       {/* Active Users Section with Pagination */}
       {activeSection === 'active' && (
