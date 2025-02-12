@@ -11,6 +11,7 @@ import Login from './components/Login';
 import Set from './components/set';
 import Review from './components/review';
 import Verificationauto from './components/Verificationauto';
+import Website from './components/website';
 
 import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
@@ -98,6 +99,7 @@ const App = () => {
           <Route path="/verification" element={<Verification />} />
           <Route path="/review" element={<Review />} />
           <Route path="/auto" element={<Verificationauto />} />
+          <Route path="/website" element={<Website />} />
           
           <Route path="/chatall" element={<ChatList />} />
           <Route path="/chat/:chatId" element={<ChatDetails />} />
