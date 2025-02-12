@@ -5,7 +5,7 @@ import { FaFacebook, FaTwitter, FaInstagram, FaYoutube, FaPhone, FaEnvelope, FaW
 
 const Website = () => {
   return (
-    <div className="container">
+    <div className="contain">
       {/* Hero Section */}
       <section className="hero">
         <h1 className="hero-title">Bazelink</h1>
