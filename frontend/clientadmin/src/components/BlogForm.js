@@ -78,7 +78,7 @@ const BlogForm = ({ isEditing }) => {
       await createPost(postData);
     }
     localStorage.removeItem("blogDraft");
-    navigate("/blogs");
+    navigate("/dashboard");
   };
 
   // Custom image handler to upload images and insert the URL into the editor
