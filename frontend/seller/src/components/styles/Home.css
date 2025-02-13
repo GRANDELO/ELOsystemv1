@@ -77,7 +77,10 @@
 
 }
 
-.home-settings-section div{
+.allset{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
     margin: 10px;
     background-color: var(--overlay-light);
 }
@@ -86,6 +89,8 @@
 .home-notifications-section.active,
 .home-shop-settings-section.active {
   display: flex;
+  justify-content: space-around;
+  min-width: 100vw;
 }
 
 
@@ -217,4 +222,46 @@
 /* Hide floating section when toggled */
 .hidden {
   display: none;
+}
+
+/* Tooltip Styles */
+.react-joyride__tooltip {
+  max-width: 280px !important;
+  font-size: 16px !important;
+  padding: 12px !important;
+  border-radius: 8px !important;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Primary Button */
+.react-joyride__button--primary {
+  background-color: #007bff !important;
+  color: white !important;
+  padding: 8px 12px !important;
+  border-radius: 5px !important;
+  font-size: 14px !important;
+}
+
+/* Close Button */
+.react-joyride__button--close {
+  background-color: red !important;
+  color: white !important;
+  border-radius: 50% !important;
+  padding: 5px 10px !important;
+  margin: 0px;
+}
+
+/* Responsive Styling */
+@media (max-width: 600px) {
+  .react-joyride__tooltip {
+    max-width: 90% !important;
+    font-size: 14px !important;
+    left: 0;
+    right: 100%;
+  }
+
+  .react-joyride__button--primary {
+    font-size: 12px !important;
+    padding: 6px 10px !important;
+  }
 }

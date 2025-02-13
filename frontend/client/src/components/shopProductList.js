@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import ProductModal from './ProductModal';
-import axiosInstance from './axiosInstance';
+import ProductModal from './ProductModal.js';
+import axiosInstance from './axiosInstance.js';
 import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
-import { storeSearch, getSearchHistory, trackProductClick } from '../utils/search';
-import { useIsMobile } from '../utils/mobilecheck';
+import { storeSearch, getSearchHistory, trackProductClick } from '../utils/search.js';
+import { useIsMobile } from '../utils/mobilecheck.js';
 import './styles/NewProductList.css';
 import { jwtDecode } from 'jwt-decode';
 import categories from './categories.js';
+import { useParams } from 'react-router-dom';
 
-const NewProductList = () => {
+const NewProductList = ({ username }) => {
+  {/*const { username } = useParams();*/}
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -224,45 +226,58 @@ const NewProductList = () => {
   const filterAndSortProducts = () => {
     const searchHistory = getSearchHistory(); // Retrieve search history
     const clickHistory = JSON.parse(sessionStorage.getItem('clickHistory')) || {};
-
+  
     return products
       .filter((product) => {
+        // Only show products belonging to the specific shop/seller
+        const matchesUsername = product.username === username;
+  
+        // Additional filters
         const matchesCategory = selectedCategory
           ? product.category.toLowerCase() === selectedCategory.toLowerCase()
           : true;
         const matchesSearch =
           product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.subCategory?.toLowerCase().includes(searchTerm.toLowerCase());
-
-
-          const matchesMaxPrice = filters.maxPrice
-        ? product.price <= filters.maxPrice
-        : true;
-         const matchesBrand = filters.brand ? product.brand === filters.brand : true;
-          
-        return matchesCategory && matchesSearch && matchesMaxPrice && matchesBrand;
+          (product.subCategory && product.subCategory.toLowerCase().includes(searchTerm.toLowerCase()));
+        const matchesMaxPrice = filters.maxPrice ? product.price <= filters.maxPrice : true;
+        const matchesBrand = filters.brand ? product.brand === filters.brand : true;
+  
+        return matchesUsername && matchesCategory && matchesSearch && matchesMaxPrice && matchesBrand;
       })
       .sort((a, b) => {
-        // Boost products that match the search history
-        const aBoost = Array.isArray(searchHistory[a.category]) && searchHistory[a.category].includes(a.subCategory) ? 1 : 0;
-        const bBoost = Array.isArray(searchHistory[b.category]) && searchHistory[b.category].includes(b.subCategory) ? 1 : 0;
+        // Boosting based on search history
+        const aBoost =
+          Array.isArray(searchHistory[a.category]) &&
+          searchHistory[a.category].includes(a.subCategory)
+            ? 1
+            : 0;
+        const bBoost =
+          Array.isArray(searchHistory[b.category]) &&
+          searchHistory[b.category].includes(b.subCategory)
+            ? 1
+            : 0;
   
-
+        // Boosting based on click history
         const aClickBoost = clickHistory[a.id] || 0;
         const bClickBoost = clickHistory[b.id] || 0;
-
-
+  
+        // Compare search history boost first
         if (aBoost !== bBoost) {
-          return bBoost - aBoost; // Prioritize products with higher boost
+          return bBoost - aBoost;
+        }
+        // Then compare click history boost
+        if (aClickBoost !== bClickBoost) {
+          return bClickBoost - aClickBoost;
         }
   
-        // Fallback sorting by search term match
+        // Fallback: sort based on search term relevance in the product name
         const aMatch = a.name.toLowerCase().includes(searchTerm.toLowerCase());
         const bMatch = b.name.toLowerCase().includes(searchTerm.toLowerCase());
         return aMatch === bMatch ? 0 : aMatch ? -1 : 1;
       });
   };
+  
 
 
   const handlePageChange = (newPage) => {
@@ -461,7 +476,7 @@ const NewProductList = () => {
             );
           })
         ) : (
-          <p>No products found</p>
+          <p>No products found for {username}</p>
         )}
       </div>
 

@@ -5,7 +5,7 @@ import PushNotification from '../PushNotification';
 import { getUsernameFromToken, getcategoryFromToken, getemailFromToken } from '../utils/auth';
 import { ThemeContext } from '../ThemeContext'; // Import ThemeContext
 import './styles/setting.css';
- 
+
 const Settings = () => {
   const navigate = useNavigate();
   const lusername = getUsernameFromToken();

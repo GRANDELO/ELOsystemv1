@@ -17,6 +17,8 @@ import BlogHome from "./pages/BlogHome";
 import BlogDetails from "./pages/BlogDetails";
 
 
+import Shop from './components/Shop';
+
 import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
 import NewProductEdit from './components/NewProductEdit';
@@ -43,7 +45,6 @@ import Passwordrecovery from './components/passwordreset';
 import Productperfomance from './components/productperfomance';
 import Regdeliverypeople from './components/regdeliverypeople';
 import Home from './components/salespersonhome';
-import Seller from './components/sellerHome';
 import Upload from './components/upload';
 
 import ChatList from "./components/ChatList";
@@ -107,6 +108,8 @@ const App = () => {
           
           <Route path="/blogs" element={<BlogHome />} />
           <Route path="/blog/:id" element={<BlogDetails />} />
+          
+          <Route path="/shop" element={<Shop />} />
 
           <Route path="/chatall" element={<ChatList />} />
           <Route path="/chat/:chatId" element={<ChatDetails />} />
@@ -122,7 +125,6 @@ const App = () => {
             <Route path="/productForm" element={<ProductForm />} />
             <Route path="/reset-password" element={<Passwordrecovery />} />
             <Route path="/products" element={<ProductList />} />
-            <Route path="/seller" element={<Seller />} />
             <Route path="/upload" element={<Upload />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/order" element={<Order />} />

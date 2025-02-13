@@ -181,7 +181,7 @@ const NewProductFormShell = () => {
   
         setTimeout(() => {
           window.location.reload();
-        }, 2000);
+        }, 5000);
       }
 
   

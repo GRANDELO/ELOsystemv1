@@ -124,6 +124,10 @@
   text-decoration: underline;
 }
 
+.footer-links{
+  display: flex;
+  flex-direction: column;
+}
 /* Responsive Design */
 @media (max-width: 768px) {
   .footer-bottom,

@@ -28,6 +28,13 @@
   padding-bottom: 5px;
 }
 
+h3{
+  margin-bottom: 10px;
+  font-size: 1.6rem;
+  color: var(--text-color-light);
+  font-weight: bold;
+}
+
 .userinfo-row:last-child {
   border-bottom: none;
 }
@@ -45,6 +52,7 @@
     background-color: #dc3545;
     color: #fff;
     border: none;
+    width: 100%;
     padding: 8px 12px;
     margin-top: 15px;
     border-radius: 4px;

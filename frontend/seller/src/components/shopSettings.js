@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import axiosInstance from './axiosInstance';
 import { getUsernameFromToken } from '../utils/auth';
+import './styles/setting.css';
 
 
 const UpdateImages = () => {
@@ -51,7 +52,7 @@ const UpdateImages = () => {
   };
 
   return (
-    <div>
+    <div className="settingmain">
       <h3>Update Logo and Background Images</h3>
       
       <form onSubmit={handleSubmit}>

@@ -93,7 +93,7 @@ const PushNotification = () => {
       <h1>Push Notifications</h1>
       {!isSubscribed ? (
         <>
-          <button onClick={requestNotificationPermission}>Allow Notifications</button>
+          <button id='allow' onClick={requestNotificationPermission}>Allow Notifications</button>
           {permissionRequested && (
             <button onClick={subscribeUser}>Subscribe to Notifications</button>
           )}

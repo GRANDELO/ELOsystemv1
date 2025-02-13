@@ -7,16 +7,16 @@ import { FaMessage } from "react-icons/fa6";
 import { AiOutlineQrcode } from "react-icons/ai";
 import { IoMdMenu } from "react-icons/io";
 import { IoClose } from 'react-icons/io5';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getUsernameFromToken, getcategoryFromToken } from '../utils/auth';
 import Cart from './Cart';
 import WhatsAppButton from './Whatsapp';
 import AppDownloadQRIcon from './qrCode';
 import Footer from './Footer';
 import Qrscaner from './qrscaner';
-import NewProductList from './NewProductList';
+import NewProductList from './shopProductList';
 import Displayorder from './displayorder';
-import Header from './header';
+import Header from './headersell';
 import Notifications from './notification'; // Import Notifications component
 import Settings from './settings';
 import FeedbackForm from './Feedback';
@@ -24,8 +24,11 @@ import './styles/salespersonhome.css';
 import { Alert} from 'react-bootstrap';
 import { useIsMobile } from '../utils/mobilecheck';
 import Tour from 'reactour';
+const Shop = () => {
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const businessname = queryParams.get('businessname');
 
-const Home = () => {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -383,7 +386,7 @@ const [steps, setSteps] = useState(initialSteps);
     setIsSettingsVisible(false);
     setIsOrderVisible(false);
     setsetnavop(!isQrScannerVisible);
-  }; 
+  };
 
 
 
@@ -444,7 +447,9 @@ const [steps, setSteps] = useState(initialSteps);
 
 
 
-      <Header />
+      <Header 
+      username={businessname}
+      />
       {loginPrompt && (
         <Alert variant="warning" className="ordcore-alert">
           {loginPrompt} <a href="/login">Sign In</a> or <a href="/register">Register</a>
@@ -463,7 +468,9 @@ const [steps, setSteps] = useState(initialSteps);
                 {!setnavop ?
                 (
                   <div className="salesp-home-intro">
-                      <NewProductList />
+                      <NewProductList 
+                      username={businessname}
+                      />
                   </div>
                 ):
                 (
@@ -529,13 +536,15 @@ const [steps, setSteps] = useState(initialSteps);
                       </div>
                     )}
                   </>
-                )} 
+                )}
 
             </main>
       ):(
         <main className="salesp-main">
         <div className="salesp-home-intro">
-          <NewProductList />
+          <NewProductList 
+          username={businessname}
+          />
         </div>
         
         {/* Settings Section */}
@@ -650,4 +659,4 @@ const [steps, setSteps] = useState(initialSteps);
 };
 
 
-export default Home;
+export default Shop;

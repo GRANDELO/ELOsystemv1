@@ -16,6 +16,11 @@ import Withdrawal from './withdrawal';
 import { getUsernameFromToken } from '../utils/auth';
 import './styles/Home.css';
 import { BsBoxFill } from "react-icons/bs";
+import ShareAccountSection from './shareaccount';
+import { useIsMobile } from '../utils/mobilecheck';
+import ReactJoyride from 'react-joyride';
+import Tour from 'reactour';
+
 
 const Home = () => {
   const navigate = useNavigate();
@@ -31,6 +36,173 @@ const Home = () => {
   const username = getUsernameFromToken();
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isInstalled, setIsInstalled] = useState(true);
+  const isMobile = useIsMobile();
+  const initialSteps = isMobile
+  ? [
+      {
+        selector: '.home',
+        content: 'Welcome to your shop.',
+      },
+      {
+        selector: '#Show-My-Products',
+        content: 'To view all your products.',
+      },
+      {
+        selector: '#Add-New-Product',
+        content: 'Form to post your products.',
+      },
+      {
+        selector: '#View-Performance',
+        content: 'View all sales performance.',
+      },
+      {
+        selector: '#settings',
+        content: 'Click this button.',
+      },
+      {
+        selector: '.home-settings-section #withdrawals',
+        content: 'Money withdrawals.',
+      },
+      {
+        selector:'.home-settings-section #allsettings',
+        content: 'Get all your accout settings from here.',
+      },
+      {
+        selector: '.home-settings-section #allsettings #allow ',
+        content: 'Make sure you allow notificatttions to stay updated with orders',
+      },
+      {
+        selector: '.home-settings-section #customs',
+        content: 'Customize your shop from here!',
+      },
+      {
+        selector: '#notifications',
+        content: 'View all your notifications.',
+      },
+      {
+        selector:  '#orders',
+        content: 'View all orders',
+      },
+
+    ]
+  : [
+      {
+        target: '.home',
+        content: 'Welcome to your shop.',
+        placement: 'center',
+      },
+      {
+        target: '#Show-My-Products',
+        content: 'To view all your products.',
+        placement: 'left',
+      },
+      {
+        target: '#Add-New-Product',
+        content: 'Form to post your products',
+      },
+      {
+        target: '#View-Performance',
+        content: 'View all sales performance',
+        placement: 'right',
+      },
+      {
+        target: '#settings',
+        content: 'Click this button ',
+        placement: 'right',
+      },
+      {
+        target: '.home-settings-section #withdrawals',
+        content: 'Money withdrawals.',
+        placement: 'right',
+      },
+      {
+        target: '.home-settings-section #allsettings',
+        content: 'Get all your accout settings from here.',
+        placement: 'right',
+      },
+      {
+        target: '.home-settings-section #allsettings #allow ',
+        content: 'Make sure you allow notificatttions to stay updated with orders',
+        placement: 'right',
+      },
+      {
+        target: '.home-settings-section #customs',
+        content: 'Customize your shop from here!',
+        placement: 'right',
+      },
+      {
+        target: '#notifications',
+        content: 'View all your notifications.',
+        placement: 'right',
+      },
+      {
+        target: '#orders',
+        content: 'View all orders',
+        placement: 'right',
+      },
+    ];
+
+  const [steps, setSteps] = useState(initialSteps);
+  const [isJoyrideActive, setJoyrideActive] = useState(false);
+
+  useEffect(() => {
+    // Check if the user has already seen the Joyride
+    const hasSeenJoyride = localStorage.getItem('hasSeenJoyride');
+    if (!hasSeenJoyride) {
+      // Delay the Joyride to ensure the DOM is fully rendered
+      const timer = setTimeout(() => {
+        setJoyrideActive(true);
+      }, 2000); // Adjust the delay as needed
+  
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  useEffect(() => {
+    const checkTargets = () => {
+      steps.forEach((step, index) => {
+        const targetElement = document.querySelector(step.target);
+        if (!targetElement) {
+          console.error(`Target not found for step ${index + 1}:`, step.target);
+        }
+      });
+    };
+  
+    checkTargets();
+  }, [steps]);
+
+  const [isTourActive, setTourActive] = useState(false);
+
+  useEffect(() => {
+    // Check if the user has already seen the tour
+    const hasSeenTour = localStorage.getItem('hasSeenTour');
+    if (!hasSeenTour) {
+      const timer = setTimeout(() => {
+        setTourActive(true);
+      }, 2000); // Adjust delay if needed
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleTourClose = () => {
+    setTourActive(false);
+    localStorage.setItem('hasSeenTour', 'true');
+  };
+
+  const handleJoyrideCallback = (data) => {
+    const { action, status } = data;
+   
+    if (action === "close") {
+      setJoyrideActive(false); // Hide Joyride
+    }
+    const finishedStatuses = ['finished', 'skipped'];
+
+    if (finishedStatuses.includes(status)) {
+      setJoyrideActive(false);
+      localStorage.setItem('hasSeenJoyride', 'true');
+    }
+  };
+
 
   useEffect(() => {
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -137,6 +309,34 @@ const Home = () => {
 
   return (
     <div className="home">
+             {isMobile ?(
+        <>
+          <Tour
+            steps={steps}
+            isOpen={isTourActive}
+            onRequestClose={handleTourClose}
+            // Optionally, you can customize styling with props like accentColor:
+            // accentColor="#5cb7b7"
+          />
+
+        </>
+       ):
+       (
+        <>
+        <ReactJoyride
+        steps={steps}
+        continuous
+        showProgress
+        showSkipButton
+        callback={handleJoyrideCallback}
+        run={isJoyrideActive}
+        disableScrolling
+        disableOverflow
+        spotlightClicks={false}
+        className="custom-joyride"
+      />
+       </>
+       )}
       <Header />
       {!isInstalled &&
         (
@@ -153,18 +353,21 @@ const Home = () => {
           <section className="home-intro">
           <div className="home-toggle-buttons">
             <button
+              id='Show-My-Products'
               className={`home-settings-button ${activeSection === 'product-list' ? 'active' : ''}`}
               onClick={() => setActiveSection('product-list')}
             >
               Show My Products
             </button>
             <button
+              id='Add-New-Product'
               className={`home-settings-button ${activeSection === 'add-product' ? 'active' : ''}`}
               onClick={() => setActiveSection('add-product')}
             >
               Add New Product
             </button>
             <button
+              id='View-Performance'
               className={`home-settings-button ${activeSection === 'product-performance' ? 'active' : ''}`}
               onClick={() => setActiveSection('product-performance')}
             >
@@ -191,27 +394,28 @@ const Home = () => {
 
         <div>
           <section className={`home-settings-section ${uiState.settings ? 'active' : ''}`}>
-            <div>
+            <div className="allset" id='withdrawals'>
             <Withdrawal />
             </div>
             
-            <div>
+            <div className="allset" id='allsettings'> 
             <Settings />
             </div>
             
-            <div>
+            <div className="allset" id='customs'>
             <ShopSettings />
+            <ShareAccountSection username={username} />
             </div>
             
           </section>
 
           {/* Notifications Section */}
-          <section className={`home-notifications-section ${uiState.notifications ? 'active' : ''}`}>
+          <section id='' className={`home-notifications-section ${uiState.notifications ? 'active' : ''}`}>
             <Notifications />
           </section>
 
           {/* Shop Settings Section */}
-          <section className={`home-shop-settings-section ${uiState.shopSettings ? 'active' : ''}`}>
+          <section id='' className={`home-shop-settings-section ${uiState.shopSettings ? 'active' : ''}`}>
             <Displayorder />
           </section>
         </div>
@@ -223,11 +427,11 @@ const Home = () => {
 
       {/* Floating Action Buttons (Mobile Only) */}
       <div className="salesp-floating-buttons">
-        <button className="salesp-toggle-button" onClick={() => toggleVisibility('settings')}>
+        <button id='settings' className="salesp-toggle-button" onClick={() => toggleVisibility('settings')}>
           <FaCog />
         </button>
 
-        <button className="salesp-toggle-button" onClick={() => toggleVisibility('notifications')}>
+        <button id='notifications' className="salesp-toggle-button" onClick={() => toggleVisibility('notifications')}>
         <FaBell />
           {unreadNotifications > 0 && (
             <span className="salesp-notification-count">{unreadNotifications}</span>
@@ -235,7 +439,7 @@ const Home = () => {
          
         </button>
         
-        <button className="salesp-toggle-button" onClick={() => toggleVisibility('shopSettings')}>
+        <button id='orders' className="salesp-toggle-button" onClick={() => toggleVisibility('shopSettings')}>
           <BsBoxFill />
         </button>
       </div>
@@ -245,4 +449,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Home; 

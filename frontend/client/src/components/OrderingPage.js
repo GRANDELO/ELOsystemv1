@@ -457,6 +457,7 @@ const OrderingPage = () => {
         <>
         {/* Town Selector */}
         <div>
+          <strong>Choose nearest agent to you</strong>
           <label htmlFor="town">County:</label>
           <select
             id="town"
@@ -545,6 +546,7 @@ const OrderingPage = () => {
       (
 
       <>
+      <strong>Choose nearest town to you</strong>
         <Form.Group className='model'>
           <Form.Label className='Label'>County</Form.Label>
           <Form.Control
@@ -613,14 +615,14 @@ const OrderingPage = () => {
       <Form>
         <Form.Group className='model2'>
           <Form.Label className='Label' >Payment Method</Form.Label>
-          <Form.Check
+         {/*  <Form.Check
             type="radio"
             label="M-Pesa"
             name="paymentMethod"
             value="mpesa"
             checked={paymentMethod === 'mpesa'}
             onChange={handlePaymentMethodChange}
-          />
+          />*/}
           <Form.Check
             type="radio"
             label="Mpesa on Delivery"
