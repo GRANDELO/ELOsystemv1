@@ -109,7 +109,7 @@ const App = () => {
           <Route path="/blogs" element={<BlogHome />} />
           <Route path="/blog/:id" element={<BlogDetails />} />
           
-          <Route path="/shop" element={<Shop />} />
+          <Route path="/shops" element={<Shop />} />
 
           <Route path="/chatall" element={<ChatList />} />
           <Route path="/chat/:chatId" element={<ChatDetails />} />
