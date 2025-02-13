@@ -1,108 +1,171 @@
 /* NewProductFormShell.css */
-.step-section{
-    background-color: var(--bg-color-light);
-    min-width: 1000px;
+:root {
+  --bg-color-light: #f9f9f9;
+  --text-color-light: #333;
+  --primary-color: #3498db;
+  --secondary-color: #2ecc71;
+  --accent-color: #e74c3c;
 }
+
+/* General container and section styles */
+.step-section {
+  background-color: var(--bg-color-light);
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 15px;
+  margin: 20px 0;
+}
+
 .step-section h3 {
-    color: var(--text-color-light);
-    text-align: center;
-    font-size: 1.8rem;         /* Bigger font size */
-    font-weight: bold;
-    margin: 20px auto;
-    padding: 15px 20px;
-    background: linear-gradient(45deg, var(--primary-color, #3498db), var(--secondary-color, #2ecc71));
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-bottom: 3px solid var(--accent-color, #e74c3c);
-    text-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-    
+  color: var(--text-color-light);
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 20px auto;
+  padding: 15px 20px;
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-bottom: 3px solid var(--accent-color);
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.step-section h3:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
 
 input::placeholder {
-    color: var(--text-color-light); /* Change this to your desired color */
-  }
+  color: var(--text-color-light);
+}
 
-  .drop-zone {
-    color: var(--text-color-light); /* Replace with your desired color */
-  }
-/* This will change the placeholder color for ReactQuill's editor */
+.drop-zone {
+  color: var(--text-color-light);
+}
+
+/* ReactQuill placeholder styling */
 .npfdiv .ql-editor.ql-blank::before {
-    color: var(--text-color-light); /* Replace with your desired color */
-  }
-  
+  color: var(--text-color-light);
+}
+
 /* Linear progress container */
 .linear-progress-container {
-    width: 100%;
-    background-color: #e0e0e0;
-    height: 30px; /* Thicker for better visibility */
-    border-radius: 15px;
-    margin-bottom: 20px;
-    overflow: hidden;
-  }
-  
-  /* The progress bar that fills in */
-  .linear-progress-bar {
-    height: 100%;
-    background-color: #3498db;
-    width: 0%;
-    transition: width 0.5s ease;
-  }
-  
-  /* Form container */
+  width: 100%;
+  background-color: #e0e0e0;
+  height: 30px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.linear-progress-bar {
+  height: 100%;
+  background-color: var(--primary-color);
+  width: 0%;
+  transition: width 0.5s ease;
+}
+
+/* Form container */
+.new-product-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Navigation buttons container */
+.step-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.step-navigation button {
+  padding: 10px 20px;
+  background-color: var(--primary-color);
+  border: none;
+  color: white;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 10px;
+}
+
+.step-navigation button:hover {
+  background-color: #2980b9;
+}
+
+/* Thumbnails for image previews */
+.thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.thumbnail {
+  width: 60px;
+  height: 60px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
   .new-product-form {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
+    padding: 10px;
   }
   
-  /* Each step section */
-  .step-section {
-    margin: 20px 0;
+  .step-section h3 {
+    font-size: 1.5rem;
+    padding: 10px 15px;
+    margin: 15px auto;
   }
   
-  /* Navigation buttons container */
-  .step-navigation {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-  }
-  
-  /* Navigation button styling */
   .step-navigation button {
-    padding: 10px 20px;
-    background-color: #3498db;
-    border: none;
-    color: white;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin: 20px;
+    font-size: 14px;
+    padding: 8px 16px;
+    margin: 8px;
   }
   
-  .step-navigation button:hover {
-    background-color: #2980b9;
-  }
-  
-  .thumbnails {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 10px;
+  .linear-progress-container {
+    height: 25px;
   }
   
   .thumbnail {
-    width: 60px;
-    height: 60px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    overflow: hidden;
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .step-section h3 {
+    font-size: 1.3rem;
+    padding: 8px 12px;
   }
   
-  .thumbnail img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .step-navigation button {
+    font-size: 12px;
+    padding: 6px 12px;
+    margin: 6px;
   }
   
+  .linear-progress-container {
+    height: 20px;
+  }
+  
+  .thumbnail {
+    width: 40px;
+    height: 40px;
+  }
+}
