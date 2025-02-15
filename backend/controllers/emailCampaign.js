@@ -8,14 +8,14 @@ exports.footerSubscribe =  async( req, res) => {
         return res.status(400).json({ message : "Email required"})
     }
     try {
-        const existingSubscriber = await Subscriber({ email });
+        const existingSubscriber = await Subscriber.findOne({ email });
         if (existingSubscriber) {
           return res.status(400).json({ message: 'Email already subscribed' });
         }
 
         const newEmail = new Subscriber({email});
         await newEmail.save();
-        res.statusstatus(201).json({ message: 'Subscription successful' });
+        res.status(201).json({ message: 'Subscription successful' });
     } catch(error){
         if (error.code ===11000){
             return res.status(400).json({ message: 'Email already subscribed' });
