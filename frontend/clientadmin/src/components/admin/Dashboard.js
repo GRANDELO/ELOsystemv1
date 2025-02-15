@@ -13,7 +13,7 @@ import io from 'socket.io-client';
 import Sales from './sales/Salespg';
 import Setting from './settings';
 import AdminFeedback from '../feedback';
-
+import CampaignForm from '../emailService';
 import './styles/Dashboard.css';
 import './styles/table.css';
 
@@ -193,6 +193,14 @@ const Dashboard = () => {
                     </button>
 
                     <button
+                    className= {`dash-nav-button ${view === 'Email' ? 'dashad-active' : ''}`}
+                    onClick={() => setView('CampaignForm')}
+                    >
+                      Email Service
+
+                    </button>
+
+                    <button
                         className={`dashad-nav-button ${view === 'MRK' ? 'dashad-active' : ''}`}
                         onClick={() => setView('MRK')}
                     >
@@ -247,6 +255,7 @@ const Dashboard = () => {
                     {view === 'reports' && <Reports />}
                     {view === 'feedback' && <AdminFeedback />}
                     {view === 'Accouns' && <Accouns />}
+                    {view === 'CampaignForm' && <CampaignForm/>}
                     {view === 'MRK' && <MRK />}
                     {view === 'destinations' && (
                         <div className="dashad-destinations-section">
@@ -374,3 +383,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+ 

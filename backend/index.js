@@ -21,7 +21,7 @@ const blogRoutes = require("./routes/blogRoutes");
 
 require('dotenv').config();
 require('./worker');
-
+const emailing = require('./routes/subscriber');
 const deliveryroutesaction = require('./routes/deliveryroutesaction');
 const agentRoutes = require('./routes/agentRoutes');
 const pushNotificationRoutes = require('./routes/pushNotifications');
@@ -174,6 +174,8 @@ mongoose
 
 
 // Routes
+
+app.use('/api', emailing);
 app.use('/api', Destination);
 app.use('/api/delivery', deliveryroutesaction);
 app.use('/api/agents', agentRoutes);
