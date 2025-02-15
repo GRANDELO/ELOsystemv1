@@ -27,7 +27,7 @@ const Footer = () => {
     e.preventDefault();
     if (email) {
       try {
-        const response = await axiosInstance('/subscribe')
+        const response = await axiosInstance.post('/subscribe', { email })
         alert(response.data.message);
       }catch (error){
         alert(error.response?.data?.message || 'Subscription failed. Please try again.');
