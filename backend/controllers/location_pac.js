@@ -55,8 +55,6 @@ function groupOrders(orders, timeWindowMinutes = 2880) {
   return groupedOrders;
 }
 
-
-
 // Helper function to decide transportation based on threshold
 function decideTransportation(groupedOrders, threshold = 10) {
   const transportationPlan = { direct: [], hub: [] };
@@ -99,6 +97,7 @@ async function createRoutes(groupedOrders, threshold = 10) {
         area: destination.area || 'Unknown Area',
       },
       orders: groupedOrders[key].map(order =>  order._id),
+      orderNumbers: groupedOrders[key].map(order => order.orderNumber),
       status: 'scheduled',
       type: groupedOrders[key].length >= threshold ? 'direct' : 'hub',
     });
