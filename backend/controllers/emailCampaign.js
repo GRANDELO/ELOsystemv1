@@ -1,7 +1,34 @@
-const Subscriber = require('../models/email')
+const Subscriber = require('../models/email');
+const Newsletter = require('../models/newsLetter');
+require('dotenv').config();
+const nodemailer = require('nodemailer');
+const { bucket } = require('../config/firebase');
+const path = require('path');
+
+async function uploadFile(file) {
+  if (!file) return null;
+
+  const fileName = Date.now() + path.extname(file.originalname); // Generate a unique file name
+  const fileUpload = bucket.file(fileName);
+
+  const stream = fileUpload.createWriteStream({
+    metadata: {
+      contentType: file.mimetype,
+    },
+  });
+
+  return new Promise((resolve, reject) => {
+    stream.on('error', (err) => reject(err));
+    stream.on('finish', async () => {
+      // Get the public URL for the uploaded file
+      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+      resolve(publicUrl);
+    });
+    stream.end(file.buffer);
+  });
+}
 
 exports.footerSubscribe =  async( req, res) => {
-
     const{ email } = req.body;
 
     if (!email) {
@@ -24,20 +51,53 @@ exports.footerSubscribe =  async( req, res) => {
     }
 
 };
-//OPTIONS /api/subscribe 204 0.163 ms - 0
-// /opt/render/project/src/backend/controllers/emailCampaign.js:5
-// const{ email } = req.body;
-//        ^
-// TypeError: Cannot destructure property 'email' of 'req.body' as it is undefined.
-// at exports.footerSubscribe (/opt/render/project/src/backend/controllers/emailCampaign.js:5:12)
-// at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-// at next (/opt/render/project/src/backend/node_modules/express/lib/router/route.js:149:13)
-// at Route.dispatch (/opt/render/project/src/backend/node_modules/express/lib/router/route.js:119:3)
-// at Layer.handle [as handle_request] (/opt/render/project/src/backend/node_modules/express/lib/router/layer.js:95:5)
-// at /opt/render/project/src/backend/node_modules/express/lib/router/index.js:284:15
-// at Function.process_params (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:346:12)
-// at next (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:280:10)
-// at Function.handle (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:175:3)
-// at router (/opt/render/project/src/backend/node_modules/express/lib/router/index.js:47:12)
+
+exports.NewsLetter = async (req, res) => {
+    const {subject, content} = req.body;
+    const file = req.file;
+
+    try{
+        const fileUrl = await uploadFile(file);
+        const newNewsletter = new Newsletter({subject, content, fileUrl});
+
+        await newNewsletter.save();
+        res.status(201).json({ message: 'Newsletter created successfully' });
+    }catch (error){
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+exports.SendNewsletter = async (req, res) =>  {
+    const { subject, content } = req.body;
+    try {
+        const subscribers = await Subscriber.find();
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+        });
+        subscribers.forEach((subscriber) => {
+            const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: subscriber.email, 
+                subject,
+                html: content
+            };
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error){
+                console.log(error);
+            }else {
+                console.log("Email sent: " +info.response)
+            }
+
+        });
+    });
+    res.status(200).json({ message: 'Newsletter sent successfully' });
+    }catch(error){
+        res.status(500).json({ message: 'Server error' });
+    }
+};
 
 

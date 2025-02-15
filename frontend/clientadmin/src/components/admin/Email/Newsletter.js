@@ -38,7 +38,7 @@ const NewsLetter = ( ) => {
         formData.append('file', file);
       }
       try {
-        const response = await axiosInstance.post('/send-newsletter', formData, {
+        const response = await axiosInstance.post('/newsletter', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
