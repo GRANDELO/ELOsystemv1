@@ -37,7 +37,7 @@ function normalizeDestination(destination) {
 
 
 // Helper function to group orders based on origin and destination
-function groupOrders(orders, timeWindowMinutes = 2880) {
+function groupOrders(orders, timeWindowMinutes = 20160) {
   const groupedOrders = {};
   const currentTime = new Date();
 
@@ -60,7 +60,7 @@ function groupOrders(orders, timeWindowMinutes = 2880) {
     }else {
       console.warn(`Order ${order.orderNumber} is outside the time window.`);
     }
-    
+
   });
 
   return groupedOrders;
@@ -122,7 +122,7 @@ async function createRoutes(groupedOrders, threshold = 10) {
 const planDeliveryLocations = async (req, res) => {
   try {
     // Step 1: Fetch all pending orders within the last 60 minutes
-    const timeWindowMinutes = 2880;
+    const timeWindowMinutes = 20160;
     const currentTime = new Date();
     const timeWindowStart = new Date(currentTime.getTime() - timeWindowMinutes * 60000);
 
