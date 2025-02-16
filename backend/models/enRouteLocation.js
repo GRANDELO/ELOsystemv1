@@ -13,7 +13,7 @@ const routeSchema = new mongoose.Schema({
     area: {type: String, required: true},
   },
   orderNumber:[{type: String, unique: true }],
-  status: { type: String, enum: ['scheduled', 'in_transit', 'delivered'], default: 'scheduled' },
+  status: { type: String, enum: ['Pending', 'scheduled', 'in_transit', 'delivered'], default: 'scheduled' },
   type: {type: String, enum:['direct', 'hub'], required: true},
 });
 

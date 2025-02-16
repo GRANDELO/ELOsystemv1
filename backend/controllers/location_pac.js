@@ -112,7 +112,7 @@ async function createRoutes(groupedOrders, threshold = 10) {
       status: 'scheduled',
       type: groupedOrders[key].length >= threshold ? 'direct' : 'hub',
     });
-    await route.save();
+    await route.insertMany(routes);
     routes.push(route);
   }
   return routes;
@@ -130,7 +130,8 @@ const planDeliveryLocations = async (req, res) => {
     console.log('Current time:', currentTime);
 
     const orders = await Order.find({
-     status: 'in_transit',
+      $or: [{ status: 'in_transit' }, { status: 'pending' }],
+      orderDate: { $gte: timeWindowStart } 
     });
 
     console.log('Fetched orders:', orders);
@@ -144,24 +145,30 @@ const planDeliveryLocations = async (req, res) => {
       });
     }
   
-    for (let order of orders) {
+    const bulkUpdates = orders.map(order => {
       if (!order.origin) {
-        const seller = await User.findOne({ username: order.username, category: 'seller' });
-        const defaultOrigin = { county: 'Nairobi County', town: 'Nairobi', area: 'CBD' };
-
-        order.origin = {
-          county: seller?.locations?.county || defaultOrigin.county,
-          town: seller?.locations?.town || defaultOrigin.town,
-          area: seller?.locations?.area || defaultOrigin.area,
-        };
-      } else {
-    // Fill in missing fields in existing origin
-       order.origin.county = order.origin.county || 'Nairobi County';
-       order.origin.town = order.origin.town || 'Nairobi';
-       order.origin.area = order.origin.area || 'CBD';
-       }
+        order.origin = { county: 'Nairobi County', town: 'Nairobi', area: 'CBD' }; 
       }
     
+      return {
+        updateOne: {
+          filter: { _id: order._id },
+          update: {
+            $set: {
+              'origin.county': order.origin.county || 'Nairobi County',
+              'origin.town': order.origin.town || 'Nairobi',
+              'origin.area': order.origin.area || 'CBD',
+            },
+          },
+        },
+      };
+    });
+
+    if (bulkUpdates.length > 0) {
+      await Order.bulkWrite(bulkUpdates);
+      console.log('Bulk update for order origins completed.');
+    }
+
     // Step 2: Group orders based on origin and destination
     const groupedOrders = groupOrders(orders, timeWindowMinutes);
     console.log('Grouped orders:', Object.keys(groupedOrders));
