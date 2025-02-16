@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../axiosInstance';
 import { FaCog, FaSync, FaSave } from 'react-icons/fa';
+import '../styles/admin.css'
 
 const AdminPanel = () => {
   const [config, setConfig] = useState({ timeWindowMinutes: 20160, threshold: 10 });
@@ -13,6 +14,7 @@ const AdminPanel = () => {
     try {
       const response = await axiosInstance.get('/config');
       setConfig(response.data.data);
+      
     } catch (error) {
       console.error('Error fetching configuration:', error);
       setMessage('Failed to fetch configuration.');
@@ -30,6 +32,7 @@ const AdminPanel = () => {
       const response = await axiosInstance.put('/update', config);
       setMessage('Configuration updated successfully!');
       setLoading(false);
+      
     } catch (error) {
       console.error('Error updating configuration:', error);
       setMessage('Failed to update configuration.');
@@ -44,6 +47,9 @@ const AdminPanel = () => {
       const response = await axiosInstance.post('/replan-routes');
       setMessage('Routes re-planned successfully!');
       setLoading(false);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       console.error('Error during re-planning:', error);
       setMessage('Failed to re-plan routes.');

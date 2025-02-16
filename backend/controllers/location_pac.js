@@ -360,6 +360,91 @@ const getDestinations = async(req, res) => {
   }
 };
 
+const listRoutes = async (req, res) => {
+  try {
+    const routes = await Route.find({});
+    res.status(200).json({
+      success: true,
+      message: 'Routes fetched successfully.',
+      data: routes,
+    });
+  } catch (error) {
+    console.error('Error fetching routes:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch routes.',
+      error: error.message,
+    });
+  }
+};
+
+const updateOrder = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { status, reassignRouteId } = req.body;
+
+    const order = await Order.findById(orderId);
+    if (!order){
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found',
+      });
+    }
+
+    if (status){
+      order.status =status;
+    }
+    if (reassignRouteId) {
+      // Reassign order to a new route
+      order.routeId = reassignRouteId;
+    }
+
+    await order.save();
+    res.status(200).json({
+      success: true,
+      message: 'Order updated successfully.',
+      data: order,
+    });
+  } catch(error){
+    console.error('Error updating order:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update order.',
+      error: error.message,
+    });
+  }
+};
+
+const updateRoute = async (req, res) => {
+  try{
+    const { routeId }  = req.params;
+    const { status } = req.body;
+
+    const route = await Route.findById(routeId);
+    if (!route) {
+      return res.status(404).json({
+        success: false,
+        message: 'Route not found.',
+      });
+    }
+
+    route.status = status; // Update route status (e.g., "completed" or "delayed")
+    await route.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Route updated successfully.',
+      data: route,
+    });
+  }catch (error) {
+    console.error('Error updating route:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update route.',
+      error: error.message,
+    });
+  }
+};
 
 module.exports = {
 
@@ -367,5 +452,8 @@ module.exports = {
   adminReplan,
   getConfig, 
   updateConfig,
+  listRoutes,
+  updateOrder,
+  updateRoute,
   getDestinations,
 };

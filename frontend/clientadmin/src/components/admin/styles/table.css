@@ -180,7 +180,43 @@ tbody tr:hover {
   color: #3b82f6;
   animation: spin 1s linear infinite;
 }
+/* styles/dashboard.css */
+.admin-section {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px; /* Add space between buttons */
+}
 
+.toggle-admin-dashboard {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.toggle-admin-dashboard:hover {
+  background-color: #0056b3;
+}
+
+/* Optional: Add different colors for each button */
+.toggle-admin-dashboard:nth-child(1) {
+  background-color: #28a745; /* Green for Admin Panel */
+}
+
+.toggle-admin-dashboard:nth-child(1):hover {
+  background-color: #218838;
+}
+
+.toggle-admin-dashboard:nth-child(2) {
+  background-color: #dc3545; /* Red for Route Dashboard */
+}
+
+.toggle-admin-dashboard:nth-child(2):hover {
+  background-color: #c82333;
+}
 @keyframes spin {
   from {
     transform: rotate(0deg);

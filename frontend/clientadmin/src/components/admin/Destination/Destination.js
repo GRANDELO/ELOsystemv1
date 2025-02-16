@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTruck, FaMapMarkerAlt, FaChevronDown, FaChevronUp, FaSpinner } from 'react-icons/fa';
 import AdminPanel from './admin';
+import RouteOrderDashboard from './routesOrder';
 import '../styles/table.css';
 
 const socket = io('https://elosystemv1.onrender.com/api');
@@ -12,9 +13,11 @@ const Destination = () => {
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedRow, setExpandedRow] = useState(null); // Track expanded row
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [statuses, setStatuses] = useState(
     destinations.map((destination) => destination.status || "Pending")
   );
+  const [showRouteDashboard, setShowRouteDashboard] = useState(false);
 
   const fetchDestinations = async () => {
     try {
@@ -107,7 +110,30 @@ const Destination = () => {
   <h1 className="header">
     <FaTruck /> Delivery Destinations
   </h1>
-  <AdminPanel />
+  <div className="admin-section">
+          {/* Button for AdminPanel */}
+          <button
+            className="toggle-admin-dashboard"
+            onClick={() => setShowAdminPanel(!showAdminPanel)}
+          >
+            {showAdminPanel ? 'Hide Admin Panel' : 'Show Admin Panel'}
+          </button>
+
+          {/* Button for RouteOrderDashboard */}
+          <button
+            className="toggle-admin-dashboard"
+            onClick={() => setShowRouteDashboard(!showRouteDashboard)}
+          >
+            {showRouteDashboard ? 'Hide Route Dashboard' : 'Show Route Dashboard'}
+          </button>
+
+          {/* Render AdminPanel if toggled */}
+          {showAdminPanel && <AdminPanel />}
+
+          {/* Render RouteOrderDashboard if toggled */}
+          {showRouteDashboard && <RouteOrderDashboard />}
+        </div>
+ 
   <div className="table-container">
     <table>
       <thead>
