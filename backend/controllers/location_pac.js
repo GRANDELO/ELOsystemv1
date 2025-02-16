@@ -201,7 +201,7 @@ const planDeliveryLocations = async (req, res) => {
 
     const formatRoutes = (routes) => routes.map(route => ({
       ...route.toObject(),
-      orderCount: route.orders.length,
+      orderCount: Array.isArray(route.orders) ? route.orders.length : 0, 
   }));
   
   const directRoutesWithCounts = formatRoutes(directRoutes);
