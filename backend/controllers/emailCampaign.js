@@ -55,12 +55,6 @@ const footerSubscribe =  async( req, res) => {
 const NewsLetter = async (req, res) => {
     const {subject, content} = req.body;
     const file = req.file;
-
-    console.log('Received request in NewsLetter:');
-    console.log('Request Body:', req.body); // Log the entire request body
-    console.log('Uploaded File:', file ? file.originalname : 'No file uploaded'); // Log file details if provided
-
-
     try{
         const fileUrl = file ? await uploadFile(file) : null; 
         const newNewsletter = new Newsletter({subject, content, fileUrl});
@@ -73,10 +67,22 @@ const NewsLetter = async (req, res) => {
 };
 
 const SendNewsletter = async (req, res) =>  {
-    const { subject, content } = req.body;
+    
     try {
+        const { newsletterId } = req.body;
+        const newsletter = await Newsletter.findById(newsletterId);
+        if (!newsletter) {
+            return res.status(404).json({ message: 'Newsletter not found' });
+        }
+
+        const { subject, content, fileUrl } = newsletter;
+
         const subscribers = await Subscriber.find();
         console.log('Sending to subscribers:', subscribers.length);
+        if (subscribers.length === 0) {
+            return res.status(400).json({ message: 'No subscribers found' });
+        }
+
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -84,25 +90,29 @@ const SendNewsletter = async (req, res) =>  {
                 pass: process.env.EMAIL_PASS,
             },
         });
-        subscribers.forEach((subscriber) => {
+        const emailContent = `
+           <h1>${subject}</h1>
+           <div>${content}</div>
+           ${fileUrl ? `<p>Download the attached file: <a href="${fileUrl}">${fileUrl}</a></p>` : ''}
+        `;
+        const sendEmailPromises = subscribers.map((subscriber) => {
             const mailOptions = {
                 from: process.env.EMAIL_USER,
-                to: subscriber.email, 
-                subject,
-                html: content
+                to: subscriber.email,
+                subject: subject,
+                html: emailContent,
             };
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error){
-                console.log(error);
-            }else {
-                console.log("Email sent: " +info.response)
-            }
 
+            return transporter.sendMail(mailOptions);
         });
-    });
-    res.status(200).json({ message: 'Newsletter sent successfully' });
-    }catch(error){
-        res.status(500).json({ message: 'Server error' });
+
+        // Wait for all emails to be sent
+        await Promise.all(sendEmailPromises);
+
+        res.status(200).json({ message: 'Newsletter sent successfully' });
+    } catch (error) {
+        console.error('Error sending newsletter:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 

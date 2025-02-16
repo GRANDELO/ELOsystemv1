@@ -14,6 +14,7 @@ const NewsLetter = ( ) => {
     const [content, setContent] = useState('');
     const [file, setFile] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [newsletterId, setNewsletterId] = useState(null);
   
     const handleFileChange = (e) => {
       setFile(e.target.files[0]);
@@ -60,6 +61,28 @@ const NewsLetter = ( ) => {
         setIsLoading(false);
       }
     };
+
+    const handleSendNewsletterToSubscribers = async () => {
+      if (!newsletterId) {
+          toast.error('No newsletter created yet.');
+          return;
+      }
+
+      setIsLoading(true);
+
+      try {
+          const response = await axiosInstance.post('/send-newsletter', {
+              newsletterId: newsletterId,
+          });
+
+          toast.success(response.data.message);
+      } catch (error) {
+          console.error('Error sending newsletter to subscribers:', error);
+          toast.error(error.response?.data?.message || 'Failed to send newsletter to subscribers.');
+      } finally {
+          setIsLoading(false);
+      }
+  };
 
     return (
         <div className="admin-panel">
@@ -114,8 +137,19 @@ const NewsLetter = ( ) => {
                 disabled={isLoading}
                 className="send-button"
               >
-                {isLoading ? <Loader2 claingName="spinner"/> : 'Send Newsletter'}
+                {isLoading ? <Loader2 claingName="spinner"/> : 'create Newsletter'}
               </button>
+
+              {newsletterId && (
+                        <button
+                            onClick={handleSendNewsletterToSubscribers}
+                            disabled={isLoading}
+                            className="send-button"
+                            style={{ marginTop: '10px' }}
+                        >
+                            {isLoading ? <Loader2 className="spinner" /> : 'Send Newsletter to Subscribers'}
+                        </button>
+                    )}
             </div>
           </div>
     
