@@ -26,14 +26,21 @@ const ResetPassword = () => {
     try {
       const response = await axiosInstance.post('/auth/reset-password', formData);
       setMessage(response.data.message);
-      
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       if (error.response && error.response.data) {
         setMessage(error.response.data.message);
+
       } else {
         setMessage('An error occurred while processing your request.');
       }
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000); 
     }
+
   };
 
   const nextStep = () => {

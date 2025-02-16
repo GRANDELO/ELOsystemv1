@@ -56,8 +56,13 @@ exports.NewsLetter = async (req, res) => {
     const {subject, content} = req.body;
     const file = req.file;
 
+    console.log('Received request in NewsLetter:');
+    console.log('Request Body:', req.body); // Log the entire request body
+    console.log('Uploaded File:', file ? file.originalname : 'No file uploaded'); // Log file details if provided
+
+
     try{
-        const fileUrl = await uploadFile(file);
+        const fileUrl = file ? await uploadFile(file) : null; 
         const newNewsletter = new Newsletter({subject, content, fileUrl});
 
         await newNewsletter.save();
@@ -71,6 +76,7 @@ exports.SendNewsletter = async (req, res) =>  {
     const { subject, content } = req.body;
     try {
         const subscribers = await Subscriber.find();
+        console.log('Sending to subscribers:', subscribers.length);
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {

@@ -37,6 +37,11 @@ const NewsLetter = ( ) => {
       if (file) {
         formData.append('file', file);
       }
+
+      console.log('Sending the following data to the server:');
+      console.log('Subject:', subject);
+      console.log('Content:', content);
+      console.log('File:', file ? file.name : 'No file');
       try {
         const response = await axiosInstance.post('/newsletter', formData, {
           headers: {
