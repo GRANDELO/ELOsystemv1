@@ -112,7 +112,7 @@ async function createRoutes(groupedOrders, threshold = 10) {
       status: 'scheduled',
       type: groupedOrders[key].length >= threshold ? 'direct' : 'hub',
     });
-    await route.insertMany(routes);
+    await route.save();
     routes.push(route);
   }
   return routes;
