@@ -60,7 +60,10 @@ const NewsLetter = async (req, res) => {
         const newNewsletter = new Newsletter({subject, content, fileUrl});
 
         await newNewsletter.save();
-        res.status(201).json({ message: 'Newsletter created successfully' });
+        res.status(201).json({
+            message: 'Newsletter created successfully', 
+            newsletterId: newNewsletter._id,
+        });
     }catch (error){
         res.status(500).json({ message: 'Server error' });
     }
