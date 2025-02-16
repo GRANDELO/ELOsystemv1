@@ -28,7 +28,7 @@ async function uploadFile(file) {
   });
 }
 
-exports.footerSubscribe =  async( req, res) => {
+const footerSubscribe =  async( req, res) => {
     const{ email } = req.body;
 
     if (!email) {
@@ -52,7 +52,7 @@ exports.footerSubscribe =  async( req, res) => {
 
 };
 
-exports.NewsLetter = async (req, res) => {
+const NewsLetter = async (req, res) => {
     const {subject, content} = req.body;
     const file = req.file;
 
@@ -72,7 +72,7 @@ exports.NewsLetter = async (req, res) => {
     }
 };
 
-exports.SendNewsletter = async (req, res) =>  {
+const SendNewsletter = async (req, res) =>  {
     const { subject, content } = req.body;
     try {
         const subscribers = await Subscriber.find();
@@ -106,4 +106,8 @@ exports.SendNewsletter = async (req, res) =>  {
     }
 };
 
-
+module.exports = {
+    footerSubscribe,
+    NewsLetter,
+    SendNewsletter,
+};

@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const subscriber = require('../controllers/emailCampaign');
+const multer = require('multer');
+const {footerSubscribe, NewsLetter, SendNewsletter} = require('../controllers/emailCampaign');
 
-router.post('/subscribe', subscriber.footerSubscribe);
-router.post('/newsletter', subscriber.NewsLetter);
-router.post('/send-newsletter', subscriber.SendNewsletter);
+const upload = multer();
+
+router.post('/subscribe', footerSubscribe);
+router.post('/newsletter', upload.single('file'), NewsLetter);
+router.post('/send-newsletter', SendNewsletter);
 
 module.exports = router;
