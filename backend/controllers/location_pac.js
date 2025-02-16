@@ -4,6 +4,7 @@ const Route = require('../models/enRouteLocation'); // Import the Route model (t
 const mongoose = require('mongoose');
 const User = require("../models/User")
 const { v4: uuidv4 } = require("uuid");
+const Config = require('../models/Config');
 
 function normalizeDestination(destination) {
   let normalizedDestination = { county: 'Unknown', town: 'Unknown', area: 'Unknown' };
@@ -121,8 +122,13 @@ async function createRoutes(groupedOrders, threshold = 10) {
 // Controller function to plan delivery locations
 const planDeliveryLocations = async (req, res) => {
   try {
+
+    const config = await Config.findOne();
+    const timeWindowMinutes = config?.timeWindowMinutes || 20160;
+    const threshold = config?.threshold || 10;
+
     // Step 1: Fetch all pending orders within the last 60 minutes
-    const timeWindowMinutes = 20160;
+    //const timeWindowMinutes = 20160;
     const currentTime = new Date();
     const timeWindowStart = new Date(currentTime.getTime() - timeWindowMinutes * 60000);
 
@@ -182,7 +188,7 @@ const planDeliveryLocations = async (req, res) => {
       });
     }
 
-    const threshold = 10; 
+    //const threshold = 10; 
     // Step 3: Decide transportation based on threshold
     const transportationPlan = decideTransportation(groupedOrders, threshold);
     console.log('Transportation plan:', transportationPlan);
@@ -234,6 +240,106 @@ const planDeliveryLocations = async (req, res) => {
   }
 };
 
+// Add this function to handle manual re-planning
+const adminReplan = async (req, res) => {
+  try {
+    const { overrideOrders } = req.body; // Optional: Array of orders to override
+
+    if (overrideOrders && overrideOrders.length > 0) {
+      // If overrideOrders are provided, manually reassign orders
+      const orders = await Order.find({ _id: { $in: overrideOrders } });
+      if (!orders.length) {
+        return res.status(404).json({
+          success: false,
+          message: 'No orders found for the provided IDs.',
+        });
+      }
+
+      // Manually reassign orders to new routes
+      const groupedOrders = groupOrders(orders);
+      const transportationPlan = decideTransportation(groupedOrders);
+      const directRoutes = await createRoutes(transportationPlan.direct);
+      const hubRoutes = await createRoutes(transportationPlan.hub);
+
+      // Update order statuses
+      for (const route of [...directRoutes, ...hubRoutes]) {
+        await Order.updateMany(
+          { _id: { $in: route.orders } },
+          { $set: { status: 'in_transit', currentplace: route.status === 'scheduled' ? 'In transit to destination' : 'Redirected to hub' } }
+        );
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: 'Orders manually reassigned successfully.',
+        data: { directRoutes, hubRoutes },
+      });
+    } else {
+      // If no overrideOrders are provided, simply re-run the planning process
+      await planDeliveryLocations(req, res);
+    }
+  } catch (error) {
+    console.error('Error during manual re-planning:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to manually re-plan routes.',
+      error: error.message,
+    });
+  }
+};
+
+const getConfig = async (req, res) => {
+  try {
+    const config = await Config.findOne();
+    if (!config) {
+      // Create a default config if none exists
+      const defaultConfig = new Config();
+      await defaultConfig.save();
+      return res.status(200).json({
+        success: true,
+        message: 'Default configuration created and retrieved.',
+        data: defaultConfig,
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: 'Configuration retrieved successfully.',
+      data: config,
+    });
+  } catch (error) {
+    console.error('Error retrieving configuration:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve configuration.',
+      error: error.message,
+    });
+  }
+};
+
+// Update configuration
+const updateConfig = async (req, res) => {
+  try {
+    const { timeWindowMinutes, threshold } = req.body;
+    const config = await Config.findOneAndUpdate(
+      {},
+      { timeWindowMinutes, threshold },
+      { new: true, upsert: true }
+    );
+    res.status(200).json({
+      success: true,
+      message: 'Configuration updated successfully.',
+      data: config,
+    });
+  } catch (error) {
+    console.error('Error updating configuration:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update configuration.',
+      error: error.message,
+    });
+  }
+};
+
 const getDestinations = async(req, res) => {
   try {
     const directRoutes = await Route.find({ status: 'scheduled', type: 'Direct' }); // Adjust query as needed
@@ -256,73 +362,10 @@ const getDestinations = async(req, res) => {
 
 
 module.exports = {
+
   planDeliveryLocations,
+  adminReplan,
+  getConfig, 
+  updateConfig,
   getDestinations,
 };
-
-// /**
-//  * Group products by origin and destination (region and county)
-//  * @returns {Object} Grouped products by origin and destination
-//  */
-// const groupProductsByOriginAndDestination = async () => {
-//   try {
-//     // Step 1: Fetch all orders with product details
-//     const orders = await Order.find({}).populate("items.productId");
-
-//     // Step 2: Group by pCurrentPlace and destination
-//     const groupedProducts = orders.reduce((acc, order) => {
-//       const { destination } = order;
-
-//       order.items.forEach((item) => {
-//         const { pCurrentPlace, productId } = item;
-
-//         // Skip products with "Waiting for delivery." status
-//         if (!pCurrentPlace || pCurrentPlace === "Waiting for delivery.") return;
-
-//         // Create a unique key using pCurrentPlace and destination
-//         const key = `${pCurrentPlace}-${destination}`;
-
-//         if (!acc[key]) {
-//           acc[key] = {
-//             origin: pCurrentPlace,
-//             destination,
-//             products: [],
-//           };
-//         }
-
-//         if (productId) {
-//           acc[key].products.push({
-//             productId: productId._id,
-//             productName: productId.name || "Unknown Product",
-//             orderNumber: order.orderNumber,
-//             totalPrice: order.totalPrice,
-//           });
-//         }
-//       });
-
-//       return acc;
-//     }, {});
-
-//     // Step 3: Transform groupedProducts into an array and add status
-//     const result = Object.keys(groupedProducts).map((key) => {
-//       const group = groupedProducts[key];
-
-//       return {
-//         origin: group.origin,
-//         destination: group.destination,
-//         products: group.products,
-//         status: group.products.length >= 10 ? "Ready to deliver" : "Sent to regional hub",
-//       };
-//     });
-
-//     return result;
-//   } catch (error) {
-//     console.error("Error grouping products by origin and destination:", error);
-//     throw error;
-//   }
-// };
-
-
-// module.exports = {
-//     groupProductsByOriginAndDestination,
-// };

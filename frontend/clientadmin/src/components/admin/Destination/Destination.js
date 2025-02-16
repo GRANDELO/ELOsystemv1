@@ -3,6 +3,7 @@ import axiosInstance from '../../axiosInstance';
 import io from 'socket.io-client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTruck, FaMapMarkerAlt, FaChevronDown, FaChevronUp, FaSpinner } from 'react-icons/fa';
+import AdminPanel from './admin';
 import '../styles/table.css';
 
 const socket = io('https://elosystemv1.onrender.com/api');
@@ -27,11 +28,12 @@ const Destination = () => {
           origin: route.origin,
           destination: route.destination,
           orderCount: route.orderNumber ? route.orderNumber.length : 0,
+          status: route.status || 'pending',
           orders: route.orderNumber
-            ? route.orderNumber.map((order) => ({
-                id: order._id,
-                orderNumber: order.orderNumber,
-                status: 'pending',
+            ? route.orderNumber.map((orderNumber) => ({
+                id: orderNumber,
+                orderNumber,
+                status: route.status || 'pending',
               }))
             : [],
         }));
@@ -60,11 +62,12 @@ const Destination = () => {
           origin: route.origin,
           destination: route.destination,
           orderCount: route.orderNumber ? route.orderNumber.length : 0,
+          status: route.status || 'pending',
           orders: route.orderNumber
-            ? route.orderNumber.map((order) => ({
-                id: order._id,
-                orderNumber: order.orderNumber,
-                status: 'pending',
+            ? route.orderNumber.map((orderNumber) => ({
+                id: orderNumber,
+                orderNumber,
+                status: route.status || 'pending',
               }))
             : [],
         }));
@@ -104,6 +107,7 @@ const Destination = () => {
   <h1 className="header">
     <FaTruck /> Delivery Destinations
   </h1>
+  <AdminPanel />
   <div className="table-container">
     <table>
       <thead>
