@@ -8,7 +8,7 @@ const socket = io('https://elosystemv1.onrender.com/api');
 const Destination = () => {
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   const fetchDestinations = async () => {
     try {
       const response = await axiosInstance.post('/plan-delivery'); // API call to fetch destinations
@@ -35,33 +35,31 @@ const Destination = () => {
         }
     };
 
-    useEffect(() => {
-      fetchDestinations();
+  useEffect(() => {
+    fetchDestinations();
+    socket.on('updateDestinations', ({ directRoutes, hubRoutes }) => {
+      console.log('Received from socket:', { directRoutes, hubRoutes });
+      const processRoutes = (routes, type) =>
+        routes.map(route => ({
+          type,
+          origin: route.origin,
+          destination: route.destination,
+          orderCount: route.orderCount,
+          orders: route.orders.map(order => ({
+            id: order.id,
+            orderNumber: order.orderNumber,
+            status: 'pending',
+          })),
+      }));
     
-        socket.on('updateDestinations', ({ directRoutes, hubRoutes }) => {
-          console.log('Received from socket:', { directRoutes, hubRoutes });
-          const processRoutes = (routes, type) =>
-            routes.map(route => ({
-              type,
-              origin: route.origin,
-              destination: route.destination,
-              orderCount: route.orderCount,
-              orders: route.orders.map(order => ({
-                id: order.id,
-                orderNumber: order.orderNumber,
-                status: 'pending',
-              })),
-            }));
+      const directDestinations = processRoutes(directRoutes, 'Direct');
+      const hubDestination = processRoutes(hubRoutes, 'Hub');
+        setDestinations([...directDestinations, ...hubDestination]);
+      });
     
-          const directDestinations = processRoutes(directRoutes, 'Direct');
-          const hubDestination = processRoutes(hubRoutes, 'Hub');
-    
-          setDestinations([...directDestinations, ...hubDestination]);
-        });
-    
-        return () => {
-          socket.off('updateDestinations');
-        };
+      return () => {
+        socket.off('updateDestinations');
+      };
       }, []);
       
       const groupByCounty = (destinations) => {

@@ -42,14 +42,25 @@ function groupOrders(orders, timeWindowMinutes = 2880) {
   const currentTime = new Date();
 
   orders.forEach(order => {
-    const timeDifference = (currentTime - order.orderDate) / (1000 * 60); // Difference in minutes
+    if (!order.orderDate) {
+      console.warn(`Order ${order.orderNumber} has no orderDate! Skipping.`);
+      return;
+    }
+
+    const orderTime = new Date(order.orderDate);
+    const timeDifference = (currentTime - orderTime) / (1000 * 60); // Difference in minutes
     if (timeDifference <= timeWindowMinutes) {
       const destination = normalizeDestination(order.destination);
 
       const key = `${order.origin.county}-${order.origin.town}-${order.origin.area}-${destination.county}-${destination.town}-${destination.area}`;
       if (!groupedOrders[key]) groupedOrders[key] = [];
       groupedOrders[key].push(order);
+
+      console.log(`Grouping order ${order.orderNumber} under key: ${key}`);
+    }else {
+      console.warn(`Order ${order.orderNumber} is outside the time window.`);
     }
+    
   });
 
   return groupedOrders;
