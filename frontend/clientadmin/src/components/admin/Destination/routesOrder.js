@@ -1,4 +1,3 @@
-// components/RouteOrderDashboard.js
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../axiosInstance';
 import { FaList, FaTimesCircle, FaCheckCircle, FaClock } from 'react-icons/fa';
@@ -9,11 +8,10 @@ const RouteOrderDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
-  // Fetch all routes
   const fetchRoutes = async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get('/admin/routes');
+      const response = await axiosInstance.get('/routes');
       setRoutes(response.data.data);
       setLoading(false);
     } catch (error) {
@@ -23,13 +21,12 @@ const RouteOrderDashboard = () => {
     }
   };
 
-  // Update route status
   const updateRouteStatus = async (routeId, status) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.put(`/admin/routes/${routeId}`, { status });
+      await axiosInstance.put(`/routes/${routeId}`, { status });
       setMessage('Route status updated successfully!');
-      fetchRoutes(); // Refresh the list
+      fetchRoutes();
       setLoading(false);
     } catch (error) {
       console.error('Error updating route status:', error);
@@ -38,13 +35,12 @@ const RouteOrderDashboard = () => {
     }
   };
 
-  // Update order status
   const updateOrderStatus = async (orderId, status) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.put(`/admin/orders/${orderId}`, { status });
+      await axiosInstance.put(`/orders/${orderId}`, { status });
       setMessage('Order status updated successfully!');
-      fetchRoutes(); // Refresh the list
+      fetchRoutes();
       setLoading(false);
     } catch (error) {
       console.error('Error updating order status:', error);
@@ -64,34 +60,49 @@ const RouteOrderDashboard = () => {
       </h2>
       {loading && <p>Loading...</p>}
       {message && <p className="message">{message}</p>}
-      <div className="routes-list">
-        {routes.map((route) => (
-          <div key={route._id} className="route-card">
-            <h3>Route ID: {route.routeId}</h3>
-            <p>Status: {route.status}</p>
-            <p>Orders: {route.orders.length}</p>
-            <div className="actions">
-              <button onClick={() => updateRouteStatus(route._id, 'completed')}>
-                <FaCheckCircle /> Mark as Completed
-              </button>
-              <button onClick={() => updateRouteStatus(route._id, 'delayed')}>
-                <FaClock /> Mark as Delayed
-              </button>
-            </div>
-            <div className="orders-list">
-              {route.orders.map((order) => (
-                <div key={order._id} className="order-card">
-                  <p>Order ID: {order.orderNumber}</p>
-                  <p>Status: {order.status}</p>
-                  <button onClick={() => updateOrderStatus(order._id, 'cancelled')}>
-                    <FaTimesCircle /> Cancel Order
+
+      <table className="routes-table">
+        <thead>
+          <tr>
+            <th>Route ID</th>
+            <th>Status</th>
+            <th>Total Orders</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {routes.map((route) => (
+            <React.Fragment key={route._id}>
+              <tr>
+                <td>{route.routeId}</td>
+                <td>{route.status}</td>
+                <td>{route.orders ? route.orders.length : 0}</td>
+                <td>
+                  <button onClick={() => updateRouteStatus(route._id, 'completed')}>
+                    <FaCheckCircle /> Complete
                   </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+                  <button onClick={() => updateRouteStatus(route._id, 'delayed')}>
+                    <FaClock /> Delay
+                  </button>
+                </td>
+              </tr>
+              {route.orders &&
+                Array.isArray(route.orders) &&
+                route.orders.map((order) => (
+                  <tr key={order._id} className="order-row">
+                    <td colSpan="2">Order ID: {order.orderNumber}</td>
+                    <td>{order.status}</td>
+                    <td>
+                      <button onClick={() => updateOrderStatus(order._id, 'cancelled')}>
+                        <FaTimesCircle /> Cancel Order
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+            </React.Fragment>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

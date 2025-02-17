@@ -22,6 +22,19 @@ const NewsLetter = () => {
         setFile(null);
     };
 
+    const styleNewsletterContent = (content) => {
+        return `
+            <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+                <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+                    ${content}
+                    <footer style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 14px; color: #777;">
+                        <p>Best regards,<br/><strong>Bazelink Team</strong></p>
+                    </footer>
+                </div>
+            </div>
+        `;
+    };
+
     const handleSendNewsletter = async () => {
         if (!subject || !content) {
             toast.error('Please fill in the subject and content.');
@@ -30,9 +43,12 @@ const NewsLetter = () => {
 
         setIsLoading(true);
 
+        const styled = styleNewsletterContent(content);
+
+
         const formData = new FormData();
         formData.append('subject', subject);
-        formData.append('content', content);
+        formData.append('content', styled);
         if (file) {
             formData.append('file', file);
         }
@@ -102,9 +118,27 @@ const NewsLetter = () => {
                         <label>Content</label>
                         <ReactQuill
                             value={content}
-                            onChange={setContent}
+                            onChange={(value) => {
+                                console.log('Content:', value); // Debugging: Log the content
+                                setContent(value);
+                            }}
                             placeholder="Write your newsletter content here..."
                             className="quill-editor"
+                            modules={{
+                                toolbar: [
+                                    [{ header: [1, 2, 3, false] }],
+                                    ['bold', 'italic', 'underline', 'strike'],
+                                    [{ list: 'ordered' }, { list: 'bullet' }],
+                                    ['link', 'image'],
+                                    ['clean'],
+                                ],
+                            }}
+                            formats={[
+                                'header',
+                                'bold', 'italic', 'underline', 'strike',
+                                'list', 'bullet',
+                                'link', 'image',
+                            ]}
                         />
                     </div>
 
