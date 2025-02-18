@@ -1,5 +1,10 @@
 // controllers/chatController.js
-const { pipeline } = require('@xenova/transformers');
+let pipeline;
+(async () => {
+  const module = await import('@xenova/transformers');
+  pipeline = module.pipeline;
+  // You can now use `pipeline` in your code
+})();
 const SpellChecker = require('simple-spellchecker');
 const QAPair = require('../models/qa.model');
 const Product = require('../models/product.model');
