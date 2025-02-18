@@ -156,6 +156,7 @@ const App = () => {
           <Route path="/verificationautoagent" element={<Verificationautoagent />} />
 
 
+          <Route path="/reset-password" element={<Passwordrecovery />} />
           <Route path="/chatall" element={<ChatList />} />
           <Route path="/chat/:chatId" element={<ChatDetails />} />
           {/* Protected routes */}
@@ -168,7 +169,6 @@ const App = () => {
                 </ProtectedRoute>
               } />
             <Route path="/productForm" element={<ProductForm />} />
-            <Route path="/reset-password" element={<Passwordrecovery />} />
             <Route path="/products" element={<ProductList />} />
             <Route path="/upload" element={<Upload />} />
 
