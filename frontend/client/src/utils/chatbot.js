@@ -27,7 +27,7 @@ const Chatbot = () => {
     setIsTyping(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/chat/message', {
+      const response = await fetch('https://elosystemv1.onrender.com/api/chatbot/message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: messageToSend })

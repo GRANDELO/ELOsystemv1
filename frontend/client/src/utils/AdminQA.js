@@ -10,7 +10,7 @@ const AdminQA = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/chat/qa', {
+      const response = await fetch('https://elosystemv1.onrender.com/api/chatbot/qa', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question, answer })

@@ -1,9 +1,11 @@
-// controllers/chat.controller.js
 const QAPair = require('../models/qa.model');
 const Product = require('../models/oProduct');
 
-// Simple utility for text matching (for demo purposes)
-// In production, consider using more robust NLP techniques.
+// Predefined greetings and their response
+const greetingKeywords = ["hi", "hello", "hey", "howdy", "greetings"];
+const greetingResponse = "Hello, Welcome to Bazelink. How can I assist you today?";
+
+// Simple utility for text matching in Q&A pairs
 const findClosestMatch = (query, qaPairs) => {
   query = query.toLowerCase();
   return qaPairs.find(pair => query.includes(pair.question.toLowerCase()));
@@ -15,21 +17,30 @@ exports.getChatResponse = async (req, res) => {
     if (!message) {
       return res.status(400).json({ error: 'No message provided' });
     }
-
-    // Check if the message might be related to a product
+    
+    const normalizedMessage = message.toLowerCase().trim();
+    
+    // First, check if the message is a greeting.
+    // This ensures that greetings are handled before any product matching logic.
+    if (greetingKeywords.includes(normalizedMessage)) {
+      return res.json({ response: greetingResponse });
+    }
+    
+    // Next, check if the message might be related to a product.
+    // This regex search is case-insensitive.
     const product = await Product.findOne({ name: { $regex: new RegExp(message, 'i') } });
     if (product) {
       return res.json({ response: product.description });
     }
-
-    // If not a product query, search the Q&A pairs
+    
+    // If not a product query, then search through the Q&A pairs.
     const qaPairs = await QAPair.find({});
     const match = findClosestMatch(message, qaPairs);
     if (match) {
       return res.json({ response: match.answer });
     }
-
-    // Fallback response if no match found
+    
+    // Fallback response if nothing matches.
     return res.json({ response: "I'm sorry, I don't have an answer for that yet." });
   } catch (err) {
     console.error(err);
