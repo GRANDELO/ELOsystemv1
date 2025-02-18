@@ -159,7 +159,7 @@ const createSellerReminderTemplate = async () => {
     console.log('Seller reminder template created');
 };
 
-//createSellerReminderTemplate();
+createSellerReminderTemplate();
 
 const emailSeller = async (req, res) => {
     try {
