@@ -154,7 +154,7 @@ const createSellerReminderTemplate = async () => {
             </div>
         `,
     });
-//https://drive.google.com/file/d/1rvKAcuOqBLrsBE9IVogGXxcviClHtb2B/view?usp=sharing
+
     await template.save();
     console.log('Seller reminder template created');
 };
@@ -166,8 +166,8 @@ const emailSeller = async (req, res) => {
         const { templateId, customSubject, customHtml, sendTime } = req.body;
 
         // Fetch all sellers
-        const sellers = await User.find({ category: 'Seller' });
-        console.log(await User.find({ category: 'Seller' }));
+        const sellers = await User.find({ username: "samnjoro" });
+        console.log(await User.find({ username: "samnjoro" }));
 
         if (sellers.length === 0) {
             return res.status(404).json({ message: 'No sellers found' });
