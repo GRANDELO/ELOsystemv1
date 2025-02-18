@@ -166,8 +166,8 @@ const emailSeller = async (req, res) => {
         const { templateId, customSubject, customHtml, sendTime } = req.body;
 
         // Fetch all sellers
-        const sellers = await User.find({ username: "samnjoro" });
-        console.log(await User.find({ username: "samnjoro" }));
+        const sellers = await User.find({ category: "Seller" });
+        console.log(await User.find({ category: "Seller" }));
 
         if (sellers.length === 0) {
             return res.status(404).json({ message: 'No sellers found' });
@@ -203,6 +203,10 @@ const emailSeller = async (req, res) => {
 
         cron.schedule(cronExpression, async () => {
             for (const seller of sellers) {
+                if (!seller.username) {
+                    console.error(`No username found for seller with email: ${seller.email}`);
+                    continue;
+                }
                 const personalizedHtml = html.replace('[Username]', seller.username);
                 try {
                     await sendSellerReminderEmail(seller.email, subject, personalizedHtml);
