@@ -1,7 +1,7 @@
 const Subscriber = require('../models/email');
 const Newsletter = require('../models/newsLetter');
 const User = require('../models/User');
-const sendEmail = require('../services/emailService');
+const sendSellerReminderEmail = require('../services/emailBac');
 const EmailTemplate = require('../models/EmailTemplate')
 const cron = require('node-cron');
 require('dotenv').config();
@@ -205,7 +205,7 @@ const emailSeller = async (req, res) => {
             for (const seller of sellers) {
                 const personalizedHtml = html.replace('[Username]', seller.username);
                 try {
-                    await sendEmail(seller.email, subject, personalizedHtml);
+                    await sendSellerReminderEmail(seller.email, subject, personalizedHtml);
                     console.log(`Email sent to ${seller.email}`);
                 } catch (err) {
                     console.error(`Failed to send email to ${seller.email}:`, err);
