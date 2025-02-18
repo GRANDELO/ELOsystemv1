@@ -23,7 +23,7 @@ const AdminDashboard = () => {
     fetchUsers();
     fetchActiveUsers();
     fetchDisabledUsers();
-    fetchRegistrationGraph();
+    fetchRegistrationGraph(); 
   }, []);
 
   const fetchUsers = async () => {

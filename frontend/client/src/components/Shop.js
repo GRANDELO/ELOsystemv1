@@ -215,36 +215,6 @@ const [steps, setSteps] = useState(initialSteps);
     localStorage.setItem('hasSeenTour', 'true');
   };
 
-  
-
-  useEffect(() => {
-    // If apptoken is set, use it to set the token and navigate based on the app category
-    if (apptoken) {
-      localStorage.setItem('token', apptoken);
-      if (appcat) {
-        switch (appcat.trim().toLowerCase()) {
-          case 'seller':
-            alert('Failed to log in this app is for buyers only.');
-            navigate('/logout');
-            break;
-          default:
-            const currentpage = sessionStorage.getItem('currentpage');
-            navigate(currentpage ? currentpage : '/');
-            break;
-        }
-      }
-    }
-
-    // If token exists, store user data and determine navigation
-    if (token) {
-      sessionStorage.setItem('userToken', token);
-      const category = getcategoryFromToken();
-      const trimmedCategory = category?.trim().toLowerCase(); // Add optional chaining for safety
-      const storedUsername = getUsernameFromToken();
-      sessionStorage.setItem('username', storedUsername);
-    }
-  }, [apptoken, appcat, token, navigate]);
-
 
   const fetchCart = async () => {
     setLoading(true);

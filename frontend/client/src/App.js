@@ -18,6 +18,8 @@ import BlogDetails from "./pages/BlogDetails";
 
 
 import Shop from './components/Shop';
+import Chatbot from './utils/chatbot';
+
 
 import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
@@ -109,8 +111,10 @@ const App = () => {
           <Route path="/blogs" element={<BlogHome />} />
           <Route path="/blog/:id" element={<BlogDetails />} />
           
-          <Route path="/shops" element={<Shop />} />
-
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/Chatbot" element={<Chatbot />} />
+          
+          <Route path="/reset-password" element={<Passwordrecovery />} />
           <Route path="/chatall" element={<ChatList />} />
           <Route path="/chat/:chatId" element={<ChatDetails />} />
           {/* Protected routes */}
@@ -123,7 +127,6 @@ const App = () => {
                 </ProtectedRoute>
               } />
             <Route path="/productForm" element={<ProductForm />} />
-            <Route path="/reset-password" element={<Passwordrecovery />} />
             <Route path="/products" element={<ProductList />} />
             <Route path="/upload" element={<Upload />} />
             <Route path="/logout" element={<Logout />} />

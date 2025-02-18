@@ -591,3 +591,63 @@ h1, h2, h3, h4, h5 {
   font-weight: bold;
   color: black;
 }
+
+.usal-dashboard {
+  max-width: 100vw;
+  width: 100%;
+  margin: 40px auto;
+  padding: 20px;
+  background: var(--background-light);
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.usal-dashboard-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: var(--text-color-light);
+}
+
+.usal-error-message {
+  color: #d32f2f;
+  background: #ffebee;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.usal-user-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+}
+
+.usal-user-item {
+  padding: 12px;
+  background: var(  --overlay-light);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.usal-user-item:hover {
+  background: var(  --overlay-light);
+  transform: translateY(-2px);
+}
+
+.usal-user-link {
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-color-light);
+  transition: color 0.3s ease;
+}
+
+.usal-user-link:hover {
+  color: var(--text-color-light);
+  text-decoration: underline;
+}
