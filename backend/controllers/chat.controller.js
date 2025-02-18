@@ -1,0 +1,53 @@
+// controllers/chat.controller.js
+const QAPair = require('../models/qa.model');
+const Product = require('../models/oProduct');
+
+// Simple utility for text matching (for demo purposes)
+// In production, consider using more robust NLP techniques.
+const findClosestMatch = (query, qaPairs) => {
+  query = query.toLowerCase();
+  return qaPairs.find(pair => query.includes(pair.question.toLowerCase()));
+};
+
+exports.getChatResponse = async (req, res) => {
+  try {
+    const { message } = req.body;
+    if (!message) {
+      return res.status(400).json({ error: 'No message provided' });
+    }
+
+    // Check if the message might be related to a product
+    const product = await Product.findOne({ name: { $regex: new RegExp(message, 'i') } });
+    if (product) {
+      return res.json({ response: product.description });
+    }
+
+    // If not a product query, search the Q&A pairs
+    const qaPairs = await QAPair.find({});
+    const match = findClosestMatch(message, qaPairs);
+    if (match) {
+      return res.json({ response: match.answer });
+    }
+
+    // Fallback response if no match found
+    return res.json({ response: "I'm sorry, I don't have an answer for that yet." });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Server error' });
+  }
+};
+
+exports.addQAPair = async (req, res) => {
+  try {
+    const { question, answer } = req.body;
+    if (!question || !answer) {
+      return res.status(400).json({ error: 'Question and answer are required' });
+    }
+    const newQAPair = new QAPair({ question, answer });
+    await newQAPair.save();
+    return res.json({ message: 'Q&A pair added successfully', data: newQAPair });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Server error' });
+  }
+};

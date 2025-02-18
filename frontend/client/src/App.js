@@ -19,6 +19,7 @@ import BlogDetails from "./pages/BlogDetails";
 
 import Shop from './components/Shop';
 import Chatbot from './utils/chatbot';
+import AdminQA from './utils/AdminQA';
 
 
 import Logout from './components/Logout';
@@ -113,6 +114,7 @@ const App = () => {
           
           <Route path="/shop" element={<Shop />} />
           <Route path="/Chatbot" element={<Chatbot />} />
+          <Route path="/adminQA" element={<AdminQA />} />
           
           <Route path="/reset-password" element={<Passwordrecovery />} />
           <Route path="/chatall" element={<ChatList />} />
