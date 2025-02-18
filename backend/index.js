@@ -51,7 +51,7 @@ const agentsroutes = require('./routes/agentsroutes');
 const Deliveryroutes = require('./routes/deliveryroutes');
 const accountRoutes = require("./routes/accountRoutes");
 const transactionRoutes = require("./routes/transactionRoutes");
-const chatRoutes = require('./routes/chat.routes');
+const chatbotRoutes = require('./routes/chat.routes');
 
 
 const uploadDir = path.join(__dirname, 'uploads');
@@ -207,7 +207,7 @@ app.use('/api/delivery', Deliveryroutes);
 app.use("/api/accounts", accountRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/blogs", blogRoutes);
-app.use('/api/chatbot', chatRoutes);
+app.use('/api/chatbot', chatbotRoutes);
 
 app.use((req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);
