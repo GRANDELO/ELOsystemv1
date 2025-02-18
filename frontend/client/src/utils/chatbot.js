@@ -2,6 +2,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../components/styles/Chatbot.css';
 
+// Function to generate a simple sessionId
+const generateSessionId = () => {
+  return `${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+};
+
 const Chatbot = () => {
   const [messages, setMessages] = useState([
     { sender: 'bot', text: 'Hey Kinyi, how can I help you today?' }
@@ -9,7 +14,20 @@ const Chatbot = () => {
   const [input, setInput] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [sessionId, setSessionId] = useState('');
   const messagesEndRef = useRef(null);
+
+  // Generate sessionId on component mount
+  useEffect(() => {
+    const existingSessionId = localStorage.getItem('chatbot_session_id');
+    if (existingSessionId) {
+      setSessionId(existingSessionId);
+    } else {
+      const newSessionId = generateSessionId();
+      setSessionId(newSessionId);
+      localStorage.setItem('chatbot_session_id', newSessionId);
+    }
+  }, []);
 
   // Auto-scroll to the latest message
   useEffect(() => {
@@ -30,7 +48,7 @@ const Chatbot = () => {
       const response = await fetch('https://elosystemv1.onrender.com/api/chatbot/message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: messageToSend })
+        body: JSON.stringify({ message: messageToSend, sessionId }) // Include sessionId in the request body
       });
       const data = await response.json();
       // Simulate a slight delay for a natural feel

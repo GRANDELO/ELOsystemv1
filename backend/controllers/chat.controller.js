@@ -1,11 +1,38 @@
+// controllers/chatController.js
+const { pipeline } = require('@xenova/transformers');
+const SpellChecker = require('simple-spellchecker');
 const QAPair = require('../models/qa.model');
-const Product = require('../models/oProduct');
+const Product = require('../models/product.model');
 const { getSession, setSession } = require('../sessionStore');
 
+// Initialize the embedding model
+let extractor;
+(async () => {
+  extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
+})();
 
-// Predefined greetings and their response
-const greetingKeywords = ["hi", "niaje", "hello", "hey", "howdy", "sasa","greetings", 'oya'];
-const greetingResponse = "Hello, Welcome to Bazelink. How can I assist you today?";
+// Load the dictionary for spell checking
+let dictionary;
+SpellChecker.getDictionary('en-US', (err, dict) => {
+  if (!err) {
+    dictionary = dict;
+  }
+});
+
+// Function to correct spelling in a sentence
+const correctSpelling = (sentence) => {
+  if (!dictionary) {
+    return sentence; // If dictionary isn't loaded, return the original sentence
+  }
+  return sentence.split(' ').map(word => {
+    if (dictionary.spellCheck(word)) {
+      return word; // Word is correct
+    } else {
+      const suggestions = dictionary.getSuggestions(word);
+      return suggestions.length > 0 ? suggestions[0] : word; // Replace with the first suggestion
+    }
+  }).join(' ');
+};
 
 // Compute cosine similarity between two vectors
 const cosineSimilarity = (vecA, vecB) => {
@@ -15,69 +42,65 @@ const cosineSimilarity = (vecA, vecB) => {
   return dotProduct / (normA * normB);
 };
 
-// Placeholder for an async function that returns an embedding for a given text.
-// In practice, this could call a microservice built in Python using Sentence Transformers.
+// Function to get embeddings for a given text
 const getEmbedding = async (text) => {
-  // For demo purposes, return a dummy vector (replace with real embeddings)
-  // Example: return await callEmbeddingAPI(text);
-  return Array(768).fill(0.01 * text.length); // Dummy vector; DO NOT use in production.
+  if (!extractor) {
+    throw new Error('Extractor not initialized');
+  }
+  const result = await extractor(text, { pooling: 'mean', normalize: true });
+  return Array.from(result.data);
 };
 
+// Chat response handler
 exports.getChatResponse = async (req, res) => {
   try {
-    const { message, sessionId } = req.body;
+    let { message, sessionId } = req.body;
     if (!message || !sessionId) {
       return res.status(400).json({ error: 'Message and sessionId are required' });
     }
-    
+
+    // Correct spelling in the user message
+    message = correctSpelling(message);
+
     const normalizedMessage = message.toLowerCase().trim();
     let session = getSession(sessionId);
-    
-    // Check for greetings first.
+
+    // Predefined greetings and their response
+    const greetingKeywords = ["hi", "niaje", "hello", "hey", "howdy", "sasa", "greetings", 'oya'];
+    const greetingResponse = "Hello, Welcome to Bazelink. How can I assist you today?";
+
+    // Check for greetings first
     if (greetingKeywords.includes(normalizedMessage)) {
       return res.json({ response: greetingResponse, confidence: 1.0 });
     }
-    
-    // Check if this is a follow-up question based on previous product context.
+
+    // Check if this is a follow-up question based on previous product context
     if (session && session.productId) {
-      if (normalizedMessage.includes("price")) {
-        const product = await Product.findById(session.productId);
-        if (product && product.price) {
+      const product = await Product.findById(session.productId);
+      if (product) {
+        setSession(sessionId, { productId: product._id, productName: product.name });
+        if (normalizedMessage.includes('price')) {
           return res.json({ response: `The price of ${product.name} is $${product.price}.`, confidence: 1.0 });
         }
-      }
-      
-      if (normalizedMessage.includes("stock") || normalizedMessage.includes("remaining")) {
-        const product = await Product.findById(session.productId);
-        if (product && product.stock != null) {
-          return res.json({ response: `There are ${product.stock} units of ${product.name} remaining.`, confidence: 1.0 });
+        if (normalizedMessage.includes('stock') || normalizedMessage.includes('remaining')) {
+          return res.json({ response: `There are ${product.quantity} units of ${product.name} remaining.`, confidence: 1.0 });
         }
-      }
-      
-      if (normalizedMessage.includes("details") || normalizedMessage.includes("description")) {
-        const product = await Product.findById(session.productId);
-        if (product) {
+        if (normalizedMessage.includes('details') || normalizedMessage.includes('description')) {
           return res.json({ response: `Details for ${product.name}: ${product.description}`, confidence: 1.0 });
         }
       }
     }
-    
-    // Advanced matching for Q&A pairs using embeddings.
-    // First, compute the embedding for the user's message.
+
+    // Advanced matching for Q&A pairs using embeddings
     const userEmbedding = await getEmbedding(message);
-    
     const qaPairs = await QAPair.find({});
     let bestMatch = null;
     let bestScore = -1;
-    
-    // Iterate through each Q&A pair, assuming each pair has a precomputed embedding.
-    // In a real-world scenario, you might precompute these and store them in your database.
+
     for (const pair of qaPairs) {
-      // If the pair doesn't have an embedding, compute it on the fly (or precompute and store it).
       let pairEmbedding = pair.embedding;
       if (!pairEmbedding || pairEmbedding.length === 0) {
         pairEmbedding = await getEmbedding(pair.question);
-        // Optionally, save this embedding back to the database for future use.
         pair.embedding = pairEmbedding;
         await pair.save();
       }
@@ -87,32 +110,14 @@ exports.getChatResponse = async (req, res) => {
         bestMatch = pair;
       }
     }
-    
-    // Set a threshold for a confident match (e.g., 0.7)
+
     const CONFIDENCE_THRESHOLD = 0.7;
     if (bestScore < CONFIDENCE_THRESHOLD) {
       return res.json({ response: "I'm not quite sure I understood that. Could you please rephrase?", confidence: bestScore });
     }
-    
-    return res.json({ response: bestMatch.answer, confidence: bestScore });
-    
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: 'Server error' });
-  }
-};
 
-exports.addQAPair = async (req, res) => {
-  try {
-    const { question, answer } = req.body;
-    if (!question || !answer) {
-      return res.status(400).json({ error: 'Question and answer are required' });
-    }
-    // Optionally, compute and store the embedding for the question.
-    const embedding = await getEmbedding(question);
-    const newQAPair = new QAPair({ question, answer, embedding });
-    await newQAPair.save();
-    return res.json({ message: 'Q&A pair added successfully', data: newQAPair });
+    return res.json({ response: bestMatch.answer, confidence: bestScore });
+
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: 'Server error' });
