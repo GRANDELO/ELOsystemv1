@@ -57,7 +57,7 @@ exports.getChatResponse = async (req, res) => {
       if (normalizedMessage.includes("details") || normalizedMessage.includes("description")) {
         const product = await Product.findById(session.productId);
         if (product) {
-          return res.json({ response:`Details for ${product.name}: ${product.description}`, confidence: 1.0 });
+          return res.json({ response: `Details for ${product.name}: ${product.description}`, confidence: 1.0 });
         }
       }
     }
@@ -102,7 +102,6 @@ exports.getChatResponse = async (req, res) => {
   }
 };
 
-
 exports.addQAPair = async (req, res) => {
   try {
     const { question, answer } = req.body;
@@ -119,3 +118,5 @@ exports.addQAPair = async (req, res) => {
     return res.status(500).json({ error: 'Server error' });
   }
 };
+
+
