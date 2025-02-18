@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../axiosInstance';
 import { FaCog, FaSync, FaSave } from 'react-icons/fa';
-import '../styles/admin.css'
+import './styles/admin.css'
 
 const AdminPanel = () => {
   const [config, setConfig] = useState({ timeWindowMinutes: 20160, threshold: 10 });

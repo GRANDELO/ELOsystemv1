@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../axiosInstance';
 import { FaList, FaTimesCircle, FaCheckCircle, FaClock } from 'react-icons/fa';
-import '../styles/routes.css';
+import './styles/routes.css';
 
 const RouteOrderDashboard = () => {
   const [routes, setRoutes] = useState([]);

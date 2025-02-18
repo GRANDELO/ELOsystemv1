@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaTruck, FaMapMarkerAlt, FaChevronDown, FaChevronUp, FaSpinner } from 'react-icons/fa';
 import AdminPanel from './admin';
 import RouteOrderDashboard from './routesOrder';
-import '../styles/table.css';
+import './styles/table.css';
 
 const socket = io('https://elosystemv1.onrender.com/api');
 

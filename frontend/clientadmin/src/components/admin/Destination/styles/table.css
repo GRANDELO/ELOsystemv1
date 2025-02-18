@@ -216,7 +216,9 @@ tbody tr:hover {
 
 .toggle-admin-dashboard:nth-child(2):hover {
   background-color: #c82333;
-}
+} 
+
+
 @keyframes spin {
   from {
     transform: rotate(0deg);

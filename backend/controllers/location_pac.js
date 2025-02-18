@@ -132,15 +132,10 @@ const planDeliveryLocations = async (req, res) => {
     const currentTime = new Date();
     const timeWindowStart = new Date(currentTime.getTime() - timeWindowMinutes * 60000);
 
-    console.log('Time window start:', timeWindowStart);
-    console.log('Current time:', currentTime);
-
     const orders = await Order.find({
       $or: [{ status: 'in_transit' }, { status: 'pending' }],
       orderDate: { $gte: timeWindowStart } 
     });
-
-    console.log('Fetched orders:', orders);
 
     if (!orders.length) {
       console.log('No orders found within the given time window.');
@@ -177,7 +172,6 @@ const planDeliveryLocations = async (req, res) => {
 
     // Step 2: Group orders based on origin and destination
     const groupedOrders = groupOrders(orders, timeWindowMinutes);
-    console.log('Grouped orders:', Object.keys(groupedOrders));
 
     if (!Object.keys(groupedOrders).length) {
       console.log('No grouped orders found.');
@@ -188,7 +182,6 @@ const planDeliveryLocations = async (req, res) => {
       });
     }
 
-    //const threshold = 10; 
     // Step 3: Decide transportation based on threshold
     const transportationPlan = decideTransportation(groupedOrders, threshold);
     console.log('Transportation plan:', transportationPlan);
@@ -208,9 +201,7 @@ const planDeliveryLocations = async (req, res) => {
       );
     }
 
-
     io.emit('updateDestinations', { directRoutes, hubRoutes });
-    console.log('Socket emit fired:', { directRoutes, hubRoutes });
 
     const formatRoutes = (routes) => routes.map(route => ({
       ...route.toObject(),

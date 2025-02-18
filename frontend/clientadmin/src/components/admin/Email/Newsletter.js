@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ReactQuill from 'react-quill'; // Rich text editor
 import 'react-quill/dist/quill.snow.css';
 import { Upload, X, Loader2 } from 'lucide-react';
-import '../styles/email.css';
+import './styles/email.css';
 
 const NewsLetter = () => {
     const [subject, setSubject] = useState('');
@@ -13,6 +13,7 @@ const NewsLetter = () => {
     const [file, setFile] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [newsletterId, setNewsletterId] = useState(null); // Store the newsletter ID after creation
+    const [showPreview, setShowPreview] = useState(false);
 
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
@@ -95,6 +96,20 @@ const NewsLetter = () => {
         }
     };
 
+    const handlePreview = () => {
+        if (!subject || !content) {
+            toast.error('Please fill in both subject and content to preview.');
+            return;
+        }
+
+        setShowPreview(true);
+    };
+
+    const closePreview = () => {
+        setShowPreview(false);
+    };
+
+
     return (
         <div className="admin-panel">
             <div className="admin-card">
@@ -169,6 +184,15 @@ const NewsLetter = () => {
                         {isLoading ? <Loader2 className="spinner" /> : 'Create Newsletter'}
                     </button>
 
+                    {/* Preview Button */}
+                    <button
+                        onClick={handlePreview}
+                        className="preview-button"
+                        style={{ marginTop: '10px' }}
+                    >
+                        Preview Newsletter
+                    </button>
+
                     {/* Send Newsletter to Subscribers Button */}
                     {newsletterId && (
                         <button
@@ -182,6 +206,21 @@ const NewsLetter = () => {
                     )}
                 </div>
             </div>
+            {showPreview && (
+                <div className="preview-modal">
+                    <div className="preview-modal-content">
+                        <button onClick={closePreview} className="close-preview-btn">
+                            Close
+                        </button>
+                        <h3>Preview of Your Newsletter</h3>
+                        <div
+                            dangerouslySetInnerHTML={{
+                                __html: styleNewsletterContent(content),
+                            }}
+                        />
+                    </div>
+                </div>
+            )}
 
             {/* Toast Notifications */}
             <ToastContainer />

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../axiosInstance';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import {
     TextField,
     Button,
@@ -17,7 +19,9 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
-    DialogActions
+    DialogActions,
+    FormControlLabel,
+    Switch
 } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -34,6 +38,9 @@ const AdminEmailSeller = () => {
     const [loading, setLoading] = useState(false);
     const [emailPreview, setEmailPreview] = useState(null);
     const [previewOpen, setPreviewOpen] = useState(false);
+    const [isPromotional, setIsPromotional] = useState(false);
+    const [sentEmailsCount, setSentEmailsCount] = useState(0);
+    const [lastSentDate, setLastSentDate] = useState(null);
 
     // Fetch templates on component mount
     useEffect(() => {
@@ -64,8 +71,11 @@ const AdminEmailSeller = () => {
                 customSubject: customSubject || undefined,
                 customHtml: customHtml || undefined,
                 sendTime: sendTime.toISOString(),
+                isPromotional
             });
 
+            setSentEmailsCount(response.data.sentEmailsCount);
+            setLastSentDate(new Date().toLocaleDateString());
             toast.success(response.data.message);
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to schedule emails');
@@ -121,15 +131,25 @@ const AdminEmailSeller = () => {
                                         className="text-field"
                                         required
                                     />
-                                    <TextField
-                                        fullWidth
-                                        label="HTML Content"
+                                    <ReactQuill
                                         value={customHtml}
-                                        onChange={(e) => setCustomHtml(e.target.value)}
-                                        multiline
-                                        rows={6}
-                                        className="text-field"
-                                        required
+                                        onChange={setCustomHtml}
+                                        className="quill-editor"
+                                        modules={{
+                                            toolbar: [
+                                                [{ 'header': [1, 2, false] }],
+                                                ['bold', 'italic', 'underline', 'strike'],
+                                                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                                ['link', 'image'],
+                                                ['clean']
+                                            ]
+                                        }}
+                                        formats={[
+                                            'header',
+                                            'bold', 'italic', 'underline', 'strike',
+                                            'list', 'bullet',
+                                            'link', 'image'
+                                        ]}
                                     />
                                 </>
                             )}
@@ -139,6 +159,18 @@ const AdminEmailSeller = () => {
                                 value={sendTime}
                                 onChange={(newValue) => setSendTime(newValue)}
                                 renderInput={(params) => <TextField {...params} fullWidth className="text-field" />}
+                            />
+
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={isPromotional}
+                                        onChange={(e) => setIsPromotional(e.target.checked)}
+                                        color="primary"
+                                    />
+                                }
+                                label="Promotional Email for New Sellers"
+                                className="promotional-switch"
                             />
 
                             <Box className="button-container">
@@ -156,6 +188,13 @@ const AdminEmailSeller = () => {
                                 </Button>
                             </Box>
                         </form>
+
+                        <Typography variant="body1" className="sent-emails-info">
+                            Emails Sent: {sentEmailsCount}
+                        </Typography>
+                        <Typography variant="body1" className="last-sent-date">
+                            Last Sent Date: {lastSentDate || 'N/A'}
+                        </Typography>
                     </CardContent>
                 </Card>
             </Box>

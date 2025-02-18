@@ -1,0 +1,104 @@
+/* Admin Panel Styles */
+.admin-panel {
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.admin-panel h2 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.admin-panel h2 svg {
+  margin-right: 10px;
+  color: #007bff; /* Icon color */
+}
+
+/* Section Header */
+.config-section h3, .replan-section h3 {
+  font-size: 22px;
+  font-weight: 500;
+  margin-bottom: 15px;
+  color: #555;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+}
+
+/* Form Group Styles */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.form-group label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-group input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #333;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+  border-color: #007bff;
+}
+
+/* Button Styles */
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+/* Message Styles */
+.message {
+  font-size: 16px;
+  font-weight: 500;
+  color: #28a745; /* Green color for success */
+  margin-top: 20px;
+}
+
+/* Error Message Styles */
+.message.error {
+  color: #e74c3c; /* Red color for errors */
+}

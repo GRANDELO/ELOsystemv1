@@ -1,0 +1,71 @@
+/* Email Section */
+.email-section {
+    background-color: #f9f9f9;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 1000px;
+    margin: 20px auto;
+}
+
+.email-section h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Buttons */
+.newsletter-button, .seller-email-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.newsletter-button:hover, .seller-email-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.newsletter-button:focus, .seller-email-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+/* Add spacing between buttons */
+.newsletter-button {
+    margin-right: 15px;
+}
+
+.seller-email-button {
+    margin-left: 10px;
+}
+
+/* Toggle visibility sections */
+.newsletter-container, .seller-email-container {
+    margin-top: 20px;
+}
+
+/* Additional Layout Adjustments */
+@media screen and (max-width: 768px) {
+    .email-section {
+        padding: 15px;
+    }
+
+    .newsletter-button, .seller-email-button {
+        width: 100%;
+        margin: 5px 0;
+        font-size: 14px;
+    }
+
+    .email-section h2 {
+        font-size: 20px;
+    }
+}

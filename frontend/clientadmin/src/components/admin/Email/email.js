@@ -1,6 +1,7 @@
 import React,{ useState} from 'react';
 import NewsLetter from './Newsletter';
 import AdminEmailSeller from './sellerEmail';
+import './styles/styles.css'
 
 
 const Email = () => {

@@ -1,0 +1,23 @@
+.email-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between buttons */
+}
+
+.newsletter-button,
+.seller-email-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.newsletter-button:hover,
+.seller-email-button:hover {
+  background-color: #0056b3;
+}
