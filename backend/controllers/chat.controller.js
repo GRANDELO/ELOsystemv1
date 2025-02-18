@@ -43,21 +43,21 @@ exports.getChatResponse = async (req, res) => {
       if (normalizedMessage.includes("price")) {
         const product = await Product.findById(session.productId);
         if (product && product.price) {
-          return res.json({ response: The price of ${product.name} is $${product.price}., confidence: 1.0 });
+          return res.json({ response: `The price of ${product.name} is $${product.price}.`, confidence: 1.0 });
         }
       }
       
       if (normalizedMessage.includes("stock") || normalizedMessage.includes("remaining")) {
         const product = await Product.findById(session.productId);
         if (product && product.stock != null) {
-          return res.json({ response: There are ${product.stock} units of ${product.name} remaining., confidence: 1.0 });
+          return res.json({ response: `There are ${product.stock} units of ${product.name} remaining.`, confidence: 1.0 });
         }
       }
       
       if (normalizedMessage.includes("details") || normalizedMessage.includes("description")) {
         const product = await Product.findById(session.productId);
         if (product) {
-          return res.json({ response: Details for ${product.name}: ${product.description}, confidence: 1.0 });
+          return res.json({ response: `Details for ${product.name}: ${product.description}`, confidence: 1.0 });
         }
       }
     }
