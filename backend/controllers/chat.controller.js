@@ -1,11 +1,13 @@
+// controllers/chat.controller.js
 const QAPair = require('../models/qa.model');
+const { getSession, setSession } = require('../sessionStore');
 const Product = require('../models/oProduct');
 
 // Predefined greetings and their response
-const greetingKeywords = ["hi", "hello", "hey", "howdy", "greetings"];
+const greetingKeywords = ["hi", "niaje", "hello", "hey", "howdy", "sasa","greetings", 'oya'];
 const greetingResponse = "Hello, Welcome to Bazelink. How can I assist you today?";
 
-// Simple utility for text matching in Q&A pairs
+// Utility for text matching in Q&A pairs
 const findClosestMatch = (query, qaPairs) => {
   query = query.toLowerCase();
   return qaPairs.find(pair => query.includes(pair.question.toLowerCase()));
@@ -13,24 +15,52 @@ const findClosestMatch = (query, qaPairs) => {
 
 exports.getChatResponse = async (req, res) => {
   try {
-    const { message } = req.body;
-    if (!message) {
-      return res.status(400).json({ error: 'No message provided' });
+    const { message, sessionId } = req.body;
+    if (!message || !sessionId) {
+      return res.status(400).json({ error: 'Message and sessionId are required' });
     }
     
     const normalizedMessage = message.toLowerCase().trim();
+    let session = getSession(sessionId);
     
     // First, check if the message is a greeting.
-    // This ensures that greetings are handled before any product matching logic.
     if (greetingKeywords.includes(normalizedMessage)) {
       return res.json({ response: greetingResponse });
     }
     
-    // Next, check if the message might be related to a product.
-    // This regex search is case-insensitive.
+    // Check if this is a follow-up question based on previous product context.
+    if (session && session.productId) {
+      // Look for follow-up keywords
+      if (normalizedMessage.includes("price")) {
+        const product = await Product.findById(session.productId);
+        if (product && product.price) {
+          return res.json({ response: `The price of ${product.name} is $${product.price}.` });
+        }
+      }
+      
+      if (normalizedMessage.includes("stock") || normalizedMessage.includes("remaining")) {
+        const product = await Product.findById(session.productId);
+        if (product && product.stock != null) {
+          return res.json({ response: `There are ${product.stock} units of ${product.name} remaining.` });
+        }
+      }
+      
+      // You can add additional follow-up keywords like "details", "features", etc.
+      if (normalizedMessage.includes("details") || normalizedMessage.includes("description")) {
+        const product = await Product.findById(session.productId);
+        if (product) {
+          return res.json({ response: `Here are the details for ${product.name}: ${product.description}` });
+        }
+      }
+    }
+    
+    // If not a follow-up, check if the message might be related to a product.
+    // Here we assume product name matching.
     const product = await Product.findOne({ name: { $regex: new RegExp(message, 'i') } });
     if (product) {
-      return res.json({ response: product.description });
+      // Save product context in session
+      setSession(sessionId, { productId: product._id, productName: product.name });
+      return res.json({ response: `You asked about ${product.name}. ${product.description}` });
     }
     
     // If not a product query, then search through the Q&A pairs.
