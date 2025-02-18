@@ -159,14 +159,16 @@ const createSellerReminderTemplate = async () => {
     console.log('Seller reminder template created');
 };
 
-createSellerReminderTemplate();
+//createSellerReminderTemplate();
 
 const emailSeller = async (req, res) => {
     try {
         const { templateId, customSubject, customHtml, sendTime } = req.body;
 
         // Fetch all sellers
-        const sellers = await User.find({ category: 'seller' });
+        const sellers = await User.find({ category: 'Seller' });
+        console.log(await User.find({ category: 'Seller' }));
+
         if (sellers.length === 0) {
             return res.status(404).json({ message: 'No sellers found' });
         }
