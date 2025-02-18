@@ -2,9 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const QAPair = require('../models/qa.model');
 const Product = require('../models/oProduct');
-const { getSession } = require('../sessionStore');
+const { getSession, setSession } = require('../sessionStore');
 
-const companyInfoPath = path.join(__dirname, '../data/company_info.txt');
+const TEXT_FILE_PATH = path.join(__dirname, '../data/company_info.txt');
 
 const greetingKeywords = ["hi", "niaje", "hello", "hey", "howdy", "sasa", "greetings", "oya"];
 const greetingResponse = "Hello, Welcome to Bazelink. How can I assist you today?";
@@ -20,8 +20,16 @@ const getEmbedding = async (text) => {
   return Array(768).fill(0.01 * text.length);
 };
 
-const readCompanyInfo = async () => {
-  return fs.promises.readFile(companyInfoPath, 'utf-8');
+const searchTextFile = (query) => {
+  try {
+    const content = fs.readFileSync(TEXT_FILE_PATH, 'utf-8');
+    const lines = content.split('\n');
+    const matchingLine = lines.find(line => line.toLowerCase().includes(query.toLowerCase()));
+    return matchingLine || null;
+  } catch (err) {
+    console.error('Error reading text file:', err);
+    return null;
+  }
 };
 
 exports.getChatResponse = async (req, res) => {
@@ -33,29 +41,36 @@ exports.getChatResponse = async (req, res) => {
     
     const normalizedMessage = message.toLowerCase().trim();
     let session = getSession(sessionId);
-    
+
     if (greetingKeywords.includes(normalizedMessage)) {
       return res.json({ response: greetingResponse, confidence: 1.0 });
     }
-    
+
     if (session && session.productId) {
       const product = await Product.findById(session.productId);
-      if (normalizedMessage.includes("price") && product) {
-        return res.json({ response: `The price of ${product.name} is $${product.price}.`, confidence: 1.0 });
-      }
-      if ((normalizedMessage.includes("stock") || normalizedMessage.includes("remaining")) && product) {
-        return res.json({ response: `There are ${product.stock} units of ${product.name} remaining.`, confidence: 1.0 });
-      }
-      if ((normalizedMessage.includes("details") || normalizedMessage.includes("description")) && product) {
-        return res.json({ response: `Details for ${product.name}: ${product.description}`, confidence: 1.0 });
+      if (product) {
+        if (normalizedMessage.includes("price")) {
+          return res.json({ response: `The price of ${product.name} is $${product.price}.`, confidence: 1.0 });
+        }
+        if (normalizedMessage.includes("stock") || normalizedMessage.includes("remaining")) {
+          return res.json({ response: `There are ${product.stock} units of ${product.name} remaining.`, confidence: 1.0 });
+        }
+        if (normalizedMessage.includes("details") || normalizedMessage.includes("description")) {
+          return res.json({ response: `Details for ${product.name}: ${product.description}`, confidence: 1.0 });
+        }
       }
     }
-    
+
+    const textMatch = searchTextFile(normalizedMessage);
+    if (textMatch) {
+      return res.json({ response: textMatch, confidence: 0.9 });
+    }
+
     const userEmbedding = await getEmbedding(message);
     const qaPairs = await QAPair.find({});
     let bestMatch = null;
     let bestScore = -1;
-    
+
     for (const pair of qaPairs) {
       let pairEmbedding = pair.embedding || await getEmbedding(pair.question);
       const score = cosineSimilarity(userEmbedding, pairEmbedding);
@@ -64,27 +79,18 @@ exports.getChatResponse = async (req, res) => {
         bestMatch = pair;
       }
     }
-    
+
     const CONFIDENCE_THRESHOLD = 0.7;
-    if (bestScore >= CONFIDENCE_THRESHOLD) {
-      return res.json({ response: bestMatch.answer, confidence: bestScore });
+    if (bestScore < CONFIDENCE_THRESHOLD) {
+      return res.json({ response: "I'm not sure about that. Could you clarify?", confidence: bestScore });
     }
     
-    const companyInfo = await readCompanyInfo();
-    const companyEmbedding = await getEmbedding(companyInfo);
-    const companyScore = cosineSimilarity(userEmbedding, companyEmbedding);
-    
-    if (companyScore >= 0.6) {
-      return res.json({ response: `Here's what I found: ${companyInfo}`, confidence: companyScore });
-    }
-    
-    return res.json({ response: "I'm not quite sure I understood that. Could you please rephrase?", confidence: 0.0 });
+    return res.json({ response: bestMatch.answer, confidence: bestScore });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: 'Server error' });
   }
 };
-
 
 exports.addQAPair = async (req, res) => {
   try {
