@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { FaBell, FaCog } from 'react-icons/fa';
+import { FaBell, FaCog, FaWhatsapp } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from './axiosInstance';
 import Header from './headersell';
@@ -12,6 +12,7 @@ import ShopSettings from './shopSettings';
 import Displayorder from './displayorder';
 import Footer from './Footer';
 import FeedbackForm from './Feedback';
+
 import Withdrawal from './withdrawal';
 import { getUsernameFromToken } from '../utils/auth';
 import './styles/Home.css';
@@ -262,6 +263,15 @@ const Home = () => {
     });
   };
 
+  const phoneNumber = '254116293386'; 
+  const message = 'Hello, I have a question'; 
+
+  const toggleWhatsApp = async () => {
+    const whatsappLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappLink, '_blank');
+  };
+
+
   // Fetch unread notifications
   const fetchUnreadNotifications = useCallback(async () => {
     if (username) {
@@ -437,6 +447,9 @@ const Home = () => {
             <span className="salesp-notification-count">{unreadNotifications}</span>
           )}
          
+        </button>
+        <button id="whatsapp" className="salesp-toggle-button" onClick={() => toggleWhatsApp()}>
+            < FaWhatsapp/>
         </button>
         
         <button id='orders' className="salesp-toggle-button" onClick={() => toggleVisibility('shopSettings')}>

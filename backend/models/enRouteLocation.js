@@ -12,8 +12,8 @@ const routeSchema = new mongoose.Schema({
     town: {type: String, required: true},
     area: {type: String, required: true},
   },
-  orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
-  status: { type: String, enum: ['scheduled', 'in_transit', 'delivered'], default: 'scheduled' },
+  orderNumber:[{type: String, unique: true }],
+  status: { type: String, enum: ['Pending', 'scheduled', 'in_transit', 'delivered'], default: 'scheduled' },
   type: {type: String, enum:['direct', 'hub'], required: true},
 });
 

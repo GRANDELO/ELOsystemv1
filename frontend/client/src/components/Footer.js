@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaFacebook, FaTwitter, FaInstagram, FaTiktok } from 'react-icons/fa'; // Import social icons
 import { FiArrowUp } from "react-icons/fi";
+import axiosInstance from './axiosInstance'
 import './styles/Footer.css';
 
 const Footer = () => {
@@ -22,12 +23,17 @@ const Footer = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
     if (email) {
+      try {
+        const response = await axiosInstance.post('/subscribe', { email })
+        alert(response.data.message);
+      }catch (error){
+        alert(error.response?.data?.message || 'Subscription failed. Please try again.');
+      }
       setIsSubmitted(true);
       setEmail('');
-      alert('Thank you for subscribing!');
     }
   };
 

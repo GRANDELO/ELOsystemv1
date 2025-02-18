@@ -131,8 +131,6 @@ const App = () => {
 
           <Route element={<RequireAuth />} ></Route>
 
-
-
           <Route path="/agentpros" element={<Agentpros />} />
           <Route path="/agentinput" element={<Agentinput />} />
           <Route path="/agentboxdisp" element={ <> <Agentboxdisp /> </>} />

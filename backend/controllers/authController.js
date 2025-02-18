@@ -370,10 +370,11 @@ const newrecoverPassword = async (req, res) => {
     user.passwordRecoveryToken = token;
     user.tokenExpiry = moment().add(1, 'hour').toDate();
     
+    const userCategory = user.category.trim().toLowerCase();
 
     // Send the recovery email
     const subject = 'Password Reset Request';
-    const link = user.category === 'Salesperson' 
+    const link =userCategory === 'Salesperson' 
     ? `https://www.bazelink.co.ke/reset-password` 
     : `https://www.partner.bazelink.co.ke/reset-password`;
   
@@ -409,7 +410,6 @@ const newrecoverPassword = async (req, res) => {
           Reset Your Password
         </a>
       </p>
-
       <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
         This token is valid for 1 hour. If you did not request a password reset, please disregard this email.
       </p>
@@ -424,6 +424,7 @@ const newrecoverPassword = async (req, res) => {
       await user.save();
       res.status(200).json({ message: 'Password recovery email sent successfully.' });
     } catch (error) {
+
       res.status(500).json({ message: 'Error sending password recovery email' });
     }
   } catch (error) {
