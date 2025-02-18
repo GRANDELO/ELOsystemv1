@@ -130,7 +130,7 @@ const createSellerReminderTemplate = async () => {
         html: `
             <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
                 <div style="text-align: center; margin-bottom: 20px;">
-                    <img src="https://drive.google.com/file/d/1rvKAcuOqBLrsBE9IVogGXxcviClHtb2B/view?usp=drive_link" alt="Bazelink Logo" style="width: 150px; height: auto;">
+                    <img src="https://drive.google.com/uc?export=view&id=1rvKAcuOqBLrsBE9IVogGXxcviClHtb2B" alt="Bazelink Logo" style="width: 150px; height: auto;">
                 </div>
                 <h1 style="font-size: 24px; color: #007bff; text-align: center;">Hello [Username],</h1>
                 <p style="font-size: 16px; text-align: center;">We noticed you haven’t posted any products yet. Don’t miss out on the opportunity to <strong>boost your sales</strong> and reach thousands of potential buyers!</p>
@@ -154,7 +154,7 @@ const createSellerReminderTemplate = async () => {
             </div>
         `,
     });
-
+//https://drive.google.com/file/d/1rvKAcuOqBLrsBE9IVogGXxcviClHtb2B/view?usp=sharing
     await template.save();
     console.log('Seller reminder template created');
 };
