@@ -22,7 +22,7 @@ function sendEmail(to, subject, text, html) {
     from: `"BAZELINK" <${process.env.EMAIL_USER}>`,
     to: to,
     subject: subject,
-    text: text,   // Plain text version
+    //text: text,   // Plain text version
     html: html,   // HTML version
   };
 
