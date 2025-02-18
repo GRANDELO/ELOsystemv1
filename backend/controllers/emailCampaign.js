@@ -190,17 +190,30 @@ const emailSeller = async (req, res) => {
         }
 
         const sendDateTime = new Date(sendTime);
+        if (isNaN(sendDateTime.getTime())){
+            return res.status(400).json({ message: 'Invalid sendTime format' });
+        }
+
+        const now = new Date();
+        if (sendDateTime <= now) {
+            return res.status(400).json({ message: 'sendTime must be in the future' });
+        }
+
         const cronExpression = `${sendDateTime.getMinutes()} ${sendDateTime.getHours()} ${sendDateTime.getDate()} ${sendDateTime.getMonth() + 1} *`;
 
-        cron.schedule(cronExpression, () => {
-            sellers.forEach(async (seller) => {
+        cron.schedule(cronExpression, async () => {
+            for (const seller of sellers) {
                 const personalizedHtml = html.replace('[Username]', seller.username);
-                await sendEmail(seller.email, subject, personalizedHtml);
-            });
+                try {
+                    await sendEmail(seller.email, subject, personalizedHtml);
+                    console.log(`Email sent to ${seller.email}`);
+                } catch (err) {
+                    console.error(`Failed to send email to ${seller.email}:`, err);
+                }
+            }
         });
 
         // Personalize and send emails
-        
         res.status(200).json({ message: 'Emails scheduled successfully' });
 
     }catch (error){
