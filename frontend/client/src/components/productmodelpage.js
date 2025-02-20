@@ -242,6 +242,29 @@ Category: ${product.category}
   if (errorProduct) return <p>{errorProduct}</p>;
   if (!product) return <p>No product found.</p>;
 
+  // Add this function inside your ProductPage component
+const shareProduct = () => {
+  const shareData = {
+    title: product.name,
+    text: `Check out this product: ${product.name}`,
+    url: window.location.href, // Or a custom product URL if needed
+  };
+
+  if (navigator.share) {
+    navigator
+      .share(shareData)
+      .then(() => console.log("Product shared successfully"))
+      .catch((error) => console.error("Error sharing", error));
+  } else {
+    // Fallback: copy link to clipboard
+    navigator.clipboard
+      .writeText(shareData.url)
+      .then(() => alert("Product link copied to clipboard"))
+      .catch((err) => console.error("Could not copy text: ", err));
+  }
+};
+
+
   return (
     <div className="product-page">
       <header className="product-header">
@@ -450,9 +473,10 @@ Category: ${product.category}
             <Button variant="primary" onClick={handleAddToCart}>
               {loading ? "Adding..." : "Add to Cart"}
             </Button>
-            <Button variant="secondary" onClick={downloadProductInfo}>
-              Download Product Info
+            <Button variant="secondary" onClick={shareProduct}>
+              Share Product
             </Button>
+
           </div>
 
           {/* Core Sell Section */}
