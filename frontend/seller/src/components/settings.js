@@ -136,7 +136,6 @@ const Settings = () => {
     </div>
       <h2>Settings</h2>
       <div className="set-buttons">
-        <button className="settings-button" onClick={() => setChangeUsername(!changeUsername)}>Change Username</button>
         <button className="settings-button" onClick={() => setChangePassword(!changePassword)}>Change Password</button>
         <button className="settings-button" onClick={() => setChangeEmail(!changeEmail)}>Change Email</button>
         <button className="settings-button" onClick={() => setChangePhoneNumber(!changePhoneNumber)}>Change Phone Number</button>

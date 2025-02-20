@@ -206,7 +206,7 @@ select:focus{
 /* Responsive behavior for smaller screens */
 @media (max-width: 768px) {
   .container {
-    width: 90%;
+    width: 100%;
     padding: 15px;
   }
 
@@ -215,7 +215,7 @@ select:focus{
   }
 
   button {
-    width: auto; /* Adjust button width for larger screens */
+    width: 100%; /* Adjust button width for larger screens */
   }
 }
 

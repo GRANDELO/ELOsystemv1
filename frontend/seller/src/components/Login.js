@@ -123,7 +123,7 @@ const Login = () => {
             <input
               type="text"
               value={username}
-              placeholder="Enter your username/Business Name"
+              placeholder="Enter your Business Name"
               onChange={(e) => setUsername(e.target.value)}
               required
             />
