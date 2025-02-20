@@ -8,9 +8,12 @@ import './styles/NewProductList.css';
 import { jwtDecode } from 'jwt-decode';
 import categories from './categories.js';
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const NewProductList = ({ username }) => {
   {/*const { username } = useParams();*/}
+
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -186,10 +189,10 @@ const NewProductList = ({ username }) => {
 
   const handleProductClick = (product) => {
     setSelectedProduct(product);
-    storeSearch(product.category , product.subCategory)
-    setIsModalOpen(true);
-
+    storeSearch(product.category, product.subCategory);
+    navigate(`/productmodelpage/${product._id}`);
   };
+
 
   const closeModal = () => {
     setSelectedProduct(null);
@@ -516,6 +519,7 @@ const NewProductList = ({ username }) => {
 
       )}
 
+{/*
       {selectedProduct && (
         <ProductModal
           product={selectedProduct}
@@ -523,6 +527,9 @@ const NewProductList = ({ username }) => {
           handleClose={closeModal}
         />
       )}
+*/}
+
+
     </div>
   );
 };
