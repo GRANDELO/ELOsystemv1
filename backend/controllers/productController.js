@@ -130,23 +130,21 @@ exports.createProduct = async (req, res) => {
 
 
 //get all items
-
-
 exports.getAllProducts = async (req, res) => {
   try {
-    // Parse query parameters or use default values
+    // Parse query parameters with default values
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 5;
+    const limit = parseInt(req.query.limit) || 32;
     const skip = (page - 1) * limit;
 
-    // Get the total count of new products
-    const totalProducts = await NewProduct.countDocuments();
+    // Get total count of products
+    const totalProducts = await Product.countDocuments();
 
-    // Fetch only the required products for this page
-    const newProducts = await NewProduct.find().skip(skip).limit(limit);
+    // Fetch only the products for the requested page
+    const products = await Product.find().skip(skip).limit(limit);
 
     res.status(200).json({
-      products: newProducts,
+      products,
       currentPage: page,
       totalPages: Math.ceil(totalProducts / limit),
       totalProducts,
