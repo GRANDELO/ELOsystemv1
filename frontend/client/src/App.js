@@ -22,6 +22,8 @@ import Chatbot from './utils/chatbot';
 import AdminQA from './utils/AdminQA';
 
 
+import Productmodelpage from './components/productmodelpage';
+
 import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
 import NewProductEdit from './components/NewProductEdit';
@@ -108,6 +110,8 @@ const App = () => {
           <Route path="/review" element={<Review />} />
           <Route path="/auto" element={<Verificationauto />} />
           <Route path="/website" element={<Website />} />
+
+          <Route path="/productmodelpage/:id" element={<Productmodelpage />} />
           
           <Route path="/blogs" element={<BlogHome />} />
           <Route path="/blog/:id" element={<BlogDetails />} />
