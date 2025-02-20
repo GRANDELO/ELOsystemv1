@@ -160,6 +160,56 @@ const createSellerReminderTemplate = async () => {
 };
 
 //createSellerReminderTemplate();
+const createSellerInvitationTemplate = async () => {
+    const template = new EmailTemplate({
+        type: 'seller-invitation',
+        subject: '📢 Start Selling & Grow Your Business with Bazelink!',
+        html: `
+            <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+                <h1 style="font-size: 24px; color:rgb(6, 28, 51); text-align: center;">📢 Start Selling & Grow Your Business with Bazelink!</h1>
+                <h1 style="font-size: 24px; color: #007bff; text-align: center;">Hello [Username],</h1>
+                <p style="font-size: 16px; text-align: center;">We’re excited to invite you to showcase your products on <strong>Bazelink</strong>! This is a great opportunity to reach a wider audience, grow your sales, and establish your brand.</p>
+                
+                <div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                    <h2 style="font-size: 20px; color: #333; margin-bottom: 10px;">Why Sell With Us?</h2>
+                    <ul style="font-size: 14px; color: #555; list-style-type: none; padding-left: 0;">
+                        <li style="margin-bottom: 8px;">✅ <strong>Massive Customer Reach</strong>: Get your products in front of thousands of active buyers.</li>
+                        <li style="margin-bottom: 8px;">💰 <strong>Boost Your Revenue</strong>: Maximize profits with our seller-friendly policies.</li>
+                        <li style="margin-bottom: 8px;">📢 <strong>Marketing & Promotion</strong>: Let us help you market your products for better visibility.</li>
+                        <li style="margin-bottom: 8px;">⚡ <strong>Easy Product Listing</strong>: Upload and manage your inventory hassle-free.</li>
+                        <li style="margin-bottom: 8px;">📦 <strong>Secure Transactions</strong>: We ensure smooth payments and safe trading.</li>
+                    </ul>
+                </div>
+
+                <p style="font-size: 16px; text-align: center;"><strong>Don’t forget to showcase your product today!</strong> Reach more buyers and grow your business.</p>
+
+                <p style="font-size: 16px; text-align: center;">Joining is simple and takes just a few minutes. Click below to get started!</p>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <a href="https://www.partner.bazelink.co.ke" style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-size: 16px; display: inline-block; font-weight: bold;">
+                        Start Selling Now
+                    </a>
+                </div>
+
+                <p style="font-size: 16px; text-align: center;">Need help setting up? Our support team is here for you!</p>
+                
+                <p style="font-size: 14px; color: #777; text-align: center;">
+                    Contact us anytime at <a href="mailto:Bazelink.ltd@gmail.com" style="color: #007bff; text-decoration: none;">Bazelink.ltd@gmail.com</a>.
+                </p>
+
+                <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #999;">
+                    <p>Best regards,<br/><strong>The Bazelink Team</strong></p>
+                </div>
+            </div>
+        `,
+    });
+
+    await template.save();
+    console.log('Seller invitation template created');
+};
+
+createSellerInvitationTemplate();
+
 
 const emailSeller = async (req, res) => {
     try {
