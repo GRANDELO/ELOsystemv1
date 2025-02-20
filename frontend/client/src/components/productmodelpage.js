@@ -10,9 +10,9 @@ import Productimage from "./productimage";
 import AddEditReview from "./AddEditReview";
 import QRCode from "qrcode";
 import ico from "./images/log.png";
-//import './styles/ProductPage.css';
+import './styles/ProductPage.css';
 
-const ProductPage = ({pid}) => {
+const ProductPage = () => {
   const { id } = useParams(); // Get product id from the URL
   const [product, setProduct] = useState(null);
   const [loadingProduct, setLoadingProduct] = useState(true);
@@ -249,48 +249,101 @@ Category: ${product.category}
       </header>
 
       <section className="product-content">
-        <div className="product-details-container">
-          {/* Product Image Section */}
-          <div className="product-image-container">
-            {product.images && product.images.length > 0 ? (
-              <img
-                src={product.images[currentImageIndex]}
-                alt={`product-image-${currentImageIndex}`}
-                className="product-image"
-              />
-            ) : (
-              <p>No images available for this product.</p>
-            )}
-          </div>
-
-          {/* Product Info Section */}
-          <div className="product-info">
-            <div
-              className="product-description"
-              dangerouslySetInnerHTML={{ __html: product.description }}
-            ></div>
-            <p className="product-category">Category: {product.category}</p>
-            {product.label && <span className="product-badge">{product.label}</span>}
-            <div className="product-prices">
-              {product.discount ? (
-                <>
-                  <p className="old-price">
-                    <s>Ksh {product.price.toFixed(2)}</s>
-                  </p>
-                  <p className="new-price">Ksh {discountedPrice}</p>
-                  <p className="discount-info">
-                    Save Ksh {discountAmount} ({product.discountpersentage}% off)
-                  </p>
-                </>
-              ) : (
-                <p className="new-price">Ksh {product.price.toFixed(2)}</p>
+      {showCore ? (
+            <div className="core-sell-section">
+              {showMpesaInput && (
+                <Form.Group  className="mpesaNumber " controlId="mpesaNumber">
+                  <Form.Label>MPesa Number</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter MPesa number"
+                    value={mpesaNumber}
+                    onChange={(e) => setMpesaNumber(e.target.value)}
+                  />
+                  <Button variant="success" onClick={handleCoreSell}>
+                    Confirm Core Sell
+                  </Button>
+                </Form.Group>
+              )}
+              {showQrCode && sellerOrderId && (
+                <div  className= "oter-qr-code-section">
+                <div className="qr-code-section" style={{ textAlign: "center" }}>
+                  <canvas ref={canvasRef} />
+                  <Button
+                    onClick={downloadQRCode}
+                    style={{ marginTop: "20px", padding: "10px 20px" }}
+                  >
+                    Download QR Code
+                  </Button>
+                  <Productimage product={product} />
+                </div>
+                <ProductsDetail product={product} />
+                
+                </div>
               )}
             </div>
+          ): (
+            <div className="product-details-container">
+              {/* Product Image & Basic Info */}
+              <div>
+                {/* Product Image Section */}
+                <div className="product-image-container">
+                  {product.images && product.images.length > 0 ? (
+                    <img
+                      src={product.images[currentImageIndex]}
+                      alt={`product-image-${currentImageIndex}`}
+                      className="product-image"
+                    />
+                  ) : (
+                    <p>No images available for this product.</p>
+                  )}
+                </div>
 
-            {/* Product Features */}
-            <div className="product-features">
+                {/* Product Info Section */}
+                <div className="product-info">
+                  {/* Show category only if it exists */}
+                  {product.category && (
+                    <p className="product-category">Category: {product.category}</p>
+                  )}
+
+                  {/* Show label only if it exists */}
+                  {product.label && <span className="product-badge">{product.label}</span>}
+
+                  {/* Pricing & Discount Info */}
+                  <div className="product-prices">
+                    {product.discount ? (
+                      <>
+                        <p className="old-price">
+                          <s>Ksh {product.price.toFixed(2)}</s>
+                        </p>
+                        <p className="new-price">Ksh {discountedPrice}</p>
+                        <p className="discount-info">
+                          Save Ksh {discountAmount} ({product.discountpersentage}% off)
+                        </p>
+                      </>
+                    ) : (
+                      <p className="new-price">Ksh {product.price.toFixed(2)}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+
+
+                <div
+                className="product-description"
+                >
+                {/* Description (only if non-empty) */}
+                {product.description && product.description.trim() !== "" && (
+                <div
+                  
+                  dangerouslySetInnerHTML={{ __html: product.description }}
+                ></div>
+              )}
+
+              {/* Product Features (only if there's something to show) */}
               {product.features && product.features.length > 0 && (
-                <>
+                <div className="product-features">
                   <h3>Features:</h3>
                   <ul>
                     {product.features.map((feature, index) => (
@@ -299,16 +352,16 @@ Category: ${product.category}
                       </li>
                     ))}
                   </ul>
-                </>
+                </div>
               )}
-            </div>
+                </div>
 
-            {/* Product Variations */}
-            <div className="product-variations">
+
+              {/* Product Variations (only if they exist) */}
               {product.variations && product.variations.length > 0 && (
-                <>
+                <div className="product-variations">
                   <h3>Select Your Variations:</h3>
-                  {['color', 'size', 'material', 'style'].map((field, index) => (
+                  {["color", "size", "material", "style"].map((field, index) => (
                     <div key={field} className="variant-selection">
                       <label htmlFor={field}>
                         {field.charAt(0).toUpperCase() + field.slice(1)}:
@@ -317,7 +370,7 @@ Category: ${product.category}
                         id={field}
                         name={field}
                         onChange={(e) => handleVariantChange(field, e.target.value)}
-                        value={selectedVariant[field] || ''}
+                        value={selectedVariant[field] || ""}
                         disabled={
                           index > 0 &&
                           !selectedVariant[Object.keys(selectedVariant)[index - 1]]
@@ -326,48 +379,53 @@ Category: ${product.category}
                         <option value="" disabled>
                           Select {field.charAt(0).toUpperCase() + field.slice(1)}
                         </option>
-                        {field === 'size' ? (
-                          [
-                            ...new Set(filteredVariations.flatMap((variation) => variation.size)),
-                          ].map((size, idx) => (
-                            <option key={idx} value={size}>
-                              {size}
-                            </option>
-                          ))
-                        ) : (
-                          filteredVariations
-                            .map((variation) => variation[field])
-                            .filter((value, i, self) => self.indexOf(value) === i)
-                            .map((option, idx) => (
-                              <option key={idx} value={option}>
-                                {option}
+                        {field === "size"
+                          ? [
+                              ...new Set(
+                                filteredVariations.flatMap((variation) => variation.size)
+                              ),
+                            ].map((size, idx) => (
+                              <option key={idx} value={size}>
+                                {size}
                               </option>
                             ))
-                        )}
+                          : filteredVariations
+                              .map((variation) => variation[field])
+                              .filter((value, i, self) => self.indexOf(value) === i)
+                              .map((option, idx) => (
+                                <option key={idx} value={option}>
+                                  {option}
+                                </option>
+                              ))}
                       </select>
                     </div>
                   ))}
-                </>
+                </div>
               )}
             </div>
-          </div>
-        </div>
 
-        {/* Review Section */}
-        <section className="reviews-section">
-          <ReviewList productId={product._id} onReviewAction={handleReviewAction} />
-          {editingReview && (
-            <AddEditReview
-              productId={product._id}
-              reviewToEdit={editingReview}
-              currentUser={currentUser}
-              onReviewActionComplete={handleReviewActionComplete}
-            />
           )}
-        </section>
+
+
+
+
 
         {/* Actions Section */}
         <section className="actions-section">
+
+          {/* Review Section */}
+          <section className="reviews-section">
+            <ReviewList productId={product._id} onReviewAction={handleReviewAction} />
+            {editingReview && (
+              <AddEditReview
+                productId={product._id}
+                reviewToEdit={editingReview}
+                currentUser={currentUser}
+                onReviewActionComplete={handleReviewActionComplete}
+              />
+            )}
+          </section>
+
           <Form.Group controlId="productQuantity">
             <Form.Label>Quantity</Form.Label>
             <Form.Control
@@ -398,37 +456,7 @@ Category: ${product.category}
           </div>
 
           {/* Core Sell Section */}
-          {showCore && (
-            <div className="core-sell-section">
-              {showMpesaInput && (
-                <Form.Group controlId="mpesaNumber">
-                  <Form.Label>MPesa Number</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter MPesa number"
-                    value={mpesaNumber}
-                    onChange={(e) => setMpesaNumber(e.target.value)}
-                  />
-                  <Button variant="success" onClick={handleCoreSell}>
-                    Confirm Core Sell
-                  </Button>
-                </Form.Group>
-              )}
-              {showQrCode && sellerOrderId && (
-                <div className="qr-code-section" style={{ textAlign: "center" }}>
-                  <canvas ref={canvasRef} />
-                  <Button
-                    onClick={downloadQRCode}
-                    style={{ marginTop: "20px", padding: "10px 20px" }}
-                  >
-                    Download QR Code
-                  </Button>
-                  <ProductsDetail product={product} />
-                  <Productimage product={product} />
-                </div>
-              )}
-            </div>
-          )}
+
         </section>
       </section>
     </div>

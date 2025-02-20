@@ -4,7 +4,7 @@
   --text-color-light: #333333;
   --link-color-light: #6200ee;
   --overlay-light: rgba(151, 188, 255, 0.515); /* Optional semi-transparent overlay */
-
+  --tt: linear-gradient(135deg, #66b2ff, #007bff, #66b2ff);
   /* Dark theme variables */
   --bg-color-dark: rgba(30, 30, 47, 0.9);
   --text-color-dark: #ffffff;
@@ -29,7 +29,7 @@
   --input-border: #ccc;
   --input-focus-border: #6200ee;
   --input-text-color: #333;
-
+  --dtt: linear-gradient(135deg, #0053ab, #318be5);
   /* Header font size */
   --header-font-size: 2rem;
 }
@@ -40,7 +40,7 @@
   --text-color-light: var(--text-color-dark);
   --link-color-light: var(--link-color-dark);
   --overlay-light: var(--overlay-dark);
-
+  --tt: var(--dtt);
   /* Dark theme button styles */
 
 

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import ProductModal from './ProductModal';
-//import ProductModal from './productmodelpage';
 import axiosInstance from './axiosInstance';
 import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
 import { storeSearch, getSearchHistory, trackProductClick } from '../utils/search';
@@ -9,8 +8,10 @@ import { useIsMobile } from '../utils/mobilecheck';
 import './styles/NewProductList.css';
 import { jwtDecode } from 'jwt-decode';
 import categories from './categories.js';
+import { useNavigate } from 'react-router-dom';
 
 const NewProductList = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -209,11 +210,11 @@ const NewProductList = () => {
     }));
   };
 
+
   const handleProductClick = (product) => {
     setSelectedProduct(product);
-    storeSearch(product.category , product.subCategory)
-    setIsModalOpen(true);
-
+    storeSearch(product.category, product.subCategory);
+    navigate(`/productmodelpage/${product._id}`);
   };
 
   const closeModal = () => {
@@ -591,13 +592,16 @@ const NewProductList = () => {
 
       )}
 
+{/*
       {selectedProduct && (
         <ProductModal
           product={selectedProduct}
           show={isModalOpen}
           handleClose={closeModal}
         />
-      )}
+      )} 
+*/}
+
     </div>
   );
 };

@@ -255,12 +255,6 @@ button:focus {
 
 
 
-.product-details-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-}
 
 .product-image-container {
   text-align: center;
