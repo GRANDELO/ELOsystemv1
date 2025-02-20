@@ -132,16 +132,20 @@ exports.createProduct = async (req, res) => {
 //get all items
 exports.getAllProducts = async (req, res) => {
   try {
-    // Parse query parameters with default values
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 32;
     const skip = (page - 1) * limit;
 
-    // Get total count of products
+    // Get total count for pagination details
     const totalProducts = await Product.countDocuments();
 
-    // Fetch only the products for the requested page
-    const products = await Product.find().skip(skip).limit(limit);
+    // Use aggregation to add a random field and sort by it
+    const products = await Product.aggregate([
+      { $addFields: { random: { $rand: {} } } },
+      { $sort: { random: 1 } },
+      { $skip: skip },
+      { $limit: limit },
+    ]);
 
     res.status(200).json({
       products,

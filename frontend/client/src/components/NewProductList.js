@@ -26,7 +26,7 @@ const NewProductList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [imageIndexes, setImageIndexes] = useState({});
   const isMobile = useIsMobile();
-  const PRODUCTS_PER_PAGE = 5;
+  const PRODUCTS_PER_PAGE = 32;
   const CATEGORIES_PER_PAGE = isMobile ? 3 : 7;
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showMoreCategories, setShowMoreCategories] = useState(false);
