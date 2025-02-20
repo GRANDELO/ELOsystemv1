@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import ProductModal from './ProductModal';
+//import ProductModal from './ProductModal';
+import ProductModal from './productmodelpage';
 import axiosInstance from './axiosInstance';
 import './styles/NewProductList.css';
 

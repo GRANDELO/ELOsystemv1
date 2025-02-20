@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ProductModal from './ProductModal';
+//import ProductModal from './productmodelpage';
 import axiosInstance from './axiosInstance';
 import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
 import { storeSearch, getSearchHistory, trackProductClick } from '../utils/search';
