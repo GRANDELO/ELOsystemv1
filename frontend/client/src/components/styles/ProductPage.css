@@ -104,18 +104,7 @@
   margin-bottom: 10px;
 }
 
-.product-badge {
-  background-color: #2196f3;
-  color: var(--input-text-color);
-  padding: 5px 12px;
-  font-size: 0.875rem;
-  border-radius: 20px;
-  margin-top: 10px;
-}
 
-.product-badge:hover {
-  background: #0061b1;
-}
 
 /* Pricing info */
 .product-prices {
