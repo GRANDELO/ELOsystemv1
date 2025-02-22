@@ -208,7 +208,7 @@ const createSellerInvitationTemplate = async () => {
     console.log('Seller invitation template created');
 };
 
-createSellerInvitationTemplate();
+//createSellerInvitationTemplate();
 
 
 const emailSeller = async (req, res) => {
