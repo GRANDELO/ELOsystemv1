@@ -24,10 +24,10 @@ const UserSchema = new mongoose.Schema({
   
   locations: 
     {
-      county: { type: String },
-      town: { type: String },
-      area: { type: String},
-      specific: { type: String },
+      county: { type: String, required: false},
+      town: { type: String,  required: false},
+      area: { type: String, required: false},
+      specific: { type: String, required: false },
     },
 
   history: {
@@ -55,6 +55,6 @@ UserSchema.pre('save', async function(next) {
     return next(error);
   }
 });
-````
+
 module.exports = mongoose.model('User', UserSchema);
 
