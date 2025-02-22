@@ -215,8 +215,7 @@ const NewProductFormShell = () => {
   const addVariation = () => {
     setNewProduct({
       ...newProduct,
-      variations: [...newProduct.variations,
-         { color: [], size: [], material: [], model: [] }],
+      variations: [...newProduct.variations, { color: '', size: [], material: '', model: '' }],
     });
   };
   
@@ -227,14 +226,13 @@ const NewProductFormShell = () => {
   
   const handleVariationChange = (index, field, value) => {
     const updatedVariations = [...newProduct.variations];
-    if (['size', 'color', 'material', 'model'].includes(field)) {
-      updatedVariations[index][field] = value.split(',').map((item) => item.trim());
+    if (field === 'size') {
+      updatedVariations[index][field] = value.split(',').map((size) => size.trim()); // Handle size as an array
     } else {
       updatedVariations[index][field] = value;
     }
     setNewProduct({ ...newProduct, variations: updatedVariations });
   };
-
   const GEMINI_API_KEY = "AIzaSyDL0wDHmhqtHZuurZ0tKAfUEBm0n1QIvws";
 
 const generateDescription = async () => {
@@ -405,42 +403,44 @@ const generateDescription = async () => {
       case 4:
         return (
           <div className="step-section">
-            <h3>Step 4: Variations (optional)</h3>
-            <div className="npfdiv">
-              {newProduct.variations.map((variation, index) => (
-                <div key={index}>
-                  <input
-                    type="text"
-                    placeholder="Color(comma-separated)"
-                    value={variation.color.join(', ')}
-                    onChange={(e) => handleVariationChange(index, 'color', e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Sizes (comma-separated)"
-                    value={variation.size.join(', ')}
-                    onChange={(e) => handleVariationChange(index, 'size', e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Material (comma-separated)"
-                    value={variation.material.join(', ')}
-                    onChange={(e) => handleVariationChange(index, 'material', e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Model (comma-separated) "
-                    value={variation.model.join(', ')}
-                    onChange={(e) => handleVariationChange(index, 'model', e.target.value)}
-                  />
-                  <button type="button" onClick={() => removeVariation(index)}>
-                    Remove Variation
-                  </button>
-                </div>
-              ))}
-              <button type="button" onClick={addVariation}>
-                Add Variation
-              </button>
+            <h3>Step 4: Variations (Must especially when you are selling products with different variants.)</h3>
+            <div
+              className="npfdiv">
+                <h4>Product Variations</h4>
+                {newProduct.variations.map((variation, index) => (
+                  <div key={index} >
+                    <input
+                      type="text"
+                      placeholder="Color"
+                      value={variation.color}
+                      onChange={(e) => handleVariationChange(index, 'color', e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Sizes (comma-separated)"
+                      value={variation.size.join(', ')} // Join array back to string for display
+                      onChange={(e) => handleVariationChange(index, 'size', e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Material"
+                      value={variation.material}
+                      onChange={(e) => handleVariationChange(index, 'material', e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Model"
+                      value={variation.model}
+                      onChange={(e) => handleVariationChange(index, 'model', e.target.value)}
+                    />
+                    <button type="button" onClick={() => removeVariation(index)}>
+                      Remove Variation
+                    </button>
+                  </div>
+                ))}
+                <button type="button" onClick={addVariation}>
+                  Add Variation
+                </button>
             </div>
 
           </div>

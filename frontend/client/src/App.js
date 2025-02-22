@@ -109,7 +109,8 @@ const App = () => {
           <Route path="/verification" element={<Verification />} />
           <Route path="/review" element={<Review />} />
           <Route path="/auto" element={<Verificationauto />} />
-          <Route path="/website" element={<Website />} />
+          <Route path="/website" element={<Home />} />
+          <Route path="/site" element={<Website />} />
           <Route path="/return" element={<ReturnPolicy/> } />
           <Route path="/productmodelpage/:id" element={<Productmodelpage />} />
           
