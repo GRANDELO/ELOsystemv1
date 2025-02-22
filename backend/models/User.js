@@ -3,13 +3,13 @@ const bcrypt = require('bcryptjs');
 const Town = require('./location');
 
 const UserSchema = new mongoose.Schema({
-  fullName: { type: String, required: function() { return this.category === "Seller"; } },
+  fullName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   phoneNumber: { type: String, required: true },
   username: { type: String, required: true, unique: true },
-  dateOfBirth: { type: Date, required: function() { return this.category === "Seller"; } },
-  gender: { type: String, required: function() { return this.category === "Seller"; } },
+  dateOfBirth: { type: Date, required: true },
+  gender: { type: String, required: true },
   category: { type: String, required: true },
   verificationCode: { type: String },
   isVerified: { type: Boolean, default: false },
@@ -24,10 +24,10 @@ const UserSchema = new mongoose.Schema({
   
   locations: 
     {
-      county: { type: String , required: function() { return this.category === "Seller"; }},
-      town: { type: String, required: function() { return this.category === "Seller"; } },
-      area: { type: String, required: function() { return this.category === "Seller"; } },
-      specific: { type: String, required: function() { return this.category === "Seller"; } },
+      county: { type: String , required: true},
+      town: { type: String, required: true },
+      area: { type: String, required: true },
+      specific: { type: String, required: true },
     },
 
   history: {
