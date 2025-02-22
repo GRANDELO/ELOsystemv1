@@ -5,7 +5,7 @@ import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
 import { storeSearch, getSearchHistory, trackProductClick } from '../utils/search';
 import { FaShop } from "react-icons/fa6";
 import { useIsMobile } from '../utils/mobilecheck';
-import './styles/NewProductLists.css';
+import './styles/NewProductList.css';
 import { jwtDecode } from 'jwt-decode';
 import categories from './categories.js';
 import { useNavigate } from 'react-router-dom';

@@ -28,7 +28,7 @@ import Logout from './components/Logout';
 import NewProductDetail from './components/NewProductDetail';
 import NewProductEdit from './components/NewProductEdit';
 import NewProductForm from './components/NewProductForm';
-import NewProductList from './components/NewProductList';
+import NewProductList from './components/NewProductListc';
 import Order from "./components/OrderingPage";
 import PaymentForm from './components/PaymentForm';
 import ProductForm from './components/ProductForm';
