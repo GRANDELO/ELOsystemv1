@@ -3,13 +3,13 @@ const bcrypt = require('bcryptjs');
 const Town = require('./location');
 
 const UserSchema = new mongoose.Schema({
-  fullName: { type: String, required: true },
+  fullName: { type: String, required: false },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   phoneNumber: { type: String, required: true },
   username: { type: String, required: true, unique: true },
-  dateOfBirth: { type: Date, required: true },
-  gender: { type: String, required: true },
+  dateOfBirth: { type: Date, required: false },
+  gender: { type: String, required: false },
   category: { type: String, required: true },
   verificationCode: { type: String },
   isVerified: { type: Boolean, default: false },
@@ -24,10 +24,10 @@ const UserSchema = new mongoose.Schema({
   
   locations: 
     {
-      county: { type: String },
-      town: { type: String },
-      area: { type: String },
-      specific: { type: String },
+      county: { type: String, required: false},
+      town: { type: String,  required: false},
+      area: { type: String, required: false},
+      specific: { type: String, required: false },
     },
 
   history: {

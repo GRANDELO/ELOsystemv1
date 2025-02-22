@@ -6,24 +6,15 @@ import axiosInstance from './axiosInstance';
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    fullName: '',
+    //fullName: '',
     email: '',
     password: '',
     confirmPassword: '',
     phoneNumber: '',
     username: '',
-    dateOfBirth: '',
-    gender: '',
     category: '',
-    locations: 
-      {
-        county: "",
-        town: "",
-        area: "",
-        specific: "",
-      },
+  
   });
-
 
   const [currentStep, setCurrentStep] = useState(1); // State to manage the current step
   const [isNextEnabled, setIsNextEnabled] = useState(false); // State to manage next button status
@@ -31,49 +22,11 @@ const Register = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setloading] = useState(false);
-  const [towns, setTowns] = useState([]);
-  const [selectedTown, setSelectedTown] = useState('');
-  const [areas, setAreas] = useState([]);
-  const [selectedArea, setSelectedArea] = useState('');
-  const [selectedAreaspe, setSelectedAreaspe] = useState('');
-
-  const totalSteps = 4; // Total number of steps
+  const totalSteps = 2; // Total number of steps
   const stepTimeEstimate = 2; // Estimate 2 minutes per step
-
-  const [counties, setCounties] = useState([]);
-  const [selectedCounty, setSelectedCounty] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] =useState(false);
   
-  useEffect(() => {
-    const fetchLocations = async () => {
-      try {
-        const response = await axiosInstance.get('/locations');
-        setCounties(response.data);
-      } catch (err) {
-        console.error('Failed to fetch locations:', err);
-        setMessage(err.response?.data?.message || 'Failed to fetch locations');
-      }
-    };
-  
-    fetchLocations();
-  }, []);
-  
-  useEffect(() => {
-    if (selectedCounty) {
-      const countyData = counties.find(county => county.county === selectedCounty);
-      setTowns(countyData ? countyData.towns : []);
-    }
-  }, [selectedCounty]);
-  
-  useEffect(() => {
-    if (selectedTown) {
-      const townData = towns.find(town => town.town === selectedTown);
-      setAreas(townData ? townData.areas : []);
-    }
-  }, [selectedTown]);
-  
-
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -93,23 +46,16 @@ const Register = () => {
     setloading(true);
     // Trim the form data before sending it
     const trimmedFormData = {
-      fullName: formData.fullName.trim(),
+      //fullName: formData.fullName.trim(),
       email: formData.email.trim(),
       password: formData.password.trim(),
       confirmPassword: formData.confirmPassword.trim(),
       phoneNumber: formData.phoneNumber.trim(),
       username: formData.username.trim(),
-      dateOfBirth: formData.dateOfBirth.trim(),
-      gender: formData.gender.trim(),
+      //dateOfBirth: formData.dateOfBirth.trim(),
+      //gender: formData.gender.trim(),
       category: formData.category.trim(),
-      locations: 
-        {
-          county: selectedCounty,
-          town: selectedTown,
-          area: selectedArea,
-          specific: selectedAreaspe,
-        },
-
+      
     };
 
     try {
@@ -137,17 +83,13 @@ const Register = () => {
       switch (currentStep) {
         case 1:
 
-          const fullNameValid = /^[a-zA-Z]{3,}$/.test(formData.fullName.trim());
+          //const fullNameValid = /^[a-zA-Z]{3,}$/.test(formData.fullName.trim());
           const emailValid = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/.test(formData.email.trim());
           const usernameValid = /^[a-zA-Z0-9_]{4,}$/.test(formData.username.trim());
-          return fullNameValid && emailValid && usernameValid;
-        case 2:
+          return formData.category && emailValid && usernameValid;
 
-          return selectedCounty && selectedAreaspe && selectedTown&& selectedArea;
-        case 3:
-
-          return formData.dateOfBirth && formData.gender && formData.category;
-        case 4:
+       
+          case 2:
 
           const passwordValid = formData.password.trim().length >= 8 &&
             /[A-Z]/.test(formData.password.trim()) &&
@@ -161,39 +103,10 @@ const Register = () => {
     };
   
     setIsNextEnabled(validateStep());
-  }, [formData, selectedAreaspe, selectedTown, selectedArea,  currentStep]);
-  
-  const handleTownChange = (e) => {
-    const selectedTown = e.target.value;
-    setSelectedTown(selectedTown);
-    const town = towns.find(t => t.town === selectedTown);
-    setAreas(town ? town.areas : []);
-  };
-
-  const handleAreaChange = (e) => {
-    setSelectedArea(e.target.value);
-  };
-
-  const handleAreasepChange = (e) => {
-    setSelectedAreaspe(e.target.value);
-  };
+  }, [formData, currentStep]); 
 
   const progressPercentage = (currentStep / totalSteps) * 100;
   const timeRemaining = stepTimeEstimate * (totalSteps - currentStep);
-
-  const handleCountyChange = (event) => {
-    const selectedCountyValue = event.target.value;
-    setSelectedCounty(selectedCountyValue);
-    setSelectedTown(""); // Reset town selection
-    setSelectedArea(""); // Reset area selection
-    setTowns([]); // Clear towns when county changes
-    setAreas([]); // Clear areas when county changes
-  
-    if (selectedCountyValue) {
-      const countyData = counties.find(county => county.county === selectedCountyValue);
-      setTowns(countyData ? countyData.towns : []);
-    }
-  };
 
   return (
     <div className="container">
@@ -210,17 +123,17 @@ const Register = () => {
       {currentStep === 1 && (
 
         <div className="formsep">
-          <label>Enter Your First Name:</label>
+          <label>Username:</label>
           <input
             type="text"
-            name="fullName"
-            placeholder="Enter your name"
-            value={formData.fullName}
+            name="username"
+            placeholder="Enter your username"
+            value={formData.username}
             onChange={handleChange}
             required
           />
-          {formData.fullName && !/^[a-zA-Z]{3,}$/.test(formData.fullName) && (
-            <p style={{ color: 'red', fontSize: 'smaller' }}>Full Name must be at least 3 characters long and contain only letters.</p>
+          {formData.username && !/^[a-zA-Z0-9_]{4,}$/.test(formData.username) && (
+            <p style={{ color: 'red', fontSize: 'smaller' }}>Username must be at least 4 characters long and contain only letters, numbers, or underscores.</p>
           )}
 
           <label>Email:</label>
@@ -236,107 +149,6 @@ const Register = () => {
             <p style={{ color: 'red', fontSize: 'smaller' }}>Please enter a valid email address (e.g., yourname@gmail.com).</p>
           )}
 
-          <label>Username:</label>
-          <input
-            type="text"
-            name="username"
-            placeholder="Enter your username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
-          {formData.username && !/^[a-zA-Z0-9_]{4,}$/.test(formData.username) && (
-            <p style={{ color: 'red', fontSize: 'smaller' }}>Username must be at least 4 characters long and contain only letters, numbers, or underscores.</p>
-          )}
-
-          <button type="button" onClick={nextStep} disabled={!isNextEnabled}>Next</button>
-        </div>
-
-      )}
-      {currentStep === 2 && (
-
-        <>
-        <label>County</label>
-        <select value={selectedCounty} onChange={handleCountyChange}>
-          <option value="">Select County</option>
-          {counties.map((county) => (
-            <option key={county.county} value={county.county}>
-              {county.county}
-            </option>
-          ))}
-        </select>
-
-        {selectedCounty && (
-          <>
-            <label>Town</label>
-            <select value={selectedTown} onChange={handleTownChange}>
-              <option value="">Select Town</option>
-              {towns.map((town) => (
-                <option key={town.town} value={town.town}>
-                  {town.town}
-                </option>
-              ))}
-            </select>
-          </>
-        )}
-
-        {selectedTown && (
-          <>
-            <label>Area</label>
-            <select value={selectedArea} onChange={handleAreaChange}>
-              <option value="">Select Area</option>
-              {areas.map((area) => (
-                <option key={area} value={area}>
-                  {area}
-                </option>
-              ))}
-            </select>
-          </>
-        )}
-
-        <label>
-          Specific:
-          <input
-            type="text"
-            value={selectedAreaspe}
-            placeholder={
-              selectedArea
-                ? `Your area within ${selectedArea}`
-                : "Enter the specific area"
-            }
-            onChange={handleAreasepChange}
-          />
-        </label>
-
-        <button type="button" onClick={previousStep}>Back</button>
-        <button type="button" onClick={nextStep} disabled={!isNextEnabled}>Next</button>
-        </>
-
-      )}
-      {currentStep === 3 && (
-        
-        <div className="formsep">
-          <label>Date of Birth:</label>
-          <input
-            type="date"
-            name="dateOfBirth"
-            value={formData.dateOfBirth}
-            onChange={handleChange}
-            required
-          />
-
-          <label>Gender:</label>
-          <select
-            name="gender"
-            value={formData.gender}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-          </select>
-
           <label>Category:</label>
           <select
             name="category"
@@ -348,14 +160,12 @@ const Register = () => {
             <option value="Salesperson">Personal Acount</option>
           </select>
 
-        <button type="button" onClick={previousStep}>Back</button>
-        <button type="button" onClick={nextStep} disabled={!isNextEnabled}>Next</button>
-
+          <button type="button" onClick={nextStep} disabled={!isNextEnabled}>Next</button>
         </div>
 
       )}
-
-      {currentStep === 4 && (
+      
+      {currentStep === 2 && (
 
         <div className="formsep">
         <label>Phone Number:</label>

@@ -9,7 +9,7 @@ import ProtectedRoute from './components/ProtectRoute';
 import Reports from './components/Reports';
 import Users from './components/User';
 import UserChart from './components/admin/UserChart';
-
+import ReturnHandling from './components/admin/return/return';
 import AccountForm from './components/admin/accouns/AccountForm';
 import AccountList from './components/admin/accouns/AccountList';
 import TransactionForm from './components/admin/accouns/TransactionForm';
@@ -92,6 +92,8 @@ const App = () => {
             <Route path="/users" element={<Users />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/sales" element={<Sales />} />
+            <Route path="/return-admin" element={<ReturnHandling/>} />
+ 
 
             <Route path="/accountForm" element={<AccountForm />} />
             <Route path="/accountList" element={<AccountList />} />

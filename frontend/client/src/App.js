@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import { Navigate } from "react-router-dom";
-
+import  ReturnPolicy from './pages/returnPolicy'
 import RequireAuth from './RequireAuth'; // Import the authentication check component
 import ImageList from './components/ImageList';
 import ImageUpload from './components/ImageUpload';
@@ -12,7 +12,7 @@ import Set from './components/set';
 import Review from './components/review';
 import Verificationauto from './components/Verificationauto';
 import Website from './components/website';
-
+import ReturnForm from './components/returnForm';
 import BlogHome from "./pages/BlogHome";
 import BlogDetails from "./pages/BlogDetails";
 
@@ -110,12 +110,13 @@ const App = () => {
           <Route path="/review" element={<Review />} />
           <Route path="/auto" element={<Verificationauto />} />
           <Route path="/website" element={<Website />} />
-
+          <Route path="/return" element={<ReturnPolicy/> } />
           <Route path="/productmodelpage/:id" element={<Productmodelpage />} />
           
           <Route path="/blogs" element={<BlogHome />} />
           <Route path="/blog/:id" element={<BlogDetails />} />
           
+          <Route path="/returnForm" element={<ReturnForm />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/Chatbot" element={<Chatbot />} />
           <Route path="/adminQA" element={<AdminQA />} />

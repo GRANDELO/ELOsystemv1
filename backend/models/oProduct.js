@@ -25,10 +25,10 @@ const productSchema = new mongoose.Schema(
     ],
     variations: [
       {
-        color: { type: String },
+        color: [{ type: String }],
         size: [{ type: String }],
-        material: { type: String },
-        model: { type: String },
+        material: [{ type: String }],
+        model: [{ type: String }],
       },
     ],
     type: { type: String, default: undefined }, // New field

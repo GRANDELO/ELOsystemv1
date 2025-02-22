@@ -64,6 +64,14 @@
     padding: 0.5rem 1.5rem !important;
 }
 
+.email-button.cancel {
+    border-color: #f44336; /* Red border for cancel */
+    color: #f44336; 
+    padding: 10px 20px; 
+    border-radius: 8px; 
+    font-weight: bold;  
+  }
+
 .email-button.primary {
     background-color: #1976d2 !important;
     color: #fff !important;
@@ -132,4 +140,67 @@
 
 .Toastify__toast--error {
     background-color: #f44336;
+}
+.date-time-picker {
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.date-time-picker .MuiOutlinedInput-root {
+    font-size: 16px;
+    color: #333;
+    padding: 10px 14px;
+}
+
+.date-time-picker .MuiInputLabel-root {
+    font-weight: bold;
+    color: #1976d2;
+}
+
+.date-time-picker .MuiOutlinedInput-notchedOutline {
+    border-width: 2px;
+}
+
+.date-time-picker:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #115293;
+}
+
+.date-time-picker.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #0d47a1;
+    border-width: 2px;
+}
+
+
+/* Last Sent Email Container */
+.last-sent-container {
+    margin-top: 1.5rem;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-left: 4px solid #1976d2;
+    border-radius: 6px;
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.last-sent-container:hover {
+    background-color: #e3f2fd;
+}
+
+/* Header (always visible) */
+.last-sent-header {
+    font-weight: bold;
+    color: #1976d2;
+}
+
+/* Expandable Content */
+.last-sent-content {
+    margin-top: 8px;
+    padding-left: 10px;
+    color: #555;
+    font-size: 14px;
 }
