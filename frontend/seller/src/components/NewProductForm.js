@@ -226,8 +226,8 @@ const NewProductFormShell = () => {
   
   const handleVariationChange = (index, field, value) => {
     const updatedVariations = [...newProduct.variations];
-    if (field === 'size') {
-      updatedVariations[index][field] = value.split(',').map((size) => size.trim()); // Handle size as an array
+    if (['size', 'color', 'material', 'model'].includes(field)) {
+      updatedVariations[index][field] = value.split(',').map((item) => item.trim());
     } else {
       updatedVariations[index][field] = value;
     }
@@ -410,8 +410,8 @@ const generateDescription = async () => {
                 <div key={index}>
                   <input
                     type="text"
-                    placeholder="Color"
-                    value={variation.color}
+                    placeholder="Color(comma-separated)"
+                    value={variation.color.join(', ')}
                     onChange={(e) => handleVariationChange(index, 'color', e.target.value)}
                   />
                   <input
@@ -422,14 +422,14 @@ const generateDescription = async () => {
                   />
                   <input
                     type="text"
-                    placeholder="Material"
-                    value={variation.material}
+                    placeholder="Material (comma-separated)"
+                    value={variation.material.join(', ')}
                     onChange={(e) => handleVariationChange(index, 'material', e.target.value)}
                   />
                   <input
                     type="text"
-                    placeholder="Model"
-                    value={variation.model}
+                    placeholder="Model (comma-separated) "
+                    value={variation.material.join(', ')}
                     onChange={(e) => handleVariationChange(index, 'model', e.target.value)}
                   />
                   <button type="button" onClick={() => removeVariation(index)}>
