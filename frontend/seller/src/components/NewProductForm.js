@@ -215,7 +215,8 @@ const NewProductFormShell = () => {
   const addVariation = () => {
     setNewProduct({
       ...newProduct,
-      variations: [...newProduct.variations, { color: '', size: [], material: '', model: '' }],
+      variations: [...newProduct.variations,
+         { color: [], size: [], material: [], model: [] }],
     });
   };
   
@@ -429,7 +430,7 @@ const generateDescription = async () => {
                   <input
                     type="text"
                     placeholder="Model (comma-separated) "
-                    value={variation.material.join(', ')}
+                    value={variation.model.join(', ')}
                     onChange={(e) => handleVariationChange(index, 'model', e.target.value)}
                   />
                   <button type="button" onClick={() => removeVariation(index)}>
