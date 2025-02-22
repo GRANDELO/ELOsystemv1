@@ -279,9 +279,75 @@ const emailSeller = async (req, res) => {
 const emailManteinance = async (req, res) => {
     try {
 
+        const {templateId,  customSubject, customHtml, sendTime } = req.body;
+
+        // Fetch all users
+        const users = await User.find({});
+
+        if (users.length === 0) {
+            return res.status(404).json({ message: 'No users found' });
+        }
+
+        // Fetch the template or use custom content
+        let subject, html;
+        if (templateId) {
+            const template = await EmailTemplate.findById(templateId);
+            if (!template) {
+                return res.status(404).json({ message: 'Template not found' });
+            }
+            subject = template.subject;
+            html = template.html;
+        } else if (customSubject && customHtml) {
+            subject = customSubject;
+            html = customHtml;
+        } else {
+            return res.status(400).json({ message: 'Template ID or custom content is required' });
+        }
+
+        const sendDateTime = new Date(sendTime);
+        if (isNaN(sendDateTime.getTime())){
+            return res.status(400).json({ message: 'Invalid sendTime format' });
+        }
+
+        const now = new Date();
+        if (sendDateTime <= now) {
+            return res.status(400).json({ message: 'sendTime must be in the future' });
+        }
+
+        const cronExpression = `${sendDateTime.getMinutes()} ${sendDateTime.getHours()} ${sendDateTime.getDate()} ${sendDateTime.getMonth() + 1} *`;
+
+        cron.schedule(cronExpression, async () => {
+            for (const user of users) {
+                if (!user.username) {
+                    console.error(`No username found for user with email: ${user.email}`);
+                    continue;
+                }
+                const personalizedHtml = html
+                    .replace('[Username]', user.username)
+                    .replace('[Date]', sendDateTime.toLocaleDateString())
+                    .replace('[Time]', sendDateTime.toLocaleTimeString());
+
+                try {
+                    await sendMaintenanceEmail(user.email, subject, personalizedHtml);
+                    console.log(`Maintenance email sent to ${user.email}`);
+                } catch (err) {
+                    console.error(`Failed to send maintenance email to ${user.email}:`, err);
+                }
+            }
+        });
+
+        // Personalize and send emails
+        res.status(200).json({ message: 'Maintenance emails scheduled successfully' });
     }catch (error){
+        console.error('Error sending maintenance emails:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
 
     };
+};
+
+const emailPromotion = async (req, res) => {
+
+
 }
 
 module.exports = {
@@ -290,4 +356,5 @@ module.exports = {
     SendNewsletter,
     emailSeller,
     emailManteinance,
+    emailPromotion,
 };

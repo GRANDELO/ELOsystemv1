@@ -3,13 +3,13 @@ const bcrypt = require('bcryptjs');
 const Town = require('./location');
 
 const UserSchema = new mongoose.Schema({
-  fullName: { type: String, required: true },
+  fullName: { type: String, required: function() { return this.category === "Seller"; } },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   phoneNumber: { type: String, required: true },
   username: { type: String, required: true, unique: true },
-  dateOfBirth: { type: Date, required: true },
-  gender: { type: String, required: true },
+  dateOfBirth: { type: Date, required: function() { return this.category === "Seller"; } },
+  gender: { type: String, required: function() { return this.category === "Seller"; } },
   category: { type: String, required: true },
   verificationCode: { type: String },
   isVerified: { type: Boolean, default: false },
@@ -24,10 +24,10 @@ const UserSchema = new mongoose.Schema({
   
   locations: 
     {
-      county: { type: String },
-      town: { type: String },
-      area: { type: String },
-      specific: { type: String },
+      county: { type: String , required: function() { return this.category === "Seller"; }},
+      town: { type: String, required: function() { return this.category === "Seller"; } },
+      area: { type: String, required: function() { return this.category === "Seller"; } },
+      specific: { type: String, required: function() { return this.category === "Seller"; } },
     },
 
   history: {
@@ -55,6 +55,6 @@ UserSchema.pre('save', async function(next) {
     return next(error);
   }
 });
-
+````
 module.exports = mongoose.model('User', UserSchema);
 

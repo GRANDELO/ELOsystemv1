@@ -1,0 +1,56 @@
+
+
+.return-form-container {
+    max-width: 600px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .return-form-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .return-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .return-input,
+  .return-select,
+  .return-textarea,
+  .return-file {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  .return-textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  .return-button {
+    width: 100%;
+    background: #007bff;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .return-button:hover {
+    background: #0056b3;
+  }
+  

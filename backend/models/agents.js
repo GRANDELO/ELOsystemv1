@@ -33,7 +33,6 @@ const AgentsSchema = new mongoose.Schema({
     processedDate: { type: Date, default: Date.now },
     ispacked: { type: Boolean, default: false },
   }],
-
 }, { timestamps: true });
 
 AgentsSchema.pre('save', async function(next) {

@@ -41,6 +41,10 @@ const AdminEmailSeller = () => {
     const [isPromotional, setIsPromotional] = useState(false);
     const [sentEmailsCount, setSentEmailsCount] = useState(0);
     const [lastSentDate, setLastSentDate] = useState(null);
+    const [lastSentDetails, setLastSentDetails] = useState(null);
+    const [scheduledEmailId, setScheduledEmailId] = useState(null);
+    const [isLastSentOpen, setIsLastSentOpen ] = useState(false);
+
 
     // Fetch templates on component mount
     useEffect(() => {
@@ -75,7 +79,13 @@ const AdminEmailSeller = () => {
             });
 
             setSentEmailsCount(response.data.sentEmailsCount);
+            setScheduledEmailId(response.data.scheduledEmailId);
             setLastSentDate(new Date().toLocaleDateString());
+            setLastSentDetails({
+                subject: response.data.subject,
+                template: templateId ? templates.find(temp => temp._id === templateId)?.type : 'Custom Email'
+            });
+
             toast.success(response.data.message);
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to schedule emails');
@@ -83,6 +93,22 @@ const AdminEmailSeller = () => {
             setLoading(false);
         }
     };
+
+     const handleCancel = async () => {
+        if (!scheduledEmailId) {
+            toast.error('No scheduled email to cancel');
+            return;
+        }
+
+        try {
+            await axiosInstance.delete(`/cancel-email/${scheduledEmailId}`);
+            toast.success('Scheduled email canceled successfully');
+            setScheduledEmailId(null);
+        } catch (error) {
+            toast.error('Failed to cancel scheduled email');
+        }
+    };
+
 
     const handlePreview = () => {
         if (!templateId && (!customSubject || !customHtml)) {
@@ -94,6 +120,11 @@ const AdminEmailSeller = () => {
         setEmailPreview(selectedTemplate ? selectedTemplate.html : customHtml);
         setPreviewOpen(true);
     };
+
+    const toggleLastSent = () =>{
+        setIsLastSentOpen(!isLastSentOpen);
+    };
+
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -158,9 +189,39 @@ const AdminEmailSeller = () => {
                                 label="Send Time"
                                 value={sendTime}
                                 onChange={(newValue) => setSendTime(newValue)}
-                                renderInput={(params) => <TextField {...params} fullWidth className="text-field" />}
+                                renderInput={(params) => <TextField 
+                                    {...params} 
+                                    fullWidth 
+                                    className="text-field date-time-picker "
+                                    sx={{
+                                        marginTop: 2,
+                                        backgroundColor: '#f9f9f9',
+                                        borderRadius: '8px',
+                                        padding: '12px 16px',
+                                        height: '56px',
+                                        '& .MuiOutlinedInput-root': {
+                                            fontSize: '18px', // Increase font size
+                                            color: '#333',
+                                            padding: '10px 14px',
+                                            '& fieldset': {
+                                                borderColor: '#1976d2',
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: '#115293',
+                                            },
+                                            '&.Mui-focused fieldset': {
+                                                borderColor: '#0d47a1',
+                                            },
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            fontWeight: 'bold',
+                                            color: '#1976d2',
+                                        },
+                                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                                    }}
+                                />
+                                }
                             />
-
                             <FormControlLabel
                                 control={
                                     <Switch
@@ -186,15 +247,34 @@ const AdminEmailSeller = () => {
                                 >
                                     {loading ? <CircularProgress size={24} /> : 'Schedule Emails'}
                                 </Button>
+
+                                {scheduledEmailId && (
+                                    <Button variant="outlined" color="secondary" onClick={handleCancel} className="email-button cancel">
+                                        Cancel Scheduled Email
+                                    </Button>
+                                )}
                             </Box>
                         </form>
+
+                        <Box className="last-sent-container" onClick={toggleLastSent}>
 
                         <Typography variant="body1" className="sent-emails-info">
                             Emails Sent: {sentEmailsCount}
                         </Typography>
+
                         <Typography variant="body1" className="last-sent-date">
                             Last Sent Date: {lastSentDate || 'N/A'}
                         </Typography>
+
+                        {lastSentDetails && (
+                            <Typography variant="body2" className="last-sent-details">
+                                Sent on: {lastSentDetails.date} <br />
+                                Template Used: {lastSentDetails.template} <br />
+                                Subject: {lastSentDetails.subject}
+                            </Typography>
+                        )}
+                        </Box>
+
                     </CardContent>
                 </Card>
             </Box>
