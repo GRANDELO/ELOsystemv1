@@ -88,7 +88,7 @@ const Login = () => {
     setError('');
     setloading(true);
     try {
-      const response = await axiosInstance.post('/auth/login', {
+      const response = await axiosInstance.post('/buyers/login', {
         username: username.trim(),
         password,
       });
@@ -128,7 +128,7 @@ const Login = () => {
     setError('');
     setloading(true);
     try {
-      const response = await axiosInstance.post('/auth/recoverpassword', { username });
+      const response = await axiosInstance.post('/buyers/recoverpassword', { username });
       setMessage(response.data.message);
       setloading(false);
     } catch (error) {

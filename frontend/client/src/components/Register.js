@@ -12,7 +12,6 @@ const Register = () => {
     confirmPassword: '',
     phoneNumber: '',
     username: '',
-    category: '',
   
   });
 
@@ -52,14 +51,11 @@ const Register = () => {
       confirmPassword: formData.confirmPassword.trim(),
       phoneNumber: formData.phoneNumber.trim(),
       username: formData.username.trim(),
-      //dateOfBirth: formData.dateOfBirth.trim(),
-      //gender: formData.gender.trim(),
-      category: formData.category.trim(),
       
     };
 
     try {
-      const response = await axiosInstance.post('/auth/register', trimmedFormData);
+      const response = await axiosInstance.post('/buyers/register', trimmedFormData);
       setMessage(response.data.message);
       sessionStorage.setItem('email', trimmedFormData.email);
       setloading(false);
@@ -86,7 +82,7 @@ const Register = () => {
           //const fullNameValid = /^[a-zA-Z]{3,}$/.test(formData.fullName.trim());
           const emailValid = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/.test(formData.email.trim());
           const usernameValid = /^[a-zA-Z0-9_]{4,}$/.test(formData.username.trim());
-          return formData.category && emailValid && usernameValid;
+          return formData.phoneNumber  && emailValid && usernameValid;
 
        
           case 2:
@@ -96,7 +92,7 @@ const Register = () => {
             /[a-z]/.test(formData.password.trim()) &&
             /[0-9]/.test(formData.password.trim()) &&
             /[!@#$%^&*(),.?":{}|<>]/.test(formData.password.trim());
-          return formData.phoneNumber && passwordValid && formData.password === formData.confirmPassword;
+          return passwordValid && formData.password === formData.confirmPassword;
         default:
           return false;
       }
@@ -149,16 +145,20 @@ const Register = () => {
             <p style={{ color: 'red', fontSize: 'smaller' }}>Please enter a valid email address (e.g., yourname@gmail.com).</p>
           )}
 
-          <label>Category:</label>
-          <select
-            name="category"
-            value={formData.category}
+          <label>Phone Number:</label>
+          <input
+            type="text"
+            name="phoneNumber"
+            placeholder="07XXXXXXXX or 01XXXXXXXX"
+            pattern="(07|01)\d{8}"
+            title="Please enter a valid 10-digit phone number starting with 07 or 01"
+            value={formData.phoneNumber}
             onChange={handleChange}
             required
-          >
-            <option value="">Select category</option>
-            <option value="Salesperson">Personal Acount</option>
-          </select>
+          />
+          {formData.phoneNumber && !/^(07|01)\d{8}$/.test(formData.phoneNumber) && (
+            <p style={{ color: 'red', fontSize: 'smaller' }}>Please enter a valid 10-digit phone number starting with 07 or 01.</p>
+          )}
 
           <button type="button" onClick={nextStep} disabled={!isNextEnabled}>Next</button>
         </div>
@@ -168,21 +168,6 @@ const Register = () => {
       {currentStep === 2 && (
 
         <div className="formsep">
-        <label>Phone Number:</label>
-        <input
-          type="text"
-          name="phoneNumber"
-          placeholder="07XXXXXXXX or 01XXXXXXXX"
-          pattern="(07|01)\d{8}"
-          title="Please enter a valid 10-digit phone number starting with 07 or 01"
-          value={formData.phoneNumber}
-          onChange={handleChange}
-          required
-        />
-        {formData.phoneNumber && !/^(07|01)\d{8}$/.test(formData.phoneNumber) && (
-          <p style={{ color: 'red', fontSize: 'smaller' }}>Please enter a valid 10-digit phone number starting with 07 or 01.</p>
-        )}
-
         <label>Password:</label>
         <div className="password-container">
         <input

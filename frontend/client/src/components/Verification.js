@@ -25,7 +25,7 @@ function Verification() {
     e.preventDefault();
     try {
       const emailToUse = email || newEmail;
-      const response = await axiosInstance.post('/auth/verify', { email: emailToUse, verificationCode });
+      const response = await axiosInstance.post('/buyers/verify', { email: emailToUse, verificationCode });
       if (response.status === 200) {
         navigate('/success');
       }
@@ -63,7 +63,7 @@ function Verification() {
           setEmail(newUsername);
         }
         
-        const response = await axiosInstance.post('/auth/update-email', { oldEmail: email, newEmail });
+        const response = await axiosInstance.post('/buyers/update-email', { oldEmail: email, newEmail });
         if (response.status === 200) {
           setEmail(newEmail);
           sessionStorage.setItem('email', newEmail);
@@ -89,7 +89,7 @@ function Verification() {
       if (!emailToUse) {
         setError('Enter your email.');
       } else {
-        const response = await axiosInstance.post('/auth/resendemail', { email: emailToUse });
+        const response = await axiosInstance.post('/buyers/resendemail', { email: emailToUse });
         if (response.status === 200) {
           setError('Verification code has been resent.');
         }

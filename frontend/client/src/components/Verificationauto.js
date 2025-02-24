@@ -22,7 +22,7 @@ function Verification() {
 
         // Use query parameter email or fallback to state emails
         const emailToUse = emailToUseFromQuery;
-        const response = await axiosInstance.post('/auth/verify', { email: emailToUse, verificationCode });
+        const response = await axiosInstance.post('/buyers/verify', { email: emailToUse, verificationCode });
 
         if (response.status === 200) {
           setLoading(false);

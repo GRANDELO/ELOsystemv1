@@ -44,7 +44,7 @@ const Settings = () => {
       return;
     } else {
       try {
-        const response = await axiosInstance.post('/auth/changeusername', { lemail, newUsername });
+        const response = await axiosInstance.post('/buyers/changeusername', { lemail, newUsername });
         setMessage(response.data.message);
         setError(null);
         sessionStorage.setItem('userToken', response.data.token);
@@ -65,7 +65,7 @@ const Settings = () => {
       return;
     } else {
       try {
-        const response = await axiosInstance.post('/auth/changepassword', { lemail, newPassword });
+        const response = await axiosInstance.post('/buyers/changepassword', { lemail, newPassword });
         setMessage(response.data.message);
         setError(null);
         sessionStorage.setItem('userToken', response.data.token);
@@ -83,7 +83,7 @@ const Settings = () => {
       return;
     } else {
       try {
-        const response = await axiosInstance.post('/auth/changeemail', { lemail, newEmail });
+        const response = await axiosInstance.post('/buyers/changeemail', { lemail, newEmail });
         setMessage(response.data.message);
         setError(null);
         sessionStorage.setItem('userToken', response.data.token);
@@ -101,7 +101,7 @@ const Settings = () => {
       return;
     } else {
       try {
-        const response = await axiosInstance.post('/auth/changephonenumber', { lemail, newPhoneNumber });
+        const response = await axiosInstance.post('/buyers/changephonenumber', { lemail, newPhoneNumber });
         setMessage(response.data.message);
         setError(null);
         sessionStorage.setItem('userToken', response.data.token);

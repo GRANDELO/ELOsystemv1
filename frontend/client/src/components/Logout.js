@@ -21,7 +21,7 @@ const Logout = () => {
           return;
         }
 
-        const response = await axiosInstance.post('/auth/logout', { username }, {
+        const response = await axiosInstance.post('/buyers/logout', { username }, {
 
         });
 
