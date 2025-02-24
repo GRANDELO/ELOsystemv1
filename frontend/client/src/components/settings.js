@@ -126,7 +126,7 @@ const Settings = () => {
           <b>Email:</b> <i>{lemail}</i>
         </p>
         <p className="userinfo-row">
-          <b>Category:</b> <i>{lcategory}</i>
+          <b>Category:</b> <i>Personal account</i>
         </p>
         {amount !== null && amount !== 'undefined' && (
           <p className="userinfo-row">

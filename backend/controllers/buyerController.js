@@ -596,7 +596,7 @@ const changeemail = async (req, res) => {
       console.error('Error sending email:', error);
       return res.status(500).json({ message: 'Error sending verification email' });
     }
-    const token = jwt.sign({ id: user._id, username: user.username, email: user.email, category: user.category }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user._id, username: user.username, email: newEmail, category: user.category }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
     
