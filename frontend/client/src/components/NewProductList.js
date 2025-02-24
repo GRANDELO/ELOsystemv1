@@ -492,11 +492,18 @@ const NewProductList = () => {
                 onClick={() => handleProductClick(product)}
               >
                 <div className="product-image-wrapper">
-                  <img src={imageSrc} alt={product.name} className="product-image" />
+                  <img 
+                    src={imageSrc} 
+                    alt={product.name} 
+                    className="product-image"
+                    loading="lazy"
+                    onError={(e) => e.target.src = '/placeholder.jpeg'} // Fallback if image fails
+                  />
                   {product.isNew && <span className="product-badge new-badge">New</span>}
                   {product.isOnSale && <span className="product-badge sale-badge">Sale</span>}
                   {isOutOfStock && <span className="product-badge sold-out-badge">Sold Out</span>}
                 </div>
+
                 
                 <h3>{product.name}</h3>
                 {product.label && <span className="product-badge label-badge">{product.label}</span>}
