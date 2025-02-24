@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import ProductModal from './ProductModal';
+import { Alert, Button, Form } from 'react-bootstrap';
 import axiosInstance from './axiosInstance';
 import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
 import { storeSearch, getSearchHistory, trackProductClick } from '../utils/search';
 import { FaShop } from "react-icons/fa6";
 import { useIsMobile } from '../utils/mobilecheck';
-import './styles/NewProductList.css';
+import './styles/NewProductLists.css';
 import { jwtDecode } from 'jwt-decode';
 import categories from './categories.js';
 import { useNavigate } from 'react-router-dom';
+import { FaShoppingCart} from 'react-icons/fa';
+import { getUsernameFromToken } from '../utils/auth';
 
 const NewProductList = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState('');
   const [error, setError] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,7 +27,9 @@ const NewProductList = () => {
   const isMobile = useIsMobile();
   const PRODUCTS_PER_PAGE = 32;
   const CATEGORIES_PER_PAGE = isMobile ? 3 : 7;
+  const username = getUsernameFromToken();
 
+  const [loginPrompt, setLoginPrompt] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showMoreCategories, setShowMoreCategories] = useState(false);
   const [filters, setFilters] = useState({
@@ -299,6 +305,39 @@ const NewProductList = () => {
     setSortedProducts(sorted);
   }, [searchTerm, selectedCategory, filters]);
 
+  const handleMakeOrder = async (product) => {
+    await handleAddToCart(product);
+    navigate('/order');
+  };
+
+  const handleAddToCart = async (product) => {
+    if (!username) {
+      setLoginPrompt('You have to sign in to complete the order.');
+      return;
+    }
+  
+    try {
+      setMessage('');
+      setError('');
+      setLoading(true);
+  
+      const addResponse = await axiosInstance.post('/cart/cart/add', {
+        username,
+        productId: product._id,  // Dynamically received from button click
+        quantity: 1,
+        variant: {},
+      });
+  
+      setMessage(addResponse.data.message);
+    } catch (err) {
+      console.error('Failed to add to cart:', err);
+      setError(err.response?.data?.message || 'Failed to add to cart');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
   if (loading)
     return (
       <div className="loading-container">
@@ -357,6 +396,13 @@ const NewProductList = () => {
         />
         <button onClick={() => setShops(!shops)}><FaShop /></button>
       </header>
+      {loginPrompt && (
+            <Alert variant="warning" className="login-alert">
+              {loginPrompt} <a href="/login">Sign In</a> or <a href="/register">Register</a>
+            </Alert>
+          )}
+          {message && <Alert variant="success">{message}</Alert>}
+          {error && <Alert variant="danger">{error}</Alert>}
 
       <div className="categories">
         <button className="category-btnn" onClick={() => handleCategoryPageChange(-1)} disabled={currentCategoryPage === 1}>
@@ -440,34 +486,81 @@ const NewProductList = () => {
               const isOutOfStock = product.quantity === 0;
 
               return (
-                <div
-                  key={product._id}
-                  className="product-card"
-                  onClick={() => handleProductClick(product)}
-                >
-                  <div className="product-image-wrapper">
-                    <img src={imageSrc} alt={product.name} className="product-image" />
-                    {product.isNew && <span className="product-badge new-badge">New</span>}
-                    {product.isOnSale && <span className="product-badge sale-badge">Sale</span>}
-                    {isOutOfStock && <span className="product-badge sold-out-badge">Sold Out</span>}
-                  </div>
-                  <h3>{product.name}</h3>
-                  {product.lable && <span className={`product-badge label-badge`}>{product.lable}</span>}
-                  <div className="product-prices">
-                    {product.discount ? (
-                      <>
-                        <h4 className="old-price"><s>Ksh {product.price.toFixed(2)}</s></h4>
-                        <h4 className="new-price">Ksh {discountCalc.discountedPrice}</h4>
-                        <p className="discount-amount">
-                          Save Ksh {discountCalc.discountAmount} ({product.discountpersentage}% off)
-                        </p>
-                      </>
-                    ) : (
-                      <h4 className="product-prices">Ksh {product.price.toFixed(2)}</h4>
-                    )}
-                  </div>
-                  {!isOutOfStock && <p className="stock-info">Stock: {product.quantity}</p>}
+              <div
+                key={product._id}
+                className="product-card"
+                onClick={() => handleProductClick(product)}
+              >
+                <div className="product-image-wrapper">
+                  <img src={imageSrc} alt={product.name} className="product-image" />
+                  {product.isNew && <span className="product-badge new-badge">New</span>}
+                  {product.isOnSale && <span className="product-badge sale-badge">Sale</span>}
+                  {isOutOfStock && <span className="product-badge sold-out-badge">Sold Out</span>}
                 </div>
+                
+                <h3>{product.name}</h3>
+                {product.label && <span className="product-badge label-badge">{product.label}</span>}
+                
+                <div className="product-prices">
+                  {product.discount ? (
+                    <div className="price-container">
+                      <div className='pricecomp'>
+                        <span className="old-price"><s>Ksh {product.price.toFixed(2)}</s></span>
+                        <span className="new-price">Ksh {discountCalc.discountedPrice}</span>
+                      </div>
+
+                      <span className="discount-amount">
+                        Save Ksh {discountCalc.discountAmount} ({product.discountpersentage}%)
+                      </span>
+                    </div>
+
+                  ) : (
+                    <h4 className="product-price">Ksh {product.price.toFixed(2)}</h4>
+                  )}
+                </div>
+                
+                {!isOutOfStock && <p className="stock-info"><strong>Remaining products </strong>: {product.quantity}</p>}
+                
+                {/* Buttons Section */}
+                <div className="product-actions">
+                  {!product.variations || product.variations.length === 0 ? (
+                    <>
+                      <button 
+                        className="add-to-cart-btn" 
+                        onClick={(e) => { 
+                          e.stopPropagation();  
+                          handleAddToCart(product);
+                        }}
+                      >
+                        <FaShoppingCart/>
+                      </button>
+
+                      <button 
+                        className="make-order-btn" 
+                        onClick={(e) => { 
+                          e.stopPropagation(); 
+                          handleMakeOrder(product);
+                        }}
+                      >
+                        Buy
+                      </button>
+                    </>
+                  ) : 
+                  (
+                    <button 
+                      className="add-to-cart-btn" 
+                      onClick={(e) => { 
+                        e.stopPropagation();  
+                        handleProductClick(product)
+                      }}
+                    >
+                      <FaShoppingCart/>
+                    </button>
+                  )}
+                </div>
+
+              </div>
+
               );
             })
           ) : (

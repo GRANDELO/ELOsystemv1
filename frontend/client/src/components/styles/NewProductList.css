@@ -121,6 +121,8 @@ h1, h2, h3, h4, h5 {
   color: #555;
   margin-top: 5px;
 }
+
+/*=============================*/
 /* Product Grid */
 .product-cards {
 
@@ -130,6 +132,8 @@ h1, h2, h3, h4, h5 {
   padding: 3rem 1rem;
   transition: grid-template-columns 0.3s ease-in-out;
 }
+
+
 
 /* Glassmorphic Product Cards */
 .product-card {
@@ -147,6 +151,7 @@ h1, h2, h3, h4, h5 {
   height: 100%;
   padding: 1rem;
   box-sizing: border-box;
+  justify-content: space-between; 
 }
 
 .product-card:hover {
@@ -164,7 +169,7 @@ h1, h2, h3, h4, h5 {
 .product-image-wrapper {
   position: relative;
   overflow: hidden;
-  height: 180px;
+  height: 150px;
   border-radius: var(--radius) var(--radius) 0 0;
 }
 
@@ -178,6 +183,60 @@ h1, h2, h3, h4, h5 {
 .product-image-wrapper:hover .product-image {
   transform: scale(1.05);
 }
+
+/* Ensure Buttons Stay at Bottom */
+.product-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: auto; /* Push buttons down */
+  padding-top: 0.6rem; /* Adjusted for spacing */
+}
+
+.add-to-cart-btn,
+.make-order-btn {
+
+  flex: 1;
+  padding: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: bold;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  text-transform: uppercase;
+}
+
+/* Add to Cart */
+.add-to-cart-btn {
+  background: #3498db;
+  color: white;
+}
+
+.add-to-cart-btn:hover {
+  background: #2980b9;
+  transform: scale(1.05);
+}
+
+/* Make Order */
+.make-order-btn {
+  background: #2ecc71;
+  color: white;
+}
+
+.make-order-btn:hover {
+  background: #27ae60;
+  transform: scale(1.05);
+}
+
+/* Disable Buttons when Out of Stock */
+.product-card.out-of-stock .product-actions button {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  transform: none;
+}
+/*=============================*/
 
 /* Interactive Badges */
 .product-badge {
@@ -217,37 +276,60 @@ h1, h2, h3, h4, h5 {
   text-transform: capitalize;
 }
 
+/*+++++++++PRICE+++++++++*/
+.pricecomp
+{
+  display: flex;
+  justify-content: space-between;
+}
 
 .product-prices {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.6rem;
+  gap: 0.2rem; /* Reduced gap for a tighter look */
+  padding: 0.4rem;
   text-align: center;
   font-weight: bold;
-  margin-top: auto;
-  color: var(--price);
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 6px;
+  width: 100%;
+  font-size: 0.85rem; /* Slightly smaller default size */
 }
 
+/* Old Price - Smaller but clear */
 .old-price {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: var(--old-price);
   text-decoration: line-through;
+  font-weight: 500;
 }
 
+/* New Price - Still stands out, but more compact */
 .new-price {
-  font-size: 1.4rem;
-  color: var(--primary-color);
-  font-weight: bold;
-  letter-spacing: 0.5px;
+  font-size: 1.3rem;
   color: var(--new-price);
+  font-weight: bold;
+  transition: color 0.3s ease, transform 0.2s ease;
 }
 
-.discount-amount {
-  font-size: 1rem;
-  color: var(--discountamount);
-  font-weight: bold;
+.new-price:hover {
+  color: var(--new-price);
+  transform: scale(1.04);
 }
+
+/* Discount amount - Smaller and inline */
+.discount-amount {
+  font-size: 0.75rem;
+  color: var(--discountamount, #27ae60);
+  font-weight: bold;
+  background: rgba(39, 174, 96, 0.08);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/*+++++++++PRICE+++++++++*/
 
 /* Call to Action Button */
 .view-details-btn {
@@ -266,6 +348,7 @@ h1, h2, h3, h4, h5 {
   transition: background 0.3s ease, transform 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
+
 
 .view-details-btn:hover {
   background: var(--button-hover);

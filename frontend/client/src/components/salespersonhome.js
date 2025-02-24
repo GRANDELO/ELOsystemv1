@@ -608,9 +608,6 @@ const [steps, setSteps] = useState(initialSteps);
           {isNavVisible ? (
                     <>
                     {isNavVisible ? (''): ('')}
-                    <button className="salesp-toggle-button" onClick={toggleCart}>
-                      <FaShoppingCart />
-                    </button>
                     <button className="salesp-toggle-button" onClick={toggleSettings}>
                       <FaCog />
                     </button>
