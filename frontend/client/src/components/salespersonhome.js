@@ -638,6 +638,9 @@ const [steps, setSteps] = useState(initialSteps);
           <button className="salesp-toggle-button" onClick={toggleNav}>
             <IoMdMenu />
           </button>)}
+          <button className="salesp-toggle-button" onClick={toggleCart}>
+                      <FaShoppingCart />
+          </button>
         </>
 
       </div>
