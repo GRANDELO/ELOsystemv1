@@ -873,7 +873,6 @@ const updateProductPerformance = async (productId, productName, seller, saleDate
 exports.pricecalc = async (req, res) => {
   try {
     const { items, destination, username } = req.body;
-
     // Input validation
     if (!items || !Array.isArray(items) || !items.length) {
       console.log("Invalid or missing items array");
@@ -891,7 +890,8 @@ exports.pricecalc = async (req, res) => {
     }
 
     // Fetch user
-    const user = await User.findOne({ username: username }).lean();
+    const user = await buyer.findOne({ username: username }).lean();
+    console.log("user buyer", user);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -941,8 +941,6 @@ exports.pricecalc = async (req, res) => {
     res.status(500).json({ error: error.message || 'Failed to calculate transport price' });
   }
 };
-
-
 
 const calculateTransportCost = async (products, orderDestination) => {
   
