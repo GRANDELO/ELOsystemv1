@@ -93,7 +93,7 @@ exports.createOrder = async (req, res) => {
     const products = await Product.find({ _id: { $in: productIds } }); // Fetch product details
     const productOwners = [...new Set(products.map(product => product.username))]; // Get unique usernames of owners
 
-    const seller = await User.findOne({ username });
+    const seller = await User.findOne({ username: { $in: productOwners } });
     console.log('Seller username:', username);
 
     console.log('Seller:', seller);
