@@ -3,6 +3,7 @@ const Employee = require('../models/Employee'); // Replace DeliveryPerson with E
 const Product = require('../models/oProduct'); // Adjust this path as needed
 const sendEmail = require('../services/emailService');
 const User = require('../models/User');
+const buyer = require('../models/buyers');
 const TransactionLedger = require('../models/TransactionLedger'); // Adjust the path as needed
 const CompanyFinancials = require('../models/CompanyFinancials'); // Adjust path as necessary
 const ProductPerformance = require('../models/ProductPerformance');
@@ -889,7 +890,7 @@ exports.pricecalc = async (req, res) => {
     }
 
     // Fetch user
-    const user = await User.findOne({ username: username }).lean();
+    const user = await buyer.findOne({ username: username }).lean();
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
