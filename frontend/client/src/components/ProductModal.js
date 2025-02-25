@@ -358,6 +358,7 @@ const ProductModal = ({ product, show, handleClose }) => {
                       <label htmlFor={field}>
                         {field.charAt(0).toUpperCase() + field.slice(1)}:
                       </label>
+                    
                       <select
                         id={field}
                         name={field}

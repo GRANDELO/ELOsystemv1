@@ -12,7 +12,8 @@ const ReturnPolicy = () => {
 
       <h2>1. Eligibility for Returns</h2>
       <ul>
-        <li>Items must be returned within <strong>7 days</strong> of delivery.</li>
+        <p>To be eligible for a return, please check your order with the agent upon delivery. If the item is incorrect, mismatched, or damaged, leave it with the agent and fill out a return form for confirmation. </p>
+        <li>Confirm with the agent upon delivery if the product meets your order specifications</li>
         <li>The item must be <strong>unused, in its original packaging</strong>, and in the same condition as received.</li>
         <li>Certain items, such as <strong>perishable goods, custom-made products, and digital downloads</strong>, are non-returnable unless defective.</li>
       </ul>
@@ -35,19 +36,12 @@ const ReturnPolicy = () => {
         </thead>
         <tbody>
           <tr>
-            <td>I changed my mind</td>
+            <td>damaged</td>
             <td>
-              All product categories except:
-              <ul>
-                <li>Perishable goods</li>
-                <li>Custom-made products</li>
-                <li>Digital downloads</li>
-                <li>Underwear, Swimwear, and Lingerie</li>
-                <li>Health & Wellness products</li>
-                <li>Software and Electronics (unless seal is intact)</li>
-              </ul>
+              All product categories 
             </td>
           </tr>
+
           <tr>
             <td>Size is correct but doesn't fit as expected</td>
             <td>Clothing and Shoes only</td>
@@ -65,14 +59,6 @@ const ReturnPolicy = () => {
             <td>All product categories</td>
           </tr>
           <tr>
-            <td>Item received used or expired</td>
-            <td>All product categories except software</td>
-          </tr>
-          <tr>
-            <td>Item seems to be fake / unauthentic</td>
-            <td>All product categories</td>
-          </tr>
-          <tr>
             <td>Wrong item / color / size / model</td>
             <td>All product categories</td>
           </tr>
@@ -84,6 +70,7 @@ const ReturnPolicy = () => {
         <li>
           <strong>Initiate a Return</strong>
           <ul>
+            <li>fill in the return form and wait for confirmation</li>
             <li>Contact our support team at <a href="mailto:bazelink.ltd@gmail.com">bazelink.ltd@gmail.com</a> or log into your account to request a return.</li>
             <li>Provide your <strong>order number</strong> and a reason for the return.</li>
             <li>We offer free returns for your packages in two easy ways:
@@ -97,7 +84,7 @@ const ReturnPolicy = () => {
         <li>
           <strong>Approval & Shipping</strong>
           <ul>
-            <li>Once your return request is approved, we will provide the return shipping address.</li>
+            <li>Once your return request is approved, you will leave the product at agent point and wait for further confirmation</li>
             <li>You are responsible for <strong>return shipping costs</strong>, unless the return is due to a defective or incorrect item.</li>
           </ul>
         </li>
@@ -108,15 +95,13 @@ const ReturnPolicy = () => {
         <li><strong>Sale items</strong> are final and cannot be returned.</li>
         <li><strong>Gift cards</strong> and <strong>downloadable products</strong> are non-refundable.</li>
       </ul>
-
       <h2>7. Rejected Return and Refund Requests and Forfeiture</h2>
       <p>
-        All items are inspected on return to verify the return reasons provided. If your return request is not approved by <strong>Bazelink</strong>, you shall not receive any refund of the purchase price or the delivery fees, and we will make 2 attempts to redeliver within 6 business days. If both re-delivery attempts are unsuccessful, we will immediately notify you that we will hold the item for a further 30 days from the date of the initial notification. Our notification will include details about pick-up location and opening hours. If you do not collect the item within the required period, you shall forfeit the item, i.e., the item shall become <strong>Bazelink</strong> property, and <strong>Bazelink</strong> may dispose of it in any manner that it determines appropriate, e.g., by sale, charitable donation, recycling, or destruction.
+        All items are inspected on return to verify the return reasons provided. If your return request is not approved by <strong>Bazelink</strong>, you shall not receive any refund of the purchase price or the delivery fees, and we will make 2 attempts to redeliver within 5 business days. If both re-delivery attempts are unsuccessful, we will immediately notify you that we will hold the item for a further 30 days from the date of the initial notification. Our notification will include details about pick-up location and opening hours. If you do not collect the item within the required period, you shall forfeit the item, i.e., the item shall become <strong>Bazelink</strong> property, and <strong>Bazelink</strong> may dispose of it in any manner that it determines appropriate, e.g., by sale, charitable donation, recycling, or destruction.
       </p>
-
       <h2>8. Contact Us</h2>
       <p>
-        For any questions or concerns, please reach out to us at <a href="mailto: bazelink.ltd@gmail.com">bazelink.ltd@gmail.com</a> or call <strong>[customer service number]</strong>.
+        For any questions or concerns, please reach out to us at <a href="mailto: bazelink.ltd@gmail.com">bazelinkofficial@gmail.com</a> or call <strong> 0116293386</strong>.
       </p>
     </div>
   );

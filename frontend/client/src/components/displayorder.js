@@ -1,6 +1,7 @@
 import axiosInstance from './axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { getUsernameFromToken } from '../utils/auth';
+import ReturnForm from './returnForm';
 import './styles/displayorder.css';
 
 const OrdersPage = () => {
@@ -12,6 +13,8 @@ const OrdersPage = () => {
   const [showDelivered, setShowDelivered] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [deliveredCurrentPage, setDeliveredCurrentPage] = useState(1);
+  const [showReturnForm, setShowReturnForm] = useState(false);
+  const [returnOrder, setReturnOrder] = useState(null);
 
   const username = getUsernameFromToken();
   const ordersPerPage = 6;
@@ -90,6 +93,13 @@ const OrdersPage = () => {
     else setCurrentPage(page);
   };
 
+
+  const handleReturnRequestClick = (order) => {
+    setReturnOrder(order);
+    setShowReturnForm(!showReturnForm);
+  };
+
+
   return (
     <div className="dsord-orders-page">
       <h1>My Orders</h1>
@@ -142,6 +152,20 @@ const OrdersPage = () => {
                   )}
                   
                   {message && <p className="dsord-message">{message}</p>}
+
+                  <div 
+                    className="dsord-return-request"
+                    onClick={() => handleReturnRequestClick(order)}
+                  >
+                    Return Order Request
+                  </div>
+
+                  {/* Return Form */}
+                  {showReturnForm && returnOrder === order && (
+                    <ReturnForm order={order} />
+                  )}
+
+
                 </div>
               )}
             </li>
