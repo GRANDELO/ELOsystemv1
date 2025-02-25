@@ -94,8 +94,10 @@ exports.createOrder = async (req, res) => {
     const productOwners = [...new Set(products.map(product => product.username))]; // Get unique usernames of owners
 
     const seller = await User.findOne({ username });
+    console.log('Seller username:', username);
+
     console.log('Seller:', seller);
-    if (!seller || !seller.locations) {
+    if (!seller || !seller.locations || !seller.locations.county || !seller.locations.town || !seller.locations.area) {
       return res.status(404).json({ message: 'Seller or location not found' });
     }
 
@@ -891,7 +893,6 @@ exports.pricecalc = async (req, res) => {
 
     // Fetch user
     const user = await buyer.findOne({ username: username }).lean();
-    console.log("user buyer", user);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
