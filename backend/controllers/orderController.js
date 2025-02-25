@@ -891,7 +891,7 @@ exports.pricecalc = async (req, res) => {
     }
 
     // Fetch user
-    const user = await buyer.findOne({ username: username }).lean();
+    const user = await User.findOne({ username: username }).lean();
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
