@@ -348,7 +348,9 @@ const Home = () => {
        </>
        )}
       <Header />
-      {!isInstalled &&
+       {/*
+       
+             {!isInstalled &&
         (
           <div className="install-prompt">
             <p>Install this web app for a better experience.</p>
@@ -356,6 +358,11 @@ const Home = () => {
           </div>
         )
       };
+      
+       */}
+          <div className="install-prompt">
+            <p>We're currently experiencing an issue with image display. Our team is actively working to resolve it as soon as possible. We appreciate your patience and will update you once it's fixed!</p>
+          </div>
       <main className="home-main">
         {/* Main Content */}
         
