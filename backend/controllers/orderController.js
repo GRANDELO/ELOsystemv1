@@ -94,6 +94,7 @@ exports.createOrder = async (req, res) => {
     const productOwners = [...new Set(products.map(product => product.username))]; // Get unique usernames of owners
 
     const seller = await User.findOne({ username });
+    console.log('Seller:', seller);
     if (!seller || !seller.locations) {
       return res.status(404).json({ message: 'Seller or location not found' });
     }

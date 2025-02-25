@@ -184,7 +184,6 @@ const planDeliveryLocations = async (req, res) => {
 
     // Step 3: Decide transportation based on threshold
     const transportationPlan = decideTransportation(groupedOrders, threshold);
-    console.log('Transportation plan:', transportationPlan);
 
     // Step 4: Create routes for direct transportation
     const directRoutes = await createRoutes(transportationPlan.direct, threshold);
