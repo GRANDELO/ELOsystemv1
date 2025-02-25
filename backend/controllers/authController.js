@@ -8,11 +8,11 @@ const sendEmail = require('../services/emailService');
 require('dotenv').config();
 
 const registerUser = async (req, res) => {
-  let { email, password, confirmPassword, phoneNumber, locations } = req.body; //fullName,  dateOfBirth, gender, category,
+  let { email, password, confirmPassword, phoneNumber, locations, username } = req.body; //fullName,  dateOfBirth, gender, category,
 
   const category = "Seller";
 
-  if (!email || !password || !confirmPassword || !phoneNumber || !locations) {
+  if (!email || !password || !confirmPassword || !phoneNumber || !locations || !username ) {
     return res.status(400).json({ message: "All required fields must be filled." });
   }
 
@@ -165,7 +165,7 @@ const registerUser = async (req, res) => {
       amount: userAmount,
       backgroundUrl: " ",
       logoUrl: " ",
-      locations: category === "Seller" ? locations : undefined,
+      locations,
     });
     await user.save();
 
