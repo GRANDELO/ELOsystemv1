@@ -36,7 +36,7 @@ const Home = () => {
   const [unreadCount, setUnreadCount] = useState(0); // Track unread notifications
   const username = getUsernameFromToken();
   const navigate = useNavigate();
-  const [loginPrompt, setLoginPrompt] = useState('');
+  const [loginPrompt, setLoginPrompt] = useState("");
   const token = localStorage.getItem('token');
   const apptoken = localStorage.getItem('apptoken');
   const appcat = localStorage.getItem('appcat');

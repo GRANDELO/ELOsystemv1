@@ -348,14 +348,15 @@ const Home = () => {
        </>
        )}
       <Header />
-      {!isInstalled &&
+
+        {!isInstalled &&
         (
           <div className="install-prompt">
             <p>Install this web app for a better experience.</p>
             <button onClick={handleInstall}>Install</button>
           </div>
         )
-      };
+      }
       <main className="home-main">
         {/* Main Content */}
         
