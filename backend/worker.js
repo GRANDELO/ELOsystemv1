@@ -155,5 +155,5 @@ const keepServerActive = (url) => {
 };
 
 setInterval(() => keepServerActive('https://elosystemv1.onrender.com/api/locations'), 720000);
-setInterval(groupOrdersForAllAgents, 600000);
+setInterval(groupOrdersForAllAgents, 60000);
 setInterval(processPendingJobs, 60000);
