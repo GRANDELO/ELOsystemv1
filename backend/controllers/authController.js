@@ -8,43 +8,59 @@ const sendEmail = require('../services/emailService');
 require('dotenv').config();
 
 const registerUser = async (req, res) => {
-  let { fullName, email, password, confirmPassword, phoneNumber, username, dateOfBirth, gender, category, locations } = req.body;
+  let { email, password, confirmPassword, phoneNumber, locations } = req.body; //fullName,  dateOfBirth, gender, category,
 
-  if (category === "Salesperson") {
-    // Salesperson does not require fullName, dateOfBirth, gender, or locations
-    if (!username || !email || !password || !confirmPassword || !phoneNumber) {
-      return res.status(400).json({ message: "All required fields must be filled for Salesperson." });
-    }
-  } else if (category === "Seller") {
-    // Seller requires all fields
-    if (!fullName || !email || !password || !confirmPassword || !phoneNumber || !username || !dateOfBirth || !gender || !locations) {
-      return res.status(400).json({ message: "All required fields must be filled for Seller." });
-    }
-  } else {
-    return res.status(400).json({ message: "Invalid category." });
+  const category = "Seller";
+
+  if (!email || !password || !confirmPassword || !phoneNumber || !locations) {
+    return res.status(400).json({ message: "All required fields must be filled." });
   }
 
-  if (category === "Seller") {
-    const isDateWithinRange = (date, minYears, maxYears) => {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const enteredDate = new Date(date);
-      const minAgeDate = new Date(today.setFullYear(today.getFullYear() - minYears));
-      const maxAgeDate = new Date(today.setFullYear(today.getFullYear() - maxYears));
-      return enteredDate <= minAgeDate && enteredDate >= maxAgeDate;
-    };
-
-    if (!isDateWithinRange(dateOfBirth, 12, 85)) {
-      return res.status(400).json({ message: 'Age must be between 12 and 85 to join.' });
-    }
-  }
-
-  // Validate password
   if (password !== confirmPassword) {
-    return res.status(400).json({ message: 'Passwords do not match.' });
-  } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/.test(password)) {
-    return res.status(400).json({ message: 'Password must be at least 8 characters, with an uppercase letter, a lowercase letter, a number, and a special character.' });
+    return res.status(400).json({ message: "Passwords do not match." });
+  } 
+
+  if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/.test(password)) {
+    return res.status(400).json({ 
+      message: "Password must be at least 8 characters, with an uppercase letter, a lowercase letter, a number, and a special character."
+    });
   }
+
+  // if (category === "Salesperson") {
+  //   // Salesperson does not require fullName, dateOfBirth, gender, or locations
+  //   if (!username || !email || !password || !confirmPassword || !phoneNumber) {
+  //     return res.status(400).json({ message: "All required fields must be filled for Salesperson." });
+  //   }
+  // } else if (category === "Seller") {
+  //   // Seller requires all fields
+  //   if (!fullName || !email || !password || !confirmPassword || !phoneNumber || !username || !dateOfBirth || !gender || !locations) {
+  //     return res.status(400).json({ message: "All required fields must be filled for Seller." });
+  //   }
+  // } else {
+  //   return res.status(400).json({ message: "Invalid category." });
+  // }
+
+  // if (category === "Seller") {
+  //   const isDateWithinRange = (date, minYears, maxYears) => {
+  //     const today = new Date();
+  //     today.setHours(0, 0, 0, 0);
+  //     const enteredDate = new Date(date);
+  //     const minAgeDate = new Date(today.setFullYear(today.getFullYear() - minYears));
+  //     const maxAgeDate = new Date(today.setFullYear(today.getFullYear() - maxYears));
+  //     return enteredDate <= minAgeDate && enteredDate >= maxAgeDate;
+  //   };
+
+  //   if (!isDateWithinRange(dateOfBirth, 12, 85)) {
+  //     return res.status(400).json({ message: 'Age must be between 12 and 85 to join.' });
+  //   }
+  // }
+
+  // // Validate password
+  // if (password !== confirmPassword) {
+  //   return res.status(400).json({ message: 'Passwords do not match.' });
+  // } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/.test(password)) {
+  //   return res.status(400).json({ message: 'Password must be at least 8 characters, with an uppercase letter, a lowercase letter, a number, and a special character.' });
+  // }
 
 
   // const isDateWithinRange = (date, minYears, maxYears) => {
@@ -127,19 +143,19 @@ const registerUser = async (req, res) => {
     }
 
     // Create new user with conditional amount field
-    const formattedDateOfBirth = category === "Seller" ? moment(dateOfBirth).format('YYYY-MM-DD'): undefined;
+    //const formattedDateOfBirth = category === "Seller" ? moment(dateOfBirth).format('YYYY-MM-DD'): undefined;
     const userAmount = category === 'Seller' ? 0 : undefined;
     const userbackgroundUrl = category === 'https://storage.googleapis.com/grandelo.appspot.com/1732717512234-Untitled design.png' ? 0 : undefined;
     const userlogoUrl = category === 'https://storage.googleapis.com/grandelo.appspot.com/1732717512225-Ícone de perfil de usuário em estilo plano Ilustração em vetor avatar membro em fundo isolado Conceito de negócio de sinal de permissão humana _ Vetor Premium.jpeg' ? 0 : undefined;
 
     user = new User({
-      fullName: category === "Seller" ? fullName : undefined,
+      //fullName: category === "Seller" ? fullName : undefined,
       email,
       password,
       phoneNumber,
       username,
-      dateOfBirth: formattedDateOfBirth,
-      gender: category === "Seller" ? gender : undefined,
+     // dateOfBirth: formattedDateOfBirth,
+      //gender: category === "Seller" ? gender : undefined,
       category,
       verificationCode: alphanumericCode,
       isVerified: false,

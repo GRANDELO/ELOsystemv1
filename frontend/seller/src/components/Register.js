@@ -6,15 +6,15 @@ import './styles/styles.css';
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    fullName: '',
+    //fullName: '',
     email: '',
     password: '',
     confirmPassword: '',
     phoneNumber: '',
     username: '',
-    dateOfBirth: '',
-    gender: '',
-    category: '',
+    //dateOfBirth: '',
+   // gender: '',
+   // category: '',
     locations: 
       {
         county: "",
@@ -24,7 +24,7 @@ const Register = () => {
       },
   });
 
-  const totalSteps = 4; // Total number of steps
+  const totalSteps = 3; // Total number of steps
   const stepTimeEstimate = 2; // Estimate 2 minutes per step
   
   const [currentStep, setCurrentStep] = useState(1); // State to manage the current step
@@ -89,15 +89,15 @@ const Register = () => {
 
     // Trim the form data before sending it
     const trimmedFormData = {
-      fullName: formData.fullName.trim(),
+      //fullName: formData.fullName.trim(),
       email: formData.email.trim(),
       password: formData.password.trim(),
       confirmPassword: formData.confirmPassword.trim(),
       phoneNumber: formData.phoneNumber.trim(),
       username: formData.username.trim(),
-      dateOfBirth: formData.dateOfBirth.trim(),
-      gender: formData.gender.trim(),
-      category: formData.category.trim(),
+     // dateOfBirth: formData.dateOfBirth.trim(),
+      //gender: formData.gender.trim(),
+     // category: formData.category.trim(),
       locations: 
         {
           county: selectedCounty,
@@ -131,17 +131,17 @@ const Register = () => {
       switch (currentStep) {
         case 1:
 
-          const fullNameValid = /^[a-zA-Z]{3,}$/.test(formData.fullName.trim());
+         // const fullNameValid = /^[a-zA-Z]{3,}$/.test(formData.fullName.trim());
           const emailValid = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/.test(formData.email.trim());
           const usernameValid = /^[a-zA-Z0-9_]{4,}$/.test(formData.username.trim());
-          return fullNameValid && emailValid && usernameValid;
+          return  emailValid && usernameValid; //fullNameValid && 
         case 2:
 
           return selectedAreaspe && selectedTown&& selectedArea;
-        case 3:
+        // case 3:
 
-          return formData.dateOfBirth && formData.gender && formData.category;
-        case 4:
+        //   return formData.dateOfBirth && formData.gender && formData.category;
+        case 3:
 
           const passwordValid = formData.password.trim().length >= 8 &&
             /[A-Z]/.test(formData.password.trim()) &&
@@ -204,7 +204,7 @@ const Register = () => {
       {currentStep === 1 && (
 
         <div className="formsep">
-          <label>Enter Your First Name:</label>
+          {/* <label>Enter Your First Name:</label>
           <input
             type="text"
             name="fullName"
@@ -215,6 +215,19 @@ const Register = () => {
           />
           {formData.fullName && !/^[a-zA-Z]{3,}$/.test(formData.fullName) && (
             <p style={{ color: 'red', fontSize: 'smaller' }}>Full Name must be at least 3 characters long and contain only letters.</p>
+          )} */}
+
+          <label>Business Name:</label>
+          <input
+            type="text"
+            name="username"
+            placeholder="Enter your username"
+            value={formData.username}
+            onChange={handleChange}
+            required
+          />
+          {formData.username && !/^[a-zA-Z0-9_]{4,}$/.test(formData.username) && (
+            <p style={{ color: 'red', fontSize: 'smaller' }}>Username must be at least 4 characters long and contain only letters, numbers, or underscores.</p>
           )}
 
           <label>Email:</label>
@@ -228,19 +241,6 @@ const Register = () => {
           />
           {formData.email && !/^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/.test(formData.email) && (
             <p style={{ color: 'red', fontSize: 'smaller' }}>Please enter a valid email address (e.g., yourname@gmail.com).</p>
-          )}
-
-          <label>Business Name:</label>
-          <input
-            type="text"
-            name="username"
-            placeholder="Enter your username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
-          {formData.username && !/^[a-zA-Z0-9_]{4,}$/.test(formData.username) && (
-            <p style={{ color: 'red', fontSize: 'smaller' }}>Username must be at least 4 characters long and contain only letters, numbers, or underscores.</p>
           )}
 
           <button type="button" onClick={nextStep} disabled={!isNextEnabled}>Next</button>
@@ -308,7 +308,7 @@ const Register = () => {
 
 
       )}
-      {currentStep === 3 && (
+      {/* {currentStep === 3 && (
         
         <div className="formsep">
           <label>Date of Birth:</label>
@@ -348,9 +348,9 @@ const Register = () => {
 
         </div>
 
-      )}
+      )} */}
 
-      {currentStep === 4 && (
+      {currentStep === 3 && (
 
         <div className="formsep">
         <label>Phone Number:</label>

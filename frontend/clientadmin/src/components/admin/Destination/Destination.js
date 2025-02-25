@@ -22,7 +22,6 @@ const Destination = () => {
   const fetchDestinations = async () => {
     try {
       const response = await axiosInstance.post('/plan-delivery');
-      console.log('Backend Response:', response.data.data);
       const { directRoutes = [], hubRoutes = [] } = response.data.data;
 
       const processRoutes = (routes, type) =>
@@ -57,8 +56,6 @@ const Destination = () => {
 
     // Socket listener for real-time updates
     socket.on('updateDestinations', ({ directRoutes, hubRoutes }) => {
-      console.log('Received from socket:', { directRoutes, hubRoutes });
-
       const processRoutes = (routes, type) =>
         routes.map((route) => ({
           type,

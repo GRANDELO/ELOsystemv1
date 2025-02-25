@@ -171,8 +171,6 @@ const NewProductList = () => {
       return;
     }
 
-    console.log("Payload being sent", { searchHistory, clickHistory, userId });
-
     const actions = [
       ...Object.keys(searchHistory).flatMap(category =>
         Object.keys(searchHistory[category]).map(subCategory => ({
