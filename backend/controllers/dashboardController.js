@@ -1,10 +1,13 @@
 const User = require('../models/User');
+const Buyers = require('../models/buyers');
 const Activity = require('../models/Activity');
 
 exports.getTotalUsers = async (req, res) => {
     try {
         const count = await User.countDocuments();
-        res.json({ count });
+        const countBuyer = await Buyers.countDocuments();
+        const totalCount = count + countBuyer ;
+        res.json({ totalCount });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching total users', error });
     }
@@ -13,7 +16,11 @@ exports.getTotalUsers = async (req, res) => {
 exports.getActiveUsers = async (req, res) => {
     try {
         const activeUsers = await User.countDocuments({ active: true });
-        res.json({ count: activeUsers });
+        const activeBuyers = await Buyer.countDocuments({ active: true });
+
+        const totalActiveUsers = activeUsers + activeBuyers;
+
+        res.json({ TotalCount: totalActiveUsers });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching active users', error });
     }
