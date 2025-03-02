@@ -16,7 +16,7 @@ exports.getTotalUsers = async (req, res) => {
 exports.getActiveUsers = async (req, res) => {
     try {
         const activeUsers = await User.countDocuments({ active: true });
-        const activeBuyers = await Buyer.countDocuments({ active: true });
+        const activeBuyers = await Buyers.countDocuments({ active: true });
 
         const totalActiveUsers = activeUsers + activeBuyers;
 

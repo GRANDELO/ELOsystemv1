@@ -236,7 +236,7 @@ const AdminDashboard = () => {
           <ul className="usal-user-list">
             {buyers.map(buyer => (
               <li key={buyer._id} className="usal-user-item">
-                <p>Name: {buyer.fullName}</p>
+                <p>Name: {buyer.username}</p>
                 <p>Email: {buyer.email}</p>
                 <p>Phone number: {buyer.phoneNumber}</p>
 
