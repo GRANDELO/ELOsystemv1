@@ -1,14 +1,23 @@
 const User = require('../models/User');
+const Buyers = require('../models/buyers');
 const mongoose = require('mongoose');
 
 // Show all users
 exports.getAllUsers = async (req, res) => {
   try {
-    
     const users = await User.find();
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching users', error });
+  }
+};
+
+exports.getAllBuyers = async (req, res) => {
+  try{
+    const buyers = await Buyers.find();
+    res.status(200).json(buyers);
+  }catch(error){
+    res.status(500).json({ message: 'Error fetching Buyers ', error });
   }
 };
 
@@ -86,4 +95,61 @@ exports.getUnverifiedUsers = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Error fetching unverified users', error });
   }
+}
+
+//this is for the buyers
+exports.disableBuyers = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await Buyers.findByIdAndUpdate(userId, { isDisabled: true }, { new: true });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json({ message: 'User disabled successfully', user });
+  } catch (error) {
+    res.status(500).json({ message: 'Error disabling user', error });
+  }
 };
+
+// Undo disable a buyer
+exports.undoDisableBuyers = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await Buyers.findByIdAndUpdate(userId, { isDisabled: false }, { new: true });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json({ message: 'User reactivated successfully', user });
+  } catch (error) {
+    res.status(500).json({ message: 'Error reactivating user', error });
+  }
+};
+
+exports.getActiveBuyers = async (req, res) => {
+  try {
+    const activeUsers = await Buyers.find({ active: true });
+    res.status(200).json(activeUsers);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching active users', error });
+  }
+};
+
+// Show disabled Buyers
+exports.getDisabledBuyers = async (req, res) => {
+  try {
+    const disabledUsers = await Buyers.find({ isDisabled: true });
+    res.status(200).json(disabledUsers);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching disabled users', error });
+  }
+};
+
+// Show unverified users
+exports.getUnverifiedBuyers = async (req, res) => {
+  try {
+    const unverifiedUsers = await Buyers.find({ isVerified: false });
+    res.status(200).json(unverifiedUsers);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching unverified users', error });
+  }
+}

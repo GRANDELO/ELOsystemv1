@@ -11,6 +11,7 @@ const AdminDashboard = () => {
   const [activeUsers, setActiveUsers] = useState([]);
   const [disabledUsers, setDisabledUsers] = useState([]);
   const [registrationData, setRegistrationData] = useState([]);
+  const [buyers, setBuyers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [activePage, setActivePage] = useState(1); // Track active user pagination
@@ -24,6 +25,7 @@ const AdminDashboard = () => {
     fetchActiveUsers();
     fetchDisabledUsers();
     fetchRegistrationGraph(); 
+    fetchBuyersRegistered();
   }, []);
 
   const fetchUsers = async () => {
@@ -36,6 +38,28 @@ const AdminDashboard = () => {
       setError('Failed to fetch users');
     }
   };
+  //buyers registered
+  const fetchBuyersRegistered = async () => {
+    try {
+      const response = await axiosInstance.get('/buyers/users');
+      setBuyers(response.data);
+      setFilteredUsers(response.data);
+      setError(null);
+    } catch (error) {
+      setError('Failed to fetch users');
+    }
+  };
+
+  const fetchActiveBuyers = async () => {
+    try {
+      const response = await axiosInstance.get('/buyersTrack/active');
+      setActiveUsers(response.data);
+      setError(null);
+    } catch (error) {
+      setError('Failed to fetch active users');
+    }
+  };
+
 
   const fetchActiveUsers = async () => {
     try {
@@ -141,7 +165,8 @@ const AdminDashboard = () => {
 
       {/* Section Control Buttons */}
       <div className="usal-section-controls">
-        <button onClick={() => setActiveSection('all')} className="usal-btn">All Users</button>
+        <button onClick={() => setActiveSection('all')} className="usal-btn">Sellers</button>
+        <button onClick={() => setActiveSection('buyers')} className="usal-btn">Buyers</button>
         <button onClick={() => setActiveSection('active')} className="usal-btn">Active Users</button>
         <button onClick={() => setActiveSection('disabled')} className="usal-btn">Disabled Users</button>
       </div>
@@ -201,6 +226,56 @@ const AdminDashboard = () => {
         <LogsViewer/>
       </section>
       */}
+      {/*for buyers display*/}
+      {activeSection === 'buyers' && (
+        <section className="usal-section">
+          <h2 className="usal-section-title">Registered Buyers</h2>
+          <ul className="usal-user-list">
+            {buyers.map(buyer => (
+              <li key={buyer._id} className="usal-user-item">
+                <p>Name: {buyer.fullName}</p>
+                <p>Email: {buyer.email}</p>
+                <p>Phone number: {buyer.phoneNumber}</p>
+
+                <button
+                  onClick={() => setExpandedUserId(expandedUserId === buyer._id ? null : buyer._id)}
+                  className="usal-btn usal-btn-more"
+                >
+                  More
+                </button>
+                {/* Show additional user options if 'More' is clicked */}
+                {expandedUserId === buyer._id && (
+                  <div className="usal-user-options">
+                    <p>Status: {buyer.isDisabled ? 'Disabled' : 'Active'}</p>
+                    <p>Verification Status: {buyer.isVerified ? 'Yes' : 'No'}</p>
+                    <button
+                      onClick={() => disableUser(buyer._id)}
+                      className="usal-btn usal-btn-disable"
+                      disabled={buyer.isDisabled}
+                    >
+                      Disable
+                    </button>
+                    <button
+                      onClick={() => undoDisableUser(buyer._id)}
+                      className="usal-btn usal-btn-enable"
+                      disabled={!buyer.isDisabled}
+                    >
+                      Enable
+                    </button>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+          <Pagination
+            totalItems={filteredUsers.length}
+            itemsPerPage={usersPerPage}
+            currentPage={currentPage}
+            onPageChange={(pageNumber) => setCurrentPage(pageNumber)}
+          />
+        </section>
+      )}
+
 
       {/* Active Users Section with Pagination */}
       {activeSection === 'active' && (
