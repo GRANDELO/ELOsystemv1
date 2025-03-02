@@ -10,6 +10,8 @@ const AdminDashboard = () => {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [activeUsers, setActiveUsers] = useState([]);
   const [disabledUsers, setDisabledUsers] = useState([]);
+  const [activeBuyers, setActiveBuyers] = useState([]);
+  const [disabledBuyers, setDisabledBuyers] = useState([]);
   const [registrationData, setRegistrationData] = useState([]);
   const [buyers, setBuyers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -26,6 +28,7 @@ const AdminDashboard = () => {
     fetchDisabledUsers();
     fetchRegistrationGraph(); 
     fetchBuyersRegistered();
+    fetchActiveBuyers();
   }, []);
 
   const fetchUsers = async () => {
@@ -41,7 +44,7 @@ const AdminDashboard = () => {
   //buyers registered
   const fetchBuyersRegistered = async () => {
     try {
-      const response = await axiosInstance.get('/buyers/users');
+      const response = await axiosInstance.get('/buyersTrack/buyers');
       setBuyers(response.data);
       setFilteredUsers(response.data);
       setError(null);
@@ -53,7 +56,7 @@ const AdminDashboard = () => {
   const fetchActiveBuyers = async () => {
     try {
       const response = await axiosInstance.get('/buyersTrack/active');
-      setActiveUsers(response.data);
+      setActiveBuyers(response.data);
       setError(null);
     } catch (error) {
       setError('Failed to fetch active users');

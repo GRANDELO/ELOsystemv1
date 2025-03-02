@@ -184,7 +184,7 @@ app.use('/api/delivery', deliveryroutesaction);
 app.use('/api/agents', agentRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/buyers', buyersRoutes);
-app.use('./api/buyersTrack', buyerTrack);
+app.use('/api/buyersTrack', buyerTrack);
 app.use('/api/users', userRoutes);
 app.use('/api/uemployeez', uemployeezRoutes);
 app.use('/api/dash', dashboardRoutes);
