@@ -211,7 +211,7 @@ exports.b2cRequestHandler = async (req, res) => {
       SecurityCredential: securityCredential,
       CommandID: "BusinessPayment",
       Amount: "1",
-      PartyA: process.env.BUSINESS_SHORT_CODE,
+      PartyA: process.env.REGISTER_BUSINESS_SHORT_CODE,
       PartyB: "254742243421", // Phone number to receive funds
       Remarks: "Withdrawal",
       QueueTimeOutURL: "https://elosystemv1.onrender.com/api/newpay/b2c/queue",
