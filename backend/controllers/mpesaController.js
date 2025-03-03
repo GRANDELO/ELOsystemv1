@@ -9,7 +9,7 @@ const fs = require("fs");
 async function getAccessToken() {
   const consumer_key = process.env.SAFARICOM_CONSUMER_KEY;
   const consumer_secret = process.env.SAFARICOM_CONSUMER_SECRET;
-  const url = "https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
+  const url = "https://api.safaricom.co.ke/oauth/v1/generate";
   const auth = "Basic " + Buffer.from(consumer_key + ":" + consumer_secret).toString("base64");
 
   try {
@@ -55,7 +55,7 @@ exports.stkPushHandler = async (req, res) => {
       TransactionType: "CustomerPayBillOnline",
       Amount: "1",
       PartyA: "254742243421", // Phone number to receive the STK push
-      PartyB: 4976686,
+      PartyB: businessShortCode,
       PhoneNumber: "254742243421",
       CallBackURL: "https://elosystemv1.onrender.com/api/newmpesa/callback",
       AccountReference: "BAZELINK",
