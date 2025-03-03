@@ -171,7 +171,7 @@ exports.registerURLHandler = async (req, res) => {
     const accessToken = await getAccessToken();
     const url = "https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl";
     const regRequest = {
-      ShortCode: process.env.BUSINESS_SHORT_CODE,
+      ShortCode: process.env.REGISTER_BUSINESS_SHORT_CODE,
       ResponseType: "Complete",
       ConfirmationURL: "https://elosystemv1.onrender.com/api/newpay/confirmation",
       ValidationURL: "https://elosystemv1.onrender.com/api/newpay/validation",
@@ -201,13 +201,15 @@ exports.validateURLHandler = (req, res) => {
 // B2C (Auto Withdrawal) Handler
 exports.b2cRequestHandler = async (req, res) => {
   try {
+
     const accessToken = await getAccessToken();
     const securityCredential = process.env.SECURITYCREDENTIAL; // Your Security Credential here
     const url = "https://api.safaricom.co.ke/mpesa/b2c/v1/paymentrequest";
     const response = await axios.post(url, {
+      OriginatorConversationID: "b5376178-678c-449e-b866-2580c7ef3f75",
       InitiatorName: "BAZELINK",
       SecurityCredential: securityCredential,
-      CommandID: "PromotionPayment",
+      CommandID: "BusinessPayment",
       Amount: "1",
       PartyA: process.env.REGISTER_BUSINESS_SHORT_CODE,
       PartyB: "254742243421", // Phone number to receive funds
