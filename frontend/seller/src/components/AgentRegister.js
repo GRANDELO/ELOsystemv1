@@ -1,6 +1,7 @@
 import axiosInstance from './axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import './styles/styles.css';
 
 const Register = () => {
@@ -38,6 +39,8 @@ const Register = () => {
   const totalSteps = 4; // Total number of steps
   const stepTimeEstimate = 2; // Estimate 2 minutes per step
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -66,6 +69,15 @@ const Register = () => {
       setAreas(townData ? townData.areas : []);
     }
   }, [selectedTown]);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevState) => !prevState);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword((prevState) => !prevState);
+  };
+
   
 
   const handleChange = (e) => {
@@ -372,14 +384,26 @@ const Register = () => {
           </select>
           
           <label>Password:</label>
+          <div className="password-container">
           <input
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             name="password"
             placeholder="Enter your Password"
             value={formData.password}
             onChange={handleChange}
+            className = "password-input"
             required
           />
+          <span
+            onClick={togglePasswordVisibility}
+            className="password-toggle"
+            role="button"
+            tabIndex={0}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+          >
+          {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+          </span>
+          </div>
           {formData.password && formData.password.length < 8 && (
             <p style={{ color: 'red', fontSize: 'smaller' }}>Password must be at least 8 characters long.</p>
           )}
@@ -397,14 +421,26 @@ const Register = () => {
           )}
 
           <label>Confirm Password:</label>
+          <div className="password-container">
           <input
-            type="password"
+            type={showConfirmPassword ? 'text' : 'password'}
             name="confirmPassword"
             placeholder="Confirm Password"
             value={formData.confirmPassword}
             onChange={handleChange}
+            className = "password-input"
             required
           />
+          <span
+            onClick={toggleConfirmPasswordVisibility}
+            className="password-toggle"
+            role="button"
+            tabIndex={0}
+            aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+          >
+          {showConfirmPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+          </span>
+          </div>
           {formData.password && formData.password !== formData.confirmPassword && (
             <p style={{ color: 'red', fontSize: 'smaller' }}>The passwords don't match!</p>
           )}

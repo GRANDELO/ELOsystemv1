@@ -150,7 +150,6 @@ const keepServerActive = (url) => {
   req.on('error', (err) => {
     console.error(`Error pinging ${url}:`, err.message);
   });
-
   req.end();
 };
 

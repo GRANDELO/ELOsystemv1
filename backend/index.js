@@ -53,6 +53,7 @@ const Deliveryroutes = require('./routes/deliveryroutes');
 const accountRoutes = require("./routes/accountRoutes");
 const transactionRoutes = require("./routes/transactionRoutes");
 const chatbotRoutes = require('./routes/chat.routes');
+const buyerTrack = require('./routes/BuyerAdmin');
 
 
 const uploadDir = path.join(__dirname, 'uploads');
@@ -183,6 +184,7 @@ app.use('/api/delivery', deliveryroutesaction);
 app.use('/api/agents', agentRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/buyers', buyersRoutes);
+app.use('/api/buyersTrack', buyerTrack);
 app.use('/api/users', userRoutes);
 app.use('/api/uemployeez', uemployeezRoutes);
 app.use('/api/dash', dashboardRoutes);

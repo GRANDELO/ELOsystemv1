@@ -450,12 +450,12 @@ const [steps, setSteps] = useState(initialSteps);
           {loginPrompt} <a href="/login">Sign In</a> or <a href="/register">Register</a>
         </Alert>
       )}
-      {  /*
+        
       
-      <div className="install-prompt">
+      {/* <div className="install-prompt">
         <p>We're currently experiencing an issue with image display. Our team is actively working to resolve it as soon as possible. We appreciate your patience and will update you once it's fixed!</p>
-      </div>
-  */}
+      </div> */}
+
     {!isInstalled &&
         (
           <div className="install-prompt">
@@ -464,7 +464,6 @@ const [steps, setSteps] = useState(initialSteps);
           </div>
         )
       };
-
       {isMobile ? (
               <main className="salesp-main">
                 {!setnavop ?

@@ -37,10 +37,11 @@ const Dashboard = () => {
         const fetchDashboardData = async () => {
             try {
                 const totalUsersRes = await axiosInstance.get('/dash/users/count');
-                setTotalUsers(totalUsersRes.data.count);
+                setTotalUsers(totalUsersRes.data.totalCount);
+                //console.log("total users", totalUsersRes);
 
                 const activeUsersRes = await axiosInstance.get('/dash/users/active-count');
-                setActiveUsers(activeUsersRes.data.count);
+                setActiveUsers(activeUsersRes.data.TotalCount);
 
                 const response = await axiosInstance.get('/financials/summary');
                 setSummary(response.data);
