@@ -133,15 +133,18 @@ const Login = () => {
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                className = "password-input"
                 required
               />
-              <button
-                type="button"
+              <span
                 className="toggle-password"
                 onClick={() => setShowPassword(!showPassword)}
+                role="button"
+                tabIndex="0"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ?<FaRegEyeSlash/> : <FaRegEye/>}
-              </button>
+              </span>
             </div>
             <button type="submit">
               {loading ? 

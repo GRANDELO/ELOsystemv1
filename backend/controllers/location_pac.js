@@ -184,13 +184,10 @@ const planDeliveryLocations = async (req, res) => {
 
     // Step 3: Decide transportation based on threshold
     const transportationPlan = decideTransportation(groupedOrders, threshold);
-
     // Step 4: Create routes for direct transportation
     const directRoutes = await createRoutes(transportationPlan.direct, threshold);
-    console.log('Direct routes:', directRoutes);
     // Step 5: Redirect orders to a hub for further consolidation
     const hubRoutes = await createRoutes(transportationPlan.hub, threshold);
-    console.log('Hub routes:', hubRoutes);
 
     // Step 6: Update order statuses
     for (const route of [...directRoutes, ...hubRoutes]) {
@@ -218,6 +215,8 @@ const planDeliveryLocations = async (req, res) => {
       data: {
         directRoutes,
         hubRoutes,
+        directRoutesWithCounts,
+        hubRoutesWithCounts,
       },
     });
   } catch (error) {

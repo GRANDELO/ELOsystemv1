@@ -29,6 +29,7 @@ const AdminDashboard = () => {
     fetchRegistrationGraph(); 
     fetchBuyersRegistered();
     fetchActiveBuyers();
+    fetchDisabledBuyers();
   }, []);
 
   const fetchUsers = async () => {
@@ -63,6 +64,23 @@ const AdminDashboard = () => {
     }
   };
 
+  const disableBuyer = async (userId) => {
+    try {
+      await axiosInstance.patch(`/buyersTrack/disable/${userId}`);
+      fetchUsers();
+    } catch (error) {
+      setError('Failed to disable user');
+    }
+  };
+
+  const undoDisableBuyer = async (userId) => {
+    try {
+      await axiosInstance.patch(`/buyersTrack/undo-disable/${userId}`);
+      fetchUsers();
+    } catch (error) {
+      setError('Failed to enable user');
+    }
+  };
 
   const fetchActiveUsers = async () => {
     try {
@@ -71,6 +89,16 @@ const AdminDashboard = () => {
       setError(null);
     } catch (error) {
       setError('Failed to fetch active users');
+    }
+  };
+
+  const fetchDisabledBuyers = async () => {
+    try {
+      const response = await axiosInstance.get('/buyersTrack/disabled');
+      setDisabledBuyers(response.data);
+      setError(null);
+    } catch (error) {
+      setError('Failed to fetch disabled users');
     }
   };
 
@@ -168,16 +196,18 @@ const AdminDashboard = () => {
 
       {/* Section Control Buttons */}
       <div className="usal-section-controls">
-        <button onClick={() => setActiveSection('all')} className="usal-btn">Sellers</button>
+        <button onClick={() => setActiveSection('Sellers')} className="usal-btn">Sellers</button>
         <button onClick={() => setActiveSection('buyers')} className="usal-btn">Buyers</button>
-        <button onClick={() => setActiveSection('active')} className="usal-btn">Active Users</button>
-        <button onClick={() => setActiveSection('disabled')} className="usal-btn">Disabled Users</button>
+        <button onClick={() => setActiveSection('active')} className="usal-btn">Active Sellers</button>
+        <button onClick={() => setActiveSection('disabled')} className="usal-btn">Disabled Sellers</button>
+        <button onClick={() => setActiveSection('active-buyer')} className="usal-btn">Active Buyers</button>
+        <button onClick={() => setActiveSection('disabled-buyer')} className="usal-btn">Disabled Buyers</button>
       </div>
 
       {/* User List with Pagination */}
-      {activeSection === 'all' && (
+      {activeSection === 'Sellers' && (
         <section className="usal-section">
-          <h2 className="usal-section-title">All Users</h2>
+          <h2 className="usal-section-title">All Sellers</h2>
           <ul className="usal-user-list">
             {currentUsers.map(user => (
               <li key={user._id} className="usal-user-item">
@@ -252,14 +282,14 @@ const AdminDashboard = () => {
                     <p>Status: {buyer.isDisabled ? 'Disabled' : 'Active'}</p>
                     <p>Verification Status: {buyer.isVerified ? 'Yes' : 'No'}</p>
                     <button
-                      onClick={() => disableUser(buyer._id)}
+                      onClick={() => disableBuyer(buyer._id)}
                       className="usal-btn usal-btn-disable"
                       disabled={buyer.isDisabled}
                     >
                       Disable
                     </button>
                     <button
-                      onClick={() => undoDisableUser(buyer._id)}
+                      onClick={() => undoDisableBuyer(buyer._id)}
                       className="usal-btn usal-btn-enable"
                       disabled={!buyer.isDisabled}
                     >
@@ -287,7 +317,7 @@ const AdminDashboard = () => {
           <ul className="usal-user-list">
             {currentActiveUsers.map(user => (
               <li key={user._id} className="usal-user-item">
-                <p>Name: {user.fullName}</p>
+                <p>Name: {user.username}</p>
                 <p>Email: {user.email}</p>
               </li>
             ))}
@@ -308,8 +338,46 @@ const AdminDashboard = () => {
           <ul className="usal-user-list">
             {disabledUsers.map(user => (
               <li key={user._id} className="usal-user-item">
-                <p>Name: {user.fullName}</p>
+                <p>Name: {user.username}</p>
                 <p>Email: {user.email}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+        
+      )}
+
+      {/*Buyers active*/}
+
+      {activeSection === 'active-buyer' && (
+        <section className="usal-section">
+          <h2 className="usal-section-title">Active Users</h2>
+          <ul className="usal-user-list">
+            {activeBuyers.map(buyer => (
+              <li key={buyer._id} className="usal-user-item">
+                <p>Name: {buyer.username}</p>
+                <p>Email: {buyer.email}</p>
+              </li>
+            ))}
+          </ul>
+          <Pagination
+            totalItems={activeUsers.length}
+            itemsPerPage={usersPerPage}
+            currentPage={activePage}
+            onPageChange={(pageNumber) => setActivePage(pageNumber)}
+          />
+        </section>
+      )}
+
+      {/* Disabled Users Section */}
+      {activeSection === 'disabled-buyer' && (
+        <section className="usal-section">
+          <h2 className="usal-section-title">Disabled Users</h2>
+          <ul className="usal-user-list">
+            {disabledBuyers.map(buyer => (
+              <li key={buyer._id} className="usal-user-item">
+                <p>Name: {buyer.username}</p>
+                <p>Email: {buyer.email}</p>
               </li>
             ))}
           </ul>
