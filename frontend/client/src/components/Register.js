@@ -105,17 +105,30 @@ const Register = () => {
   const timeRemaining = stepTimeEstimate * (totalSteps - currentStep);
 
   return (
-    <div className="container">
-      <h2>Register</h2>
-      <div className="progress-container">
-        <p>Step {currentStep} of {totalSteps}</p>
-        <p>Estimated Time Remaining: {timeRemaining} minutes</p>
-        <div className="progress-bar">
-          <div className="progress-bar-fill" style={{ width: `${progressPercentage}%` }}></div>
-        </div>
-      </div>
+    <div className="login-container">
+          <div className='sidelarge'>
+              <h2>Welcome to Bazelink</h2>
+             <img src="/logo(2).png" alt="App Logo" class="login-logo"></img>
+             <div className="progress-container">
+              <p>Step {currentStep} of {totalSteps}</p>
+              <p>Estimated Time Remaining: {timeRemaining} minutes</p>
+              <div className="progress-bar">
+                <div className="progress-bar-fill" style={{ width: `${progressPercentage}%` }}></div>
+              </div>
+            </div>
+          </div>
       <form onSubmit={handleSubmit}>
+      <div className='logside'>
+            <h2>Welcome to Bazelink</h2>
+             <div className="progress-container">
+              <p>Step {currentStep} of {totalSteps}</p>
+              <p>Estimated Time Remaining: {timeRemaining} minutes</p>
+              <div className="progress-bar">
+                <div className="progress-bar-fill" style={{ width: `${progressPercentage}%` }}></div>
+              </div>
+            </div>
 
+            </div>
       {currentStep === 1 && (
 
         <div className="formsep">
@@ -246,16 +259,17 @@ const Register = () => {
           <button type="submit">
           {loading ? "Registering..." : "Register"}
           </button>
+          <div className="divmess">
+          {message && <p className="message">{message}</p>}
+          {error && <p className="error">{error}</p>}
+          </div>
       </div>
 
       )}
 
 
       </form>
-      <div className="divmess">
-          {message && <p className="message">{message}</p>}
-          {error && <p className="error">{error}</p>}
-      </div>
+
     </div>
   );
 };

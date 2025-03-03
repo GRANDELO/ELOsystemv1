@@ -121,12 +121,6 @@ a:hover {
   text-decoration: underline;
 }
 
-.password-container {
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
 .password-input {
   flex: 1;
   padding: 10px;
@@ -166,13 +160,6 @@ a:hover {
 
 .toggle-password:focus {
   outline: none;
-}
-
-.password-container {
-  position: relative;
-  width: 100%;
-  margin: 10px 0;
-  display: flex;
 }
 
 .password-input {

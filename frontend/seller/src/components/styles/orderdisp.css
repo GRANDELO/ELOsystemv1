@@ -81,15 +81,7 @@
   color: var(--text-color-light);
 }
 
-/* Button Styling */
-button {
-  border: none;
-  padding: 12px 18px;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
+
 
 /* Responsive Design */
 @media (max-width: 1024px) {

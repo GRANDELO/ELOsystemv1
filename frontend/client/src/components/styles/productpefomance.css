@@ -1,11 +1,5 @@
 /* Body */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f0f4f8;
-  }
-  
+
   /* Container for the Chart */
   .chart-container {
     max-width: 1200px;

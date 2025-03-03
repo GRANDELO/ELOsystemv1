@@ -142,7 +142,7 @@ const Login = () => {
   };
 
   return (
-    <div className="container">
+    <div className="login-container">
           {!isInstalled &&
            (
               <div className="install-prompt">
@@ -151,10 +151,20 @@ const Login = () => {
               </div>
             )
           };
+          <div className='sidelarge'>
+              <h2>Welcome back</h2>
+             <img src="/logo(2).png" alt="App Logo" class="login-logo"></img>
+            
+          </div>
       <form onSubmit={recoverpassword ? sendRecovEmail : handleSubmit}>
         {!recoverpassword ? (
           <div>
+            <div className='logside'>
             <h2>Login</h2>
+             <img src="/logo(2).png" alt="App Logo" class="login-logo"></img>
+            
+            </div>
+
             <label>Username or Email:</label>
             <input
               type="text"
@@ -207,11 +217,12 @@ const Login = () => {
             <button type="button" onClick={handleRecoverPassword}>Back</button>
           </div>
         )}
-      </form>
-      <div className="divmess">
+              <div className="divmess">
         {message && <p className="message">{message}</p>}
         {error && <p className="error">{error}</p>}
       </div>
+      </form>
+
     </div>
   );
 };

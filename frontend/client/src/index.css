@@ -134,39 +134,71 @@ button.active {
 }
 
 /* Input styles */
-input, select{
+input, select {
   width: 100%;
-  padding: 12px;
+  padding: 14px 16px; /* Extra padding for a premium feel */
   margin: 8px 0;
-  border-radius: 5px;
-  border: 1px solid var(--input-border);
+  border-radius: 10px; /* Smoother rounded edges */
+  border: 1.5px solid var(--input-border);
   background-color: var(--input-bg);
   color: var(--input-text-color);
   font-size: 1rem;
-  transition: border-color 0.3s ease, background-color 0.3s ease;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* Softer shadow for elegance */
+  font-weight: 500;
 }
 
-
-input:focus 
-{
+input:focus, select:focus {
   border-color: var(--input-focus-border);
   outline: none;
-  background-color: #f2f2f2; /* Light background on focus */
-  color: #333;
+  background-color: #fff; /* Clean white focus */
+  color: #222;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* More depth on focus */
+  transform: scale(1.03); /* Slight zoom effect */
 }
 
-select:focus{
-  border-color: var(--input-focus-border);
-  outline: none;
-  background-color: #f2f2f2; /* Light background on focus */
-  color: #333;
+input::placeholder, select::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 0.95rem;
+  font-weight: 400;
 }
+
+input:hover, select:hover {
+  border-color: var(--input-hover-border);
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+input:active, select:active {
+  transform: scale(1.01);
+}
+
+/* Custom Select Styling */
+select {
+  appearance: none;
+  cursor: pointer;
+  background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path fill="%23000" d="M7 10l5 5 5-5H7z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 14px;
+  padding-right: 40px;
+}
+
+/* Smooth Input Animation */
+@keyframes inputGlow {
+  0% { box-shadow: 0 0 10px rgba(0, 0, 255, 0.2); }
+  100% { box-shadow: 0 0 20px rgba(0, 0, 255, 0.4); }
+}
+
+input:focus {
+  animation: inputGlow 0.5s ease-in-out alternate infinite;
+}
+
 
 /* Password field styles */
 .password-container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  position: relative;
 }
 
 .password-container button {
@@ -174,7 +206,7 @@ select:focus{
   border: none;
   color: var(--link-color-light);
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   padding: 0;
 }
 
@@ -186,17 +218,16 @@ select:focus{
 /* Responsive behavior for smaller screens */
 @media (max-width: 768px) {
   .container {
-    width: 90%;
+    width: 100vw;
     padding: 15px;
+    height: auto;
+    background-color: rgba(3, 24, 88, 0.31);
   }
 
   body {
-    justify-content: center; /* Stack content from top */
+    justify-content: ''; /* Stack content from top */
   }
-
-  button {
-    width: auto; /* Adjust button width for larger screens */
-  }
+  
 }
 
 /* Message styles */

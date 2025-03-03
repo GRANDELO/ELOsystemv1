@@ -2,6 +2,8 @@ const axios = require("axios");
 const moment = require("moment");
 require('dotenv').config();
 const fs = require("fs");
+const Order = require('../models/Order');
+const PendingJob = require('../models/PendingJob'); 
 //const getAccessToken = require("../utils/accessToken");
 
 
@@ -35,6 +37,23 @@ exports.getAccessTokenHandler = async (req, res) => {
   }
 };
 
+const initiatePayment = async (accessToken, paymentRequest) => {
+  try {
+      const response = await axios.post(
+          'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
+          paymentRequest,
+          {
+              headers: {
+                  Authorization: `Bearer ${accessToken}`,
+              },
+          }
+      );
+      return response.data;
+  } catch (error) {
+      throw new Error(`Failed to initiate payment: ${error.message}`);
+  }
+};
+
 // STK Push Handler
 exports.stkPushHandler = async (req, res) => {
   try {
@@ -48,23 +67,63 @@ exports.stkPushHandler = async (req, res) => {
 
 
 
-    const response = await axios.post(url, {
+    const paymentRequest = {
       BusinessShortCode: businessShortCode,
       Password: password,
       Timestamp: timestamp,
       TransactionType: "CustomerPayBillOnline",
-      Amount: "1",
-      PartyA: "254742243421", // Phone number to receive the STK push
+      Amount: req.body.amount,
+      PartyA: req.body.phone, // Phone number to receive the STK push
       PartyB: businessShortCode,
-      PhoneNumber: "254742243421",
+      PhoneNumber: req.body.phone,
       CallBackURL: "https://elosystemv1.onrender.com/api/newmpesa/callback",
       AccountReference: "BAZELINK",
       TransactionDesc: 'Payment for Order',
-    }, {
-      headers: { Authorization: "Bearer " + accessToken }
-    });
+    };
 
-    res.send("😀 Request is successful. Please enter M-Pesa PIN to complete the transaction");
+    const paymentResponse = await initiatePayment(accessToken, paymentRequest);
+    const orderid = req.body.orderid;
+    const orderReference = req.body.orderReference; 
+
+
+    if(orderReference)
+      {
+          try {
+              const order = await Order.findOne({ orderReference: orderReference });
+              if (!order) {
+                  return res.status(404).json({ message: 'Mpesa Order not found' });
+              }
+
+              order.CheckoutRequestID = paymentResponse.CheckoutRequestID;
+              await order.save();
+
+              return res.status(200).json({ message: 'Payment initiated successfully', data: paymentResponse ,CheckoutRequestID: paymentResponse.CheckoutRequestID});
+          } catch (error) {
+              console.error('Failed to fetch orders:', error);
+              return res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
+          }
+      }
+
+
+  if (orderid) {
+      try {
+          const order = await Order.findOne({ orderNumber: orderid });
+          if (!order) {
+              return res.status(404).json({ message: 'Mpesa Order not found' });
+          }
+
+          order.CheckoutRequestID = paymentResponse.CheckoutRequestID;
+          await order.save();
+
+          return res.status(200).json({ message: 'Payment initiated successfully', data: paymentResponse ,CheckoutRequestID: paymentResponse.CheckoutRequestID});
+      } catch (error) {
+          console.error('Failed to fetch orders:', error);
+          return res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
+      }
+  } else {
+      return res.status(200).json({ message: 'Payment initiated successfully', data: paymentResponse, CheckoutRequestID: paymentResponse.CheckoutRequestID });
+  }
+
   } catch (error) {
     console.log(error);
     res.status(500).send("❌ STK Push request failed");
@@ -73,13 +132,21 @@ exports.stkPushHandler = async (req, res) => {
 
 
 // STK Push Callback Handler
-exports.stkPushCallbackHandler = (req, res) => {
+exports.stkPushCallbackHandler = async (req, res) => {
   const json = JSON.stringify(req.body);
-  fs.writeFile("stkcallback.json", json, "utf8", (err) => {
-    if (err) console.log(err);
-    console.log("STK Push Callback JSON saved.");
-  });
-  res.status(200).send("Callback received");
+  const callbackData = req.body.Body.stkCallback;
+  try {
+      await PendingJob.create({ callbackData, processed: false }); // Save unprocessed job
+      fs.writeFile("stkcallback.json", json, "utf8", (err) => {
+        if (err) console.log(err);
+        console.log("STK Push Callback JSON saved.");
+      });
+      res.status(200).json({ message: 'Callback received and queued for processing.' });
+  } catch (error) {
+      console.error("Failed to queue job:", error);
+      res.status(500).json({ message: 'Error queuing callback for processing' });
+  }
+ 
 };
 
 // Register URL for C2B Handler
