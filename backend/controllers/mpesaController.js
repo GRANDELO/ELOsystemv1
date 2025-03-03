@@ -171,7 +171,7 @@ exports.registerURLHandler = async (req, res) => {
     const accessToken = await getAccessToken();
     const url = "https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl";
     const regRequest = {
-      ShortCode: process.env.REGISTER_BUSINESS_SHORT_CODE,
+      ShortCode: process.env.BUSINESS_SHORT_CODE,
       ResponseType: "Complete",
       ConfirmationURL: "https://elosystemv1.onrender.com/api/newpay/confirmation",
       ValidationURL: "https://elosystemv1.onrender.com/api/newpay/validation",
