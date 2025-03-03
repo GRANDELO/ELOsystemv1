@@ -52,7 +52,7 @@ const initiatePayment = async (accessToken, paymentRequest) => {
         throw new Error(`Failed to initiate payment: ${error.message}`);
     }
 };
-
+ 
 router.post('/lipa', async (req, res) => {
     try {
         const accessToken = await generateAccessToken();

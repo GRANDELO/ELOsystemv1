@@ -11,7 +11,7 @@ const PendingJob = require('../models/PendingJob');
 async function getAccessToken() {
   const consumer_key = process.env.SAFARICOM_CONSUMER_KEY;
   const consumer_secret = process.env.SAFARICOM_CONSUMER_SECRET;
-  const url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
+  const url = "https://api.safaricom.co.ke/oauth/v1/generate";
   const auth = "Basic " + Buffer.from(consumer_key + ":" + consumer_secret).toString("base64");
 
   try {
@@ -40,7 +40,7 @@ exports.getAccessTokenHandler = async (req, res) => {
 const initiatePayment = async (accessToken, paymentRequest) => {
   try {
       const response = await axios.post(
-          'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
+          'https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
           paymentRequest,
           {
               headers: {
@@ -58,7 +58,7 @@ const initiatePayment = async (accessToken, paymentRequest) => {
 exports.stkPushHandler = async (req, res) => {
   try {
     const accessToken = await getAccessToken();
-    const url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
+    const url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
     const timestamp = moment().format("YYYYMMDDHHmmss");
     const passkey = process.env.PASS_KEY;
     const businessShortCode = process.env.BUSINESS_SHORT_CODE;
@@ -153,7 +153,7 @@ exports.stkPushCallbackHandler = async (req, res) => {
 exports.registerURLHandler = async (req, res) => {
   try {
     const accessToken = await getAccessToken();
-    const url = "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl";
+    const url = "https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl";
     const response = await axios.post(url, {
       ShortCode: process.env.REGISTER_BUSINESS_SHORT_CODE,
       ResponseType: "Complete",
@@ -188,7 +188,7 @@ exports.b2cRequestHandler = async (req, res) => {
   try {
     const accessToken = await getAccessToken();
     const securityCredential = process.env.SECURITYCREDENTIAL; // Your Security Credential here
-    const url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest";
+    const url = "https://api.safaricom.co.ke/mpesa/b2c/v3/paymentrequest";
     const response = await axios.post(url, {
       InitiatorName: "BAZELINK",
       SecurityCredential: securityCredential,
@@ -215,7 +215,7 @@ exports.b2cRequestHandler = async (Amount, Phonenumber) => {
     try {
       const accessToken = await getAccessToken();
       const securityCredential = process.env.SECURITYCREDENTIAL; // Your Security Credential here
-      const url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest";
+      const url = "https://api.safaricom.co.ke/mpesa/b2c/v3/paymentrequest";
       const response = await axios.post(url, {
         InitiatorName: "BAZELINK",
         SecurityCredential: securityCredential,
