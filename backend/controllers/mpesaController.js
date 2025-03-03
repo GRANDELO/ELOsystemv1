@@ -201,17 +201,17 @@ exports.validateURLHandler = (req, res) => {
 // B2C (Auto Withdrawal) Handler
 exports.b2cRequestHandler = async (req, res) => {
   try {
-
+//https://api.safaricom.co.ke/mpesa/b2c/v1/paymentrequest
     const accessToken = await getAccessToken();
     const securityCredential = process.env.SECURITYCREDENTIAL; // Your Security Credential here
-    const url = "https://api.safaricom.co.ke/mpesa/b2c/v1/paymentrequest";
+    const url = "https://api.safaricom.co.ke/mpesa/b2c/v3/paymentrequest";
     const response = await axios.post(url, {
       OriginatorConversationID: "b5376178-678c-449e-b866-2580c7ef3f75",
       InitiatorName: "BAZELINK",
       SecurityCredential: securityCredential,
       CommandID: "BusinessPayment",
       Amount: "1",
-      PartyA: process.env.REGISTER_BUSINESS_SHORT_CODE,
+      PartyA: process.env.BUSINESS_SHORT_CODE,
       PartyB: "254742243421", // Phone number to receive funds
       Remarks: "Withdrawal",
       QueueTimeOutURL: "https://elosystemv1.onrender.com/api/newpay/b2c/queue",
