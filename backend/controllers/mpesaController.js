@@ -55,7 +55,7 @@ exports.stkPushHandler = async (req, res) => {
       TransactionType: "CustomerPayBillOnline",
       Amount: "1",
       PartyA: "254742243421", // Phone number to receive the STK push
-      PartyB: businessShortCode,
+      PartyB: 4976686,
       PhoneNumber: "254742243421",
       CallBackURL: "https://elosystemv1.onrender.com/api/newmpesa/callback",
       AccountReference: "BAZELINK",
