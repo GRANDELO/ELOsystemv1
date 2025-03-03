@@ -55,6 +55,23 @@ const initiatePayment = async (accessToken, paymentRequest) => {
   }
 };
 
+const initiateurlreg = async (accessToken, paymentRequest) => {
+  try {
+      const response = await axios.post(
+          'https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl',
+          paymentRequest,
+          {
+              headers: {
+                  Authorization: `Bearer ${accessToken}`,
+              },
+          }
+      );
+      return response.data;
+  } catch (error) {
+      throw new Error(`Failed to initiate payment: ${error.message}`);
+  }
+};
+
 // STK Push Handler
 exports.stkPushHandler = async (req, res) => {
   try {
@@ -153,15 +170,14 @@ exports.registerURLHandler = async (req, res) => {
   try {
     const accessToken = await getAccessToken();
     const url = "https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl";
-    const response = await axios.post(url, {
+    const regRequest = {
       ShortCode: process.env.REGISTER_BUSINESS_SHORT_CODE,
       ResponseType: "Complete",
       ConfirmationURL: "https://elosystemv1.onrender.com/api/newpay/confirmation",
       ValidationURL: "https://elosystemv1.onrender.com/api/newpay/validation",
-    }, {
-      headers: { Authorization: "Bearer " + accessToken }
-    });
-    res.status(200).json(response.data);
+    }
+    const regResponse = await initiateurlreg(accessToken, regRequest);
+    res.status(200).send("✅ Register URL request successful");
   } catch (error) {
     console.log(error);
     res.status(500).send("❌ Register URL request failed");
