@@ -201,10 +201,12 @@ exports.validateURLHandler = (req, res) => {
 // B2C (Auto Withdrawal) Handler
 exports.b2cRequestHandler = async (req, res) => {
   try {
-//https://api.safaricom.co.ke/mpesa/b2c/v1/paymentrequest
     const accessToken = await getAccessToken();
-    const securityCredential = process.env.SECURITYCREDENTIAL; // Your Security Credential here
-    const url = "https://api.safaricom.co.ke/mpesa/b2c/v3/paymentrequest";
+    console.log("Generated Access Token:", accessToken);
+
+    const securityCredential = process.env.SECURITYCREDENTIAL;
+    const url = "https://api.safaricom.co.ke/mpesa/b2c/v1/paymentrequest";
+
     const response = await axios.post(url, {
       OriginatorConversationID: "b5376178-678c-449e-b866-2580c7ef3f75",
       InitiatorName: "BAZELINK",
@@ -212,7 +214,7 @@ exports.b2cRequestHandler = async (req, res) => {
       CommandID: "BusinessPayment",
       Amount: "1",
       PartyA: process.env.REGISTER_BUSINESS_SHORT_CODE,
-      PartyB: "254742243421", // Phone number to receive funds
+      PartyB: "254742243421",
       Remarks: "Withdrawal",
       QueueTimeOutURL: "https://elosystemv1.onrender.com/api/newpay/b2c/queue",
       ResultURL: "https://elosystemv1.onrender.com/api/newpay/b2c/result",
@@ -223,10 +225,23 @@ exports.b2cRequestHandler = async (req, res) => {
 
     res.status(200).json(response.data);
   } catch (error) {
-    console.log(error);
-    res.status(500).send("❌ B2C request failed");
+    console.error("❌ B2C request failed");
+
+    if (error.response) {
+        console.error("Response Data:", error.response.data);
+        console.error("Status Code:", error.response.status);
+        console.error("Headers:", error.response.headers);
+        res.status(error.response.status).json(error.response.data);
+    } else if (error.request) {
+        console.error("No response received:", error.request);
+        res.status(500).json({ message: "No response from Safaricom API" });
+    } else {
+        console.error("Request Error:", error.message);
+        res.status(500).json({ message: error.message });
+    }
   }
 };
+
 
 exports.b2cRequestHandler = async (Amount, Phonenumber) => {
     try {
