@@ -25,7 +25,7 @@ const generateTimestamp = () => {
 
 const generateAccessToken = async () => {
     try {
-        const response = await axios.get('https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', {
+        const response = await axios.get('https://api.safaricom.co.ke/oauth/v1/generate', {
             headers: {
                 "Authorization": "Basic " + Buffer.from(`${consumerKey}:${consumerSecret}`).toString('base64')
             }
