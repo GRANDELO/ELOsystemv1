@@ -63,6 +63,8 @@ exports.stkPushHandler = async (req, res) => {
     const timestamp = moment().format("YYYYMMDDHHmmss");
     const passkey = process.env.PASS_KEY;
     const businessShortCode = process.env.BUSINESS_SHORT_CODE;
+    const businessTill = process.env.REGISTER_BUSINESS_SHORT_CODE;
+    
     const password = Buffer.from(`${businessShortCode}${passkey}${timestamp}`).toString('base64');
 
 
@@ -75,10 +77,10 @@ exports.stkPushHandler = async (req, res) => {
       TransactionType: "CustomerPayBillOnline",
       Amount: req.body.amount,
       PartyA: req.body.phone, // Phone number to receive the STK push
-      PartyB: businessShortCode,
+      PartyB: businessTill,
       PhoneNumber: req.body.phone,
       CallBackURL: "https://elosystemv1.onrender.com/api/newpay/callback",
-      AccountReference: "BAZELINK",
+      AccountReference: "BAZELINK INK",
       TransactionDesc: 'Payment for Order',
     };
 

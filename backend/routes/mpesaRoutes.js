@@ -11,7 +11,8 @@ const consumerSecret = process.env.SAFARICOM_CONSUMER_SECRET;
 const businessShortCode = process.env.BUSINESS_SHORT_CODE;
 const passkey = process.env.PASS_KEY;
 const callbackURL = process.env.CALLBACK_URL;
-
+const businessTill = process.env.REGISTER_BUSINESS_SHORT_CODE;
+    
 const generateTimestamp = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -66,7 +67,7 @@ router.post('/lipa', async (req, res) => {
             TransactionType: 'CustomerPayBillOnline',
             Amount: req.body.amount,
             PartyA: req.body.phone,
-            PartyB: businessShortCode,
+            PartyB: businessTill,
             PhoneNumber: req.body.phone,
             CallBackURL: callbackURL,
             AccountReference: 'BAZELINK',
