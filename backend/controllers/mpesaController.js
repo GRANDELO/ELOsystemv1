@@ -26,23 +26,7 @@ async function getAccessToken() {
   }
 }
 
-async function getAccessToken2() {
-  const consumer_key = process.env.SAFARICOM_CONSUMER_KEY;
-  const consumer_secret = process.env.SAFARICOM_CONSUMER_SECRET;
-  const url = "https://api.safaricom.co.ke/oauth/v1/generate";
-  const auth = "Basic " + Buffer.from(consumer_key + ":" + consumer_secret).toString("base64");
 
-  try {
-    const response = await axios.get(url, {
-      headers: {
-        Authorization: auth,
-      },
-    });
-    return response.data.access_token;
-  } catch (error) {
-    throw error;
-  }
-}
 // Access Token Route Handler
 exports.getAccessTokenHandler = async (req, res) => {
   try {
@@ -93,7 +77,7 @@ exports.stkPushHandler = async (req, res) => {
       PartyA: req.body.phone, // Phone number to receive the STK push
       PartyB: businessShortCode,
       PhoneNumber: req.body.phone,
-      CallBackURL: "https://elosystemv1.onrender.com/api/newmpesa/callback",
+      CallBackURL: "https://elosystemv1.onrender.com/api/newpay/callback",
       AccountReference: "BAZELINK",
       TransactionDesc: 'Payment for Order',
     };
@@ -154,10 +138,6 @@ exports.stkPushCallbackHandler = async (req, res) => {
   const callbackData = req.body.Body.stkCallback;
   try {
       await PendingJob.create({ callbackData, processed: false }); // Save unprocessed job
-      fs.writeFile("stkcallback.json", json, "utf8", (err) => {
-        if (err) console.log(err);
-        console.log("STK Push Callback JSON saved.");
-      });
       res.status(200).json({ message: 'Callback received and queued for processing.' });
   } catch (error) {
       console.error("Failed to queue job:", error);
@@ -169,7 +149,7 @@ exports.stkPushCallbackHandler = async (req, res) => {
 // Register URL for C2B Handler
 exports.registerURLHandler = async (req, res) => {
   try {
-    const accessToken = await getAccessToken2();
+    const accessToken = await getAccessToken();
     const url = "https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl";
     const response = await axios.post(url, {
       ShortCode: process.env.REGISTER_BUSINESS_SHORT_CODE,
@@ -205,7 +185,7 @@ exports.b2cRequestHandler = async (req, res) => {
   try {
     const accessToken = await getAccessToken();
     const securityCredential = process.env.SECURITYCREDENTIAL; // Your Security Credential here
-    const url = "https://api.safaricom.co.ke/mpesa/b2c/v3/paymentrequest";
+    const url = "https://api.safaricom.co.ke/mpesa/b2c/v1/paymentrequest";
     const response = await axios.post(url, {
       InitiatorName: "BAZELINK",
       SecurityCredential: securityCredential,
