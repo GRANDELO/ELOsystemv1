@@ -26,6 +26,23 @@ async function getAccessToken() {
   }
 }
 
+async function getAccessToken2() {
+  const consumer_key = process.env.SAFARICOM_CONSUMER_KEY;
+  const consumer_secret = process.env.SAFARICOM_CONSUMER_SECRET;
+  const url = "https://api.safaricom.co.ke/oauth/v1/generate";
+  const auth = "Basic " + Buffer.from(consumer_key + ":" + consumer_secret).toString("base64");
+
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: auth,
+      },
+    });
+    return response.data.access_token;
+  } catch (error) {
+    throw error;
+  }
+}
 // Access Token Route Handler
 exports.getAccessTokenHandler = async (req, res) => {
   try {
@@ -152,7 +169,7 @@ exports.stkPushCallbackHandler = async (req, res) => {
 // Register URL for C2B Handler
 exports.registerURLHandler = async (req, res) => {
   try {
-    const accessToken = await getAccessToken();
+    const accessToken = await getAccessToken2();
     const url = "https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl";
     const response = await axios.post(url, {
       ShortCode: process.env.REGISTER_BUSINESS_SHORT_CODE,
