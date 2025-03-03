@@ -64,7 +64,7 @@ router.post('/lipa', async (req, res) => {
             BusinessShortCode: businessShortCode,
             Password: password,
             Timestamp: timestamp,
-            TransactionType: 'CustomerPayBillOnline',
+            TransactionType: 'CustomerBuyGoodsOnline',
             Amount: req.body.amount,
             PartyA: req.body.phone,
             PartyB: businessTill,
