@@ -48,6 +48,7 @@
     "socket": "^0.14.41",
     "socket.io": "^4.8.1",
     "stream-mock": "^2.0.5",
+    "unirest": "^0.6.0",
     "uuid": "^11.0.5",
     "winston": "^3.17.0",
     "xss-clean": "^0.1.4"
