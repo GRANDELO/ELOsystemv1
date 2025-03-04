@@ -228,37 +228,44 @@ exports.b2cRequestHandler = async (req, res) => {
     res.status(500).send("❌ B2C request failed");
   }
 };*/
-
 exports.b2cRequestHandler = async (req, res) => {
   try {
     const accessToken = await getAccessToken(); // Fetch access token
-    const securityCredential = process.env.SECURITYCREDENTIAL;
-    
+    const securityCredential = process.env.SECURITYCREDENTIAL; // Use env variable
+
     const url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v3/paymentrequest";
 
-    const response = await axios.post(url, {
+    // Ensure only JSON data is sent, avoiding circular references
+    const requestData = {
       OriginatorConversationID: "1af7150b-2b1f-41fc-bbe6-7316c9098918",
       InitiatorName: "testapi",
-      SecurityCredential: securityCredential,
+      SecurityCredential: "R/ClXiMil/rvR4tJ8fou2LkvIht3I+lbL9ZHcgKuJ/KQ4A8JI1abcbWeKth/+MzyrnlC+lK/FKmx/ujwPYZoXKoDMm0kVcfXNdGEvJ0+7jktSWupLOUUcaALhBCtXNvnSgRN/2M4LWwYfgqF77Og1ZNDBitTHXgFN/4+QCiTcWR+DvLQblwc43x8qARmUJbPEkm8j9s+rVK05mHGz9fS7Qr0rIUpWHytbdZXtHzZQTEP6vX50+ExFghu/27H+JfTE1I+3kyUZG8/SUsowU8Sk9O6zYxDKyRgqOf5MK0Bay1nUiENkH+bd1r2ElI0ThXPbGIMTWMVNkpM4bi0TcoAOQ==",
       CommandID: "SalaryPayment",
-      Amount: 10,
+      Amount: 1,
       PartyA: 600984,
       PartyB: 254742243421,
       Remarks: "Test remarks",
       QueueTimeOutURL: "https://elosystemv1.onrender.com/api/newpay/b2c/queue",
       ResultURL: "https://elosystemv1.onrender.com/api/newpay/b2c/result",
       Occasion: "",
-    }, {
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`
-      }
+    };
+
+    const response = await axios.post(url, requestData, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
     });
 
     res.status(200).json(response.data);
   } catch (error) {
-    console.error("B2C Request Failed:", error);
-    res.status(500).send("❌ B2C request failed");
+    console.error("❌ B2C Request Failed:", error.message);
+    
+    // Send a more detailed error response
+    res.status(500).json({
+      error: "B2C request failed",
+      message: error.message,
+    });
   }
 };
 
