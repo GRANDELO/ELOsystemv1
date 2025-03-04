@@ -76,6 +76,7 @@ const initiateurlreg = async (accessToken, paymentRequest) => {
 exports.stkPushHandler = async (req, res) => {
   try {
     const accessToken = await getAccessToken();
+    console.log(accessToken);
     const url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
     const timestamp = moment().format("YYYYMMDDHHmmss");
     const passkey = process.env.PASS_KEY;
