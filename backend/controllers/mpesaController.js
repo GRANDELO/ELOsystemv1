@@ -1,6 +1,7 @@
 const axios = require("axios");
 const moment = require("moment");
 require('dotenv').config();
+const unirest = require('unirest');
 const fs = require("fs");
 const Order = require('../models/Order');
 const PendingJob = require('../models/PendingJob'); 
@@ -231,30 +232,28 @@ exports.b2cRequestHandler = async (req, res) => {
 exports.b2cRequestHandler = async (req, res) => {
   try {
     const accessToken = await getAccessToken(); // Fetch access token
-    const securityCredential = process.env.SECURITYCREDENTIAL; // Use env variable
-
-    const url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v3/paymentrequest";
-
-    // Ensure only JSON data is sent, avoiding circular references
-    const requestData = {
-      OriginatorConversationID: "1af7150b-2b1f-41fc-bbe6-7316c9098918",
-      InitiatorName: "testapi",
-      SecurityCredential: "R/ClXiMil/rvR4tJ8fou2LkvIht3I+lbL9ZHcgKuJ/KQ4A8JI1abcbWeKth/+MzyrnlC+lK/FKmx/ujwPYZoXKoDMm0kVcfXNdGEvJ0+7jktSWupLOUUcaALhBCtXNvnSgRN/2M4LWwYfgqF77Og1ZNDBitTHXgFN/4+QCiTcWR+DvLQblwc43x8qARmUJbPEkm8j9s+rVK05mHGz9fS7Qr0rIUpWHytbdZXtHzZQTEP6vX50+ExFghu/27H+JfTE1I+3kyUZG8/SUsowU8Sk9O6zYxDKyRgqOf5MK0Bay1nUiENkH+bd1r2ElI0ThXPbGIMTWMVNkpM4bi0TcoAOQ==",
-      CommandID: "SalaryPayment",
-      Amount: 1,
-      PartyA: 600984,
-      PartyB: 254742243421,
-      Remarks: "Test remarks",
-      QueueTimeOutURL: "https://elosystemv1.onrender.com/api/newpay/b2c/queue",
-      ResultURL: "https://elosystemv1.onrender.com/api/newpay/b2c/result",
-      Occasion: "",
-    };
-
-    const response = await axios.post(url, requestData, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
+    
+    let req = unirest('POST', 'https://sandbox.safaricom.co.ke/mpesa/b2c/v3/paymentrequest')
+    .headers({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer 2DozOwJfRC4fXwBAhuXNTrUsJhen'
+    })
+    .send(JSON.stringify({
+        "OriginatorConversationID": "1af7150b-2b1f-41fc-bbe6-7316c9098918",
+        "InitiatorName": "testapi",
+        "SecurityCredential": "R/ClXiMil/rvR4tJ8fou2LkvIht3I+lbL9ZHcgKuJ/KQ4A8JI1abcbWeKth/+MzyrnlC+lK/FKmx/ujwPYZoXKoDMm0kVcfXNdGEvJ0+7jktSWupLOUUcaALhBCtXNvnSgRN/2M4LWwYfgqF77Og1ZNDBitTHXgFN/4+QCiTcWR+DvLQblwc43x8qARmUJbPEkm8j9s+rVK05mHGz9fS7Qr0rIUpWHytbdZXtHzZQTEP6vX50+ExFghu/27H+JfTE1I+3kyUZG8/SUsowU8Sk9O6zYxDKyRgqOf5MK0Bay1nUiENkH+bd1r2ElI0ThXPbGIMTWMVNkpM4bi0TcoAOQ==",
+        "CommandID": "SalaryPayment",
+        "Amount": 10,
+        "PartyA": 600984,
+        "PartyB": 254708374149,
+        "Remarks": "Test remarks",
+        "QueueTimeOutURL": "https://mydomain.com/b2c/queue",
+        "ResultURL": "https://mydomain.com/b2c/result",
+        "Occasion": "",
+      }))
+    .end(res => {
+        if (res.error) throw new Error(res.error);
+        console.log(res.raw_body);
     });
 
     res.status(200).json(response.data);
