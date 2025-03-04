@@ -354,7 +354,7 @@ const OrderingPage = () => {
             };
 
             try {
-                const response = await axiosInstance.post('/mpesa/lipa', payload, {
+                const response = await axiosInstance.post('/newpay/stkpush', payload, {
                     headers: {
                         'Content-Type': 'application/json'
                     }

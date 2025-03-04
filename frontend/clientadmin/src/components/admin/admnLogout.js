@@ -28,7 +28,7 @@ const Logout = () => {
         // Clear the user token or session
         sessionStorage.removeItem('admintoken'); // or your token key
         Cookies.remove('admintoken');
-        Cookies.remove('firstName');
+        Cookies.remove('firstName'); 
         Cookies.remove('role');
         Cookies.remove('eid');
         sessionStorage.removeItem('firstName');

@@ -22,6 +22,7 @@
     "gridfs-stream": "^1.1.1",
     "highlight.js": "^11.11.1",
     "html-to-image": "^1.11.11",
+    "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
     "modern-react-qr-reader": "^1.0.12",
     "mongoose": "^8.8.3",

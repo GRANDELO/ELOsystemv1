@@ -12,6 +12,7 @@ import categories from './categories.js';
 import { useNavigate } from 'react-router-dom';
 import { FaShoppingCart} from 'react-icons/fa';
 import { getUsernameFromToken } from '../utils/auth';
+import Cookies from 'js-cookie';
 
 const NewProductList = () => {
   const navigate = useNavigate();
@@ -155,7 +156,7 @@ const NewProductList = () => {
   const syncSessionToBackend = async () => {
     const searchHistory = getSearchHistory();
     const clickHistory = JSON.parse(sessionStorage.getItem('clickHistory')) || {};
-    const token = localStorage.getItem('token');
+    const token = Cookies.get('token');
 
     if (!token) {
       console.error("token missing or invalid.");

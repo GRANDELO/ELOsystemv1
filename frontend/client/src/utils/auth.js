@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import Cookies from 'js-cookie';
 
 export const getUsernameFromToken = () => {
   const token = sessionStorage.getItem('userToken');
@@ -15,11 +16,11 @@ export const getUsernameFromToken = () => {
 };
 
 export const getToken = () => {
-  return localStorage.getItem('token');
+  return Cookies.get('token');
 };
 
 export const removeToken = () => {
-  localStorage.removeItem('token');
+  Cookies.remove('token');
 };
 
 export const isAuthenticated = () => {

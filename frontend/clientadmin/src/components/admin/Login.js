@@ -70,7 +70,7 @@ function Login() {
             Cookies.set('firstName', response.data.name, { expires: 1 });
             Cookies.set('role', response.data.role, { expires: 1 });
             Cookies.set('eid', response.data.workID, { expires: 1 });
-
+ 
             const role = response.data.role.trim().toLowerCase();
             if (role === 'admin') {
                 navigate('/dashboard');

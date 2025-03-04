@@ -24,6 +24,7 @@ import './styles/salespersonhome.css';
 import { Alert} from 'react-bootstrap';
 import { useIsMobile } from '../utils/mobilecheck';
 import Tour from 'reactour';
+import Cookies from 'js-cookie';
 
 const Home = () => {
   const [cart, setCart] = useState([]);
@@ -37,9 +38,6 @@ const Home = () => {
   const username = getUsernameFromToken();
   const navigate = useNavigate();
   const [loginPrompt, setLoginPrompt] = useState("");
-  const token = localStorage.getItem('token');
-  const apptoken = localStorage.getItem('apptoken');
-  const appcat = localStorage.getItem('appcat');
   const [isNavVisible, setIsNavVisible] = useState(false);
   const [isFeedbackVisible, setIsFeedbackVisible] = useState(false); 
   const [isWhatsappVisible, setIsWhatsappVisible] = useState(false);
@@ -212,35 +210,6 @@ const [steps, setSteps] = useState(initialSteps);
     localStorage.setItem('hasSeenTour', 'true');
   };
 
-  
-
-  useEffect(() => {
-    // If apptoken is set, use it to set the token and navigate based on the app category
-    if (apptoken) {
-      localStorage.setItem('token', apptoken);
-      if (appcat) {
-        switch (appcat.trim().toLowerCase()) {
-          case 'seller':
-            alert('Failed to log in this app is for buyers only.');
-            navigate('/logout');
-            break;
-          default:
-            const currentpage = sessionStorage.getItem('currentpage');
-            navigate(currentpage ? currentpage : '/');
-            break;
-        }
-      }
-    }
-
-    // If token exists, store user data and determine navigation
-    if (token) {
-      sessionStorage.setItem('userToken', token);
-      const category = getcategoryFromToken();
-      const trimmedCategory = category?.trim().toLowerCase(); // Add optional chaining for safety
-      const storedUsername = getUsernameFromToken();
-      sessionStorage.setItem('username', storedUsername);
-    }
-  }, [apptoken, appcat, token, navigate]);
 
 
   const fetchCart = async () => {
@@ -613,13 +582,10 @@ const [steps, setSteps] = useState(initialSteps);
 
         <>
           {isNavVisible ? (
-                    <>
+                    <div className='allnavs'>
                     {isNavVisible ? (''): ('')}
                     <button className="salesp-toggle-button" onClick={toggleSettings}>
                       <FaCog />
-                    </button>
-                    <button className="salesp-toggle-button" onClick={toggleOrder}>
-                      <FaBoxOpen />
                     </button>
                     <button className="salesp-toggle-button" onClick={toggleNotifications}>
                       <FaBell />
@@ -637,13 +603,16 @@ const [steps, setSteps] = useState(initialSteps);
                     <button className="salesp-toggle-button" onClick={toggleNav}>
                       <FiXCircle />
                     </button>
-                  </>
+                  </div>
           ): ( 
           <button className="salesp-toggle-button" onClick={toggleNav}>
             <IoMdMenu />
           </button>)}
           <button className="salesp-toggle-button" onClick={toggleCart}>
-                      <FaShoppingCart />
+            <FaShoppingCart />
+          </button>
+          <button className="salesp-toggle-button" onClick={toggleOrder}>
+            <FaBoxOpen />
           </button>
         </>
 
