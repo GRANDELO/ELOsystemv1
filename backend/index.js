@@ -55,6 +55,7 @@ const transactionRoutes = require("./routes/transactionRoutes");
 const chatbotRoutes = require('./routes/chat.routes');
 const buyerTrack = require('./routes/BuyerAdmin');
 
+const cache = require('./cache');
 
 const uploadDir = path.join(__dirname, 'uploads');
 
@@ -177,7 +178,7 @@ mongoose
 
 
 // Routes
-
+app.use('/api', cache);
 app.use('/api', emailing);
 app.use('/api', Destination);
 app.use('/api/delivery', deliveryroutesaction);

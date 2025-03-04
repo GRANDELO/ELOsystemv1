@@ -14,6 +14,7 @@ const routeSchema = new mongoose.Schema({
   },
   orderNumber:[{type: String, unique: true }],
   status: { type: String, enum: ['Pending', 'scheduled', 'in_transit', 'delivered'], default: 'scheduled' },
+  productId:{ type: mongoose.Schema.Types.ObjectId, ref: 'Order', required: true},
   type: {type: String, enum:['direct', 'hub'], required: true},
 });
 

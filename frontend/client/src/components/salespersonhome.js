@@ -249,6 +249,7 @@ const [steps, setSteps] = useState(initialSteps);
     try {
       const response = await axiosInstance.post('/cart/cart', { username });
       setCart(response.data.items || []);
+      
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to fetch cart');
     } finally {

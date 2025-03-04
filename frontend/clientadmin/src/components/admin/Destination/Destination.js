@@ -31,6 +31,7 @@ const Destination = () => {
           destination: route.destination,
           orderCount: route.orderNumber ? route.orderNumber.length : 0,
           status: route.status || 'pending',
+          productId: route.productId,
           orders: route.orderNumber
             ? route.orderNumber.map((orderNumber) => ({
                 id: orderNumber,
@@ -63,6 +64,7 @@ const Destination = () => {
           destination: route.destination,
           orderCount: route.orderNumber ? route.orderNumber.length : 0,
           status: route.status || 'pending',
+          productId: route.productId,
           orders: route.orderNumber
             ? route.orderNumber.map((orderNumber) => ({
                 id: orderNumber,
