@@ -199,6 +199,7 @@ exports.validateURLHandler = (req, res) => {
 };
 
 // B2C (Auto Withdrawal) Handler
+/*
 exports.b2cRequestHandler = async (req, res) => {
   try {
 //https://api.safaricom.co.ke/mpesa/b2c/v1/paymentrequest
@@ -226,7 +227,41 @@ exports.b2cRequestHandler = async (req, res) => {
     console.log(error);
     res.status(500).send("❌ B2C request failed");
   }
+};*/
+
+exports.b2cRequestHandler = async (req, res) => {
+  try {
+    const accessToken = await getAccessToken(); // Fetch access token
+    const securityCredential = process.env.SECURITYCREDENTIAL;
+    
+    const url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v3/paymentrequest";
+
+    const response = await axios.post(url, {
+      OriginatorConversationID: "1af7150b-2b1f-41fc-bbe6-7316c9098918",
+      InitiatorName: "testapi",
+      SecurityCredential: securityCredential,
+      CommandID: "SalaryPayment",
+      Amount: 10,
+      PartyA: 600984,
+      PartyB: 254708374149,
+      Remarks: "Test remarks",
+      QueueTimeOutURL: "https://mydomain.com/b2c/queue",
+      ResultURL: "https://mydomain.com/b2c/result",
+      Occasion: "",
+    }, {
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
+
+    res.status(200).json(response.data);
+  } catch (error) {
+    console.error("B2C Request Failed:", error);
+    res.status(500).send("❌ B2C request failed");
+  }
 };
+
 
 exports.b2cRequestHandler = async (Amount, Phonenumber) => {
     try {
