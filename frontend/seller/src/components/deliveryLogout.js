@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import loader from './images/loader2.gif';
 import './styles/Logout.css';
+import Cookies from 'js-cookie';
+
 const Logout = () => {
   const navigate = useNavigate();
   const [logoutMessage, setLogoutMessage] = useState('');
@@ -28,6 +30,11 @@ const Logout = () => {
         // Clear the user token or session
         sessionStorage.removeItem('userToken'); // or your token key
         sessionStorage.removeItem('amount'); 
+
+        Cookies.remove('token');
+        Cookies.remove('apptoken');
+        Cookies.remove('appcat');
+        
         localStorage.removeItem('token');
         localStorage.removeItem('apptoken');
         localStorage.removeItem('appcat');

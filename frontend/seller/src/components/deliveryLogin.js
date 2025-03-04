@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getUsernameFromToken, getcategoryFromToken } from '../utils/auth';
 import './styles/Login.css';
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import Cookies from 'js-cookie';
+
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -11,15 +13,23 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [recoverpassword, setRecoverPassword] = useState(false);
   const navigate = useNavigate();
+
+  const ctoken = Cookies.get('token');
+  const capptoken = Cookies.get('admintoken');
   const token = localStorage.getItem('token');
   const apptoken = localStorage.getItem('apptoken');
-  const appcat = localStorage.getItem('appcat');
+  const appcat = Cookies.get('appcat');
+
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (apptoken || token)
+      {
+        navigate('/logout');
+      }
     // If apptoken is set, use it to set the token and navigate based on the app category
-    if (apptoken) {
-      localStorage.setItem('token', apptoken);
+    if (capptoken) {
+      Cookies.set('token', capptoken, { expires: 1 });
       if (appcat) {
         switch (appcat.trim().toLowerCase()) {
           case 'delivery person':
@@ -34,24 +44,24 @@ const Login = () => {
     }
 
     // If token exists, store user data and determine navigation
-    if (token) {
-      sessionStorage.setItem('userToken', token);
+    if (ctoken) {
+      sessionStorage.setItem('userToken', ctoken);
       const category = getcategoryFromToken();
       const trimmedCategory = category?.trim().toLowerCase(); // Add optional chaining for safety
       const storedUsername = getUsernameFromToken();
       sessionStorage.setItem('username', storedUsername);
     }
-  }, [apptoken, appcat, token, navigate]);
+  }, [token, apptoken, capptoken, appcat, ctoken, navigate]);
 
   useEffect(() => {
-    if (token) {
-      sessionStorage.setItem('userToken', token);
+    if (ctoken) {
+      sessionStorage.setItem('userToken', ctoken);
       const category = getcategoryFromToken();
       const trimmedCategory = category?.trim().toLowerCase(); // Add optional chaining for safety
       const storedUsername = getUsernameFromToken();
       sessionStorage.setItem('username', storedUsername);
     }
-  }, [token, navigate]);
+  }, [ctoken, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -65,10 +75,11 @@ const Login = () => {
       });
       setMessage(response.data.message);
       sessionStorage.setItem('userToken', response.data.token);
-      localStorage.setItem('token', response.data.token);
+
+      Cookies.set('token', response.data.token, { expires: 15 });
+      Cookies.set('apptoken', response.data.token, { expires: 15 });
+      Cookies.set('appcat', response.data.category.trim().toLowerCase(), { expires: 15 });
       sessionStorage.setItem('amount', response.data.amount);
-      localStorage.setItem('apptoken', response.data.token);
-      localStorage.setItem('appcat', response.data.category.trim().toLowerCase());
       setLoading(false);
       const category = response.data.category.trim().toLowerCase();
       if (category === 'delivery person')

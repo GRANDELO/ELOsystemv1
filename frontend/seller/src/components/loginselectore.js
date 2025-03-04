@@ -2,12 +2,13 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles/loginselector.css";
 import { getUsernameFromToken, getcategoryFromToken } from "../utils/auth";
+import Cookies from 'js-cookie';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-  const apptoken = localStorage.getItem("apptoken");
-  const appcat = localStorage.getItem("appcat");
+  const token = Cookies.get('token');
+  const apptoken = Cookies.get('apptoken');
+  const appcat = Cookies.get('appcat');
 
   useEffect(() => {
     const handleNavigation = (category) => {
@@ -31,7 +32,7 @@ const LoginPage = () => {
     };
 
     if (apptoken) {
-      localStorage.setItem("token", apptoken);
+      Cookies.set('token', apptoken, { expires: 1 });
       if (appcat) {
         handleNavigation(appcat.trim().toLowerCase());
       }
