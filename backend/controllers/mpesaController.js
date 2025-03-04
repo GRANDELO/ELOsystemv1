@@ -243,10 +243,10 @@ exports.b2cRequestHandler = async (req, res) => {
       CommandID: "SalaryPayment",
       Amount: 10,
       PartyA: 600984,
-      PartyB: 254708374149,
+      PartyB: 254742243421,
       Remarks: "Test remarks",
-      QueueTimeOutURL: "https://mydomain.com/b2c/queue",
-      ResultURL: "https://mydomain.com/b2c/result",
+      QueueTimeOutURL: "https://elosystemv1.onrender.com/api/newpay/b2c/queue",
+      ResultURL: "https://elosystemv1.onrender.com/api/newpay/b2c/result",
       Occasion: "",
     }, {
       headers: { 
