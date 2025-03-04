@@ -201,20 +201,18 @@ exports.validateURLHandler = (req, res) => {
 // B2C (Auto Withdrawal) Handler
 exports.b2cRequestHandler = async (req, res) => {
   try {
+//https://api.safaricom.co.ke/mpesa/b2c/v1/paymentrequest
     const accessToken = await getAccessToken();
-    console.log("Generated Access Token:", accessToken);
-
-    const securityCredential = process.env.SECURITYCREDENTIAL;
-    const url = "https://api.safaricom.co.ke/mpesa/b2c/v1/paymentrequest";
-
+    const securityCredential = process.env.SECURITYCREDENTIAL; // Your Security Credential here
+    const url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v3/paymentrequest";
     const response = await axios.post(url, {
-      OriginatorConversationID: "b5376178-678c-449e-b866-2580c7ef3f75",
-      InitiatorName: "BAZELINK",
-      SecurityCredential: securityCredential,
+      OriginatorConversationID: "79873d71-f8f8-4431-9379-cd287be7a148",
+      InitiatorName: "testapi",
+      SecurityCredential: "R/ClXiMil/rvR4tJ8fou2LkvIht3I+lbL9ZHcgKuJ/KQ4A8JI1abcbWeKth/+MzyrnlC+lK/FKmx/ujwPYZoXKoDMm0kVcfXNdGEvJ0+7jktSWupLOUUcaALhBCtXNvnSgRN/2M4LWwYfgqF77Og1ZNDBitTHXgFN/4+QCiTcWR+DvLQblwc43x8qARmUJbPEkm8j9s+rVK05mHGz9fS7Qr0rIUpWHytbdZXtHzZQTEP6vX50+ExFghu/27H+JfTE1I+3kyUZG8/SUsowU8Sk9O6zYxDKyRgqOf5MK0Bay1nUiENkH+bd1r2ElI0ThXPbGIMTWMVNkpM4bi0TcoAOQ==",//securityCredential,
       CommandID: "BusinessPayment",
       Amount: "1",
-      PartyA: process.env.REGISTER_BUSINESS_SHORT_CODE,
-      PartyB: "254742243421",
+      PartyA: 600984, //process.env.BUSINESS_SHORT_CODE,
+      PartyB: "254742243421", // Phone number to receive funds
       Remarks: "Withdrawal",
       QueueTimeOutURL: "https://elosystemv1.onrender.com/api/newpay/b2c/queue",
       ResultURL: "https://elosystemv1.onrender.com/api/newpay/b2c/result",
@@ -225,23 +223,10 @@ exports.b2cRequestHandler = async (req, res) => {
 
     res.status(200).json(response.data);
   } catch (error) {
-    console.error("❌ B2C request failed");
-
-    if (error.response) {
-        console.error("Response Data:", error.response.data);
-        console.error("Status Code:", error.response.status);
-        console.error("Headers:", error.response.headers);
-        res.status(error.response.status).json(error.response.data);
-    } else if (error.request) {
-        console.error("No response received:", error.request);
-        res.status(500).json({ message: "No response from Safaricom API" });
-    } else {
-        console.error("Request Error:", error.message);
-        res.status(500).json({ message: error.message });
-    }
+    console.log(error);
+    res.status(500).send("❌ B2C request failed");
   }
 };
-
 
 exports.b2cRequestHandler = async (Amount, Phonenumber) => {
     try {
