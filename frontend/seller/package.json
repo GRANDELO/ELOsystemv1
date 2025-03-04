@@ -23,6 +23,7 @@
     "file-saver": "^2.0.5",
     "firebase": "^11.0.2",
     "gridfs-stream": "^1.1.1",
+    "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
     "modern-react-qr-reader": "^1.0.12",
     "mongoose": "^8.8.3",

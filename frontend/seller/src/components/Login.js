@@ -14,13 +14,40 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [recoverpassword, setRecoverPassword] = useState(false);
   const navigate = useNavigate();
-
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isInstalled, setIsInstalled] = useState(true);
   const ctoken = Cookies.get('token');
   const capptoken = Cookies.get('admintoken');
   const token = localStorage.getItem('token');
   const apptoken = localStorage.getItem('apptoken');
   const appcat = Cookies.get('appcat');
   const [loading, setLoading] = useState(false);
+
+
+
+  useEffect(() => {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstalled(false);
+    });
+
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstalled(true);
+    }
+  }, []);
+
+  const handleInstall = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          setIsInstalled(true);
+        }
+        setDeferredPrompt(null);
+      });
+    }
+  };
 
   // Detect and apply dark mode from localStorage
   useEffect(() => {
@@ -125,6 +152,14 @@ const Login = () => {
 
   return (
     <div className="container">
+          {!isInstalled &&
+        (
+          <div className="install-prompt">
+            <p>Install this web app for a better experience.</p>
+            <button onClick={handleInstall}>Install</button>
+          </div>
+        )
+      };
       <form onSubmit={recoverpassword ? sendRecovEmail : handleSubmit}>
         {!recoverpassword ? (
           <div>
