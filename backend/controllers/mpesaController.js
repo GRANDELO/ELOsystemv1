@@ -1,7 +1,6 @@
 const axios = require("axios");
 const moment = require("moment");
 require('dotenv').config();
-const unirest = require('unirest');
 const fs = require("fs");
 const Order = require('../models/Order');
 const PendingJob = require('../models/PendingJob'); 
@@ -200,20 +199,19 @@ exports.validateURLHandler = (req, res) => {
 };
 
 // B2C (Auto Withdrawal) Handler
-/*
 exports.b2cRequestHandler = async (req, res) => {
   try {
 //https://api.safaricom.co.ke/mpesa/b2c/v1/paymentrequest
     const accessToken = await getAccessToken();
     const securityCredential = process.env.SECURITYCREDENTIAL; // Your Security Credential here
-    const url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v3/paymentrequest";
+    const url = "https://api.safaricom.co.ke/mpesa/b2c/v3/paymentrequest";
     const response = await axios.post(url, {
-      OriginatorConversationID: "79873d71-f8f8-4431-9379-cd287be7a148",
-      InitiatorName: "testapi",
-      SecurityCredential: "R/ClXiMil/rvR4tJ8fou2LkvIht3I+lbL9ZHcgKuJ/KQ4A8JI1abcbWeKth/+MzyrnlC+lK/FKmx/ujwPYZoXKoDMm0kVcfXNdGEvJ0+7jktSWupLOUUcaALhBCtXNvnSgRN/2M4LWwYfgqF77Og1ZNDBitTHXgFN/4+QCiTcWR+DvLQblwc43x8qARmUJbPEkm8j9s+rVK05mHGz9fS7Qr0rIUpWHytbdZXtHzZQTEP6vX50+ExFghu/27H+JfTE1I+3kyUZG8/SUsowU8Sk9O6zYxDKyRgqOf5MK0Bay1nUiENkH+bd1r2ElI0ThXPbGIMTWMVNkpM4bi0TcoAOQ==",//securityCredential,
+      OriginatorConversationID: "b5376178-678c-449e-b866-2580c7ef3f75",
+      InitiatorName: "BAZELINK",
+      SecurityCredential: securityCredential,
       CommandID: "BusinessPayment",
       Amount: "1",
-      PartyA: 600984, //process.env.BUSINESS_SHORT_CODE,
+      PartyA: process.env.BUSINESS_SHORT_CODE,
       PartyB: "254742243421", // Phone number to receive funds
       Remarks: "Withdrawal",
       QueueTimeOutURL: "https://elosystemv1.onrender.com/api/newpay/b2c/queue",
@@ -228,46 +226,7 @@ exports.b2cRequestHandler = async (req, res) => {
     console.log(error);
     res.status(500).send("❌ B2C request failed");
   }
-};*/
-exports.b2cRequestHandler = async (req, res) => {
-  try {
-    const accessToken = await getAccessToken(); // Fetch access token
-    
-    let req = unirest('POST', 'https://sandbox.safaricom.co.ke/mpesa/b2c/v3/paymentrequest')
-    .headers({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer 2DozOwJfRC4fXwBAhuXNTrUsJhen'
-    })
-    .send(JSON.stringify({
-        "OriginatorConversationID": "1af7150b-2b1f-41fc-bbe6-7316c9098918",
-        "InitiatorName": "testapi",
-        "SecurityCredential": "R/ClXiMil/rvR4tJ8fou2LkvIht3I+lbL9ZHcgKuJ/KQ4A8JI1abcbWeKth/+MzyrnlC+lK/FKmx/ujwPYZoXKoDMm0kVcfXNdGEvJ0+7jktSWupLOUUcaALhBCtXNvnSgRN/2M4LWwYfgqF77Og1ZNDBitTHXgFN/4+QCiTcWR+DvLQblwc43x8qARmUJbPEkm8j9s+rVK05mHGz9fS7Qr0rIUpWHytbdZXtHzZQTEP6vX50+ExFghu/27H+JfTE1I+3kyUZG8/SUsowU8Sk9O6zYxDKyRgqOf5MK0Bay1nUiENkH+bd1r2ElI0ThXPbGIMTWMVNkpM4bi0TcoAOQ==",
-        "CommandID": "SalaryPayment",
-        "Amount": 10,
-        "PartyA": 600984,
-        "PartyB": 254708374149,
-        "Remarks": "Test remarks",
-        "QueueTimeOutURL": "https://mydomain.com/b2c/queue",
-        "ResultURL": "https://mydomain.com/b2c/result",
-        "Occasion": "",
-      }))
-    .end(res => {
-        if (res.error) throw new Error(res.error);
-        console.log(res.raw_body);
-    });
-
-    res.status(200).json(response.data);
-  } catch (error) {
-    console.error("❌ B2C Request Failed:", error.message);
-    
-    // Send a more detailed error response
-    res.status(500).json({
-      error: "B2C request failed",
-      message: error.message,
-    });
-  }
 };
-
 
 exports.b2cRequestHandler = async (Amount, Phonenumber) => {
     try {

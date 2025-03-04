@@ -15,11 +15,12 @@ const processPendingJobs = async () => {
             const { callbackData } = job;
             const resultCode = callbackData.ResultCode;
             const checkoutId = callbackData.CheckoutRequestID;
-
+            const amountpaid = = callbackData.CallbackMetadata.Item.find(item => item.Name.trim() === "Amount").Value;
             if (resultCode === 0) {
                 const order = await Order.findOne({ CheckoutRequestID: checkoutId });
                 if (order) {
                     order.paid = true;
+                    console.log(amountpaid);
                     await order.save();
 
                     await sendOrderReceiptEmail(order.orderNumber);
