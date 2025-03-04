@@ -16,14 +16,23 @@ const processPendingJobs = async () => {
             const resultCode = callbackData.ResultCode;
             const checkoutId = callbackData.CheckoutRequestID;
             const amountpaid = callbackData.CallbackMetadata.Item.find(item => item.Name.trim() === "Amount").Value;
+            const MpesaReceiptNumber = callbackData.CallbackMetadata.Item.find(item => item.Name.trim() === "MpesaReceiptNumber").Value;
+            const PhoneNumber = callbackData.CallbackMetadata.Item.find(item => item.Name.trim() === "PhoneNumber").Value;
             if (resultCode === 0) {
                 const order = await Order.findOne({ CheckoutRequestID: checkoutId });
                 if (order) {
-                    order.paid = true;
-                    console.log(amountpaid);
+                    if (order.totalPrice === amountpaid)
+                    {
+                      order.paid = true;
+                      await sendOrderReceiptEmail(order.orderNumber);
+                    }else
+                    {
+                      order.totalPrice -= amountpaid;
+                    }
+
                     await order.save();
 
-                    await sendOrderReceiptEmail(order.orderNumber);
+
 
                     console.log(`Processed job for order ${checkoutId}`);
                 } else {

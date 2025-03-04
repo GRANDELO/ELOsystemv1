@@ -220,8 +220,8 @@ exports.b2cRequestHandler = async (req, res) => {
     }, {
       headers: { Authorization: "Bearer " + accessToken }
     });
-
-    res.status(200).json(response.data);
+    console.log(response.data);
+    res.status(200).send("✅ Register URL request successful");
   } catch (error) {
     console.log(error);
     res.status(500).send("❌ B2C request failed");
