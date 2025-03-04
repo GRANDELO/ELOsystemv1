@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axiosInstance from './axiosInstance';
+import { useNavigate } from 'react-router-dom';
 import { Alert, Button, Form } from 'react-bootstrap';
 import { useCart } from '../contexts/CartContext';
 import { getUsernameFromToken } from '../utils/auth';
@@ -17,7 +18,7 @@ const ProductPage = () => {
   const [product, setProduct] = useState(null);
   const [loadingProduct, setLoadingProduct] = useState(true);
   const [errorProduct, setErrorProduct] = useState('');
-
+  const navigate = useNavigate();
   const canvasRef = useRef();
   const { dispatch } = useCart();
   const [message, setMessage] = useState('');
@@ -98,6 +99,9 @@ const ProductPage = () => {
       setTimeout(() => {
         setLoading(false);
       }, 2000);
+      setTimeout(() => {
+        navigate('/');
+      }, 3000);
     } catch (err) {
       setLoading(false);
       console.error('Failed to add to cart:', err);

@@ -24,6 +24,8 @@ import './styles/salespersonhome.css';
 import { Alert} from 'react-bootstrap';
 import { useIsMobile } from '../utils/mobilecheck';
 import Tour from 'reactour';
+import Cookies from 'js-cookie';
+
 const Shop = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -40,9 +42,6 @@ const Shop = () => {
   const username = getUsernameFromToken();
   const navigate = useNavigate();
   const [loginPrompt, setLoginPrompt] = useState('');
-  const token = localStorage.getItem('token');
-  const apptoken = localStorage.getItem('apptoken');
-  const appcat = localStorage.getItem('appcat');
   const [isNavVisible, setIsNavVisible] = useState(false);
   const [isFeedbackVisible, setIsFeedbackVisible] = useState(false); 
   const [isWhatsappVisible, setIsWhatsappVisible] = useState(false);

@@ -9,6 +9,8 @@ import { jwtDecode } from 'jwt-decode';
 import categories from './categories.js';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+
 
 const NewProductList = ({ username }) => {
   {/*const { username } = useParams();*/}
@@ -126,7 +128,7 @@ const NewProductList = ({ username }) => {
   const syncSessionToBackend = async () => {
     const searchHistory = getSearchHistory();
     const clickHistory = JSON.parse(sessionStorage.getItem('clickHistory')) || {};
-    const token = localStorage.getItem('token');
+    const token =  Cookies.get('token');
   
     if (!token) {
       console.error("token missing or invalid.");

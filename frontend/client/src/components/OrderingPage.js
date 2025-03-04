@@ -275,7 +275,7 @@ const OrderingPage = () => {
             };
 
             try {
-                const response = await axiosInstance.post('/mpesa/lipa', payload, {
+                const response = await axiosInstance.post('/newpay/stkpush', payload, {
                     headers: {
                         'Content-Type': 'application/json'
                     }
@@ -615,14 +615,14 @@ const OrderingPage = () => {
       <Form>
         <Form.Group className='model2'>
           <Form.Label className='Label' >Payment Method</Form.Label>
-         {/*  <Form.Check
+          <Form.Check
             type="radio"
             label="M-Pesa"
             name="paymentMethod"
             value="mpesa"
             checked={paymentMethod === 'mpesa'}
             onChange={handlePaymentMethodChange}
-          />*/}
+          />
           <Form.Check
             type="radio"
             label="Mpesa on Delivery"
