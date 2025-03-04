@@ -1,69 +1,126 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image Upload</title>
-</head>
-<body>
-  <h1>Upload Image</h1>
-  <form id="uploadForm" enctype="multipart/form-data">
-    <input type="file" name="image" id="imageInput" required />
-    <button type="submit">Upload</button>
-  </form>
+<div style="
+    font-family: Arial, sans-serif; 
+    color: #333; 
+    max-width: 600px; 
+    margin: auto; 
+    border: 1px solid #e1e1e1; 
+    padding: 25px; 
+    border-radius: 10px; 
+    background-color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    line-height: 1.6;
+">
+  <!-- Header -->
+  <h2 style="
+      color: #1d4ed8; 
+      text-align: center; 
+      font-size: 26px; 
+      margin-bottom: 10px;
+  ">
+    🛍️ Order Receipt - Bazelink
+  </h2>
 
-  <h2>Uploaded Images</h2>
-  <div id="imageList"></div>
+  <!-- Greeting -->
+  <p style="font-size: 16px; color: #555;">
+    Dear <strong>${user.username}</strong>,<br>
+    Thank you for shopping with <strong>Bazelink</strong>! Here’s the receipt for your order.
+  </p>
 
-  <script>
-    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData();
-      const fileField = document.querySelector('input[type="file"]');
-      formData.append('image', fileField.files[0]);
+  <!-- Order Information -->
+  <div style="
+      background-color: #f8f8f8; 
+      padding: 15px; 
+      border-radius: 8px; 
+      margin-top: 10px;
+  ">
+    <p style="font-size: 16px; color: #555;">
+      <strong>Order Number:</strong> ${order.orderNumber}
+    </p>
+  </div>
 
-      try {
-        const response = await fetch('https://grandelo.web.app/api/upload', {
-          method: 'POST',
-          body: formData,
-          mode: 'cors'
-        });
-        if (!response.ok) {
-          throw new Error('Network response was not ok ' + response.statusText);
-        }
-        const result = await response.text();
-        alert(result);
-        loadImages();
-      } catch (error) {
-        console.error('Error uploading image:', error);
-      }
-    });
+  <!-- Products Ordered -->
+  <h3 style="color: #1d4ed8; margin-top: 20px; text-decoration: underline;">🛒 Products Ordered:</h3>
 
-    async function loadImages() {
-      try {
-        const response = await fetch('https://grandelo.web.app/api/images', {
-          mode: 'cors'
-        });
-        if (!response.ok) {
-          throw new Error('Network response was not ok ' + response.statusText);
-        }
-        const images = await response.json();
-        const imageList = document.getElementById('imageList');
-        imageList.innerHTML = '';
-        images.forEach(image => {
-          const imgElement = document.createElement('img');
-          imgElement.src = `uploads/${image.filename}`;
-          imgElement.alt = image.filename;
-          imgElement.style.maxWidth = '200px';
-          imgElement.style.margin = '10px';
-          imageList.appendChild(imgElement);
-        });
-      } catch (error) {
-        console.error('Error loading images:', error);
-      }
-    }
+  <ul style="font-size: 16px; color: #555; list-style-type: none; padding: 0;">
+    ${formattedProducts
+      .map(
+        (product) => `
+        <li style="
+            margin-bottom: 15px; 
+            padding: 10px; 
+            background: #f9f9f9; 
+            border-radius: 8px;
+            border-left: 5px solid #1d4ed8;
+        ">
+          <strong>${product.name}</strong> <br>
+          <small>Category: ${product.category}</small> <br>
+          Quantity: <strong>${product.quantity}</strong> @ <strong>${product.price} each</strong>
 
-    document.addEventListener('DOMContentLoaded', loadImages);
-  </script>
-</body>
-</html>
+          <!-- Review Button -->
+          <div style="text-align: center; margin-top: 10px;">
+            <a href="https://www.bazelink.co.ke/review?productId=${product.productid}" 
+               style="
+                   display: inline-block; 
+                   padding: 12px 20px; 
+                   font-size: 16px; 
+                   color: #ffffff; 
+                   background-color: #1d4ed8; 
+                   text-decoration: none; 
+                   border-radius: 6px; 
+                   font-weight: bold;
+                   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                   transition: background 0.3s;
+               "
+               onmouseover="this.style.backgroundColor='#153d91';"
+               onmouseout="this.style.backgroundColor='#1d4ed8';">
+              ⭐ Review this Product
+            </a>
+          </div>
+        </li>`
+      )
+      .join('')}
+  </ul>
+
+  <!-- Payment Details -->
+  <h3 style="color: #1d4ed8; margin-top: 20px; text-decoration: underline;">💳 Payment Details:</h3>
+  <div style="
+      background-color: #f8f8f8; 
+      padding: 15px; 
+      border-radius: 8px; 
+      border: 1px solid #e1e1e1;
+  ">
+    <p style="font-size: 16px; color: #555; margin: 5px 0;">
+      <strong>Total Amount Paid:</strong> ${order.totalPrice}
+    </p>
+    <p style="font-size: 16px; color: #555; margin: 5px 0;">
+      <strong>Payment Method:</strong> ${order.paymentMethod}
+    </p>
+    <p style="font-size: 16px; color: #555; margin: 5px 0;">
+      <strong>Payment Phone Number:</strong> ${PhoneNumber}
+    </p>
+    <p style="font-size: 16px; color: #555; margin: 5px 0;">
+      <strong>Mpesa Receipt Number:</strong> ${MpesaReceiptNumber}
+    </p>
+  </div>
+
+  <!-- Call to Action -->
+  <p style="
+      font-size: 14px; 
+      color: #888; 
+      text-align: center; 
+      margin-top: 20px;
+  ">
+    If you have any issues, feel free to contact our support team.
+  </p>
+
+  <!-- Footer -->
+  <p style="
+      font-size: 16px; 
+      color: #333; 
+      text-align: center; 
+      margin-top: 30px;
+  ">
+    Best regards,<br> 
+    <strong>Bazelink Support Team</strong>
+  </p>
+</div>

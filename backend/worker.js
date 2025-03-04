@@ -24,7 +24,7 @@ const processPendingJobs = async () => {
                     if (order.totalPrice === amountpaid)
                     {
                       order.paid = true;
-                      await sendOrderReceiptEmail(order.orderNumber);
+                      await sendOrderReceiptEmail(order.orderNumber, MpesaReceiptNumber, PhoneNumber);
                     }else
                     {
                       order.totalPrice -= amountpaid;

@@ -528,7 +528,7 @@ exports.sendOrderReceiptEmail = async (orderNumber) => {
   }
 };
 
-const sendOrderReceiptEmail = async (orderNumber) => {
+const sendOrderReceiptEmail = async (orderNumber, MpesaReceiptNumber, PhoneNumber) => {
   try {
     // Fetch the order by order number
     const order = await Order.findOne({ orderNumber }).lean();
@@ -584,7 +584,7 @@ const sendOrderReceiptEmail = async (orderNumber) => {
     Thank you for shopping with Bazelink! Here is the receipt for your recent purchase.
     
     Order Number: ${order.orderNumber}
-    
+
     Products Ordered:
     ${formattedProducts
       .map(
@@ -597,57 +597,148 @@ const sendOrderReceiptEmail = async (orderNumber) => {
     ${formattedProducts
       .map(
         (product) =>
-          `https://baze-link.web.app/review?productId=${product.productid}`
+          `https://www.bazelink.co.ke/review?productId=${product.productid}`
       )
       .join('\n')}
     
     Total Amount Paid: ${order.totalPrice}
     Payment Method: ${order.paymentMethod}
-    
+    Payment Phone Number: ${PhoneNumber}
+    Mpesa receipt number: ${MpesaReceiptNumber}
+
     Best regards,
     Bazelink`;
     
     const htmlReceiptMessage = `
-    <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #e1e1e1; padding: 25px; border-radius: 10px; background-color: #ffffff;">
-      <h2 style="color: #1d4ed8; text-align: center; font-size: 26px; margin-bottom: 10px;">
-        Order Receipt - Bazelink
-      </h2>
-      <p style="font-size: 16px; color: #555;">
-        Dear ${user.username},<br>
-        Thank you for your purchase! Here are the details for your order.
-      </p>
-      <p style="font-size: 16px; color: #555;">
-        <strong>Order Number:</strong> ${order.orderNumber}<br>
-      </p>
-      <h3 style="color: #1d4ed8; margin-top: 20px;">Products Ordered:</h3>
-      <ul style="font-size: 16px; color: #555; list-style-type: none; padding: 0;">
-        ${formattedProducts
-          .map(
-            (product) => `
-          <li style="margin-bottom: 15px;">
-            <strong>${product.name}</strong> (Category: ${product.category}) x${product.quantity} @ ${product.price} each
-            <div style="text-align: center; margin-top: 10px;">
-              <a href="https://grandelo.web.app/review?productId=${product.productid}" 
-                 style="display: inline-block; padding: 12px 25px; font-size: 16px; color: #ffffff; background-color: #1d4ed8; text-decoration: none; border-radius: 6px;">
-                Review this product
-              </a>
-            </div>
-          </li>`
-          )
-          .join('')}
-      </ul>
-      <p style="font-size: 16px; color: #555; margin-top: 20px;">
-        <strong>Total Amount Paid:</strong> ${order.totalPrice}<br>
-        <strong>Payment Method:</strong> ${order.paymentMethod}<br>
-      </p>
-      <p style="font-size: 14px; color: #888; text-align: center; margin-top: 20px;">
-        We hope to serve you again soon!
-      </p>
-      <p style="font-size: 16px; color: #333; text-align: center; margin-top: 30px;">
-        Best regards,<br> Bazelink Support Team
-      </p>
-    </div>
+        <div style="
+          font-family: Arial, sans-serif; 
+          color: #333; 
+          max-width: 600px; 
+          margin: auto; 
+          border: 1px solid #e1e1e1; 
+          padding: 25px; 
+          border-radius: 10px; 
+          background-color: #ffffff;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+          line-height: 1.6;
+      ">
+        <!-- Header -->
+        <h2 style="
+            color: #1d4ed8; 
+            text-align: center; 
+            font-size: 26px; 
+            margin-bottom: 10px;
+        ">
+          🛍️ Order Receipt - Bazelink
+        </h2>
+
+        <!-- Greeting -->
+        <p style="font-size: 16px; color: #555;">
+          Dear <strong>${user.username}</strong>,<br>
+          Thank you for shopping with <strong>Bazelink</strong>! Here’s the receipt for your order.
+        </p>
+
+        <!-- Order Information -->
+        <div style="
+            background-color: #f8f8f8; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-top: 10px;
+        ">
+          <p style="font-size: 16px; color: #555;">
+            <strong>Order Number:</strong> ${order.orderNumber}
+          </p>
+        </div>
+
+        <!-- Products Ordered -->
+        <h3 style="color: #1d4ed8; margin-top: 20px; text-decoration: underline;">🛒 Products Ordered:</h3>
+
+        <ul style="font-size: 16px; color: #555; list-style-type: none; padding: 0;">
+          ${formattedProducts
+            .map(
+              (product) => `
+              <li style="
+                  margin-bottom: 15px; 
+                  padding: 10px; 
+                  background: #f9f9f9; 
+                  border-radius: 8px;
+                  border-left: 5px solid #1d4ed8;
+              ">
+                <strong>${product.name}</strong> <br>
+                <small>Category: ${product.category}</small> <br>
+                Quantity: <strong>${product.quantity}</strong> @ <strong>${product.price} each</strong>
+
+                <!-- Review Button -->
+                <div style="text-align: center; margin-top: 10px;">
+                  <a href="https://www.bazelink.co.ke/review?productId=${product.productid}" 
+                    style="
+                        display: inline-block; 
+                        padding: 12px 20px; 
+                        font-size: 16px; 
+                        color: #ffffff; 
+                        background-color: #1d4ed8; 
+                        text-decoration: none; 
+                        border-radius: 6px; 
+                        font-weight: bold;
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                        transition: background 0.3s;
+                    "
+                    onmouseover="this.style.backgroundColor='#153d91';"
+                    onmouseout="this.style.backgroundColor='#1d4ed8';">
+                    ⭐ Review this Product
+                  </a>
+                </div>
+              </li>`
+            )
+            .join('')}
+        </ul>
+
+        <!-- Payment Details -->
+        <h3 style="color: #1d4ed8; margin-top: 20px; text-decoration: underline;">💳 Payment Details:</h3>
+        <div style="
+            background-color: #f8f8f8; 
+            padding: 15px; 
+            border-radius: 8px; 
+            border: 1px solid #e1e1e1;
+        ">
+          <p style="font-size: 16px; color: #555; margin: 5px 0;">
+            <strong>Total Amount Paid:</strong> ${order.totalPrice}
+          </p>
+          <p style="font-size: 16px; color: #555; margin: 5px 0;">
+            <strong>Payment Method:</strong> ${order.paymentMethod}
+          </p>
+          <p style="font-size: 16px; color: #555; margin: 5px 0;">
+            <strong>Payment Phone Number:</strong> ${PhoneNumber}
+          </p>
+          <p style="font-size: 16px; color: #555; margin: 5px 0;">
+            <strong>Mpesa Receipt Number:</strong> ${MpesaReceiptNumber}
+          </p>
+        </div>
+
+        <!-- Call to Action -->
+        <p style="
+            font-size: 14px; 
+            color: #888; 
+            text-align: center; 
+            margin-top: 20px;
+        ">
+          If you have any issues, feel free to contact our support team.
+        </p>
+
+        <!-- Footer -->
+        <p style="
+            font-size: 16px; 
+            color: #333; 
+            text-align: center; 
+            margin-top: 30px;
+        ">
+          Best regards,<br> 
+          <strong>Bazelink Support Team</strong>
+        </p>
+      </div>
     `;
+
+
 
     await sendEmail(user.email, subject, receiptMessage, htmlReceiptMessage);
     console.log('Receipt email sent successfully');
