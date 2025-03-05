@@ -759,6 +759,17 @@ const townsAndAreas =[
         ]
       },
       {
+        "town": "Karen",
+        "areas": [
+          "Karen town",
+          "Cooperative University",
+          "Bongani",
+          "Bomas",
+          "Catholic University",
+          "Hardy",
+        ]
+      },
+      {
         "town": "Makadara",
         "areas": [
           "Makadara",
