@@ -67,13 +67,16 @@ if (!fs.existsSync(uploadDir)) {
 const app = express();
 
 app.set('trust proxy', true);
-const allowedOrigins = ['https://www.bazelink.co.ke', 'https://bazeadmin.web.app', 'https://www.partner.bazelink.co.ke', 'https://grandelo.web.app', 'https://baze-link.web.app', 'https://bazelinkadmin.web.app', 'https://baze-seller.web.app', 'http://localhost:3000', 'https://partners-portal.web.app'];
+const allowedOrigins = ['https://www.bazelink.co.ke', 'https://www.partner.bazelink.co.ke', 'https://bazeadmin.web.app', 'https://grandelo.web.app', 'https://baze-link.web.app', 'https://bazelinkadmin.web.app', 'https://baze-seller.web.app', 'http://localhost:3000', 'https://partners-portal.web.app'];
 const corsOptions = {
   origin: function (origin, callback) {
+    console.log('incoming origin:', origin);
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     if (allowedOrigins.indexOf(origin) === -1) {
       const msg = 'The CORS policy for this site does not allow access from the specified origin.';
+
+      console.log('Cors error:', msg);
       return callback(new Error(msg), false);
     }
     return callback(null, true);
