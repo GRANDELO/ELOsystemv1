@@ -11,7 +11,7 @@ const {increateNotification} = require('./notificationController');
 const {b2cRequestHandler} = require("./mpesaController");
 const CoreSellOrder = require('../models/CoreSellOrder');
 const { generateVerificationCode } = require('../services/verificationcode');
-
+const mongoose = require("mongoose");
 const { sersendNotificationToUser } = require('./pushNotificationController');
 const Transaction = require("../models/Transaction");
 

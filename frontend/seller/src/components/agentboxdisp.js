@@ -33,18 +33,16 @@ const AgentBoxes = () => {
   };
 
   const fetchOrderPayments = async (boxes) => {
-    const payments = {};
-    for (const box of boxes) {
-      for (const item of box.items) {
-        try {
-          const response = await axiosInstance.get(`/orders/findOrderByProductId/${item.productId}`);
-          payments[item.orderNumber] = response.data;
-        } catch (error) {
-          console.error(`Failed to fetch payment info for order ${item.orderNumber}`);
-        }
-      }
+    const productIds = boxes.flatMap((box) => box.items.map((item) => item.productId));
+
+    if (productIds.length === 0) return;
+
+    try {
+      const response = await axiosInstance.post(`/orders/findOrdersByProductIds`, { productIds });
+      setOrderPayments(response.data.orders);
+    } catch (error) {
+      console.error("Failed to fetch order payment details:", error);
     }
-    setOrderPayments(payments);
   };
 
   const toggleBoxDetails = (boxId) => {
@@ -123,17 +121,16 @@ const AgentBoxes = () => {
                     <h4>Item Details:</h4>
                     <ul>
                       {box.items.map((item, index) => {
-                        const orderInfo = orderPayments[item.orderNumber] || {};
-                        const paid = orderInfo.paid;
+                        const orderInfo = orderPayments[item.productId] || {};
                         return (
                           <li
                             key={index}
-                            className={`item-detail ${paid ? "paid" : "unpaid"}`}
+                            className={`item-detail ${orderInfo.paid ? "paid" : "unpaid"}`}
                           >
                             <strong>Item Order Number:</strong> {item.orderNumber} <br />
-                            <strong>Username:</strong> {orderInfo.username || "N/A"} <br />
-                            <strong>Amount:</strong> {orderInfo.totalPrice || "N/A"} <br />
-                            <strong>Status:</strong> {paid ? "Paid ✅" : "Unpaid ❌"}
+                            <strong>Username:</strong> {orderInfo.username || "Order not found"} <br />
+                            <strong>Amount:</strong> {orderInfo.totalPrice ? `$${orderInfo.totalPrice}` : "Order not found"} <br />
+                            <strong>Status:</strong> {orderInfo.paid ? "Paid ✅" : "Unpaid ❌"}
                           </li>
                         );
                       })}
