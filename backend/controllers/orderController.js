@@ -196,6 +196,27 @@ exports.getMyOrder = async (req, res) => {
   }
 };
 
+exports.findOrderByProductId = async (req, res) => {
+  try {
+    const { productId } = req.params; 
+    const order = await Order.findOne({ "items.productId": productId })
+      .select("paid totalPrice username")
+      .lean();
+    
+    if (!order) {
+      return { message: "No order found for this product." };
+    }
+
+    return {
+      paid: order.paid,
+      totalPrice: order.totalPrice,
+      username: order.username,
+    };
+  } catch (error) {
+    console.error("Error finding order by product ID:", error);
+    return { error: "An error occurred while searching for the order." };
+  }
+};
 
 exports.getMyPendingOrder = async (req, res) => {
   try {

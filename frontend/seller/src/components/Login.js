@@ -17,7 +17,7 @@ const Login = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isInstalled, setIsInstalled] = useState(true);
   const ctoken =  (Cookies.get('token') || getToken?.());
-  const capptoken = Cookies.get('admintoken');
+  const capptoken =  (Cookies.get('apptoken') || getToken?.());
   const token = localStorage.getItem('token');
   const apptoken = localStorage.getItem('apptoken');
   const [loading, setLoading] = useState(false);

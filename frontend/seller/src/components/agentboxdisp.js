@@ -6,6 +6,7 @@ import "./styles/box.css";
 const AgentBoxes = () => {
   const agentNumber = getagentnoFromToken();
   const [boxes, setBoxes] = useState([]);
+  const [orderPayments, setOrderPayments] = useState({});
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [expandedBox, setExpandedBox] = useState(null);
@@ -23,11 +24,27 @@ const AgentBoxes = () => {
     try {
       const response = await axiosInstance.get(`/agent/${agentNumber}/boxes`);
       setBoxes(response.data.boxes);
+      fetchOrderPayments(response.data.boxes);
     } catch (err) {
       setError(err.response?.data?.error || "Failed to fetch boxes. Please try again.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchOrderPayments = async (boxes) => {
+    const payments = {};
+    for (const box of boxes) {
+      for (const item of box.items) {
+        try {
+          const response = await axiosInstance.get(`/orders/findOrderByProductId/${item.productId}`);
+          payments[item.orderNumber] = response.data;
+        } catch (error) {
+          console.error(`Failed to fetch payment info for order ${item.orderNumber}`);
+        }
+      }
+    }
+    setOrderPayments(payments);
   };
 
   const toggleBoxDetails = (boxId) => {
@@ -36,25 +53,20 @@ const AgentBoxes = () => {
 
   const extractDestination = (destinationString) => {
     try {
-      // Convert to valid JSON format
       const validJsonString = destinationString
-        .replace(/(\w+):/g, '"$1":') // Add quotes around keys
-        .replace(/'/g, '"'); // Replace single quotes with double quotes
-  
-      // Parse the corrected JSON string
+        .replace(/(\w+):/g, '"$1":')
+        .replace(/'/g, '"');
+
       const destinationObj = JSON.parse(validJsonString);
-  
-      // Extract values
       const { county, town, area, specific } = destinationObj;
-  
+
       return { county, town, area, specific };
     } catch (error) {
       console.error("Error parsing destination string:", error);
-      return { county: null, town: null, area: null , specific: null};
+      return { county: null, town: null, area: null, specific: null };
     }
   };
 
-  // Function to check if destination and current place match
   const categorizeBoxes = (boxes) => {
     const locallyDelivered = [];
     const toBePickedUp = [];
@@ -62,14 +74,9 @@ const AgentBoxes = () => {
 
     boxes.forEach((box) => {
       const { county, town, area, specific } = extractDestination(box.destination);
-
       const currentParts = box.currentplace.split(", ");
 
-      if (
-        currentParts[0] === county &&
-        currentParts[1] === town &&
-        currentParts[2] === area
-      ) {
+      if (currentParts[0] === county && currentParts[1] === town && currentParts[2] === area) {
         if (currentParts[3] === specific) {
           toBePickedUp.push(box);
         } else {
@@ -115,12 +122,21 @@ const AgentBoxes = () => {
                   <div className="item-details">
                     <h4>Item Details:</h4>
                     <ul>
-                      {box.items.map((item, index) => (
-                        <li key={index} className="item-detail">
-                          <strong>Item Order Number:</strong>{" "}
-                          {item.orderNumber}
-                        </li>
-                      ))}
+                      {box.items.map((item, index) => {
+                        const orderInfo = orderPayments[item.orderNumber] || {};
+                        const paid = orderInfo.paid;
+                        return (
+                          <li
+                            key={index}
+                            className={`item-detail ${paid ? "paid" : "unpaid"}`}
+                          >
+                            <strong>Item Order Number:</strong> {item.orderNumber} <br />
+                            <strong>Username:</strong> {orderInfo.username || "N/A"} <br />
+                            <strong>Amount:</strong> {orderInfo.totalPrice || "N/A"} <br />
+                            <strong>Status:</strong> {paid ? "Paid ✅" : "Unpaid ❌"}
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 )}
