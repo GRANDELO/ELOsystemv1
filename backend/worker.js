@@ -118,7 +118,7 @@ const groupOrdersForAllAgents = async () => {
             destination,
             items: [{ orderNumber: orderId }], // Add the current order
             agentnumber,
-            currentplace: `${agent.locations.town}, ${agent.locations.area}, ${agent.locations.specific}`,
+            currentplace: `${agent.locations.county}, ${agent.locations.town}, ${agent.locations.area}, ${agent.locations.specific}`,
             packingDate: new Date(),
             packed: false,
             deliveryPerson: "non assigned",

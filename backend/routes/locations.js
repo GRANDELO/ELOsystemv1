@@ -719,6 +719,7 @@ const townsAndAreas =[
           "Kayole",
           "Soweto",
           "Njiru",
+          "Donholm",
           "Ruai"
         ]
       },
