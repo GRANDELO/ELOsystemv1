@@ -7,7 +7,7 @@ const { Storage } = require("@google-cloud/storage");
 
 const myCache = new NodeCache({ stdTTL: 86400 }); // Cache for 24 hours
 const storage = new Storage();
-const BUCKET_NAME = process.env.GCS_BUCKET_URL || "grandbucket-83f9f";
+const BUCKET_NAME = process.env.GCS_BUCKET_NAME || "grandbucket-83f9f.appspot.com";
 
 async function fetchImages() {
   try {
