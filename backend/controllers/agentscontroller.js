@@ -154,8 +154,10 @@ const registerUser = async (req, res) => {
 
 const login = async (req, res) => {
   const { username, password } = req.body;
+  
 
   try {
+    console.log('Searching for user:', username);
     const user = await User.findOne({ $or: [{ email: username }, { username } , { agentnumber: username } ] });
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });

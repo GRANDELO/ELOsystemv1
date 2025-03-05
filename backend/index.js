@@ -83,19 +83,6 @@ const corsOptions = {
   credentials: true,  // Allow sending cookies from client
 };
 
-app.use(helmet({
-  contentSecurityPolicy: false,  // Disable this if you're using inline scripts or styles
-  crossOriginEmbedderPolicy: true,
-  crossOriginResourcePolicy: { policy: "same-origin" },
-  dnsPrefetchControl: true,
-  expectCt: true,
-  frameguard: { action: 'deny' },  // Prevent clickjacking
-  hidePoweredBy: true,  // Hides 'X-Powered-By' header
-  hsts: { maxAge: 31536000, includeSubDomains: true },  // Enforce HTTPS
-  noSniff: true,  // Prevent MIME-type sniffing
-  xssFilter: true,  // Basic XSS protection
-})); 
-
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 1000,
@@ -121,6 +108,26 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(limiter);
 app.use(bodyParser.json());
+app.options('*', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Or specify allowed domains
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.sendStatus(204);
+});
+
+app.use(helmet({
+  contentSecurityPolicy: false,  // Disable this if you're using inline scripts or styles
+  crossOriginEmbedderPolicy: true,
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  dnsPrefetchControl: true,
+  expectCt: true,
+  frameguard: { action: 'deny' },  // Prevent clickjacking
+  hidePoweredBy: true,  // Hides 'X-Powered-By' header
+  hsts: { maxAge: 31536000, includeSubDomains: true },  // Enforce HTTPS
+  noSniff: true,  // Prevent MIME-type sniffing
+  xssFilter: true,  // Basic XSS protection
+})); 
 
 
 app.use((req, res, next) => {
@@ -176,7 +183,7 @@ mongoose
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Could not connect to MongoDB', err));
 
-
+ 
 // Routes
 app.use('/api', cache);
 app.use('/api', emailing);
