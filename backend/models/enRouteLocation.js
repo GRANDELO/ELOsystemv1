@@ -20,6 +20,11 @@ const routeSchema = new mongoose.Schema({
   status: { type: String, enum: ['Pending', 'scheduled', 'in_transit', 'delivered'], default: 'scheduled' },
   productId:{ type: mongoose.Schema.Types.ObjectId, ref: 'Order', required: true},
   type: {type: String, enum:['direct', 'hub'], required: true},
+  additionalInfo: {
+    sellerPhoneNumber: { type: String },
+    clientPhoneNumber: { type: String },
+    agentPhoneNumber: { type: String },
+  },
 });
 
 const Route = mongoose.model('Route', routeSchema);

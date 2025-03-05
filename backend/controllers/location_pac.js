@@ -1,8 +1,10 @@
 const Order = require("../models/Order"); 
+const Agent = require("../models/agents");
 const { io } = require('../io');
 const Route = require('../models/enRouteLocation'); // Import the Route model (to be created)
 const mongoose = require('mongoose');
 const User = require("../models/User")
+const Buyers = require("../models/buyers");
 const { v4: uuidv4 } = require("uuid");
 const Config = require('../models/Config');
 
@@ -37,7 +39,61 @@ function normalizeDestination(destination) {
 
   return normalizedDestination;
 }
+async function fetchAdditionInfo(orderId){
+  try {
 
+    const order = await Order.findById(orderId).populate('items.productId');
+    if (!order) {
+      throw new Error('order not found');
+    }
+   // buyers phone number
+    const client = await Buyers.findOne({ username: order.username });
+    const clientPhone = client ? client.phoneNumber : "Unknown";
+
+    const seller = await User.findOne({ username: order.sellerOrderId });
+    const sellerPhone = seller ? seller.phoneNumber : "Unknown";
+
+    let agentPhone = "Unknown";
+
+        if (productId) {
+            // Find agent by productId
+            const agentByProduct = await Agent.findOne({ "packeges.productId": productId });
+            if (agentByProduct) {
+                agentPhone = agentByProduct.phoneNumber;
+            }
+        }
+
+        // If no agent found by product, fallback to location-based search
+        if (agentPhone === "Unknown") {
+            const agentByLocation = await Agent.findOne({
+                "locations.county": order.destination.county,
+                "locations.town": order.destination.town,
+                "locations.area": order.destination.area,
+                "locations.specific": order.destination.specific,
+            });
+
+            if (agentByLocation) {
+                agentPhone = agentByLocation.phoneNumber;
+            }
+        }
+
+        // Return the fetched details
+        return {
+            success: true,
+            message: "Delivery details retrieved successfully.",
+            data: {
+                clientPhone,
+                sellerPhone,
+                agentPhone,
+                destination: order.destination
+            }
+        };
+  }catch (error){
+    console.error("Error fetching delivery details:", error);
+    return { success: false, message: "Error fetching delivery details.", error: error.message };
+
+  }
+}
 
 // Helper function to group orders based on origin and destination
 function groupOrders(orders, timeWindowMinutes = 20160) {
@@ -98,7 +154,7 @@ async function createRoutes(groupedOrders, threshold = 10) {
     };
 
     const destination = normalizeDestination(firstOrder.destination);
-    
+    const additionalInfo = await fetchAdditionalInfo(firstOrder._id);
     const route = new Route({
       routeId: `ROUTE-${uuidv4()}`,
       origin: {
@@ -118,6 +174,7 @@ async function createRoutes(groupedOrders, threshold = 10) {
       productId: groupedOrders[key].map(order => order.productId),
       status: 'scheduled',
       type: groupedOrders[key].length >= threshold ? 'direct' : 'hub',
+      additionalInfo,
     });
     await route.save();
     routes.push(route);
