@@ -83,39 +83,23 @@ const corsOptions = {
   credentials: true,  // Allow sending cookies from client
 };
 
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 1000,
   message: 'Too many requests from this IP, please try again after 15 minutes',
 });
 
-//for form protection
-/*
-app.use(
-  csurf({
-    cookie: {
-      sameSite: 'Strict', //prevent CSRF via cross-origin requests
-      secure: process.env.NODE_ENV === 'production', // Send cookie only on HTTPS
-    },
-  }));
-*/
-//Escape and encode outputs to prevent malicious scripts from running
+
 app.use(xssClean());
 
 
 app.use(morgan('dev'));
-app.use(cors(corsOptions));
 app.use(express.json());
 app.use(limiter);
 app.use(bodyParser.json());
-app.options('*', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*'); // Or specify allowed domains
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.sendStatus(204);
-});
-
 app.use(helmet({
   contentSecurityPolicy: false,  // Disable this if you're using inline scripts or styles
   crossOriginEmbedderPolicy: true,
