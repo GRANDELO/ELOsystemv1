@@ -51,7 +51,7 @@ const Login = () => {
 
   // Detect and apply dark mode from localStorage
   useEffect(() => {
-    if (apptoken || token)
+    if(token || apptoken)
       {
         navigate('/logout');
       }

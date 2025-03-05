@@ -10,7 +10,7 @@ const RequireAuth = () => {
     {
         if(token) 
             { 
-                isAuthenticated = token; 
+                isAuthenticated = Boolean(token); 
                 sessionStorage.setItem('userToken', token);
             }
     }

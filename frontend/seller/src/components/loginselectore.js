@@ -9,12 +9,14 @@ const LoginPage = () => {
   const token = Cookies.get('token');
   const apptoken = Cookies.get('apptoken');
   const appcat = Cookies.get('appcat');
-
+  
   useEffect(() => {
     const handleNavigation = (category) => {
-      const username = getUsernameFromToken();
-      sessionStorage.setItem("username", username);
-
+      const username = getUsernameFromToken?.();
+      if (username) {
+        sessionStorage.setItem("username", username);
+      }
+  
       switch (category) {
         case "delivery person":
           navigate("/deliverydash");
@@ -27,24 +29,20 @@ const LoginPage = () => {
           break;
         default:
           alert("Failed to login. This platform is for delivery people, sellers, and agents only.");
-          navigate('/logout')
+          navigate('/logout');
       }
     };
-
-    if (apptoken) {
+  
+    if (apptoken && !token) { // Avoid overwriting token if it's already set
       Cookies.set('token', apptoken, { expires: 1 });
-      if (appcat) {
-        handleNavigation(appcat.trim().toLowerCase());
-      }
-    } else if (token) {
-      sessionStorage.setItem("userToken", token);
-      const category = getcategoryFromToken()?.trim().toLowerCase();
-      if (category) {
-        handleNavigation(category);
-      }
+    }
+  
+    const category = (appcat || getcategoryFromToken?.())?.trim().toLowerCase();
+    if (category) {
+      handleNavigation(category);
     }
   }, [apptoken, appcat, token, navigate]);
-
+  
   return (
     <div className="log-container">
       <h1 className="log-header">Welcome Back</h1>

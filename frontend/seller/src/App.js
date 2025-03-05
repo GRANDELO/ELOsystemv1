@@ -161,7 +161,6 @@ const App = () => {
           <Route path="/chat/:chatId" element={<ChatDetails />} />
           {/* Protected routes */}
           <Route element={<RequireAuth />} >
-
             <Route path="/home" 
               element={
                 <ProtectedRoute>

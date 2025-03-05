@@ -50,10 +50,10 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (apptoken || token)
-      {
-        navigate('/logout');
-      }
+    if(token || apptoken)
+    {
+      navigate('/agentLogout');
+    }
     // If apptoken is set, use it to set the token and navigate based on the app category
     if (capptoken) {
       Cookies.set('token', capptoken, { expires: 1 });
@@ -162,11 +162,11 @@ const Login = () => {
         {!recoverpassword ? (
           <div>
             <h2>Login</h2>
-            <label>Username:</label>
+            <label>Business Name:</label>
             <input
               type="text"
               value={username}
-              placeholder="Enter your username"
+              placeholder="Enter your Business Name"
               onChange={(e) => setUsername(e.target.value)}
               required
             />
