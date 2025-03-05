@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "./axiosInstance";
 import { getagentnoFromToken } from "../utils/auth";
-import './styles/box.css';
+import "./styles/box.css";
 
 const AgentBoxes = () => {
   const agentNumber = getagentnoFromToken();
@@ -21,16 +21,10 @@ const AgentBoxes = () => {
     setExpandedBox(null);
 
     try {
-      const response = await axiosInstance.get(
-        `/agent/${agentNumber}/boxes`
-      );
+      const response = await axiosInstance.get(`/agent/${agentNumber}/boxes`);
       setBoxes(response.data.boxes);
     } catch (err) {
-      if (err.response) {
-        setError(err.response.data.error || err.response.data.message);
-      } else {
-        setError("Failed to fetch boxes. Please try again.");
-      }
+      setError(err.response?.data?.error || "Failed to fetch boxes. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -40,24 +34,48 @@ const AgentBoxes = () => {
     setExpandedBox((prevBoxId) => (prevBoxId === boxId ? null : boxId));
   };
 
-  return (
-    <div className="agent-boxes-container">
-      <h2 className="agent-boxes-title">Agent Boxes</h2>
+  // Function to check if destination and current place match
+  const categorizeBoxes = (boxes) => {
+    const locallyDelivered = [];
+    const toBePickedUp = [];
+    const toHub = [];
 
-      {error && <p className="error-message">{error}</p>}
+    boxes.forEach((box) => {
+      const { county, town, area } = box.destination;
+      const currentParts = box.currentplace.split(", ");
 
-      {loading && <p className="loading-message">Loading...</p>}
+      if (
+        currentParts[0] === county &&
+        currentParts[1] === town &&
+        currentParts[2] === area
+      ) {
+        if (currentParts.length === 4 && currentParts[3] === area) {
+          toBePickedUp.push(box);
+        } else {
+          locallyDelivered.push(box);
+        }
+      } else {
+        toHub.push(box);
+      }
+    });
 
-      {boxes.length > 0 && (
-        <div className="box-list">
-          <h3 className="subtitle">Boxes for Agent {agentNumber}:</h3>
+    return { locallyDelivered, toBePickedUp, toHub };
+  };
+
+  const { locallyDelivered, toBePickedUp, toHub } = categorizeBoxes(boxes);
+
+  const renderBoxSection = (title, boxList) => (
+    <>
+      {boxList.length > 0 && (
+        <div className="box-section">
+          <h3 className="box-section-title">{title}</h3>
           <ul className="box-list-items">
-            {boxes.map((box) => (
+            {boxList.map((box) => (
               <li key={box._id} className="box-item">
                 <div>
                   <strong>Box Number:</strong> {box.boxNumber} <br />
                   <strong>Box ID:</strong> {box.boxid} <br />
-                  <strong>Destination:</strong> {box.destination} <br />
+                  <strong>Destination:</strong> {box.destination}<br />
                   <strong>Current Place:</strong> {box.currentplace} <br />
                   <strong>Packing Date:</strong>{" "}
                   {new Date(box.packingDate).toLocaleString()} <br />
@@ -90,10 +108,23 @@ const AgentBoxes = () => {
           </ul>
         </div>
       )}
+    </>
+  );
 
-      {boxes.length === 0 && !error && !loading && (
+  return (
+    <div className="agent-boxes-container">
+      <h2 className="agent-boxes-title">Agent Boxes</h2>
+
+      {error && <p className="error-message">{error}</p>}
+      {loading && <p className="loading-message">Loading...</p>}
+
+      {!loading && !error && boxes.length === 0 && (
         <p className="no-data-message">No boxes available for this agent.</p>
       )}
+
+      {renderBoxSection("Locally Delivered", locallyDelivered)}
+      {renderBoxSection("To Be Picked Up", toBePickedUp)}
+      {renderBoxSection("To Hub", toHub)}
     </div>
   );
 };

@@ -250,7 +250,7 @@ const OrderingPage = () => {
 
         })), 
 
-
+ 
         totalPrice: grandTotal.toFixed(2),
         paymentMethod,
         destination: `${selectedCounty}, ${selectedTown}, ${selectedArea}, ${selectedSpecificArea || 'Town'}`,
