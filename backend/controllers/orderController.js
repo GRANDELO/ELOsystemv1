@@ -16,7 +16,7 @@ const { sersendNotificationToUser } = require('./pushNotificationController');
 const Transaction = require("../models/Transaction");
 
 function normalizeDestination(destination) {
-  let normalizedDestination = { county: 'Unknown', town: 'Unknown', area: 'Unknown' };
+  let normalizedDestination = { county: 'Unknown', town: 'Unknown', area: 'Unknown', specific: 'unknown' };
 
   if (typeof destination === 'string') {
     try {
@@ -25,11 +25,12 @@ function normalizeDestination(destination) {
     } catch (error) {
       // Split string into parts as fallback
       const parts = destination.split(',').map(part => part.trim());
-      if (parts.length >= 3) {
+      if (parts.length >= 4) {
         normalizedDestination = {
           county: parts[0],
           town: parts[1],
           area: parts[2],
+          specific: parts[3],
         };
       }
     }
@@ -39,6 +40,7 @@ function normalizeDestination(destination) {
       county: destination.county || 'Unknown',
       town: destination.town || 'Unknown',
       area: destination.area || 'Unknown',
+      specific: destination.specific || 'unknown',
     };
   }
 

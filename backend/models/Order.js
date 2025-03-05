@@ -24,7 +24,8 @@ const orderSchema = new mongoose.Schema({
   destination: { 
     county: { type: String, required: true }, 
     town: { type: String, required: true }, 
-    area: { type: String, required: true }
+    area: { type: String, required: true },
+    specific: { type: String, required: true },
   },
   
   orderDate: { type: Date, default: Date.now },
@@ -39,6 +40,7 @@ const orderSchema = new mongoose.Schema({
     county: { type: String, required: true },
     town: { type: String, required: true },
     area: { type: String, required: true },
+    specific: { type: String, required: true },
   }, 
   status: {type:String, enum: ['pending', 'packed', 'in_transit','delivered' ], default: 'pending'},
   currentplace: { type: String, required: true, default: "Waiting for delivery." },

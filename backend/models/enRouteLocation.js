@@ -6,11 +6,15 @@ const routeSchema = new mongoose.Schema({
   origin: { 
     county: { type: String, required: true },
     town: { type: String, required: true },
-    area: { type: String, required: true },},
+    area: { type: String, required: true },
+    specific: { type: String, required: true },
+  },
+
   destination: { 
     county: {type: String, required: true},
     town: {type: String, required: true},
     area: {type: String, required: true},
+    specific: { type: String, required: true },
   },
   orderNumber:[{type: String, unique: true }],
   status: { type: String, enum: ['Pending', 'scheduled', 'in_transit', 'delivered'], default: 'scheduled' },

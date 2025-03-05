@@ -95,7 +95,6 @@ const limiter = rateLimit({
 
 app.use(xssClean());
 
-
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(limiter);

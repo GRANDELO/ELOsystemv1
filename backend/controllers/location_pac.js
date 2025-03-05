@@ -7,7 +7,7 @@ const { v4: uuidv4 } = require("uuid");
 const Config = require('../models/Config');
 
 function normalizeDestination(destination) {
-  let normalizedDestination = { county: 'Unknown', town: 'Unknown', area: 'Unknown' };
+  let normalizedDestination = { county: 'Unknown', town: 'Unknown', area: 'Unknown', specific: 'unknown'};
 
   if (typeof destination === 'string') {
     try {
@@ -16,11 +16,12 @@ function normalizeDestination(destination) {
     } catch (error) {
       // Split string into parts as fallback
       const parts = destination.split(',').map(part => part.trim());
-      if (parts.length >= 3) {
+      if (parts.length >= 4) {
         normalizedDestination = {
           county: parts[0],
           town: parts[1],
           area: parts[2],
+          specific: parts[3],
         };
       }
     }
@@ -30,6 +31,7 @@ function normalizeDestination(destination) {
       county: destination.county || 'Unknown',
       town: destination.town || 'Unknown',
       area: destination.area || 'Unknown',
+      specific: destination.specific || 'unknown',
     };
   }
 
@@ -92,6 +94,7 @@ async function createRoutes(groupedOrders, threshold = 10) {
       county: 'Nairobi County', // Default location
       town: 'Nairobi',
       area: 'Central',
+      specific: 'Tom mboya',
     };
 
     const destination = normalizeDestination(firstOrder.destination);
@@ -102,11 +105,13 @@ async function createRoutes(groupedOrders, threshold = 10) {
         county: origin.county,
         town: origin.town,
         area: origin.area,
+        specific: origin.specific,
       },
       destination: {
         county: destination.county || 'Unknown County',
         town: destination.town || 'Unknown Town',
         area: destination.area || 'Unknown Area',
+        specific: destination.specific || 'unknown Area',
       },
       orders: groupedOrders[key].map(order =>  order._id),
       orderNumber: groupedOrders[key].map(order => order.orderNumber),
@@ -149,7 +154,7 @@ const planDeliveryLocations = async (req, res) => {
   
     const bulkUpdates = orders.map(order => {
       if (!order.origin) {
-        order.origin = { county: 'Nairobi County', town: 'Nairobi', area: 'CBD' }; 
+        order.origin = { county: 'Nairobi County', town: 'Nairobi', area: 'CBD',  specific: 'Tom Mboya'}; 
       }
     
       return {
@@ -160,6 +165,7 @@ const planDeliveryLocations = async (req, res) => {
               'origin.county': order.origin.county || 'Nairobi County',
               'origin.town': order.origin.town || 'Nairobi',
               'origin.area': order.origin.area || 'CBD',
+              'origin.specific': order.origin.specific || 'Tom Mboya',
             },
           },
         },
