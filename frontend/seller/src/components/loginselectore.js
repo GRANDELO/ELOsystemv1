@@ -38,7 +38,7 @@ const LoginPage = () => {
     }
   
     const category = (appcat || getcategoryFromToken?.())?.trim().toLowerCase();
-    if (category) {
+    if (category && apptoken) {
       handleNavigation(category);
     }
   }, [apptoken, appcat, token, navigate]);

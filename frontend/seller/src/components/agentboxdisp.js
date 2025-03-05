@@ -34,6 +34,26 @@ const AgentBoxes = () => {
     setExpandedBox((prevBoxId) => (prevBoxId === boxId ? null : boxId));
   };
 
+  const extractDestination = (destinationString) => {
+    try {
+      // Convert to valid JSON format
+      const validJsonString = destinationString
+        .replace(/(\w+):/g, '"$1":') // Add quotes around keys
+        .replace(/'/g, '"'); // Replace single quotes with double quotes
+  
+      // Parse the corrected JSON string
+      const destinationObj = JSON.parse(validJsonString);
+  
+      // Extract values
+      const { county, town, area, specific } = destinationObj;
+  
+      return { county, town, area, specific };
+    } catch (error) {
+      console.error("Error parsing destination string:", error);
+      return { county: null, town: null, area: null , specific: null};
+    }
+  };
+
   // Function to check if destination and current place match
   const categorizeBoxes = (boxes) => {
     const locallyDelivered = [];
@@ -41,7 +61,8 @@ const AgentBoxes = () => {
     const toHub = [];
 
     boxes.forEach((box) => {
-      const { county, town, area } = box.destination;
+      const { county, town, area, specific } = extractDestination(box.destination);
+
       const currentParts = box.currentplace.split(", ");
 
       if (
@@ -49,7 +70,7 @@ const AgentBoxes = () => {
         currentParts[1] === town &&
         currentParts[2] === area
       ) {
-        if (currentParts.length === 4 && currentParts[3] === area) {
+        if (currentParts[3] === specific) {
           toBePickedUp.push(box);
         } else {
           locallyDelivered.push(box);
