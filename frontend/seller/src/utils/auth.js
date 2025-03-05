@@ -16,7 +16,7 @@ export const getUsernameFromToken = () => {
 };
 
 export const getToken = () => {
-  return Cookies.get('token');
+  return sessionStorage.getItem('userToken');
 };
 
 export const removeToken = () => {

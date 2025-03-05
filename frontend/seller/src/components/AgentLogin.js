@@ -1,7 +1,7 @@
 import axiosInstance from './axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getUsernameFromToken, getcategoryFromToken } from '../utils/auth';
+import { getUsernameFromToken, getcategoryFromToken, getToken } from '../utils/auth';
 import './styles/Login.css';
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import Cookies from 'js-cookie';
@@ -16,11 +16,10 @@ const Login = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isInstalled, setIsInstalled] = useState(true);
 
-  const ctoken = Cookies.get('token');
-  const capptoken = Cookies.get('admintoken');
+  const ctoken = (Cookies.get('token') || getToken?.());
+  const capptoken = Cookies.get('apptoken');
   const token = localStorage.getItem('token');
   const apptoken = localStorage.getItem('apptoken');
-  const appcat = Cookies.get('appcat');
 
   const [loading, setLoading] = useState(false);
 
@@ -50,13 +49,11 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if(token || apptoken)
-    {
-      navigate('/agentLogout');
-    }
+
     // If apptoken is set, use it to set the token and navigate based on the app category
     if (capptoken) {
       Cookies.set('token', capptoken, { expires: 1 });
+      const appcat = (getcategoryFromToken?.())?.trim().toLowerCase();
       if (appcat) {
         switch (appcat.trim().toLowerCase()) {
           case 'agent':
@@ -78,7 +75,7 @@ const Login = () => {
       const storedUsername = getUsernameFromToken();
       sessionStorage.setItem('username', storedUsername);
     }
-  }, [token, apptoken, capptoken, appcat, ctoken, navigate]);
+  }, [token, apptoken, capptoken,  ctoken, navigate]);
 
   useEffect(() => {
     if (ctoken) {

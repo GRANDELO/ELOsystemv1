@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles/loginselector.css";
-import { getUsernameFromToken, getcategoryFromToken } from "../utils/auth";
+import { getUsernameFromToken, getcategoryFromToken, getToken } from "../utils/auth";
 import Cookies from 'js-cookie';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const token = Cookies.get('token');
+ 
+  const token =  (Cookies.get('token') || getToken?.());
   const apptoken = Cookies.get('apptoken');
   const appcat = Cookies.get('appcat');
   
@@ -19,13 +20,13 @@ const LoginPage = () => {
   
       switch (category) {
         case "delivery person":
-          navigate("/deliverydash");
+          navigate("/deliveryLogin");
           break;
         case "seller":
-          navigate("/home");
+          navigate("/sellerlogin");
           break;
         case "agent":
-          navigate("/agentdash");
+          navigate("/agentLogin");
           break;
         default:
           alert("Failed to login. This platform is for delivery people, sellers, and agents only.");
@@ -38,7 +39,9 @@ const LoginPage = () => {
     }
   
     const category = (appcat || getcategoryFromToken?.())?.trim().toLowerCase();
-    if (category && apptoken) {
+    if (category && apptoken ) {
+      Cookies.set('token', apptoken, { expires: 1 });
+      sessionStorage.setItem('userToken', apptoken);
       handleNavigation(category);
     }
   }, [apptoken, appcat, token, navigate]);
