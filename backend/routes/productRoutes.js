@@ -10,8 +10,13 @@ const storage = new Storage();
 const BUCKET_NAME = process.env.GCS_BUCKET_URL || "grandbucket-83f9f";
 
 async function fetchImages() {
-  const [files] = await storage.bucket(BUCKET_NAME).getFiles();
-  return files.map(file => file.publicUrl()); // Returns list of image URLs
+  try {
+    const [files] = await storage.bucket(BUCKET_NAME).getFiles();
+    return files.map(file => file.publicUrl()); // Returns list of image URLs
+  } catch (error) {
+    console.error("Error fetching images:", error);
+    return [];
+  }
 }
 
 // Function to Get Cached Images
@@ -19,16 +24,15 @@ async function getCachedImages(fetchImagesFunction) {
   let cachedImages = myCache.get("images");
 
   if (!cachedImages) {
-      console.log("Fetching fresh images...");
-      cachedImages = await fetchImagesFunction();
-      myCache.set("images", cachedImages); // Store in cache
+    console.log("Fetching fresh images...");
+    cachedImages = await fetchImagesFunction();
+    myCache.set("images", cachedImages); // Store in cache
   } else {
-      console.log("Using cached images...");
+    console.log("Using cached images...");
   }
 
   return cachedImages;
 }
-
 
 router.get('/performance/:username', productController.getProductPerformanceByUsername);
 //router.post('/products', upload.array('images', 6), productController.createProduct);
@@ -59,10 +63,11 @@ router.get('/autocomplete', productController.autocomplete);
 // ✅ Route: Cache and Retrieve Product Images
 router.get('/products', async (req, res) => {
   try {
-    const cachedImages = await getCachedImages();
-    const products = await productController.getAllProducts(req, res, cachedImages);
-    res.json(products);
+    const cachedImages = await getCachedImages(fetchImages);
+    req.cachedImages = cachedImages; // Attach images to request (optional)
+    await productController.getAllProducts(req, res); // Call controller without modifying its params
   } catch (error) {
+    console.error("Error fetching products:", error);
     res.status(500).json({ error: "Failed to fetch products" });
   }
 });
@@ -70,7 +75,8 @@ router.get('/products', async (req, res) => {
 // ✅ Route: Get Individual Image (Use Cached if Available)
 router.get('/images/:filename', async (req, res) => {
   try {
-    let cachedImages = myCache.get("images");
+    const cachedImages = myCache.get("images");
+
     if (cachedImages) {
       const imageUrl = cachedImages.find(url => url.includes(req.params.filename));
       if (imageUrl) {
@@ -78,29 +84,31 @@ router.get('/images/:filename', async (req, res) => {
       }
     }
 
-    // If not cached, fetch from storage
+    // If not cached, fetch directly from storage
     const imageUrl = `https://storage.googleapis.com/${BUCKET_NAME}/${req.params.filename}`;
     res.redirect(imageUrl);
   } catch (error) {
+    console.error("Error fetching image:", error);
     res.status(500).json({ error: "Failed to fetch image" });
   }
 });
 
-// ✅ Route: Upload New Product Images and Update Cache
+// ✅ Route: Upload New Product Images and Refresh Cache
 router.post('/products', upload.array('images', 6), async (req, res) => {
   try {
     await productController.createProduct(req, res);
 
-    // Refresh cache after upload
+    // Refresh cache only after successful upload
     myCache.del("images");
-    await getCachedImages();
+    await getCachedImages(fetchImages);
 
   } catch (error) {
+    console.error("Error uploading images:", error);
     res.status(500).json({ error: "Failed to upload images" });
   }
 });
 
-// ✅ Route: Upload Logo & Background and Update Cache
+// ✅ Route: Upload Logo & Background and Refresh Cache
 router.post(
   '/updateshoplogoUrl',
   upload.fields([
@@ -111,11 +119,12 @@ router.post(
     try {
       await productController.updateshoplogoUrl(req, res);
 
-      // Refresh cache after logo/background upload
+      // Refresh cache only after successful upload
       myCache.del("images");
-      await getCachedImages();
+      await getCachedImages(fetchImages);
 
     } catch (error) {
+      console.error("Error updating shop logo/background:", error);
       res.status(500).json({ error: "Failed to update shop logo/background" });
     }
   }
@@ -126,14 +135,16 @@ router.put('/update-images/:username', upload.array('images', 2), async (req, re
   try {
     await productController.updateUserImages(req, res);
 
-    // Refresh cache after image update
+    // Refresh cache only after successful upload
     myCache.del("images");
-    await getCachedImages();
+    await getCachedImages(fetchImages);
 
   } catch (error) {
+    console.error("Error updating user images:", error);
     res.status(500).json({ error: "Failed to update user images" });
   }
 });
+
 module.exports = router;
 
 
