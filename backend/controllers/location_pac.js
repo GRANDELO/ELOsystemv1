@@ -55,14 +55,16 @@ async function fetchAdditionInfo(orderId){
 
     let agentPhone = "Unknown";
 
-        if (productId) {
-            // Find agent by productId
-            const agentByProduct = await Agent.findOne({ "packeges.productId": productId });
-            if (agentByProduct) {
-                agentPhone = agentByProduct.phoneNumber;
-            }
-        }
+    if (order.items && order.items.length > 0) {
+      const productId = order.items[0].productId; // Assuming the first item's productId is used
+      const agentByProduct = await Agent.findOne({ "packeges.productId": productId });
+      console.log("agents", agentByProduct)
+      if (agentByProduct) {
+        agentPhone = agentByProduct.phoneNumber;
+      }
+    }
 
+ 
         // If no agent found by product, fallback to location-based search
         if (agentPhone === "Unknown") {
             const agentByLocation = await Agent.findOne({
@@ -154,7 +156,7 @@ async function createRoutes(groupedOrders, threshold = 10) {
     };
 
     const destination = normalizeDestination(firstOrder.destination);
-    const additionalInfo = await fetchAdditionalInfo(firstOrder._id);
+    const additionalInfo = await fetchAdditionInfo(firstOrder._id);
     const route = new Route({
       routeId: `ROUTE-${uuidv4()}`,
       origin: {
@@ -171,7 +173,7 @@ async function createRoutes(groupedOrders, threshold = 10) {
       },
       orders: groupedOrders[key].map(order =>  order._id),
       orderNumber: groupedOrders[key].map(order => order.orderNumber),
-      productId: groupedOrders[key].map(order => order.productId),
+      productId: firstOrder.items[0].productId,
       status: 'scheduled',
       type: groupedOrders[key].length >= threshold ? 'direct' : 'hub',
       additionalInfo,
