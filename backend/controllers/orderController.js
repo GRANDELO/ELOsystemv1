@@ -198,23 +198,29 @@ exports.getMyOrder = async (req, res) => {
 
 exports.findOrderByProductId = async (req, res) => {
   try {
-    const { productId } = req.params; 
+    const { productId } = req.params;
+
+    // Check if productId is valid
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ error: "Invalid or missing productId." });
+    }
+
     const order = await Order.findOne({ "items.productId": productId })
       .select("paid totalPrice username")
       .lean();
-    
+
     if (!order) {
-      return { message: "No order found for this product." };
+      return res.status(404).json({ message: "No order found for this product." });
     }
 
-    return {
+    res.status(200).json({
       paid: order.paid,
       totalPrice: order.totalPrice,
       username: order.username,
-    };
+    });
   } catch (error) {
     console.error("Error finding order by product ID:", error);
-    return { error: "An error occurred while searching for the order." };
+    res.status(500).json({ error: "An error occurred while searching for the order." });
   }
 };
 
