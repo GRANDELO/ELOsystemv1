@@ -50,9 +50,9 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (apptoken || token)
+    if(token || apptoken)
       {
-        navigate('/logout');
+        navigate('/deliveryLogout');
       }
     // If apptoken is set, use it to set the token and navigate based on the app category
     if (capptoken) {

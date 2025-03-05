@@ -229,7 +229,7 @@ const Register = () => {
             <p style={{ color: 'red', fontSize: 'smaller' }}>Full Name must be at least 3 characters long and contain only letters.</p>
           )}
 
-          <label>Username:</label>
+          <label>Your Business Name:</label>
           <input
             type="text"
             name="username"

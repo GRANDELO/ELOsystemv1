@@ -15,10 +15,12 @@ const processPendingJobs = async () => {
             const { callbackData } = job;
             const resultCode = callbackData.ResultCode;
             const checkoutId = callbackData.CheckoutRequestID;
-            const amountpaid = callbackData.CallbackMetadata.Item.find(item => item.Name.trim() === "Amount").Value;
-            const MpesaReceiptNumber = callbackData.CallbackMetadata.Item.find(item => item.Name.trim() === "MpesaReceiptNumber").Value;
-            const PhoneNumber = callbackData.CallbackMetadata.Item.find(item => item.Name.trim() === "PhoneNumber").Value;
+
+
             if (resultCode === 0) {
+                const amountpaid = callbackData.CallbackMetadata.Item.find(item => item.Name.trim() === "Amount").Value;
+                const MpesaReceiptNumber = callbackData.CallbackMetadata.Item.find(item => item.Name.trim() === "MpesaReceiptNumber").Value;
+                const PhoneNumber = callbackData.CallbackMetadata.Item.find(item => item.Name.trim() === "PhoneNumber").Value;
                 const order = await Order.findOne({ CheckoutRequestID: checkoutId });
                 if (order) {
                     if (order.totalPrice === amountpaid)

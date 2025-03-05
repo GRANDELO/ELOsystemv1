@@ -51,10 +51,7 @@ const Login = () => {
 
 
   useEffect(() => {
-    if (apptoken || token)
-    {
-      navigate('/logout');
-    }
+
     // If apptoken is set, use it to set the token and navigate based on the app category
     if (capptoken) {
       Cookies.set('token', capptoken, { expires: 1 });
